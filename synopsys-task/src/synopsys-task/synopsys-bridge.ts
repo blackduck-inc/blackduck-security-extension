@@ -544,7 +544,7 @@ export class SynopsysBridge {
       );
     } else if (osName === "linux") {
       bridgeDefaultPath = path.join(
-        process.env["HOME"] as string,
+        (process.env.hasOwnProperty("AGENT_HOMEDIRECTORY") ? process.env["AGENT_HOMEDIRECTORY"] : process.env["HOME"]) as string,
         constants.SYNOPSYS_BRIDGE_DEFAULT_PATH_LINUX
       );
     } else if (osName === "win32") {
