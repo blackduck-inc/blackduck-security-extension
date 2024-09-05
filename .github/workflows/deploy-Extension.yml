@@ -1,0 +1,42 @@
+name: deploy-synopsys-extension
+
+on:
+  workflow_dispatch:
+
+jobs:
+  deploy-synopsys-extension:
+    if: "!contains(github.event.commits[0].message, '[skip ci]')"
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: deploy-extension
+        id: deploy-extension
+        env:
+          DEPLOY_PUBLISHER_NAME: ${{ secrets.DEPLOY_PUBLISHER_NAME }}
+          DEPLOY_ORGANIZATION_NAME: ${{ secrets.DEPLOY_ORG_NAME }}
+          USER_TOKEN: ${{ secrets.DEPLOY_USER_TOKEN }} #personal_access_token of azure devops account
+        run: |
+          vss_extension=$(cat vss-extension.json)
+          extension_name=$(echo $vss_extension | jq -r '.name' )
+          echo "Extension Name:" $extension_name
+          extension_version=$(echo $vss_extension | jq -r '.version')
+          echo "Extension Version:" $extension_version
+          echo "Install dependencies && Rebuild the dist/ directory"
+          cd synopsys-task && npm ci && npm run build && npm run package
+          cd ../
+          echo "Installing tfx-cli..."
+          npm i -g tfx-cli
+          echo "Creating extension $extension_name with version $extension_version"
+          npx tfx-cli extension create --manifest-globs vss-extension.json
+          echo "Extension $extension_name created successfully!"
+          echo "Publishing extension $extension_name with version $extension_version"
+#         tfx extension publish --publisher ${DEPLOY_PUBLISHER_NAME}  --manifest-globs vss-extension.json  --token ${USER_TOKEN} | tee tfx_output.log
+#         publish_exit_code=${PIPESTATUS[0]}
+#         if [ $publish_exit_code -eq 0 ]; then
+#             echo "Extension $extension_name with version $extension_version published successfully!"
+#          else
+#            echo "Failed to publish the extension $extension_name with version $extension_version."
+#            exit 1
+#          fi
+
