@@ -31,12 +31,12 @@ jobs:
           npx tfx-cli extension create --manifest-globs vss-extension.json
           echo "Extension $extension_name created successfully!"
           echo "Publishing extension $extension_name with version $extension_version"
-#         tfx extension publish --publisher ${DEPLOY_PUBLISHER_NAME}  --manifest-globs vss-extension.json  --token ${USER_TOKEN} | tee tfx_output.log
-#         publish_exit_code=${PIPESTATUS[0]}
-#         if [ $publish_exit_code -eq 0 ]; then
-#             echo "Extension $extension_name with version $extension_version published successfully!"
-#          else
-#            echo "Failed to publish the extension $extension_name with version $extension_version."
-#            exit 1
-#          fi
+          tfx extension publish --publisher ${DEPLOY_PUBLISHER_NAME}  --manifest-globs vss-extension.json  --token ${DEPLOY_USER_TOKEN} | tee tfx_output.log
+          publish_exit_code=${PIPESTATUS[0]}
+          if [ $publish_exit_code -eq 0 ]; then
+              echo "Extension $extension_name with version $extension_version published successfully!"
+          else
+            echo "Failed to publish the extension $extension_name with version $extension_version."
+            exit 1
+          fi
 
