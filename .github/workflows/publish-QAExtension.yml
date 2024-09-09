@@ -51,7 +51,7 @@ jobs:
           fi
           
              echo "Updating extension_version.txt with the new version: ${new_version}"
-             sed -i "s/published_extension_version=.*/published_extension_version=$new_version/" extension_version.txt
+             sed -i "s/published_qaextension_version=.*/published_qaextension_version=$new_version/" extension_version.txt
              cat extension_version.txt
              echo
              echo "Updated extension_version.txt file"
@@ -95,6 +95,7 @@ jobs:
           npx tfx-cli extension create --manifest-globs vss-extension-dev.json
           echo "Extension $extension_name created successfully!"
           echo "Publishing extension $extension_name with version $extension_version"
+          tfx extension publish --publisher ${PUBLISHER_NAME}  --manifest-globs vss-extension-dev.json  --token ${USER_TOKEN} | tee tfx_output.log
           publish_exit_code=${PIPESTATUS[0]}
           if [ $publish_exit_code -eq 0 ]; then
              echo "Extension $extension_name with version $extension_version published successfully!"
@@ -102,10 +103,6 @@ jobs:
             echo "Failed to publish the extension $extension_name with version $extension_version."
             exit 1
           fi
-
-      #  npm i -g tfx-cli
-      #  tfx extension publish --publisher ${PUBLISHER_NAME}  --manifest-globs vss-extension-dev.json --share-with ${ORGANIZATION_NAME}  --token ${USER_TOKEN} | tee tfx_output.log
-      #  tfx extension publish --publisher TestCIPub  --manifest-globs vss-extension-dev.json  --token ${USER_TOKEN}  | tee tfx_output.log
 
       - name: update extension version in file
         id: update-extension-version
