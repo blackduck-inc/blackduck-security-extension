@@ -44,34 +44,18 @@ jobs:
              echo "Updated vss-extension-dev.json file"
              cat vss-extension-dev.json
              echo
-          else
-             new_version=$current_extension_version
-             echo "Extension version will not be updating automatically. Current version: ${new_version}"
-          fi
           
              echo "Updating extension_version.txt with the new version: ${new_version}"
              sed -i "s/published_qaextension_version=.*/published_qaextension_version=$new_version/" extension_version.txt
              cat extension_version.txt
              echo
              echo "Updated extension_version.txt file"
-          
-             cd synopsys-task 
-             echo "Updating package.json with the new version: ${new_version}"
-             jq --arg new_version "$new_version" '.version = $new_version' package.json > package.json.tmp && mv package.json.tmp package.json
-             cat package.json
-             echo "Updated package.json file"
-             echo
-          
-             echo "Updating package-lock.json with the new version: ${new_version}"
-             jq --arg new_version "$new_version" '(.version = $new_version) | (.packages[""].version = $new_version)' package-lock.json > package-lock.json.tmp && mv package-lock.json.tmp package-lock.json
-             echo "Updated package-lock.json file"
-             echo
-          
-             echo "Updating task.json with the new version: ${new_version}"
-             jq --argjson major "$current_major" --argjson minor "$current_minor"  --argjson patch "$current_patch" '(.version.Major = $major) | (.version.Minor = $minor) | (.version.Patch = $patch)' task.json > task.json.tmp && mv task.json.tmp task.json
-             echo "Updated task.json file"
-          
+          else
+             new_version=$current_extension_version
+             echo "Extension version will not be updating automatically. Current version: ${new_version}"
+          fi
           echo "NEW_VERSION=$new_version" >> $GITHUB_ENV
+
       - name: publish-QAExtension
         id: publish-qaextension
         if: ${{  steps.version-update.conclusion == 'success'  }}
@@ -85,9 +69,6 @@ jobs:
           echo "Extension Name:" $extension_name
           extension_version=$(echo $vss_extension_dev | jq -r '.version')
           echo "Extension Version:" $extension_version
-          echo "Install dependencies && Rebuild the dist/ directory"
-          cd synopsys-task && npm ci && npm run build && npm run package
-          cd ../
           echo "Installing tfx-cli..."
           npm i -g tfx-cli
           echo "Creating extension $extension_name with version $extension_version"
@@ -102,6 +83,7 @@ jobs:
             echo "Failed to publish the extension $extension_name with version $extension_version."
             exit 1
           fi
+      
 
       - name: update extension version in file
         id: update-extension-version
@@ -109,15 +91,16 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUBTOKEN }}
         run: |
-          echo "Updating extension version in vss-extension-dev.json, extension_version.txt, package.json, package-lock.json & task.json file"
+          echo "Updating extension version in vss-extension-dev.json & extension_version.txt file"
           git config --local user.name "$(git log -n 1 --pretty=format:%an)"
           git config --local user.email "$(git log -n 1 --pretty=format:%ae)"
+          git checkout -b qaextension_version_update
           git add  vss-extension-dev.json extension_version.txt
-          cd synopsys-task
-          git add package.json package-lock.json task.json
-          git commit -m "update extension version [skip ci]"
-          git push origin main
-          echo "Successful updated extension version in vss-extension-dev.json, extension_version.txt, package.json, package-lock.json & task.json file..."
+          git commit -m "update extension version to ${{ env.NEW_VERSION }} [skip ci]"
+          git push origin qaextension_version_update
+          echo gh --version
+          gh pr create --base main --head qaextension_version_update --title "Version upgrade to ${{ env.NEW_VERSION }}" --body "${{ env.EXTENSION_NAME }} version upgrade to ${{ env.NEW_VERSION }}"
+          gh pr merge --squash --subject "Extension version upgrade to ${{ env.NEW_VERSION }}  [skip ci]" --delete-branch
 
       - name: Upload Artifact
         uses: actions/upload-artifact@v4
