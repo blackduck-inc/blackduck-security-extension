@@ -5,7 +5,7 @@ on:
 
 jobs:
   deploy-synopsys-extension:
-    if: "!contains(github.event.commits[0].message, '[skip ci]')"
+    if: "!contains(github.event.head_commit.message, '[skip ci]')"
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -31,8 +31,9 @@ jobs:
           current_minor=$(echo $current_extension_version | awk -F. '{print $2}')
           current_patch=$(echo $current_extension_version | awk -F. '{print $3}')
           COMMIT_MESSAGE=$(git log -1 --pretty=%B | head -n 1)
+          echo "COMMIT_MESSAGE=$COMMIT_MESSAGE" >> $GITHUB_ENV
           echo "commit message: " $COMMIT_MESSAGE     
-          if [[ "$COMMIT_MESSAGE" == *"upgrade-version"* ]]; then
+          if [[ "$COMMIT_MESSAGE" == *"version-upgrade"* ]]; then
              new_version=$current_extension_version
              echo "Updating vss-extension-dev.json with the new version: ${new_version}"
              jq --arg new_version "$new_version" '.version = $new_version' vss-extension-dev.json > vss-extension-dev.json.tmp && mv vss-extension-dev.json.tmp vss-extension-dev.json
@@ -61,11 +62,13 @@ jobs:
              echo "Updated task.json file"
           else
              new_version=$current_extension_version
+             echo "Commit message does not contains 'version-upgrade' message"
              echo "Extension version will not be updating automatically. Current version: ${new_version}"
           fi     
           echo "NEW_VERSION=$new_version" >> $GITHUB_ENV
 
       - name: update extension version in file
+        if: "contains(env.COMMIT_MESSAGE, 'version-upgrade')"
         id: update-extension-version
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUBTOKEN }}
