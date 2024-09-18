@@ -32,14 +32,14 @@
     paths:
       - .m2/
   script:
-    - cd synopsys-task
+    - cd blackduck-task
     - npm ci
     - npm run format && npm run lint && npm run build && npm run package
 
 .unit_test_and_coverage:
   image: gcr.io/snps-polaris-ops-prod/ember_cli:3.28.5-node_16.14
   script:
-    - cd synopsys-task
+    - cd blackduck-security-task
     - npm ci
     - npm test
   coverage: /All files[^|]*\|[^|]*\s+([\d\.]+)/

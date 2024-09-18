@@ -1,7 +1,7 @@
 {
   "modules": [
     {
-      "at": "./synopsys-task",
+      "at": "./blackduck-security-task",
       "templates": ["dependencies"]
     }
   ]

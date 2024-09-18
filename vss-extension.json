@@ -1,9 +1,9 @@
 {
   "manifestVersion": 1,
-  "id": "synopsys-security-scan",
-  "name": "Synopsys Security Scan",
+  "id": "blackduck-security-scan",
+  "name": "Black Duck Security Scan",
   "version": "1.10.0",
-  "publisher": "synopsys-security-scan",
+  "publisher": "blackduck-security-scan",
   "public": true,
   "targets": [
     {
@@ -12,7 +12,7 @@
   ],
   "tags": [
     "Polaris",
-    "Synopsys",
+    "Black Duck Software Inc",
     "Coverity",
     "Black Duck",
     "Continuous Integration",
@@ -29,7 +29,7 @@
   },
   "files": [
     {
-      "path": "synopsys-task"
+      "path": "blackduck-security-task"
     }
   ],
   "content": {
@@ -39,13 +39,13 @@
   },
   "contributions": [
     {
-      "id": "synopsys-task",
+      "id": "BlackDuckSecurityScan",
       "type": "ms.vss-distributed-task.task",
       "targets": [
         "ms.vss-distributed-task.tasks"
       ],
       "properties": {
-        "name": "synopsys-task"
+        "name": "BlackDuckSecurityScan"
       }
     }
   ]

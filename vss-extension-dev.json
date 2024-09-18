@@ -1,7 +1,7 @@
 {
   "manifestVersion": 1,
   "id": "QAExt",
-  "name": "Synopsys Security Scan",
+  "name": "Black Duck Security Scan",
   "version": "1.10.0",
   "publisher": "QAExt",
   "targets": [
@@ -11,7 +11,7 @@
   ],
   "tags": [
     "Polaris",
-    "Synopsys",
+    "Black Duck Software Inc.",
     "Coverity",
     "Black Duck",
     "Continuous Integration",
@@ -38,13 +38,13 @@
   },
   "contributions": [
     {
-      "id": "synopsys-task",
+      "id": "BlackDuckSecurityScan",
       "type": "ms.vss-distributed-task.task",
       "targets": [
         "ms.vss-distributed-task.tasks"
       ],
       "properties": {
-        "name": "synopsys-task"
+        "name": "BlackDuckSecurityScan"
       }
     }
   ]
