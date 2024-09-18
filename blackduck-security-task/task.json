@@ -204,10 +204,10 @@
     {
       "name": "polarisWaitForScan",
       "type": "boolean",
-      "label": "Polaris Wait For Scan",
+      "label": "Polaris Wait For Scan Completion",
       "defaultValue": true,
       "required": false,
-      "helpMarkDown": "It specifies whether the workflow should wait for the analysis to complete or not. Default value: true.",
+      "helpMarkDown": "Specifies if the workflow should wait for the analysis to complete. Default value: true. If set to false, post merge workflows like PR comment, Fix PR, SARIF etc will not be applicable.",
       "visibleRule": "scanType = polaris",
       "groupName": "scanOptions"
     },
@@ -429,10 +429,10 @@
     {
       "name": "coverityWaitForScan",
       "type": "boolean",
-      "label": "Coverity Wait For Scan",
+      "label": "Coverity Wait For Scan Completion",
       "defaultValue": true,
       "required": false,
-      "helpMarkDown": "It specifies whether the workflow should wait for the analysis to complete or not. Default value: true.",
+      "helpMarkDown": "Specifies if the workflow should wait for the analysis to complete. Default value: true. If set to false, post merge workflows like PR comment, Fix PR, SARIF etc will not be applicable.",
       "visibleRule": "scanType = coverity",
       "groupName": "scanOptions"
     },
@@ -639,10 +639,10 @@
     {
       "name": "blackduckWaitForScan",
       "type": "boolean",
-      "label": "Black Duck Wait For Scan",
+      "label": "Black Duck Wait For Scan Completion",
       "defaultValue": true,
       "required": false,
-      "helpMarkDown": "It specifies whether the workflow should wait for the analysis to complete or not. Default value: true.",
+      "helpMarkDown": "Specifies if the workflow should wait for the analysis to complete. Default value: true. If set to false, post merge workflows like PR comment, Fix PR, SARIF etc will not be applicable.",
       "visibleRule": "scanType = blackduck",
       "groupName": "scanOptions"
     },
@@ -909,10 +909,10 @@
     {
       "name": "srmWaitForScan",
       "type": "boolean",
-      "label": "SRM Wait For Scan",
+      "label": "SRM Wait For Scan Completion",
       "defaultValue": true,
       "required": false,
-      "helpMarkDown": "It specifies whether the workflow should wait for the analysis to complete or not. Default value: true.",
+      "helpMarkDown": "Specifies if the workflow should wait for the analysis to complete. Default value: true. If set to false, post merge workflows like PR comment, Fix PR, SARIF etc will not be applicable.",
       "visibleRule": "scanType = srm",
       "groupName": "scanOptions"
     },
