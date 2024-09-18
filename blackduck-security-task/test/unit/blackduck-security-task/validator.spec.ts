@@ -159,7 +159,7 @@ describe("Validator test", () => {
 
     });
 
-    context('bdorg', () => {
+    context('Blackduck SCA validation', () => {
         afterEach(() => {
             Object.defineProperty(inputs, 'BLACKDUCKSCA_URL', {value: ''})
             Object.defineProperty(inputs, 'BLACKDUCKSCA_API_TOKEN', {value: ''})
