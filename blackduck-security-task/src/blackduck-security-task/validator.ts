@@ -4,7 +4,7 @@ import * as constants from "./application-constant";
 import * as inputs from "./input";
 import * as taskLib from "azure-pipelines-task-lib/task";
 import { ErrorCode } from "./enum/ErrorCodes";
-import { INVALID_BLACKDUCK_SCA_SCAN_FAILURE_SEVERITIES } from "./application-constant";
+import { INVALID_BLACKDUCKSCA_SCAN_FAILURE_SEVERITIES } from "./application-constant";
 
 export function validateScanTypes(): string[] {
   const paramsMap = new Map();
@@ -115,22 +115,25 @@ export function validateBlackduckFailureSeverities(
 ): boolean {
   if (severities == null || severities.length === 0) {
     taskLib.error(
-      INVALID_BLACKDUCK_SCA_SCAN_FAILURE_SEVERITIES.concat(
+      INVALID_BLACKDUCKSCA_SCAN_FAILURE_SEVERITIES.concat(
         constants.SPACE
-      ).concat(ErrorCode.INVALID_BLACKDUCK_SCA_FAILURE_SEVERITIES.toString())
+      ).concat(ErrorCode.INVALID_BLACKDUCKSCA_FAILURE_SEVERITIES.toString())
     );
     return false;
   }
   return true;
 }
 
-export function validateBlackDuckInputs(): string[] {
+export function validateBlackDuckSCAInputs(): string[] {
   let errors: string[] = [];
   if (inputs.BLACKDUCKSCA_URL) {
     const paramsMap = new Map();
-    paramsMap.set(constants.BLACKDUCK_URL_KEY, inputs.BLACKDUCKSCA_URL);
-    paramsMap.set(constants.BLACKDUCK_TOKEN_KEY, inputs.BLACKDUCKSCA_API_TOKEN);
-    errors = validateParameters(paramsMap, constants.BLACKDUCK_KEY);
+    paramsMap.set(constants.BLACKDUCKSCA_URL_KEY, inputs.BLACKDUCKSCA_URL);
+    paramsMap.set(
+      constants.BLACKDUCKSCA_TOKEN_KEY,
+      inputs.BLACKDUCKSCA_API_TOKEN
+    );
+    errors = validateParameters(paramsMap, constants.BLACKDUCKSCA_KEY);
   }
   return errors;
 }

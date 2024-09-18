@@ -102,16 +102,16 @@ describe("Bridge CLI test", () => {
 
             sandbox.stub(validator, "validateScanTypes").returns([]);
             sandbox.stub(BridgeToolsParameter.prototype, "getFormattedCommandForBlackduck").callsFake(() => {
-                throw new Error("Invalid value for failureSeverities".concat(constants.SPACE).concat(ErrorCode.INVALID_BLACKDUCK_SCA_FAILURE_SEVERITIES.toString()))
+                throw new Error("Invalid value for failureSeverities".concat(constants.SPACE).concat(ErrorCode.INVALID_BLACKDUCKSCA_FAILURE_SEVERITIES.toString()))
             });
-            sandbox.stub(validator, "validateBlackDuckInputs").returns([]);
+            sandbox.stub(validator, "validateBlackDuckSCAInputs").returns([]);
 
             try {
                 await bridge.prepareCommand("/temp");
             } catch (e) {
                 const errorObject = e as Error;
                 expect(errorObject.message).includes("Invalid value for failureSeverities");
-                expect(errorObject.message).includes(ErrorCode.INVALID_BLACKDUCK_SCA_FAILURE_SEVERITIES.toString());
+                expect(errorObject.message).includes(ErrorCode.INVALID_BLACKDUCKSCA_FAILURE_SEVERITIES.toString());
             }
 
             Object.defineProperty(inputs, 'BLACKDUCKSCA_URL', {value: ''})
@@ -224,7 +224,7 @@ describe("Bridge CLI test", () => {
             Object.defineProperty(inputs, 'SCAN_TYPE', {value: "blackduck"});
             sandbox.stub(validator, "validateScanTypes").returns([]);
             sandbox.stub(BridgeToolsParameter.prototype, "getFormattedCommandForBlackduck").callsFake(() => Promise.resolve("./bridge --stage blackduck --state bd_input.json"));
-            sandbox.stub(validator, "validateBlackDuckInputs").returns([]);
+            sandbox.stub(validator, "validateBlackDuckSCAInputs").returns([]);
 
             const preparedCommand = await bridge.prepareCommand("/temp");
             expect(preparedCommand).contains("./bridge --stage blackduck --state bd_input.json")
@@ -532,7 +532,7 @@ describe("Download Bridge", () => {
         it('should fail with mandatory parameter missing fields for blackduck', async function () {
 
             Object.defineProperty(inputs, 'BLACKDUCKSCA_URL', {value: 'https://test.com'});
-            sandbox.stub(validator, "validateBlackDuckInputs").returns([`[bridge_blackduck_url,bridge_blackduck_token] - required parameters for coverity is missing ${ErrorCode.MISSING_REQUIRED_PARAMETERS.toString()}`]);
+            sandbox.stub(validator, "validateBlackDuckSCAInputs").returns([`[bridge_blackduck_url,bridge_blackduck_token] - required parameters for coverity is missing ${ErrorCode.MISSING_REQUIRED_PARAMETERS.toString()}`]);
             bridge.prepareCommand("/temp").catch(errorObje => {
                 expect(errorObje.message).equals(`[bridge_blackduck_url,bridge_blackduck_token] - required parameters for coverity is missing ${ErrorCode.MISSING_REQUIRED_PARAMETERS.toString()}`);            })
             Object.defineProperty(inputs, 'BLACKDUCKSCA_URL', {value: ''})
@@ -543,7 +543,7 @@ describe("Download Bridge", () => {
             Object.defineProperty(inputs, 'BLACKDUCKSCA_API_TOKEN', {value: 'token'});
             sandbox.stub(validator, "validateScanTypes").returns([]);
             sandbox.stub(BridgeToolsParameter.prototype, "getFormattedCommandForBlackduck").callsFake(() => Promise.resolve("./bridge --stage blackduck --state bd_input.json"));
-            sandbox.stub(validator, "validateBlackDuckInputs").returns([]);
+            sandbox.stub(validator, "validateBlackDuckSCAInputs").returns([]);
 
             const preparedCommand = await bridge.prepareCommand("/temp");
             expect(preparedCommand).contains("./bridge --stage blackduck --state bd_input.json")
@@ -564,7 +564,7 @@ describe("Download Bridge", () => {
             sandbox.stub(validator, "validatePolarisInputs").returns([]);
 
             sandbox.stub(BridgeToolsParameter.prototype, "getFormattedCommandForBlackduck").callsFake(() => Promise.resolve(" --stage blackduck --state bd_input.json"));
-            sandbox.stub(validator, "validateBlackDuckInputs").returns([]);
+            sandbox.stub(validator, "validateBlackDuckSCAInputs").returns([]);
 
             const preparedCommand = await bridge.prepareCommand("/temp");
             console.log("preparedCommand::::" + preparedCommand)

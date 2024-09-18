@@ -4,7 +4,7 @@ import { HttpClient } from "typed-rest-client/HttpClient";
 import { BridgeToolsParameter } from "./tools-parameter";
 import { sleep } from "./utility";
 import {
-  validateBlackDuckInputs,
+  validateBlackDuckSCAInputs,
   validateBridgeUrl,
   validateCoverityInputs,
   validatePolarisInputs,
@@ -31,7 +31,7 @@ import {
   BRIDGE_CLI_INSTALL_DIRECTORY_NOT_EXISTS,
   BRIDGE_CLI_URL_MESSAGE,
   BRIDGE_CLI_VERSION_NOT_FOUND,
-  BRIDGE_EXECUTABLE_FILE_NOT_FOUND,
+  BRIDGE_CLI_EXECUTABLE_FILE_NOT_FOUND,
   CHECK_LATEST_BRIDGE_CLI_VERSION,
   DOWNLOADING_BRIDGE_CLI,
   EMPTY_BRIDGE_CLI_URL,
@@ -99,7 +99,7 @@ export class Bridge {
     );
     if (!taskLib.exist(executableBridgePath)) {
       throw new Error(
-        BRIDGE_EXECUTABLE_FILE_NOT_FOUND.concat(executableBridgePath)
+        BRIDGE_CLI_EXECUTABLE_FILE_NOT_FOUND.concat(executableBridgePath)
           .concat(constants.SPACE)
           .concat(ErrorCode.BRIDGE_EXECUTABLE_NOT_FOUND.toString())
       );
@@ -277,7 +277,7 @@ export class Bridge {
     formattedCommand: string,
     tempDir: string
   ): Promise<[string, string[]]> {
-    const blackduckErrors: string[] = validateBlackDuckInputs();
+    const blackduckErrors: string[] = validateBlackDuckSCAInputs();
     if (blackduckErrors.length === 0 && inputs.BLACKDUCKSCA_URL) {
       const blackDuckCommandFormatter = new BridgeToolsParameter(tempDir);
       formattedCommand = formattedCommand.concat(

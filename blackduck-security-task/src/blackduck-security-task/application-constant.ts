@@ -17,7 +17,7 @@ export const SPACE = " ";
 // Scan Types
 export const POLARIS_KEY = "polaris";
 export const COVERITY_KEY = "coverity";
-export const BLACKDUCK_KEY = "blackduck";
+export const BLACKDUCKSCA_KEY = "blackducksca";
 export const SRM_KEY = "srm";
 
 // Polaris
@@ -268,9 +268,13 @@ export const BLACKDUCKSCA_FIXPR_UPGRADE_GUIDANCE_KEY =
 export const BLACKDUCKSCA_FIXPR_UPGRADE_GUIDANCE_KEY_CLASSIC_EDITOR =
   "blackduckScaFixPrUseUpgradeGuidance";
 
-export const BLACKDUCKSCA_WAITFORSCAN_KEY = "blackduck_waitForScan";
+/**
+ * @deprecated Use blackducksca_waitForScan instead. This can be removed in future release.
+ */
+export const BLACKDUCK_WAITFORSCAN_KEY = "blackduck_waitForScan";
+export const BLACKDUCKSCA_WAITFORSCAN_KEY = "blackducksca_waitForScan";
 export const BLACKDUCKSCA_WAITFORSCAN_KEY_CLASSIC_EDITOR =
-  "blackduckWaitForScan";
+  "blackduckScaWaitForScan";
 
 export const BLACKDUCKSCA_PROJECT_DIRECTORY_KEY_CLASSIC_EDITOR =
   "blackduckProjectDirectory";
@@ -414,7 +418,7 @@ export const UPLOAD_FOLDER_ARTIFACT_NAME = "bridge_cli_diagnostics";
 export const BRIDGE_CLI_LOCAL_DIRECTORY = ".bridge";
 export const SARIF_DEFAULT_FILE_NAME = "report.sarif.json";
 export const DEFAULT_BLACKDUCK_SARIF_GENERATOR_DIRECTORY =
-  "Blackduck SARIF Generator";
+  "Blackduck SCA SARIF Generator";
 export const DEFAULT_POLARIS_SARIF_GENERATOR_DIRECTORY =
   "Polaris SARIF Generator";
 export const SARIF_UPLOAD_FOLDER_ARTIFACT_NAME = "sarif_report";
@@ -427,7 +431,7 @@ export const MAC_ARM_PLATFORM = "macos_arm";
 export const MAC_INTEL_PLATFORM = "macosx";
 export const MIN_SUPPORTED_BRIDGE_CLI_MAC_ARM_VERSION = "2.1.0";
 export const DEFAULT_AZURE_API_URL = "https://dev.azure.com";
-export const BLACKDUCK_SECURITY_SCAN_AZURE_DEVOPS_DOCS_URL =
+export const BLACKDUCK_SCA_SECURITY_SCAN_AZURE_DEVOPS_DOCS_URL =
   "https://sig-product-docs.synopsys.com/bundle/bridge/page/documentation/c_synopsys-security-scan-for-azure-devops.html";
 
 // Error Messages
@@ -435,7 +439,7 @@ export const MISSING_AZURE_TOKEN_FOR_FIX_PR_AND_PR_COMMENT =
   "Missing required azure token for fix pull request/automation comment";
 export const BRIDGE_CLI_VERSION_NOT_FOUND =
   "Provided Bridge CLI version not found in artifactory";
-export const BRIDGE_EXECUTABLE_FILE_NOT_FOUND =
+export const BRIDGE_CLI_EXECUTABLE_FILE_NOT_FOUND =
   "Bridge CLI executable file could not be found at ";
 export const EMPTY_BRIDGE_CLI_URL = "Provided Bridge CLI URL cannot be empty ";
 export const INVALID_BRIDGE_CLI_URL_SPECIFIED_OS =
@@ -455,7 +459,7 @@ export const BRIDGE_CLI_INSTALL_DIRECTORY_NOT_EXISTS =
 export const BRIDGE_CLI_DEFAULT_DIRECTORY_NOT_EXISTS =
   "Bridge CLI default directory does not exist";
 
-export const INVALID_BLACKDUCK_SCA_SCAN_FAILURE_SEVERITIES =
+export const INVALID_BLACKDUCKSCA_SCAN_FAILURE_SEVERITIES =
   "Provided value is not valid - BLACKDUCKSCA_SCAN_FAILURE_SEVERITIES";
 export const REQUIRE_ONE_SCAN_TYPE = "Requires at least one scan type: (";
 export const MISSING_BOOL_VALUE = "Missing boolean value for ";
@@ -496,9 +500,9 @@ export const TASK_RETURN_STATUS =
   "`##vso[task.setvariable variable=status;isoutput=true]${result}`";
 export const BLACKDUCK_SCA_SARIF_REPOST_ENABLED =
   "BLACKDUCKSCA_REPORTS_SARIF_CREATE is enabled";
-export const POLARIS_SCA_SARIF_REPOST_ENABLED =
+export const POLARIS_SCA_SARIF_REPORT_ENABLED =
   "POLARIS_REPORTS_SARIF_CREATE is enabled";
-export const BLACKDUCK_SECURITY_SCAN_COMPLETED =
+export const BLACKDUCK_SCA_SECURITY_SCAN_COMPLETED =
   "Black Duck Security Scan completed";
 
 export const AZURE_PULL_REQUEST_NUMBER_IS_EMPTY =
@@ -567,24 +571,24 @@ export const EXIT_CODE_MAP = new Map<string, string>([
     "Agent.TempDirectory is not set",
   ],
   [
-    ErrorCode.BLACKDUCK_FIXPR_MAX_COUNT_NOT_APPLICABLE.toString(),
-    "blackduck_fixpr_maxCount is not applicable with blackduck_fixpr_createSinglePR",
+    ErrorCode.BLACKDUCKSCA_FIXPR_MAXCOUNT_NOT_APPLICABLE.toString(),
+    "blackducksca_fixpr_maxCount is not applicable with blackducksca_fixpr_createSinglePR",
   ],
   [
     ErrorCode.INVALID_POLARIS_ASSESSMENT_TYPES.toString(),
     "Invalid value for polaris_assessment_types",
   ],
   [
-    ErrorCode.INVALID_BLACKDUCK_SCA_FAILURE_SEVERITIES.toString(),
+    ErrorCode.INVALID_BLACKDUCKSCA_FAILURE_SEVERITIES.toString(),
     "Invalid value for blackducksca_scan_failure_severities",
   ],
   [
-    ErrorCode.INVALID_BLACKDUCK_FIXPR_MAXCOUNT.toString(),
-    "Invalid value for blackduck_fixpr_maxCount",
+    ErrorCode.INVALID_BLACKDUCKSCA_FIXPR_MAXCOUNT.toString(),
+    "Invalid value for blackducksca_fixpr_maxCount",
   ],
   [
     ErrorCode.MISSING_BOOLEAN_VALUE.toString(),
-    "Missing boolean value for blackduck_scan_full",
+    "Missing boolean value for detect_scan_full",
   ],
   [
     ErrorCode.INVALID_BRIDGE_CLI_URL.toString(),
@@ -596,7 +600,7 @@ export const EXIT_CODE_MAP = new Map<string, string>([
   ],
   [
     ErrorCode.INVALID_URL.toString(),
-    "Invalid URL (Invalid Synopysys Bridge Download URL)",
+    "Invalid URL (Invalid Bridge CLI Download URL)",
   ],
   [
     ErrorCode.BRIDGE_CLI_VERSION_NOT_FOUND.toString(),

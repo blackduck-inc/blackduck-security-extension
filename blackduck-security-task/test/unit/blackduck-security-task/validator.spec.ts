@@ -6,7 +6,7 @@ import * as validator from '../../../src/blackduck-security-task/validator';
 import { expect } from 'chai';
 import * as mocha from 'mocha';
 import {ErrorCode} from "../../../src/blackduck-security-task/enum/ErrorCodes";
-import {BLACKDUCKSCA_URL_KEY} from "../../../src/blackduck-security-task/application-constant";
+import {BLACKDUCKSCA_TOKEN_KEY, BLACKDUCKSCA_URL_KEY} from "../../../src/blackduck-security-task/application-constant";
 
 describe("Validator test", () => {
     context('validator context',() => {
@@ -159,7 +159,7 @@ describe("Validator test", () => {
 
     });
 
-    context('Blackduck validation', () => {
+    context('bdorg', () => {
         afterEach(() => {
             Object.defineProperty(inputs, 'BLACKDUCKSCA_URL', {value: ''})
             Object.defineProperty(inputs, 'BLACKDUCKSCA_API_TOKEN', {value: ''})
@@ -182,13 +182,13 @@ describe("Validator test", () => {
             expect(validationsErrors[1]).contains(constants.BLACKDUCKSCA_URL_KEY);
         });
 
-        it('should return empty array for validateBlackduckInputs', function () {
+        it('should return empty array for validateBlackDuckSCAInputs', function () {
             Object.defineProperty(inputs, 'BLACKDUCKSCA_URL', {value: 'server_url'})
             Object.defineProperty(inputs, 'BLACKDUCKSCA_API_TOKEN', {value: 'access_token'})
             Object.defineProperty(inputs, 'DETECT_SCAN_FULL', {value: true})
             Object.defineProperty(inputs, 'BLACKDUCKSCA_SCAN_FAILURE_SEVERITIES', {value: ["BLOCKER","CRITICAL","TRIVIAL"]});
 
-            const bdValidationErrors = validator.validateBlackDuckInputs();
+            const bdValidationErrors = validator.validateBlackDuckSCAInputs();
             expect(bdValidationErrors.length).equals(0);
         });
 
@@ -201,12 +201,12 @@ describe("Validator test", () => {
             expect(isValid).equals(false);
         });
 
-        it('should return mandatory fields missing error for validateBlackDuckInputs', function () {
+        it('should return mandatory fields missing error for validateBlackDuckSCAInputs', function () {
             Object.defineProperty(inputs, 'BLACKDUCKSCA_URL', {value: 'server_url'})
 
-            const bdValidationErrors = validator.validateBlackDuckInputs();
+            const bdValidationErrors = validator.validateBlackDuckSCAInputs();
             expect(bdValidationErrors.length).greaterThan(0);
-            expect(bdValidationErrors[0]).contains('['.concat(constants.BLACKDUCK_TOKEN_KEY).concat('] - required parameters for blackduck is missing'))
+            expect(bdValidationErrors[0]).contains('['.concat(constants.BLACKDUCKSCA_TOKEN_KEY).concat('] - required parameters for blackducksca is missing'))
         });
     });
     context('SRM validation',()=>{

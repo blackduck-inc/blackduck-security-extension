@@ -1,7 +1,7 @@
 // Copyright (c) 2024 Black Duck Software Inc. All rights reserved worldwide.
 
 import { CoverityArbitrary } from "./coverity";
-import { BlackDuckDetect } from "./blackduck";
+import { BlackDuckDetect } from "./blackduckSCA";
 import { AsyncMode } from "./async-mode";
 
 export interface Srm {

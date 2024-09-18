@@ -3,7 +3,7 @@
 import { AzureData } from "./azure";
 import { Reports } from "./reports";
 import { AsyncMode } from "./async-mode";
-export enum BLACKDUCK_SCAN_FAILURE_SEVERITIES {
+export enum BLACKDUCKSCA_SCAN_FAILURE_SEVERITIES {
   ALL = "ALL",
   NONE = "NONE",
   BLOCKER = "BLOCKER",
@@ -15,8 +15,8 @@ export enum BLACKDUCK_SCAN_FAILURE_SEVERITIES {
   UNSPECIFIED = "UNSPECIFIED",
 }
 
-export interface Blackduck {
-  blackducksca: BlackduckData;
+export interface BlackduckSCA {
+  blackducksca: BlackduckSCAData;
   detect?: BlackDuckDetect;
   project?: ProjectData;
   azure?: AzureData;
@@ -24,15 +24,15 @@ export interface Blackduck {
   environment?: Environment;
 }
 
-export interface BlackduckData extends AsyncMode {
+export interface BlackduckSCAData extends AsyncMode {
   url: string;
   token: string;
   scan?: {
     full?: boolean;
-    failure?: { severities: BLACKDUCK_SCAN_FAILURE_SEVERITIES[] };
+    failure?: { severities: BLACKDUCKSCA_SCAN_FAILURE_SEVERITIES[] };
   };
   automation?: AutomationData;
-  fixpr?: BlackDuckFixPrData;
+  fixpr?: BlackDuckSCAFixPrData;
   reports?: Reports;
 }
 
@@ -61,15 +61,15 @@ export interface Scan {
   pull?: boolean;
 }
 
-export interface BlackDuckFixPrData {
+export interface BlackDuckSCAFixPrData {
   enabled?: boolean;
   maxCount?: number;
   createSinglePR?: boolean;
   useUpgradeGuidance?: string[];
-  filter?: BlackDuckFixPrFilerData;
+  filter?: BlackDuckSCAFixPrFilerData;
 }
 
-export interface BlackDuckFixPrFilerData {
+export interface BlackDuckSCAFixPrFilerData {
   severities?: string[];
 }
 

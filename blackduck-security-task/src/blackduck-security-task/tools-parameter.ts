@@ -7,12 +7,12 @@ import { Polaris } from "./model/polaris";
 import { Coverity, CoverityArbitrary, CoverityConnect } from "./model/coverity";
 import { Srm } from "./model/srm";
 import {
-  Blackduck,
-  BLACKDUCK_SCAN_FAILURE_SEVERITIES,
+  BlackduckSCA,
+  BLACKDUCKSCA_SCAN_FAILURE_SEVERITIES,
   BlackDuckDetect,
-  BlackDuckFixPrData,
+  BlackDuckSCAFixPrData,
   Environment,
-} from "./model/blackduck";
+} from "./model/blackduckSCA";
 import {
   AZURE_BUILD_REASON,
   AZURE_ENVIRONMENT_VARIABLES,
@@ -269,7 +269,7 @@ export class BridgeToolsParameter {
     const failureSeverities: string[] =
       inputs.BLACKDUCKSCA_SCAN_FAILURE_SEVERITIES;
     let command = "";
-    let blackduckData: InputData<Blackduck> = {
+    let blackduckData: InputData<BlackduckSCA> = {
       data: {
         blackducksca: {
           url: inputs.BLACKDUCKSCA_URL,
@@ -294,16 +294,16 @@ export class BridgeToolsParameter {
 
     if (failureSeverities && failureSeverities.length > 0) {
       validateBlackduckFailureSeverities(failureSeverities);
-      const failureSeverityEnums: BLACKDUCK_SCAN_FAILURE_SEVERITIES[] = [];
+      const failureSeverityEnums: BLACKDUCKSCA_SCAN_FAILURE_SEVERITIES[] = [];
 
       const values: string[] = [];
 
       (
-        Object.keys(BLACKDUCK_SCAN_FAILURE_SEVERITIES) as Array<
-          keyof typeof BLACKDUCK_SCAN_FAILURE_SEVERITIES
+        Object.keys(BLACKDUCKSCA_SCAN_FAILURE_SEVERITIES) as Array<
+          keyof typeof BLACKDUCKSCA_SCAN_FAILURE_SEVERITIES
         >
       ).map(function (key) {
-        values.push(BLACKDUCK_SCAN_FAILURE_SEVERITIES[key]);
+        values.push(BLACKDUCKSCA_SCAN_FAILURE_SEVERITIES[key]);
       });
 
       for (const failureSeverity of failureSeverities) {
@@ -313,13 +313,13 @@ export class BridgeToolsParameter {
               .concat(constants.BLACKDUCKSCA_SCAN_FAILURE_SEVERITIES_KEY)
               .concat(constants.SPACE)
               .concat(
-                ErrorCode.INVALID_BLACKDUCK_SCA_FAILURE_SEVERITIES.toString()
+                ErrorCode.INVALID_BLACKDUCKSCA_FAILURE_SEVERITIES.toString()
               )
           );
         } else {
           failureSeverityEnums.push(
-            BLACKDUCK_SCAN_FAILURE_SEVERITIES[
-              failureSeverity as keyof typeof BLACKDUCK_SCAN_FAILURE_SEVERITIES
+            BLACKDUCKSCA_SCAN_FAILURE_SEVERITIES[
+              failureSeverity as keyof typeof BLACKDUCKSCA_SCAN_FAILURE_SEVERITIES
             ]
           );
         }
@@ -589,7 +589,7 @@ export class BridgeToolsParameter {
     return command;
   }
 
-  private setBlackDuckFixPrInputs(): BlackDuckFixPrData | undefined {
+  private setBlackDuckFixPrInputs(): BlackDuckSCAFixPrData | undefined {
     if (
       inputs.BLACKDUCKSCA_FIXPR_MAXCOUNT &&
       isNaN(Number(inputs.BLACKDUCKSCA_FIXPR_MAXCOUNT))
@@ -598,7 +598,7 @@ export class BridgeToolsParameter {
         "Invalid value for "
           .concat(constants.BLACKDUCK_FIXPR_MAXCOUNT_KEY)
           .concat(constants.SPACE)
-          .concat(ErrorCode.INVALID_BLACKDUCK_FIXPR_MAXCOUNT.toString())
+          .concat(ErrorCode.INVALID_BLACKDUCKSCA_FIXPR_MAXCOUNT.toString())
       );
     }
     const createSinglePr = parseToBoolean(
@@ -611,10 +611,12 @@ export class BridgeToolsParameter {
         )
           .concat(constants.BLACKDUCK_FIXPR_CREATE_SINGLE_PR_KEY)
           .concat(constants.SPACE)
-          .concat(ErrorCode.BLACKDUCK_FIXPR_MAX_COUNT_NOT_APPLICABLE.toString())
+          .concat(
+            ErrorCode.BLACKDUCKSCA_FIXPR_MAXCOUNT_NOT_APPLICABLE.toString()
+          )
       );
     }
-    const blackDuckFixPrData: BlackDuckFixPrData = {};
+    const blackDuckFixPrData: BlackDuckSCAFixPrData = {};
     blackDuckFixPrData.enabled = true;
     blackDuckFixPrData.createSinglePR = createSinglePr;
     if (inputs.BLACKDUCKSCA_FIXPR_MAXCOUNT && !createSinglePr) {

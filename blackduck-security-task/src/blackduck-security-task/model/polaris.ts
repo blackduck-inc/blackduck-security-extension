@@ -4,7 +4,7 @@ import { AzureData } from "./azure";
 import { AsyncMode } from "./async-mode";
 import { Reports } from "./reports";
 import { CoverityArbitrary } from "./coverity";
-import { BlackDuckDetect } from "./blackduck";
+import { BlackDuckDetect } from "./blackduckSCA";
 
 export interface Polaris {
   polaris: PolarisData;

@@ -924,7 +924,7 @@ describe("Bridge CLI Tools Parameter test", () => {
 
             bridgeToolsParameter.getFormattedCommandForBlackduck().catch(errorObj =>{
                 expect(errorObj.message).contains('Invalid value for '.concat(constants.BLACKDUCKSCA_SCAN_FAILURE_SEVERITIES_KEY))
-                expect(errorObj.message).contains(ErrorCode.INVALID_BLACKDUCK_SCA_FAILURE_SEVERITIES.toString())
+                expect(errorObj.message).contains(ErrorCode.INVALID_BLACKDUCKSCA_FAILURE_SEVERITIES.toString())
             })
         });
 
@@ -1212,7 +1212,7 @@ describe("Bridge CLI Tools Parameter test", () => {
                 const errorObj = e as Error;
                 expect(errorObj.message).contains(constants.BLACKDUCK_FIXPR_MAXCOUNT_KEY
                     .concat(' is not applicable with ').concat(constants.BLACKDUCK_FIXPR_CREATE_SINGLE_PR_KEY));
-                expect(errorObj.message).contains(ErrorCode.BLACKDUCK_FIXPR_MAX_COUNT_NOT_APPLICABLE.toString());
+                expect(errorObj.message).contains(ErrorCode.BLACKDUCKSCA_FIXPR_MAXCOUNT_NOT_APPLICABLE.toString());
             }
         });
 
@@ -1227,7 +1227,7 @@ describe("Bridge CLI Tools Parameter test", () => {
             } catch (e) {
                 const errorObj = e as Error;
                 expect(errorObj.message).contains('Invalid value for '.concat(constants.BLACKDUCK_FIXPR_MAXCOUNT_KEY));
-                expect(errorObj.message).contains(ErrorCode.INVALID_BLACKDUCK_FIXPR_MAXCOUNT.toString());
+                expect(errorObj.message).contains(ErrorCode.INVALID_BLACKDUCKSCA_FIXPR_MAXCOUNT.toString());
             }
         });
 

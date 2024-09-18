@@ -1,7 +1,7 @@
 // Copyright (c) 2024 Black Duck Software Inc. All rights reserved worldwide.
 
 import { AzureData } from "./azure";
-import { Environment } from "./blackduck";
+import { Environment } from "./blackduckSCA";
 import { AsyncMode } from "./async-mode";
 
 export interface Coverity {

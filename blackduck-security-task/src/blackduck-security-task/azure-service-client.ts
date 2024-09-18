@@ -48,7 +48,7 @@ export class AzureService {
         "base64"
       );
 
-      const httpClient = new HttpClient("blackduck-sca-azure-service");
+      const httpClient = new HttpClient("blackduck-azure-service");
       const httpResponse = await httpClient.get(endpoint, {
         Authorization: "Basic ".concat(encodedToken),
         Accept: "application/json",

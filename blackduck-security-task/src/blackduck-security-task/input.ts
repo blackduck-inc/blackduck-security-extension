@@ -124,7 +124,7 @@ export function showLogForDeprecatedInputs() {
       `[${deprecatedInputs.join(
         ","
       )}] is/are deprecated for YAML. Check documentation for new parameters: ${
-        constants.BLACKDUCK_SECURITY_SCAN_AZURE_DEVOPS_DOCS_URL
+        constants.BLACKDUCK_SCA_SECURITY_SCAN_AZURE_DEVOPS_DOCS_URL
       }`
     );
   }
@@ -473,7 +473,7 @@ export const BLACKDUCKSCA_PROJECT_DIRECTORY = getInput(
 export const BLACKDUCKSCA_WAITFORSCAN = getInput(
   constants.BLACKDUCKSCA_WAITFORSCAN_KEY,
   constants.BLACKDUCKSCA_WAITFORSCAN_KEY_CLASSIC_EDITOR,
-  null
+  constants.BLACKDUCK_WAITFORSCAN_KEY
 );
 
 export const BLACKDUCKSCA_REPORTS_SARIF_SEVERITIES = getDelimitedInput(
