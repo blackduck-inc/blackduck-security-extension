@@ -25,13 +25,13 @@ jobs:
           node-version: 20.x
 
       - name: Install dependencies
-        run: cd synopsys-task && npm ci
+        run: cd blackduck-security-task && npm ci
 
       - name: Unit Test Cases
         id: unit-test-cases
         shell: bash
         run: |
-          cd synopsys-task && npm run test
+          cd blackduck-security-task && npm run test
           coverageFile="coverage/index.html"
           
           ### fetching line coverage from coverage/index.html file
