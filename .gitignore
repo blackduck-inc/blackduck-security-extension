@@ -11,6 +11,6 @@
 /blackduck-security-task/.nyc_output/
 /blackduck-security-task/coverage//
 .DS_Store
-*.synopsys-extension-*.vsix
-/synopsys-task/coverage/
-/synopsys-task/test/unit/synopsys-task/synopsys-bridge.zip
+*.blackduck-security-scan-*.vsix
+/blackduck-security-task/coverage/
+/blackduck-security-task/test/unit/blackduck-security-task/bridge-cli.zip

@@ -39,7 +39,7 @@
 .unit_test_and_coverage:
   image: gcr.io/snps-polaris-ops-prod/ember_cli:3.28.5-node_16.14
   script:
-    - cd blackduck-task
+    - cd blackduck-security-task
     - npm ci
     - npm test
   coverage: /All files[^|]*\|[^|]*\s+([\d\.]+)/
