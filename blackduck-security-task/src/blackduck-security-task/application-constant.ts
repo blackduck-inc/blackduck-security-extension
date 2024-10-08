@@ -38,9 +38,6 @@ export const POLARIS_ASSESSMENT_TYPES_KEY = "polaris_assessment_types";
 export const POLARIS_ASSESSMENT_TYPES_KEY_CLASSIC_EDITOR =
   "polarisAssessmentTypes";
 
-export const POLARIS_TRIAGE_KEY = "polaris_triage";
-export const POLARIS_TRIAGE_KEY_CLASSIC_EDITOR = "polarisTriage";
-
 export const POLARIS_BRANCH_NAME_KEY = "polaris_branch_name";
 export const POLARIS_BRANCH_NAME_KEY_CLASSIC_EDITOR = "polarisBranchName";
 
