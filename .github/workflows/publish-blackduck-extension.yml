@@ -1,0 +1,67 @@
+name: publish-blackduck-extension
+
+on:
+  workflow_dispatch:
+    inputs:
+      isPublish:
+        description: 'DO YOU WANT TO PUBLISH BLACK DUCK EXTENSION TO MARKETPLACE'
+        required: true
+        default: false
+        type: boolean
+
+jobs:
+  publish-blackduck-extension:
+    if: ${{ github.event.inputs.isPublish == 'true' }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set Node.js 20.x
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20.x
+
+      - name: Compare the expected and actual dist/ directories
+        run: |
+          cd blackduck-security-task
+          if [ "$(git diff --ignore-space-at-eol dist/ | wc -l)" -gt "0" ]; then
+            echo "Detected uncommitted changes after build.  See status below:"
+            git diff
+            exit 1
+          fi
+        id: diff
+
+      - name: publish-Extension
+        id: publish-extension
+        env:
+          PROD_PUBLISHER_NAME: ${{ secrets.PROD_PUBLISHER_NAME }}
+          PROD_ORGANIZATION_NAME: ${{ secrets.PROD_ORG_NAME }}
+          PROD_USER_TOKEN: ${{ secrets.PROD_USER_TOKEN }} #personal_access_token of azure devops account
+        run: |
+          extension_name=$(jq -r '.name' < vss-extension.json) 
+          echo "EXTENSION_NAME=$extension_name" >> $GITHUB_ENV
+          echo "EXTENSION NAME: "$extension_name
+          extension_version=$(jq -r '.version' < vss-extension.json) 
+          echo "EXTENSION_VERSION=$extension_version" >> $GITHUB_ENV
+          echo "EXTENSION VERSION: " $extension_version
+          echo "Installing tfx-cli..."
+          npm i -g tfx-cli
+          echo "Creating extension $extension_name with version $extension_version"
+          npx tfx-cli extension create --manifest-globs vss-extension.json
+          echo "Extension $extension_name created successfully!"
+          echo "Publishing extension $extension_name with version $extension_version"
+          tfx extension publish --publisher ${PROD_PUBLISHER_NAME}  --manifest-globs vss-extension.json  --token ${PROD_USER_TOKEN} | tee tfx_output.log
+          publish_exit_code=${PIPESTATUS[0]}
+          if [ $publish_exit_code -eq 0 ]; then
+             echo "Extension $extension_name with version $extension_version published successfully!"
+          else
+            echo "Failed to publish the extension $extension_name with version $extension_version."
+            exit 1
+          fi
+
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v4
+        if: ${{ steps.publish-extension.conclusion == 'success' }}
+        with:
+          name: ${{ env.EXTENSION_NAME }}-${{ env.EXTENSION_VERSION }}.vsix
+          path: "*.vsix"

@@ -1,0 +1,75 @@
+name: create-tag
+
+on:
+  workflow_dispatch:
+    inputs:
+      TAG:
+        description: 'TAG'
+        required: true
+        default: ""
+        type: string
+      TAG_BODY:
+        description: 'TAG DESCRIPTION'
+        required: false
+        default: ""
+        type: string
+      IS_DRAFT:
+        description: 'CREATE AS DRAFT'
+        required: false
+        default: false
+        type: boolean
+      IS_PRERELEASE:
+        description: 'PRERELEASE TAG'
+        required: true
+        default: true
+        type: boolean
+jobs:
+  create-tag:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set Node.js 20.x
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20.x
+
+      - name: Install dependencies
+        run: cd blackduck-security-task && npm ci
+
+      - name: Rebuild the dist/ directory
+        run: cd blackduck-security-task && npm run build && npm run package
+
+      - name: Compare the expected and actual dist/ directories
+        run: |
+          cd blackduck-security-task
+          if [ "$(git diff --ignore-space-at-eol dist/ | wc -l)" -gt "0" ]; then
+            echo "Detected uncommitted changes after build.  See status below:"
+            git diff
+            exit 1
+          fi
+        id: diff
+
+      - name: replace \n
+        id: process_body
+        run: |
+          tag_body="${{ github.event.inputs.TAG_BODY }}"
+          echo "${tag_body}">>processed_body.txt
+          sed -i 's/\\n/\n/g' processed_body.txt
+          cat processed_body.txt
+          processed_body=$(cat processed_body.txt | tr '\n' '\n')
+          echo "PROCESSED_BODY<<EOF">>$GITHUB_ENV
+          echo "$processed_body">>$GITHUB_ENV
+          echo "EOF">>$GITHUB_ENV
+
+      - name: Create tag
+        id: create_tag
+        uses: actions/create-release@latest
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
+        with:
+          tag_name: ${{ github.event.inputs.TAG }}
+          release_name: "BLACK DUCK EXTENSION ${{ github.event.inputs.TAG }}"
+          body: ${{ env.PROCESSED_BODY }}
+          draft: ${{ github.event.inputs.IS_DRAFT }}
+          prerelease: ${{ github.event.inputs.IS_PRERELEASE }}
