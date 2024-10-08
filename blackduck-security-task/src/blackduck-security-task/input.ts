@@ -211,11 +211,6 @@ export const POLARIS_ASSESSMENT_TYPES = getDelimitedInput(
   constants.POLARIS_ASSESSMENT_TYPES_KEY_CLASSIC_EDITOR,
   null
 );
-export const POLARIS_TRIAGE = getInput(
-  constants.POLARIS_TRIAGE_KEY,
-  constants.POLARIS_TRIAGE_KEY_CLASSIC_EDITOR,
-  null
-);
 export const POLARIS_BRANCH_NAME = getInput(
   constants.POLARIS_BRANCH_NAME_KEY,
   constants.POLARIS_BRANCH_NAME_KEY_CLASSIC_EDITOR,

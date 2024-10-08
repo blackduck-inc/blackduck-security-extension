@@ -125,10 +125,6 @@ export class BridgeToolsParameter {
       polData.data.polaris.branch.name = inputs.POLARIS_BRANCH_NAME;
     }
 
-    if (inputs.POLARIS_TRIAGE) {
-      polData.data.polaris.triage = inputs.POLARIS_TRIAGE;
-    }
-
     if (inputs.POLARIS_TEST_SCA_TYPE) {
       polData.data.polaris.test = {
         sca: {
