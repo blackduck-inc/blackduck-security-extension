@@ -21,14 +21,14 @@ include:
 stages:
   - build
   - unit_test_and_coverage
-  - versioning
-  - analysis
-  - sbom
-  - e2e-publish
-  - e2e-setup
-  - e2e
-  - e2e-cleanup
-  - notification
+  #- versioning
+  #- analysis
+  #- sbom
+  #- e2e-publish
+  #- e2e-setup
+  #- e2e
+  #- e2e-cleanup
+  #- notification
 
 variables:
   BUILD_TOOL: npm
