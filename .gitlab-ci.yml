@@ -98,6 +98,7 @@ e2e-publish:
   tags:
     - linux
   extends: .extension-publish
+  allow_failure: true
 
 e2e-setup:
   stage: e2e-setup
