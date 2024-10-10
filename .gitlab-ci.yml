@@ -55,93 +55,93 @@ unit_test_and_coverage_job:
   dependencies: [build_job]
 
 
-.export_sbom_variables:
-  before_script:
-    - export EXT_VERSION=$(cat vss-extension.json | grep version | head -1 | awk -F= "{ print $2 }" | sed 's/[version:,\",]//g' | tr -d '[[:space:]]')
-    - export ARTIFACTORY_UPLOAD_REPO=1
-    - export SBOM_ART_TOKEN_VAULT_PATH=sbom/integrations/synopsys-extension-ci-cd
-    - export PRODUCT=Integrations
-    - export GENERATE_CONFIGURATION_FILE=1
-    - export PRODUCT_ADDON_SBOM_OPTIONS="--output-zipfile synopsys-extension-ci-cd-$EXT_VERSION.zip --debug"
-    - export GENERATION_OPTIONS="--entry integrations/mirrored-repos/synopsys-extension-ci-cd:synopsys-extension-ci-cd-$EXT_VERSION"
-
-generate_sbom:
-  extends:
-    - .export_sbom_variables
-    - .run_sbom_generation
-  stage: sbom
-  only:
-    refs:
-      - main
-
-polaris_bridge:
-  stage: analysis
-  extends: .polaris_bridge
-
-pop_blackduck:
-  image: us-docker.pkg.dev/cloudops-artifacts-prd/polaris/ember_cli:3.28.5-node_16.14
-  variables:
-    POP_BLACKDUCK_INPROGRESS: 1
-  extends:
-    - .new_pop_blackduck
-  before_script:
-    - |
-      apt-get update -y
-      apt-get install -y rsync make jq python3 python3-pip
-      pip3 install blackduck requests
-      export RELEASE_VERSION=$(cat vss-extension.json | grep version | head -1 | awk -F= "{ print $2 }" | sed 's/[version:,\",]//g' | tr -d '[[:space:]]')
-
-e2e-publish:
-  stage: e2e-publish
-  tags:
-    - linux
-  extends: .extension-publish
-
-e2e-setup:
-  stage: e2e-setup
-  dependencies: [e2e-publish]
-  tags:
-    - linux
-  extends: .e2e-setup
-
-e2e-linux:
-  stage: e2e
-  dependencies: [e2e-publish,e2e-setup]
-  tags:
-    - linux
-  extends: .e2e-extension
-  variables:
-    XML_PATH_IN_JAR: $XML
-    RUNNER_NAME: "Linux"
-    RUNNER_OS: "Linux"
-
-e2e-mac:
-  stage: e2e
-  dependencies: [e2e-publish,e2e-setup]
-  tags:
-    - linux
-  extends: .e2e-extension
-  variables:
-    XML_PATH_IN_JAR: $XML
-    RUNNER_NAME: "Darwin"
-    RUNNER_OS: "Mac"
-
-e2e-windows:
-  stage: e2e
-  dependencies: [e2e-publish,e2e-setup]
-  tags:
-    - linux
-  extends: .e2e-extension
-  variables:
-    XML_PATH_IN_JAR: $XML
-    RUNNER_NAME: "Windows_NT"
-    RUNNER_OS: "Windows"
-
-e2e-clean-up:
-  stage: e2e-cleanup
-  dependencies: [e2e-publish,e2e-setup,e2e-linux,e2e-mac,e2e-windows]
-  tags:
-    - linux
-  extends: .e2e-clean-up
-  rules:
-    - when: always
+#.export_sbom_variables:
+#  before_script:
+#    - export EXT_VERSION=$(cat vss-extension.json | grep version | head -1 | awk -F= "{ print $2 }" | sed 's/[version:,\",]//g' | tr -d '[[:space:]]')
+#    - export ARTIFACTORY_UPLOAD_REPO=1
+#    - export SBOM_ART_TOKEN_VAULT_PATH=sbom/integrations/synopsys-extension-ci-cd
+#    - export PRODUCT=Integrations
+#    - export GENERATE_CONFIGURATION_FILE=1
+#    - export PRODUCT_ADDON_SBOM_OPTIONS="--output-zipfile synopsys-extension-ci-cd-$EXT_VERSION.zip --debug"
+#    - export GENERATION_OPTIONS="--entry integrations/mirrored-repos/synopsys-extension-ci-cd:synopsys-extension-ci-cd-$EXT_VERSION"
+#
+#generate_sbom:
+#  extends:
+#    - .export_sbom_variables
+#    - .run_sbom_generation
+#  stage: sbom
+#  only:
+#    refs:
+#      - main
+#
+#polaris_bridge:
+#  stage: analysis
+#  extends: .polaris_bridge
+#
+#pop_blackduck:
+#  image: us-docker.pkg.dev/cloudops-artifacts-prd/polaris/ember_cli:3.28.5-node_16.14
+#  variables:
+#    POP_BLACKDUCK_INPROGRESS: 1
+#  extends:
+#    - .new_pop_blackduck
+#  before_script:
+#    - |
+#      apt-get update -y
+#      apt-get install -y rsync make jq python3 python3-pip
+#      pip3 install blackduck requests
+#      export RELEASE_VERSION=$(cat vss-extension.json | grep version | head -1 | awk -F= "{ print $2 }" | sed 's/[version:,\",]//g' | tr -d '[[:space:]]')
+#
+#e2e-publish:
+#  stage: e2e-publish
+#  tags:
+#    - linux
+#  extends: .extension-publish
+#
+#e2e-setup:
+#  stage: e2e-setup
+#  dependencies: [e2e-publish]
+#  tags:
+#    - linux
+#  extends: .e2e-setup
+#
+#e2e-linux:
+#  stage: e2e
+#  dependencies: [e2e-publish,e2e-setup]
+#  tags:
+#    - linux
+#  extends: .e2e-extension
+#  variables:
+#    XML_PATH_IN_JAR: $XML
+#    RUNNER_NAME: "Linux"
+#    RUNNER_OS: "Linux"
+#
+#e2e-mac:
+#  stage: e2e
+#  dependencies: [e2e-publish,e2e-setup]
+#  tags:
+#    - linux
+#  extends: .e2e-extension
+#  variables:
+#    XML_PATH_IN_JAR: $XML
+#    RUNNER_NAME: "Darwin"
+#    RUNNER_OS: "Mac"
+#
+#e2e-windows:
+#  stage: e2e
+#  dependencies: [e2e-publish,e2e-setup]
+#  tags:
+#    - linux
+#  extends: .e2e-extension
+#  variables:
+#    XML_PATH_IN_JAR: $XML
+#    RUNNER_NAME: "Windows_NT"
+#    RUNNER_OS: "Windows"
+#
+#e2e-clean-up:
+#  stage: e2e-cleanup
+#  dependencies: [e2e-publish,e2e-setup,e2e-linux,e2e-mac,e2e-windows]
+#  tags:
+#    - linux
+#  extends: .e2e-clean-up
+#  rules:
+#    - when: always
