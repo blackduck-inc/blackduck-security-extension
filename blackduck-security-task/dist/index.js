@@ -1484,24 +1484,16 @@ var __importStar = (this && this.__importStar) || function (mod) {
 };
 var _a, _b;
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.COVERITY_CLEAN_COMMAND = exports.COVERITY_BUILD_COMMAND = exports.COVERITY_PROJECT_DIRECTORY = exports.COVERITY_WAITFORSCAN = exports.COVERITY_VERSION = exports.COVERITY_AUTOMATION_PRCOMMENT = exports.COVERITY_LOCAL = exports.COVERITY_POLICY_VIEW = exports.COVERITY_EXECUTION_PATH = exports.COVERITY_INSTALL_DIRECTORY = exports.COVERITY_STREAM_NAME = exports.COVERITY_PROJECT_NAME = exports.COVERITY_USER_PASSWORD = exports.COVERITY_USER = exports.COVERITY_URL = exports.POLARIS_REPORTS_SARIF_ISSUE_TYPES = exports.POLARIS_REPORTS_SARIF_GROUP_SCA_ISSUES = exports.POLARIS_REPORTS_SARIF_SEVERITIES = exports.POLARIS_REPORTS_SARIF_FILE_PATH = exports.POLARIS_REPORTS_SARIF_CREATE = exports.POLARIS_PR_COMMENT_SEVERITIES = exports.POLARIS_PR_COMMENT_ENABLED = exports.PROJECT_SOURCE_EXCLUDES = exports.PROJECT_SOURCE_PRESERVE_SYM_LINKS = exports.PROJECT_SOURCE_ARCHIVE = exports.POLARIS_PROJECT_DIRECTORY = exports.POLARIS_ASSESSMENT_MODE = exports.POLARIS_WAITFORSCAN = exports.POLARIS_TEST_SCA_TYPE = exports.POLARIS_BRANCH_PARENT_NAME = exports.POLARIS_BRANCH_NAME = exports.POLARIS_ASSESSMENT_TYPES = exports.POLARIS_PROJECT_NAME = exports.POLARIS_APPLICATION_NAME = exports.POLARIS_ACCESS_TOKEN = exports.POLARIS_SERVER_URL = exports.SCAN_TYPE = exports.AZURE_TOKEN = exports.INCLUDE_DIAGNOSTICS = exports.BRIDGECLI_DOWNLOAD_VERSION = exports.BRIDGECLI_INSTALL_DIRECTORY_KEY = exports.ENABLE_NETWORK_AIRGAP = exports.BRIDGECLI_DOWNLOAD_URL = exports.showLogForDeprecatedInputs = exports.getDelimitedInput = exports.getPathInput = exports.getBoolInput = exports.getArbitraryInputs = exports.getInputForMultipleClassicEditor = exports.getInput = void 0;
-exports.MARK_BUILD_STATUS = exports.RETURN_STATUS = exports.SRM_PROJECT_DIRECTORY = exports.SRM_WAITFORSCAN = exports.SRM_BRANCH_PARENT = exports.SRM_BRANCH_NAME = exports.SRM_PROJECT_ID = exports.SRM_PROJECT_NAME = exports.SRM_ASSESSMENT_TYPES = exports.SRM_APIKEY = exports.SRM_URL = exports.DETECT_ARGS = exports.DETECT_CONFIG_PATH = exports.DETECT_SEARCH_DEPTH = exports.BLACKDUCKSCA_REPORTS_SARIF_GROUP_SCA_ISSUES = exports.BLACKDUCKSCA_REPORTS_SARIF_SEVERITIES = exports.BLACKDUCKSCA_WAITFORSCAN = exports.BLACKDUCKSCA_PROJECT_DIRECTORY = exports.BLACKDUCKSCA_REPORTS_SARIF_FILE_PATH = exports.BLACKDUCKSCA_REPORTS_SARIF_CREATE = exports.BLACKDUCKSCA_FIXPR_UPGRADE_GUIDANCE = exports.BLACKDUCKSCA_FIXPR_FILTER_SEVERITIES = exports.BLACKDUCKSCA_FIXPR_CREATE_SINGLE_PR = exports.BLACKDUCKSCA_FIXPR_MAXCOUNT = exports.BLACKDUCKSCA_PRCOMMENT_ENABLED = exports.BLACKDUCKSCA_FIXPR_ENABLED = exports.BLACKDUCKSCA_SCAN_FAILURE_SEVERITIES = exports.DETECT_SCAN_FULL = exports.DETECT_EXECUTION_PATH = exports.DETECT_INSTALL_DIRECTORY = exports.BLACKDUCKSCA_API_TOKEN = exports.BLACKDUCKSCA_URL = exports.COVERITY_ARGS = exports.COVERITY_CONFIG_PATH = void 0;
+exports.COVERITY_BUILD_COMMAND = exports.COVERITY_PROJECT_DIRECTORY = exports.COVERITY_WAITFORSCAN = exports.COVERITY_VERSION = exports.COVERITY_AUTOMATION_PRCOMMENT = exports.COVERITY_LOCAL = exports.COVERITY_POLICY_VIEW = exports.COVERITY_EXECUTION_PATH = exports.COVERITY_INSTALL_DIRECTORY = exports.COVERITY_STREAM_NAME = exports.COVERITY_PROJECT_NAME = exports.COVERITY_USER_PASSWORD = exports.COVERITY_USER = exports.COVERITY_URL = exports.POLARIS_REPORTS_SARIF_ISSUE_TYPES = exports.POLARIS_REPORTS_SARIF_GROUP_SCA_ISSUES = exports.POLARIS_REPORTS_SARIF_SEVERITIES = exports.POLARIS_REPORTS_SARIF_FILE_PATH = exports.POLARIS_REPORTS_SARIF_CREATE = exports.POLARIS_PR_COMMENT_SEVERITIES = exports.POLARIS_PR_COMMENT_ENABLED = exports.PROJECT_SOURCE_EXCLUDES = exports.PROJECT_SOURCE_PRESERVE_SYM_LINKS = exports.PROJECT_SOURCE_ARCHIVE = exports.POLARIS_PROJECT_DIRECTORY = exports.POLARIS_ASSESSMENT_MODE = exports.POLARIS_WAITFORSCAN = exports.POLARIS_TEST_SCA_TYPE = exports.POLARIS_BRANCH_PARENT_NAME = exports.POLARIS_BRANCH_NAME = exports.POLARIS_ASSESSMENT_TYPES = exports.POLARIS_PROJECT_NAME = exports.POLARIS_APPLICATION_NAME = exports.POLARIS_ACCESS_TOKEN = exports.POLARIS_SERVER_URL = exports.SCAN_TYPE = exports.AZURE_TOKEN = exports.INCLUDE_DIAGNOSTICS = exports.BRIDGECLI_DOWNLOAD_VERSION = exports.BRIDGECLI_INSTALL_DIRECTORY_KEY = exports.ENABLE_NETWORK_AIRGAP = exports.BRIDGECLI_DOWNLOAD_URL = exports.showLogForDeprecatedInputs = exports.getDelimitedInput = exports.getPathInput = exports.getBoolInput = exports.getInputForYMLAndDeprecatedKey = exports.getArbitraryInputs = exports.getInputForMultipleClassicEditor = exports.getInput = void 0;
+exports.MARK_BUILD_STATUS = exports.RETURN_STATUS = exports.SRM_PROJECT_DIRECTORY = exports.SRM_WAITFORSCAN = exports.SRM_BRANCH_PARENT = exports.SRM_BRANCH_NAME = exports.SRM_PROJECT_ID = exports.SRM_PROJECT_NAME = exports.SRM_ASSESSMENT_TYPES = exports.SRM_APIKEY = exports.SRM_URL = exports.DETECT_ARGS = exports.DETECT_CONFIG_PATH = exports.DETECT_SEARCH_DEPTH = exports.BLACKDUCKSCA_REPORTS_SARIF_GROUP_SCA_ISSUES = exports.BLACKDUCKSCA_REPORTS_SARIF_SEVERITIES = exports.BLACKDUCKSCA_WAITFORSCAN = exports.BLACKDUCKSCA_PROJECT_DIRECTORY = exports.BLACKDUCKSCA_REPORTS_SARIF_FILE_PATH = exports.BLACKDUCKSCA_REPORTS_SARIF_CREATE = exports.BLACKDUCKSCA_FIXPR_UPGRADE_GUIDANCE = exports.BLACKDUCKSCA_FIXPR_FILTER_SEVERITIES = exports.BLACKDUCKSCA_FIXPR_CREATE_SINGLE_PR = exports.BLACKDUCKSCA_FIXPR_MAXCOUNT = exports.BLACKDUCKSCA_PRCOMMENT_ENABLED = exports.BLACKDUCKSCA_FIXPR_ENABLED = exports.BLACKDUCKSCA_SCAN_FAILURE_SEVERITIES = exports.DETECT_SCAN_FULL = exports.DETECT_EXECUTION_PATH = exports.DETECT_INSTALL_DIRECTORY = exports.BLACKDUCKSCA_API_TOKEN = exports.BLACKDUCKSCA_URL = exports.COVERITY_ARGS = exports.COVERITY_CONFIG_PATH = exports.COVERITY_CLEAN_COMMAND = void 0;
 const taskLib = __importStar(__nccwpck_require__(347));
 const constants = __importStar(__nccwpck_require__(8673));
 const polaris_1 = __nccwpck_require__(8173);
 const deprecatedInputs = [];
 function getInput(newKey, classicEditorKey, deprecatedKey) {
-    const newInput = taskLib.getInput(newKey);
-    if (newInput) {
-        return newInput === null || newInput === void 0 ? void 0 : newInput.trim();
-    }
-    let deprecatedInput;
-    if (deprecatedKey) {
-        deprecatedInput = taskLib.getInput(deprecatedKey);
-        if (deprecatedInput) {
-            deprecatedInputs.push(deprecatedKey);
-            return deprecatedInput === null || deprecatedInput === void 0 ? void 0 : deprecatedInput.trim();
-        }
+    const key = getInputForYMLAndDeprecatedKey(newKey, deprecatedKey);
+    if (key) {
+        return key;
     }
     const classEditorInput = taskLib.getInput(classicEditorKey);
     if (classEditorInput) {
@@ -1511,17 +1503,9 @@ function getInput(newKey, classicEditorKey, deprecatedKey) {
 }
 exports.getInput = getInput;
 function getInputForMultipleClassicEditor(newKey, polarisClassicEditorKey, blackduckSCAClassicEditorKey, coverityClassicEditorKey, srmClassicEditorKey, deprecatedKey) {
-    const newInput = taskLib.getInput(newKey);
-    if (newInput) {
-        return newInput === null || newInput === void 0 ? void 0 : newInput.trim();
-    }
-    let deprecatedInput;
-    if (deprecatedKey) {
-        deprecatedInput = taskLib.getInput(deprecatedKey);
-        if (deprecatedInput) {
-            deprecatedInputs.push(deprecatedKey);
-            return deprecatedInput === null || deprecatedInput === void 0 ? void 0 : deprecatedInput.trim();
-        }
+    const key = getInputForYMLAndDeprecatedKey(newKey, deprecatedKey);
+    if (key) {
+        return key;
     }
     const scanType = taskLib.getInput(constants.SCAN_TYPE_KEY);
     let classEditorInput;
@@ -1558,9 +1542,25 @@ function getArbitraryInputs(yamlKey, classicEditorKey, classicEditorKeyForPolari
         (scanType == "coverity" || scanType == "blackducksca")) {
         return taskLib.getInput(classicEditorKey);
     }
-    return getInput(yamlKey, classicEditorKey, deprecatedKey);
+    return getInputForYMLAndDeprecatedKey(yamlKey, deprecatedKey);
 }
 exports.getArbitraryInputs = getArbitraryInputs;
+function getInputForYMLAndDeprecatedKey(newKey, deprecatedKey) {
+    const newInput = taskLib.getInput(newKey);
+    if (newInput) {
+        return newInput === null || newInput === void 0 ? void 0 : newInput.trim();
+    }
+    let deprecatedInput;
+    if (deprecatedKey) {
+        deprecatedInput = taskLib.getInput(deprecatedKey);
+        if (deprecatedInput) {
+            deprecatedInputs.push(deprecatedKey);
+            return deprecatedInput === null || deprecatedInput === void 0 ? void 0 : deprecatedInput.trim();
+        }
+    }
+    return "";
+}
+exports.getInputForYMLAndDeprecatedKey = getInputForYMLAndDeprecatedKey;
 function getBoolInput(newKey, classicEditorKey, deprecatedKey) {
     let deprecatedInput;
     if (deprecatedKey) {
