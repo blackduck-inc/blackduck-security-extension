@@ -11,8 +11,8 @@ export function getInput(
   classicEditorKey: string,
   deprecatedKey: string | null
 ) {
-  const key = getInputForYMLAndDeprecatedKey(newKey,deprecatedKey);
-  if(key){
+  const key = getInputForYMLAndDeprecatedKey(newKey, deprecatedKey);
+  if (key) {
     return key;
   }
   const classEditorInput = taskLib.getInput(classicEditorKey);
@@ -31,8 +31,8 @@ export function getInputForMultipleClassicEditor(
   srmClassicEditorKey: string | null,
   deprecatedKey: string | null
 ) {
-  const key = getInputForYMLAndDeprecatedKey(newKey,deprecatedKey);
-  if(key){
+  const key = getInputForYMLAndDeprecatedKey(newKey, deprecatedKey);
+  if (key) {
     return key;
   }
 
@@ -81,7 +81,10 @@ export function getArbitraryInputs(
   }
   return getInputForYMLAndDeprecatedKey(yamlKey, deprecatedKey);
 }
-export function getInputForYMLAndDeprecatedKey(newKey: string, deprecatedKey: string| null){
+export function getInputForYMLAndDeprecatedKey(
+  newKey: string,
+  deprecatedKey: string | null
+) {
   const newInput = taskLib.getInput(newKey);
   if (newInput) {
     return newInput?.trim();
