@@ -12,9 +12,6 @@ include:
   - project: altair/altair-build-common
     ref: master
     file: gitlab/ci/altair_common.yml
-  - project: qa-automation/test-integrations
-    ref: main
-    file: _ci/e2e_azure.yml
 
 
 # List of job stages in their order of execution.
@@ -24,11 +21,6 @@ stages:
   - versioning
   - analysis
   - sbom
-  - e2e-publish
-  - e2e-setup
-  - e2e
-  - e2e-cleanup
-  - notification
 
 variables:
   BUILD_TOOL: npm
@@ -92,60 +84,3 @@ pop_blackduck:
       apt-get install -y rsync make jq python3 python3-pip
       pip3 install blackduck requests
       export RELEASE_VERSION=$(cat vss-extension.json | grep version | head -1 | awk -F= "{ print $2 }" | sed 's/[version:,\",]//g' | tr -d '[[:space:]]')
-
-e2e-publish:
-  stage: e2e-publish
-  tags:
-    - linux
-  extends: .extension-publish
-  allow_failure: true
-
-e2e-setup:
-  stage: e2e-setup
-  dependencies: [e2e-publish]
-  tags:
-    - linux
-  extends: .e2e-setup
-  allow_failure: true
-
-e2e-linux:
-  stage: e2e
-  dependencies: [e2e-publish,e2e-setup]
-  tags:
-    - linux
-  extends: .e2e-extension
-  variables:
-    XML_PATH_IN_JAR: $XML
-    RUNNER_NAME: "Linux"
-    RUNNER_OS: "Linux"
-
-e2e-mac:
-  stage: e2e
-  dependencies: [e2e-publish,e2e-setup]
-  tags:
-    - linux
-  extends: .e2e-extension
-  variables:
-    XML_PATH_IN_JAR: $XML
-    RUNNER_NAME: "Darwin"
-    RUNNER_OS: "Mac"
-
-e2e-windows:
-  stage: e2e
-  dependencies: [e2e-publish,e2e-setup]
-  tags:
-    - linux
-  extends: .e2e-extension
-  variables:
-    XML_PATH_IN_JAR: $XML
-    RUNNER_NAME: "Windows_NT"
-    RUNNER_OS: "Windows"
-
-e2e-clean-up:
-  stage: e2e-cleanup
-  dependencies: [e2e-publish,e2e-setup,e2e-linux,e2e-mac,e2e-windows]
-  tags:
-    - linux
-  extends: .e2e-clean-up
-  rules:
-    - when: always
