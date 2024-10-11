@@ -28,7 +28,7 @@
   },
   "files": [
     {
-      "path": "synopsys-task"
+      "path": "blackduck-security-task"
     }
   ],
   "content": {
@@ -38,14 +38,15 @@
   },
   "contributions": [
     {
-      "id": "BlackDuckSecurityScan",
+      "id": "blackduck-security-task",
       "type": "ms.vss-distributed-task.task",
       "targets": [
         "ms.vss-distributed-task.tasks"
       ],
       "properties": {
-        "name": "BlackDuckSecurityScan"
+        "name": "blackduck-security-task"
       }
     }
   ]
 }
+

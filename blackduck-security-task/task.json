@@ -38,10 +38,10 @@
       "visibleRule": "polarisWaitForScan = true"
     },
     {
-      "name": "blackduckScanOptions",
+      "name": "blackduckScaScanOptions",
       "displayName": "Scan Options",
       "isExpanded": false,
-      "visibleRule": "scanType = blackduck"
+      "visibleRule": "scanType = blackducksca"
     },
     {
       "name": "blackduckScaPREnable",
@@ -62,10 +62,10 @@
       "visibleRule": "blackduckScaWaitForScan = true"
     },
     {
-      "name": "blackduckToolOptions",
+      "name": "blackduckScaToolOptions",
       "displayName": "Detect (SCA) Tool Options",
       "isExpanded": false,
-      "visibleRule": "scanType = blackduck"
+      "visibleRule": "scanType = blackducksca"
     },
     {
       "name": "coverityScanOptions",
@@ -92,7 +92,7 @@
       "visibleRule": "scanType = polaris"
     },
     {
-      "name": "blackduckToolOptionsForPolaris",
+      "name": "blackduckScaToolOptionsForPolaris",
       "displayName": "Detect (SCA) Tool Options",
       "isExpanded": false,
       "visibleRule": "scanType = polaris"
@@ -111,7 +111,7 @@
       "visibleRule": "scanType = srm"
     },
     {
-      "name": "blackduckToolOptionsForSrm",
+      "name": "blackduckScaToolOptionsForSrm",
       "displayName": "Detect (SCA) Tool Options",
       "isExpanded": false,
       "visibleRule": "scanType = srm"
@@ -156,7 +156,7 @@
       "label": "Network Airgap",
       "defaultValue": false,
       "required": false,
-      "helpMarkDown": "If provided, Synopsys Task will be using local network to download and execute synopsys bridge.",
+      "helpMarkDown": "If provided, Black Duck Task will be using local network to download and execute bridge-CLI.",
       "groupName": "bridgecliOptions"
     },
     {
@@ -165,11 +165,11 @@
       "label": "Product",
       "required": true,
       "helpMarkDown": "Select Required Product",
-      "defaultValue": "Select",
+      "defaultValue": "",
       "options": {
-        "Select": "Select",
+        "": "Select",
         "polaris": "Polaris",
-        "blackduck": "Black Duck SCA",
+        "blackducksca": "Black Duck SCA",
         "coverity": "Coverity Platform",
         "srm": "Software Risk Manager (SRM)"
       },
@@ -229,11 +229,11 @@
       "name": "polarisMarkBuildStatus",
       "type": "pickList",
       "label": "Mark Build Status",
-      "defaultValue": "Select",
+      "defaultValue": "",
       "required": false,
       "helpMarkDown": "Specify the build status to use if policy violating issues are found. Default value: Failed. Supported values are: Failed, SucceededWithIssues and Succeeded.",
       "options": {
-        "Select": "Select",
+        "": "Select",
         "Failed": "Failed",
         "SucceededWithIssues": "SucceededWithIssues",
         "Succeeded": "Succeeded"
@@ -242,7 +242,7 @@
       "groupName": "scanConfiguration"
     },
     {
-      "name": "poalrisAzureToken",
+      "name": "polarisAzureToken",
       "type": "string",
       "label": "Azure Token",
       "defaultValue": "",
@@ -305,12 +305,12 @@
       "name": "polarisAssessmentMode",
       "type": "pickList",
       "label": "Assessment Mode",
-      "defaultValue": "Select",
+      "defaultValue": "",
       "required": false,
       "helpMarkDown": "The test mode type of this scan",
       "visibleRule": "scanType = polaris",
       "options": {
-        "Select": "Select",
+        "": "Select",
         "CI": "CI",
         "SOURCEUPLOAD": "SOURCE_UPLOAD"
       },
@@ -470,11 +470,11 @@
       "name": "coverityMarkBuildStatus",
       "type": "pickList",
       "label": "Mark Build Status",
-      "defaultValue": "Select",
+      "defaultValue": "",
       "required": false,
       "helpMarkDown": "Specify the build status to use if policy violating issues are found. Default value: Failed. Supported values are: Failed, SucceededWithIssues and Succeeded.",
       "options": {
-        "Select": "Select",
+        "": "Select",
         "Failed": "Failed",
         "SucceededWithIssues": "SucceededWithIssues",
         "Succeeded": "Succeeded"
@@ -719,7 +719,7 @@
       "defaultValue": "",
       "required": true,
       "helpMarkDown": "URL for Black Duck SCA server.",
-      "visibleRule": "scanType = blackduck",
+      "visibleRule": "scanType = blackducksca",
       "groupName": "scanConfiguration"
     },
     {
@@ -729,53 +729,53 @@
       "defaultValue": "",
       "required": true,
       "helpMarkDown": "API token for Black Duck SCA.",
-      "visibleRule": "scanType = blackduck",
+      "visibleRule": "scanType = blackducksca",
       "groupName": "scanConfiguration"
     },
     {
-      "name": "blackduckProjectDirectory",
+      "name": "blackduckScaProjectDirectory",
       "type": "string",
       "label": "Project Directory",
       "defaultValue": "",
       "required": false,
       "helpMarkDown": "The project source directory. Defaults to repository root directory. Set this to specify a custom folder that is other than repository root",
-      "visibleRule": "scanType = blackduck",
+      "visibleRule": "scanType = blackducksca",
       "groupName": "scanConfiguration"
     },
     {
       "name": "blackduckScaMarkBuildStatus",
       "type": "pickList",
       "label": "Mark Build Status",
-      "defaultValue": "Select",
+      "defaultValue": "",
       "required": false,
       "helpMarkDown": "Specify the build status to use if policy violating issues are found. Default value: Failed. Supported values are: Failed, SucceededWithIssues and Succeeded.",
       "options": {
-        "Select": "Select",
+        "": "Select",
         "Failed": "Failed",
         "SucceededWithIssues": "SucceededWithIssues",
         "Succeeded": "Succeeded"
       },
-      "visibleRule": "scanType = blackduck",
+      "visibleRule": "scanType = blackducksca",
       "groupName": "scanConfiguration"
     },
     {
-      "name": "blackduckAzureToken",
+      "name": "blackduckScaAzureToken",
       "type": "string",
       "label": "Azure Token",
       "defaultValue": "",
       "required": false,
       "helpMarkDown": "PAT or System.AccessToken has to be passed with legitimate access when BlackduckSCA PR comment, BlackduckSCA FIX PR and BlackduckSCA Create SARIF is enabled.",
-      "visibleRule": "scanType = blackduck",
+      "visibleRule": "scanType = blackducksca",
       "groupName": "scanConfiguration"
     },
     {
-      "name": "blackduckIncludeDiagnostics",
+      "name": "blackduckScaIncludeDiagnostics",
       "type": "boolean",
       "label": "Include Diagnostics",
       "defaultValue": false,
       "required": false,
       "helpMarkDown": "All diagnostics files will be available to download when 'true' passed.",
-      "visibleRule": "scanType = blackduck",
+      "visibleRule": "scanType = blackducksca",
       "groupName": "scanConfiguration"
     },
     {
@@ -785,7 +785,7 @@
       "defaultValue": true,
       "required": false,
       "helpMarkDown": "Specifies if the workflow should wait for the analysis to complete. Default value: true. If set to false, post merge workflows like PR comment, Fix PR, SARIF etc will not be applicable.",
-      "visibleRule": "scanType = blackduck",
+      "visibleRule": "scanType = blackducksca",
       "groupName": "scanConfiguration"
     },
     {
@@ -805,7 +805,7 @@
       "defaultValue": false,
       "required": false,
       "helpMarkDown": "Flag to enable/disable the automatic fix pull request creations for Black Duck SCA.\nDefault value is false",
-      "visibleRule": "scanType = blackduck",
+      "visibleRule": "scanType = blackducksca",
       "groupName": "blackduckScaFixPR"
     },
     {
@@ -824,7 +824,7 @@
       "label": "Configure Short Term or Long Term Guidance",
       "defaultValue": "",
       "required": false,
-      "helpMarkDown": "Blackduck Hub upgrade guidance Values.Default is \"SHORT_TERM, LONG_TERM\"",
+      "helpMarkDown": "Blackduck SCA upgrade guidance Values.Default is \"SHORT_TERM, LONG_TERM\"",
       "visibleRule": "blackduckScaFixPrEnabled = true",
       "groupName": "blackduckScaFixPR"
     },
@@ -845,7 +845,7 @@
       "defaultValue": false,
       "required": false,
       "helpMarkDown": "Enable/disable SARIF report generation",
-      "visibleRule": "scanType = blackduck",
+      "visibleRule": "scanType = blackducksca",
       "groupName": "blackduckScaSarifReport"
     },
     {
@@ -885,8 +885,8 @@
       "defaultValue": "",
       "required": false,
       "helpMarkDown": "Specifies whether full scan is required or not.",
-      "visibleRule": "scanType = blackduck",
-      "groupName": "blackduckScanOptions"
+      "visibleRule": "scanType = blackducksca",
+      "groupName": "blackduckScaScanOptions"
     },
     {
       "name": "blackduckScaScanFailureSeverities",
@@ -895,8 +895,8 @@
       "defaultValue": "",
       "required": false,
       "helpMarkDown": "Build will be broken, if specified severity threshold is met. <a href='https://community.synopsys.com/s/article/Black-Duck-Configuring-Policy-Management' target='_blank'>Click Here</a> for more info.",
-      "visibleRule": "scanType = blackduck",
-      "groupName": "blackduckScanOptions"
+      "visibleRule": "scanType = blackducksca",
+      "groupName": "blackduckScaScanOptions"
     },
     {
       "name": "detectSearchDepth",
@@ -905,8 +905,8 @@
       "defaultValue": "",
       "required": false,
       "helpMarkDown": "Number indicating the search depth in the source directory",
-      "visibleRule": "scanType = blackduck",
-      "groupName": "blackduckToolOptions"
+      "visibleRule": "scanType = blackducksca",
+      "groupName": "blackduckScaToolOptions"
     },
     {
       "name": "detectConfigPath",
@@ -915,8 +915,8 @@
       "defaultValue": "",
       "required": false,
       "helpMarkDown": "Detect config file path (.properties/.yml).",
-      "visibleRule": "scanType = blackduck",
-      "groupName": "blackduckToolOptions"
+      "visibleRule": "scanType = blackducksca",
+      "groupName": "blackduckScaToolOptions"
     },
     {
       "name": "detectArgs",
@@ -925,8 +925,8 @@
       "defaultValue": "",
       "required": false,
       "helpMarkDown": "Additional Detect Arguments separated by space.",
-      "visibleRule": "scanType = blackduck",
-      "groupName": "blackduckToolOptions"
+      "visibleRule": "scanType = blackducksca",
+      "groupName": "blackduckScaToolOptions"
     },
     {
       "name": "detectInstallDirectory",
@@ -935,8 +935,8 @@
       "defaultValue": "",
       "required": false,
       "helpMarkDown": "Directory path to install Detect.",
-      "visibleRule": "scanType = blackduck",
-      "groupName": "blackduckToolOptions"
+      "visibleRule": "scanType = blackducksca",
+      "groupName": "blackduckScaToolOptions"
     },
     {
       "name": "blackduckScaSearchDepthForPolaris",
@@ -946,7 +946,7 @@
       "required": false,
       "helpMarkDown": "Number indicating the search depth in the source directory.",
       "visibleRule": "scanType = polaris",
-      "groupName": "blackduckToolOptionsForPolaris"
+      "groupName": "blackduckScaToolOptionsForPolaris"
     },
     {
       "name": "blackduckScaConfigPathForPolaris",
@@ -956,7 +956,7 @@
       "required": false,
       "helpMarkDown": "Black Duck SCA config file path (.properties/.yml).",
       "visibleRule": "scanType = polaris",
-      "groupName": "blackduckToolOptionsForPolaris"
+      "groupName": "blackduckScaToolOptionsForPolaris"
     },
     {
       "name": "blackduckScaArgsForPolaris",
@@ -966,7 +966,7 @@
       "required": false,
       "helpMarkDown": "Additional Black Duck SCA Arguments separated by space.",
       "visibleRule": "scanType = polaris",
-      "groupName": "blackduckToolOptionsForPolaris"
+      "groupName": "blackduckScaToolOptionsForPolaris"
     },
     {
       "name": "blackduckScaSearchDepthForSrm",
@@ -976,7 +976,7 @@
       "required": false,
       "helpMarkDown": "Number indicating the search depth in the source directory.",
       "visibleRule": "scanType = srm",
-      "groupName": "blackduckToolOptionsForSrm"
+      "groupName": "blackduckScaToolOptionsForSrm"
     },
     {
       "name": "blackduckScaConfigPathForSrm",
@@ -986,7 +986,7 @@
       "required": false,
       "helpMarkDown": "Black Duck SCA config file path (.properties/.yml).",
       "visibleRule": "scanType = srm",
-      "groupName": "blackduckToolOptionsForSrm"
+      "groupName": "blackduckScaToolOptionsForSrm"
     },
     {
       "name": "blackduckScaArgsForSrm",
@@ -996,7 +996,7 @@
       "required": false,
       "helpMarkDown": "Additional Black Duck SCA Arguments separated by space.",
       "visibleRule": "scanType = srm",
-      "groupName": "blackduckToolOptionsForSrm"
+      "groupName": "blackduckScaToolOptionsForSrm"
     },
     {
       "name": "detectExecutionPath",
@@ -1006,7 +1006,7 @@
       "required": false,
       "helpMarkDown": "Path to the Black Duck SCA Detect jar file to use.",
       "visibleRule": "scanType = srm",
-      "groupName": "blackduckToolOptionsForSrm"
+      "groupName": "blackduckScaToolOptionsForSrm"
     },
     {
       "name": "srmUrl",
@@ -1052,11 +1052,11 @@
       "name": "srmMarkBuildStatus",
       "type": "pickList",
       "label": "Mark Build Status",
-      "defaultValue": "Select",
+      "defaultValue": "",
       "required": false,
       "helpMarkDown": "Specify the build status to use if policy violating issues are found. Default value: Failed. Supported values are: Failed, SucceededWithIssues and Succeeded.",
       "options": {
-        "Select": "Select",
+        "": "Select",
         "Failed": "Failed",
         "SucceededWithIssues": "SucceededWithIssues",
         "Succeeded": "Succeeded"
