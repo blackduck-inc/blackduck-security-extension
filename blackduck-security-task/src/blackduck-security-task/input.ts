@@ -11,20 +11,10 @@ export function getInput(
   classicEditorKey: string,
   deprecatedKey: string | null
 ) {
-  const newInput = taskLib.getInput(newKey);
-  if (newInput) {
-    return newInput?.trim();
+  const key = getInputForYMLAndDeprecatedKey(newKey,deprecatedKey);
+  if(key){
+    return key;
   }
-
-  let deprecatedInput;
-  if (deprecatedKey) {
-    deprecatedInput = taskLib.getInput(deprecatedKey);
-    if (deprecatedInput) {
-      deprecatedInputs.push(deprecatedKey);
-      return deprecatedInput?.trim();
-    }
-  }
-
   const classEditorInput = taskLib.getInput(classicEditorKey);
   if (classEditorInput) {
     return classEditorInput?.trim();
@@ -41,18 +31,9 @@ export function getInputForMultipleClassicEditor(
   srmClassicEditorKey: string | null,
   deprecatedKey: string | null
 ) {
-  const newInput = taskLib.getInput(newKey);
-  if (newInput) {
-    return newInput?.trim();
-  }
-
-  let deprecatedInput;
-  if (deprecatedKey) {
-    deprecatedInput = taskLib.getInput(deprecatedKey);
-    if (deprecatedInput) {
-      deprecatedInputs.push(deprecatedKey);
-      return deprecatedInput?.trim();
-    }
+  const key = getInputForYMLAndDeprecatedKey(newKey,deprecatedKey);
+  if(key){
+    return key;
   }
 
   const scanType = taskLib.getInput(constants.SCAN_TYPE_KEY);
@@ -98,7 +79,23 @@ export function getArbitraryInputs(
   ) {
     return taskLib.getInput(classicEditorKey);
   }
-  return getInput(yamlKey, classicEditorKey, deprecatedKey);
+  return getInputForYMLAndDeprecatedKey(yamlKey, deprecatedKey);
+}
+export function getInputForYMLAndDeprecatedKey(newKey: string, deprecatedKey: string| null){
+  const newInput = taskLib.getInput(newKey);
+  if (newInput) {
+    return newInput?.trim();
+  }
+
+  let deprecatedInput;
+  if (deprecatedKey) {
+    deprecatedInput = taskLib.getInput(deprecatedKey);
+    if (deprecatedInput) {
+      deprecatedInputs.push(deprecatedKey);
+      return deprecatedInput?.trim();
+    }
+  }
+  return "";
 }
 
 export function getBoolInput(
