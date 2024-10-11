@@ -33,6 +33,53 @@ export function getInput(
   return "";
 }
 
+export function getInputForMultipleClassicEditor(
+  newKey: string,
+  polarisClassicEditorKey: string,
+  blackduckSCAClassicEditorKey: string,
+  coverityClassicEditorKey: string,
+  srmClassicEditorKey: string | null,
+  deprecatedKey: string | null
+) {
+  const newInput = taskLib.getInput(newKey);
+  if (newInput) {
+    return newInput?.trim();
+  }
+
+  let deprecatedInput;
+  if (deprecatedKey) {
+    deprecatedInput = taskLib.getInput(deprecatedKey);
+    if (deprecatedInput) {
+      deprecatedInputs.push(deprecatedKey);
+      return deprecatedInput?.trim();
+    }
+  }
+
+  const scanType = taskLib.getInput(constants.SCAN_TYPE_KEY);
+  let classEditorInput;
+  if (polarisClassicEditorKey.length > 0 && scanType == "polaris") {
+    classEditorInput = taskLib.getInput(polarisClassicEditorKey);
+  } else if (
+    blackduckSCAClassicEditorKey.length > 0 &&
+    scanType == "blackducksca"
+  ) {
+    classEditorInput = taskLib.getInput(blackduckSCAClassicEditorKey);
+  } else if (coverityClassicEditorKey.length > 0 && scanType == "coverity") {
+    classEditorInput = taskLib.getInput(coverityClassicEditorKey);
+  } else if (
+    srmClassicEditorKey &&
+    srmClassicEditorKey?.length > 0 &&
+    scanType == "srm"
+  ) {
+    classEditorInput = taskLib.getInput(srmClassicEditorKey);
+  }
+  if (classEditorInput) {
+    return classEditorInput?.trim();
+  }
+
+  return "";
+}
+
 export function getArbitraryInputs(
   yamlKey: string,
   classicEditorKey: string,
@@ -47,7 +94,7 @@ export function getArbitraryInputs(
     return taskLib.getInput(classicEditorKeyForSrm);
   } else if (
     classicEditorKey.length > 0 &&
-    (scanType == "coverity" || scanType == "blackduck")
+    (scanType == "coverity" || scanType == "blackducksca")
   ) {
     return taskLib.getInput(classicEditorKey);
   }
@@ -124,7 +171,7 @@ export function showLogForDeprecatedInputs() {
       `[${deprecatedInputs.join(
         ","
       )}] is/are deprecated for YAML. Check documentation for new parameters: ${
-        constants.BLACKDUCK_SCA_SECURITY_SCAN_AZURE_DEVOPS_DOCS_URL
+        constants.BLACKDUCKSCA_SECURITY_SCAN_AZURE_DEVOPS_DOCS_URL
       }`
     );
   }
@@ -170,15 +217,21 @@ export const BRIDGECLI_DOWNLOAD_VERSION = getInput(
   constants.SYNOPSYS_BRIDGE_DOWNLOAD_VERSION_KEY
 );
 
-export const INCLUDE_DIAGNOSTICS = getInput(
+export const INCLUDE_DIAGNOSTICS = getInputForMultipleClassicEditor(
   constants.INCLUDE_DIAGNOSTICS_KEY,
-  constants.INCLUDE_DIAGNOSTICS_KEY_CLASSIC_EDITOR,
+  constants.POLARIS_INCLUDE_DIAGNOSTICS_KEY_CLASSIC_EDITOR,
+  constants.BLACKDUCKSCA_INCLUDE_DIAGNOSTICS_KEY_CLASSIC_EDITOR,
+  constants.COVERITY_INCLUDE_DIAGNOSTICS_KEY_CLASSIC_EDITOR,
+  constants.SRM_INCLUDE_DIAGNOSTICS_KEY_CLASSIC_EDITOR,
   null
 );
 
-export const AZURE_TOKEN = getInput(
+export const AZURE_TOKEN = getInputForMultipleClassicEditor(
   constants.AZURE_TOKEN_KEY,
-  constants.AZURE_TOKEN_KEY_CLASSIC_EDITOR,
+  constants.POLARIS_AZURE_TOKEN_KEY_CLASSIC_EDITOR,
+  constants.BLACKDUCKSCA_AZURE_TOKEN_KEY_CLASSIC_EDITOR,
+  constants.COVERITY_AZURE_TOKEN_KEY_CLASSIC_EDITOR,
+  null,
   null
 );
 
@@ -416,7 +469,7 @@ export const DETECT_SCAN_FULL = getInput(
 );
 export const BLACKDUCKSCA_SCAN_FAILURE_SEVERITIES = getDelimitedInput(
   constants.BLACKDUCKSCA_SCAN_FAILURE_SEVERITIES_KEY,
-  constants.BLACKDUCK_SCA_SCAN_FAILURE_SEVERITIES_KEY_CLASSIC_EDITOR,
+  constants.BLACKDUCKSCA_SCAN_FAILURE_SEVERITIES_KEY_CLASSIC_EDITOR,
   constants.BLACKDUCK_SCAN_FAILURE_SEVERITIES_KEY
 );
 
@@ -555,8 +608,11 @@ export const SRM_PROJECT_DIRECTORY = getInput(
 export const RETURN_STATUS =
   taskLib.getInput(constants.RETURN_STATUS_KEY)?.trim() || "true";
 
-export const MARK_BUILD_STATUS = getInput(
+export const MARK_BUILD_STATUS = getInputForMultipleClassicEditor(
   constants.MARK_BUILD_STATUS_KEY,
-  constants.MARK_BUILD_STATUS_KEY_CLASSIC_EDITOR,
+  constants.POLARIS_MARK_BUILD_STATUS_KEY_CLASSIC_EDITOR,
+  constants.BLACKDUCKSCA_MARK_BUILD_STATUS_KEY_CLASSIC_EDITOR,
+  constants.COVERITY_MARK_BUILD_STATUS_KEY_CLASSIC_EDITOR,
+  constants.SRM_MARK_BUILD_STATUS_KEY_CLASSIC_EDITOR,
   null
 );

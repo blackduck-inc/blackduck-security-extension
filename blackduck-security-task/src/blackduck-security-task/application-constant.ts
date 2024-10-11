@@ -10,7 +10,10 @@ export const BRIDGE_CLI_ZIP_FILE_NAME = "bridge-cli.zip";
 
 export const APPLICATION_NAME = "blackduck-extension";
 export const AZURE_TOKEN_KEY = "azure_token";
-export const AZURE_TOKEN_KEY_CLASSIC_EDITOR = "azureToken";
+export const POLARIS_AZURE_TOKEN_KEY_CLASSIC_EDITOR = "polarisAzureToken";
+export const BLACKDUCKSCA_AZURE_TOKEN_KEY_CLASSIC_EDITOR =
+  "blackduckScaAzureToken";
+export const COVERITY_AZURE_TOKEN_KEY_CLASSIC_EDITOR = "coverityAzureToken";
 export const SCAN_TYPE_KEY = "scanType";
 export const SPACE = " ";
 
@@ -181,7 +184,7 @@ export const BLACKDUCKSCA_URL_KEY = "blackducksca_url"; // new key
 export const BLACKDUCKSCA_URL_KEY_CLASSIC_EDITOR = "blackduckScaUrl"; // classic editor key
 
 /**
- * @deprecated Use BLACKDUCK_SCA_TOKEN_KEY instead. This can be removed in future release.
+ * @deprecated Use BLACKDUCKSCA_TOKEN_KEY instead. This can be removed in future release.
  */
 export const BLACKDUCK_TOKEN_KEY = "blackduck_token";
 export const BLACKDUCKSCA_TOKEN_KEY = "blackducksca_token";
@@ -213,7 +216,7 @@ export const BLACKDUCK_SCAN_FAILURE_SEVERITIES_KEY =
   "blackduck_scan_failure_severities";
 export const BLACKDUCKSCA_SCAN_FAILURE_SEVERITIES_KEY =
   "blackducksca_scan_failure_severities";
-export const BLACKDUCK_SCA_SCAN_FAILURE_SEVERITIES_KEY_CLASSIC_EDITOR =
+export const BLACKDUCKSCA_SCAN_FAILURE_SEVERITIES_KEY_CLASSIC_EDITOR =
   "blackduckScaScaScanFailureSeverities";
 /**
  * @deprecated Use blackducksca_prComment_enabled instead. This can be removed in future release.
@@ -373,7 +376,14 @@ export const SRM_WAITFORSCAN_KEY_CLASSIC_EDITOR = "srmWaitForScan";
 export const SRM_PROJECT_DIRECTORY_KEY_CLASSIC_EDITOR = "srmProjectDirectory";
 
 export const INCLUDE_DIAGNOSTICS_KEY = "include_diagnostics";
-export const INCLUDE_DIAGNOSTICS_KEY_CLASSIC_EDITOR = "includeDiagnostics";
+export const POLARIS_INCLUDE_DIAGNOSTICS_KEY_CLASSIC_EDITOR =
+  "polarisIncludeDiagnostics";
+export const BLACKDUCKSCA_INCLUDE_DIAGNOSTICS_KEY_CLASSIC_EDITOR =
+  "blackduckScaIncludeDiagnostics";
+export const COVERITY_INCLUDE_DIAGNOSTICS_KEY_CLASSIC_EDITOR =
+  "coverityIncludeDiagnostics";
+export const SRM_INCLUDE_DIAGNOSTICS_KEY_CLASSIC_EDITOR =
+  "srmIncludeDiagnostics";
 /**
  * @deprecated Use network_airgap instead. This can be removed in future release.
  */
@@ -400,7 +410,13 @@ export const RETURN_STATUS_KEY = "return_status";
 //export const RETURN_STATUS_KEY_CLASSIC_EDITOR = "returnStatus";
 
 export const MARK_BUILD_STATUS_KEY = "mark_build_status";
-export const MARK_BUILD_STATUS_KEY_CLASSIC_EDITOR = "markBuildStatus";
+export const POLARIS_MARK_BUILD_STATUS_KEY_CLASSIC_EDITOR =
+  "polarisMarkBuildStatus";
+export const BLACKDUCKSCA_MARK_BUILD_STATUS_KEY_CLASSIC_EDITOR =
+  "blackduckScaMarkBuildStatus";
+export const COVERITY_MARK_BUILD_STATUS_KEY_CLASSIC_EDITOR =
+  "coverityMarkBuildStatus";
+export const SRM_MARK_BUILD_STATUS_KEY_CLASSIC_EDITOR = "srmMarkBuildStatus";
 
 /**
  * @deprecated Use bridgecli_install_directory instead. This can be removed in future release.
@@ -428,7 +444,7 @@ export const MAC_ARM_PLATFORM = "macos_arm";
 export const MAC_INTEL_PLATFORM = "macosx";
 export const MIN_SUPPORTED_BRIDGE_CLI_MAC_ARM_VERSION = "2.1.0";
 export const DEFAULT_AZURE_API_URL = "https://dev.azure.com";
-export const BLACKDUCK_SCA_SECURITY_SCAN_AZURE_DEVOPS_DOCS_URL =
+export const BLACKDUCKSCA_SECURITY_SCAN_AZURE_DEVOPS_DOCS_URL =
   "https://sig-product-docs.synopsys.com/bundle/bridge/page/documentation/c_synopsys-security-scan-for-azure-devops.html";
 
 // Error Messages
@@ -495,11 +511,11 @@ export const NETWORK_AIR_GAP_ENABLED_SKIP_DOWNLOAD_BRIDGE_CLI =
   "Network air gap is enabled, skipping Bridge CLI download.";
 export const TASK_RETURN_STATUS =
   "`##vso[task.setvariable variable=status;isoutput=true]${result}`";
-export const BLACKDUCK_SCA_SARIF_REPOST_ENABLED =
+export const BLACKDUCKSCA_SARIF_REPOST_ENABLED =
   "BLACKDUCKSCA_REPORTS_SARIF_CREATE is enabled";
-export const POLARIS_SCA_SARIF_REPORT_ENABLED =
+export const POLARISSCA_SARIF_REPORT_ENABLED =
   "POLARIS_REPORTS_SARIF_CREATE is enabled";
-export const BLACKDUCK_SCA_SECURITY_SCAN_COMPLETED =
+export const BLACKDUCKSCA_SECURITY_SCAN_COMPLETED =
   "Black Duck Security Scan completed";
 
 export const AZURE_PULL_REQUEST_NUMBER_IS_EMPTY =
