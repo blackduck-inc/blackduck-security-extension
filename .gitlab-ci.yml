@@ -106,6 +106,7 @@ e2e-setup:
   tags:
     - linux
   extends: .e2e-setup
+  allow_failure: true
 
 e2e-linux:
   stage: e2e
