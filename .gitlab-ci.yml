@@ -52,7 +52,7 @@ unit_test_and_coverage_job:
   before_script:
     - export EXT_VERSION=$(cat vss-extension.json | grep version | head -1 | awk -F= "{ print $2 }" | sed 's/[version:,\",]//g' | tr -d '[[:space:]]')
     - export ARTIFACTORY_UPLOAD_REPO=1
-    - export SBOM_ART_TOKEN_VAULT_PATH=sbom/integrations/github-actions
+    - export SBOM_ART_TOKEN_VAULT_PATH=sbom/integrations/synopsys-extension-ci-cd
     - export PRODUCT=Integrations
     - export GENERATE_CONFIGURATION_FILE=1
     - export PRODUCT_ADDON_SBOM_OPTIONS="--output-zipfile blackduck-security-extension-$EXT_VERSION.zip --debug"

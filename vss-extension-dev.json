@@ -28,7 +28,7 @@
   },
   "files": [
     {
-      "path": "blackduck-security-extension"
+      "path": "blackduck-security-task"
     }
   ],
   "content": {
