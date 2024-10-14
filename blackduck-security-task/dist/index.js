@@ -1509,19 +1509,20 @@ function getInputForMultipleClassicEditor(newKey, polarisClassicEditorKey, black
     }
     const scanType = taskLib.getInput(constants.SCAN_TYPE_KEY);
     let classEditorInput;
-    if (polarisClassicEditorKey.length > 0 && scanType == "polaris") {
+    if (polarisClassicEditorKey.length > 0 && scanType == constants.POLARIS_KEY) {
         classEditorInput = taskLib.getInput(polarisClassicEditorKey);
     }
     else if (blackduckSCAClassicEditorKey.length > 0 &&
-        scanType == "blackducksca") {
+        scanType == constants.BLACKDUCKSCA_KEY) {
         classEditorInput = taskLib.getInput(blackduckSCAClassicEditorKey);
     }
-    else if (coverityClassicEditorKey.length > 0 && scanType == "coverity") {
+    else if (coverityClassicEditorKey.length > 0 &&
+        scanType == constants.COVERITY_KEY) {
         classEditorInput = taskLib.getInput(coverityClassicEditorKey);
     }
     else if (srmClassicEditorKey &&
         (srmClassicEditorKey === null || srmClassicEditorKey === void 0 ? void 0 : srmClassicEditorKey.length) > 0 &&
-        scanType == "srm") {
+        scanType == constants.SRM_KEY) {
         classEditorInput = taskLib.getInput(srmClassicEditorKey);
     }
     if (classEditorInput) {
@@ -1532,14 +1533,17 @@ function getInputForMultipleClassicEditor(newKey, polarisClassicEditorKey, black
 exports.getInputForMultipleClassicEditor = getInputForMultipleClassicEditor;
 function getArbitraryInputs(yamlKey, classicEditorKey, classicEditorKeyForPolaris, classicEditorKeyForSrm, deprecatedKey) {
     const scanType = taskLib.getInput(constants.SCAN_TYPE_KEY);
-    if (classicEditorKeyForPolaris.length > 0 && scanType == "polaris") {
+    if (classicEditorKeyForPolaris.length > 0 &&
+        scanType == constants.POLARIS_KEY) {
         return taskLib.getInput(classicEditorKeyForPolaris);
     }
-    else if (classicEditorKeyForSrm.length > 0 && scanType == "srm") {
+    else if (classicEditorKeyForSrm.length > 0 &&
+        scanType == constants.SRM_KEY) {
         return taskLib.getInput(classicEditorKeyForSrm);
     }
     else if (classicEditorKey.length > 0 &&
-        (scanType == "coverity" || scanType == "blackducksca")) {
+        (scanType == constants.COVERITY_KEY ||
+            scanType == constants.BLACKDUCKSCA_KEY)) {
         return taskLib.getInput(classicEditorKey);
     }
     return getInputForYMLAndDeprecatedKey(yamlKey, deprecatedKey);
