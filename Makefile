@@ -9,9 +9,9 @@ build:
 	echo "Provide the Build command like mvn install / go build / npm "
 
 dependencies:
-	echo "change directory to synopsys-task"
+	echo "change directory to blackduck-security-task"
 ifdef POP_BLACKDUCK_INPROGRESS
-	cd synopsys-task
+	cd blackduck-security-task
 endif
 
 image_scan:

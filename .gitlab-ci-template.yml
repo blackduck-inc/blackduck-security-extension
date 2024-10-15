@@ -32,7 +32,7 @@
     paths:
       - .m2/
   script:
-    - cd blackduck-task
+    - cd blackduck-security-task
     - npm ci
     - npm run format && npm run lint && npm run build && npm run package
 

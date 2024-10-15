@@ -2,7 +2,7 @@
   "manifestVersion": 1,
   "id": "QAExt",
   "name": "Black Duck Security Scan",
-  "version": "1.10.0",
+  "version": "1.10.1",
   "publisher": "QAExt",
   "targets": [
     {
