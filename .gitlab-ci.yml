@@ -66,6 +66,7 @@ generate_sbom:
   only:
     refs:
       - main
+      - SIGINT-2310
 
 polaris_bridge:
   stage: analysis
