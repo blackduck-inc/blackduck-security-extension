@@ -221,7 +221,7 @@ describe("Bridge CLI test", () => {
         it('should run successfully for blackduck command preparation for classic editor', async function () {
             Object.defineProperty(inputs, 'BLACKDUCKSCA_URL', {value: 'https://test.com'});
             Object.defineProperty(inputs, 'BLACKDUCKSCA_API_TOKEN', {value: 'token'});
-            Object.defineProperty(inputs, 'SCAN_TYPE', {value: "blackduck"});
+            Object.defineProperty(inputs, 'SCAN_TYPE', {value: "blackducksca"});
             sandbox.stub(validator, "validateScanTypes").returns([]);
             sandbox.stub(BridgeToolsParameter.prototype, "getFormattedCommandForBlackduck").callsFake(() => Promise.resolve("./bridge --stage blackduck --state bd_input.json"));
             sandbox.stub(validator, "validateBlackDuckSCAInputs").returns([]);

@@ -126,7 +126,7 @@ export class Bridge {
               .concat(",")
               .concat(constants.COVERITY_URL_KEY)
               .concat(",")
-              .concat(constants.BLACKDUCK_URL_KEY)
+              .concat(constants.BLACKDUCKSCA_URL_KEY)
               .concat(",")
               .concat(constants.SRM_URL_KEY)
               .concat(")")
@@ -210,7 +210,7 @@ export class Bridge {
         formattedCommand,
         tempDir
       );
-    } else if (SCAN_TYPE == "blackduck") {
+    } else if (SCAN_TYPE == "blackducksca") {
       [formattedCommand, errors] = await this.prepareBlackduckCommand(
         formattedCommand,
         tempDir

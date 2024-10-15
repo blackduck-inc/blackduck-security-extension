@@ -20,12 +20,12 @@ import {
 import { AzurePrResponse } from "./blackduck-security-task/model/azure";
 import { ErrorCode } from "./blackduck-security-task/enum/ErrorCodes";
 import {
-  BLACKDUCK_SCA_SARIF_REPOST_ENABLED,
-  BLACKDUCK_SCA_SECURITY_SCAN_COMPLETED,
+  BLACKDUCKSCA_SARIF_REPOST_ENABLED,
+  BLACKDUCKSCA_SECURITY_SCAN_COMPLETED,
   MARK_THE_BUILD_ON_BRIDGE_BREAK,
   MARK_THE_BUILD_STATUS,
   NETWORK_AIR_GAP_ENABLED_SKIP_DOWNLOAD_BRIDGE_CLI,
-  POLARIS_SCA_SARIF_REPORT_ENABLED,
+  POLARISSCA_SARIF_REPORT_ENABLED,
   TASK_RETURN_STATUS,
   WORKFLOW_FAILED,
 } from "./blackduck-security-task/application-constant";
@@ -67,7 +67,7 @@ export async function run() {
   } finally {
     if (parseToBoolean(inputs.BLACKDUCKSCA_REPORTS_SARIF_CREATE)) {
       if (!IS_PR_EVENT) {
-        console.log(BLACKDUCK_SCA_SARIF_REPOST_ENABLED);
+        console.log(BLACKDUCKSCA_SARIF_REPOST_ENABLED);
         uploadSarifResultAsArtifact(
           constants.DEFAULT_BLACKDUCK_SARIF_GENERATOR_DIRECTORY,
           inputs.BLACKDUCKSCA_REPORTS_SARIF_FILE_PATH
@@ -77,7 +77,7 @@ export async function run() {
 
     if (parseToBoolean(inputs.POLARIS_REPORTS_SARIF_CREATE)) {
       if (!IS_PR_EVENT) {
-        console.log(POLARIS_SCA_SARIF_REPORT_ENABLED);
+        console.log(POLARISSCA_SARIF_REPORT_ENABLED);
         uploadSarifResultAsArtifact(
           constants.DEFAULT_POLARIS_SARIF_GENERATOR_DIRECTORY,
           inputs.POLARIS_REPORTS_SARIF_FILE_PATH
@@ -90,7 +90,7 @@ export async function run() {
     }
   }
 
-  console.log(BLACKDUCK_SCA_SECURITY_SCAN_COMPLETED);
+  console.log(BLACKDUCKSCA_SECURITY_SCAN_COMPLETED);
 }
 
 export function getExitMessage(message: string, exitCode: string): string {
