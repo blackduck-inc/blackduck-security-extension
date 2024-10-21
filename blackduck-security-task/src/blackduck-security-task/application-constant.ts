@@ -207,8 +207,8 @@ export const DETECT_EXECUTION_PATH_KEY_CLASSIC_EDITOR = "detectExecutionPath";
  * @deprecated Use detect_scan_full instead. This can be removed in future release.
  */
 export const BLACKDUCK_SCAN_FULL_KEY = "blackduck_scan_full";
-export const DETECT_SCAN_FULL_KEY = "detect_scan_full";
-export const DETECT_SCAN_FULL_KEY_CLASSIC_EDITOR = "detectScanFull";
+export const BLACKDUCKSCA_SCAN_FULL_KEY = "blackducksca_scan_full";
+export const BLACKDUCKSCA_SCAN_FULL_KEY_CLASSIC_EDITOR = "blackduckScaScanFull";
 /**
  * @deprecated Use blackducksca_scan_failure_severities instead. This can be removed in future release.
  */
@@ -217,7 +217,7 @@ export const BLACKDUCK_SCAN_FAILURE_SEVERITIES_KEY =
 export const BLACKDUCKSCA_SCAN_FAILURE_SEVERITIES_KEY =
   "blackducksca_scan_failure_severities";
 export const BLACKDUCKSCA_SCAN_FAILURE_SEVERITIES_KEY_CLASSIC_EDITOR =
-  "blackduckScaScaScanFailureSeverities";
+  "blackduckScaScanFailureSeverities";
 /**
  * @deprecated Use blackducksca_prComment_enabled instead. This can be removed in future release.
  */

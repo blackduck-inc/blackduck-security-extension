@@ -37,7 +37,6 @@ export interface BlackduckSCAData extends AsyncMode {
 }
 
 export interface BlackDuckDetect {
-  scan?: { full?: boolean };
   install?: Install;
   search?: Search;
   config?: Config;

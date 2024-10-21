@@ -164,7 +164,7 @@ describe("Validator test", () => {
             Object.defineProperty(inputs, 'BLACKDUCKSCA_URL', {value: ''})
             Object.defineProperty(inputs, 'BLACKDUCKSCA_API_TOKEN', {value: ''})
             Object.defineProperty(inputs, 'DETECT_INSTALL_DIRECTORY', {value: ''})
-            Object.defineProperty(inputs, 'DETECT_SCAN_FULL', {value: true})
+            Object.defineProperty(inputs, 'BLACKDUCKSCA_SCAN_FULL', {value: true})
             Object.defineProperty(inputs, 'BLACKDUCKSCA_SCAN_FAILURE_SEVERITIES', {value: []})
 
             Object.defineProperty(inputs, 'BLACKDUCKSCA_URL', {value: ''})
@@ -185,7 +185,7 @@ describe("Validator test", () => {
         it('should return empty array for validateBlackDuckSCAInputs', function () {
             Object.defineProperty(inputs, 'BLACKDUCKSCA_URL', {value: 'server_url'})
             Object.defineProperty(inputs, 'BLACKDUCKSCA_API_TOKEN', {value: 'access_token'})
-            Object.defineProperty(inputs, 'DETECT_SCAN_FULL', {value: true})
+            Object.defineProperty(inputs, 'BLACKDUCKSCA_SCAN_FULL', {value: true})
             Object.defineProperty(inputs, 'BLACKDUCKSCA_SCAN_FAILURE_SEVERITIES', {value: ["BLOCKER","CRITICAL","TRIVIAL"]});
 
             const bdValidationErrors = validator.validateBlackDuckSCAInputs();
