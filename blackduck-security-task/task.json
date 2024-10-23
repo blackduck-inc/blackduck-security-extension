@@ -563,7 +563,7 @@
       "groupName": "coverityScanOptions"
     },
     {
-      "name": "coverityAutomationPrComment",
+      "name": "coverityPrCommentEnabled",
       "type": "boolean",
       "label": "Add Comments to Pull Requests",
       "defaultValue": false,

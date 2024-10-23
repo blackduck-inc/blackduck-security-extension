@@ -140,7 +140,7 @@ export const COVERITY_PROJECT_DIRECTORY_KEY_CLASSIC_EDITOR =
 
 export const COVERITY_PRCOMMENT_ENABLED_KEY = "coverity_prComment_enabled";
 export const COVERITY_PRCOMMENT_ENABLED_KEY_CLASSIC_EDITOR =
-  "coverityAutomationPrComment";
+  "coverityPrCommentEnabled";
 
 export const COVERITY_LOCAL_KEY = "coverity_local";
 export const COVERITY_LOCAL_KEY_CLASSIC_EDITOR = "coverityLocal";
