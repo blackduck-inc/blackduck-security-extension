@@ -879,7 +879,7 @@
       "groupName": "blackduckScaSarifReport"
     },
     {
-      "name": "detectScanFull",
+      "name": "blackduckScaScanFull",
       "type": "boolean",
       "label": "Full Scan",
       "defaultValue": "",

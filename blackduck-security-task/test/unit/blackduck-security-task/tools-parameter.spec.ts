@@ -851,7 +851,7 @@ describe("Bridge CLI Tools Parameter test", () => {
             Object.defineProperty(inputs, 'BLACKDUCKSCA_URL', {value: ''})
             Object.defineProperty(inputs, 'BLACKDUCKSCA_API_TOKEN', {value: ''})
             Object.defineProperty(inputs, 'DETECT_INSTALL_DIRECTORY', {value: ''})
-            Object.defineProperty(inputs, 'DETECT_SCAN_FULL', {value: ''})
+            Object.defineProperty(inputs, 'BLACKDUCKSCA_SCAN_FULL', {value: ''})
             Object.defineProperty(inputs, 'BLACKDUCKSCA_SCAN_FAILURE_SEVERITIES', {value: ''})
             Object.defineProperty(inputs, 'BLACKDUCKSCA_FIXPR_ENABLED', {value: ''})
             Object.defineProperty(inputs, 'BLACKDUCKSCA_FIXPR_MAXCOUNT', {value: ''})
@@ -865,7 +865,7 @@ describe("Bridge CLI Tools Parameter test", () => {
             Object.defineProperty(inputs, 'BLACKDUCKSCA_URL', {value: 'https://test.com'})
             Object.defineProperty(inputs, 'BLACKDUCKSCA_API_TOKEN', {value: 'token'})
             Object.defineProperty(inputs, 'DETECT_INSTALL_DIRECTORY', {value: 'test'})
-            Object.defineProperty(inputs, 'DETECT_SCAN_FULL', {value: 'true'})
+            Object.defineProperty(inputs, 'BLACKDUCKSCA_SCAN_FULL', {value: 'true'})
             Object.defineProperty(inputs, 'BLACKDUCKSCA_SCAN_FAILURE_SEVERITIES', {value : ["BLOCKER","CRITICAL","TRIVIAL"]})
             
              sandbox.stub(validator, "validateBlackduckFailureSeverities").returns(true);
@@ -1287,7 +1287,7 @@ describe("Bridge CLI Tools Parameter test", () => {
             Object.defineProperty(inputs, 'BLACKDUCKSCA_URL', {value: 'https://test.com'})
             Object.defineProperty(inputs, 'BLACKDUCKSCA_API_TOKEN', {value: 'token'})
             Object.defineProperty(inputs, 'DETECT_INSTALL_DIRECTORY', {value: '/test'})
-            Object.defineProperty(inputs, 'DETECT_SCAN_FULL', {value: 'false'})
+            Object.defineProperty(inputs, 'BLACKDUCKSCA_SCAN_FULL', {value: 'false'})
             Object.defineProperty(inputs, 'BLACKDUCKSCA_SCAN_FAILURE_SEVERITIES', {value : ["BLOCKER","CRITICAL","TRIVIAL"]})
             
             sandbox.stub(validator, "validateBlackduckFailureSeverities").returns(false);

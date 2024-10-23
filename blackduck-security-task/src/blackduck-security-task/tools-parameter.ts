@@ -285,7 +285,22 @@ export class BridgeToolsParameter {
         directory: inputs.BLACKDUCKSCA_PROJECT_DIRECTORY,
       };
     }
-
+    if (inputs.BLACKDUCKSCA_SCAN_FULL) {
+      if (
+        inputs.BLACKDUCKSCA_SCAN_FULL.toLowerCase() === "true" ||
+        inputs.BLACKDUCKSCA_SCAN_FULL.toLowerCase() === "false"
+      ) {
+        const scanFullValue =
+          inputs.BLACKDUCKSCA_SCAN_FULL.toLowerCase() === "true";
+        blackduckData.data.blackducksca.scan = { full: scanFullValue };
+      } else {
+        throw new Error(
+          MISSING_BOOL_VALUE.concat(constants.BLACKDUCKSCA_SCAN_FULL_KEY)
+            .concat(constants.SPACE)
+            .concat(ErrorCode.MISSING_BOOLEAN_VALUE.toString())
+        );
+      }
+    }
     blackduckData.data.detect = this.setBlackDuckDetectArgs();
 
     if (failureSeverities && failureSeverities.length > 0) {
@@ -1051,22 +1066,6 @@ export class BridgeToolsParameter {
       blackDuckDetectInputData.data.install = {
         directory: inputs.DETECT_INSTALL_DIRECTORY,
       };
-    }
-
-    if (inputs.DETECT_SCAN_FULL) {
-      if (
-        inputs.DETECT_SCAN_FULL.toLowerCase() === "true" ||
-        inputs.DETECT_SCAN_FULL.toLowerCase() === "false"
-      ) {
-        const scanFullValue = inputs.DETECT_SCAN_FULL.toLowerCase() === "true";
-        blackDuckDetectInputData.data.scan = { full: scanFullValue };
-      } else {
-        throw new Error(
-          MISSING_BOOL_VALUE.concat(constants.DETECT_SCAN_FULL_KEY)
-            .concat(constants.SPACE)
-            .concat(ErrorCode.MISSING_BOOLEAN_VALUE.toString())
-        );
-      }
     }
 
     if (
