@@ -225,7 +225,7 @@ export const BLACKDUCK_PRCOMMENT_ENABLED_KEY = "blackduck_prComment_enabled";
 export const BLACKDUCKSCA_PRCOMMENT_ENABLED_KEY =
   "blackducksca_prComment_enabled";
 export const BLACKDUCKSCA_PRCOMMENT_ENABLED_KEY_CLASSIC_EDITOR =
-  "blackduckScaAutomationPrComment";
+  "blackduckScaPrCommentEnabled";
 /**
  * @deprecated Use blackducksca_fixpr_enabled instead. This can be removed in future release.
  */

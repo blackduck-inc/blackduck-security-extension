@@ -789,7 +789,7 @@
       "groupName": "scanConfiguration"
     },
     {
-      "name": "blackduckScaAutomationPrComment",
+      "name": "blackduckScaPrCommentEnabled",
       "type": "boolean",
       "label": "Add Comments to Pull Requests",
       "defaultValue": false,

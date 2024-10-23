@@ -160,7 +160,7 @@ exports.BLACKDUCKSCA_SCAN_FAILURE_SEVERITIES_KEY_CLASSIC_EDITOR = "blackduckScaS
  */
 exports.BLACKDUCK_PRCOMMENT_ENABLED_KEY = "blackduck_prComment_enabled";
 exports.BLACKDUCKSCA_PRCOMMENT_ENABLED_KEY = "blackducksca_prComment_enabled";
-exports.BLACKDUCKSCA_PRCOMMENT_ENABLED_KEY_CLASSIC_EDITOR = "blackduckScaAutomationPrComment";
+exports.BLACKDUCKSCA_PRCOMMENT_ENABLED_KEY_CLASSIC_EDITOR = "blackduckScaPrCommentEnabled";
 /**
  * @deprecated Use blackducksca_fixpr_enabled instead. This can be removed in future release.
  */
