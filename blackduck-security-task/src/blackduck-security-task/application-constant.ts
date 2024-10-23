@@ -140,7 +140,7 @@ export const COVERITY_PROJECT_DIRECTORY_KEY_CLASSIC_EDITOR =
 
 export const COVERITY_PRCOMMENT_ENABLED_KEY = "coverity_prComment_enabled";
 export const COVERITY_PRCOMMENT_ENABLED_KEY_CLASSIC_EDITOR =
-  "coverityAutomationPrComment";
+  "coverityPrCommentEnabled";
 
 export const COVERITY_LOCAL_KEY = "coverity_local";
 export const COVERITY_LOCAL_KEY_CLASSIC_EDITOR = "coverityLocal";
@@ -225,7 +225,7 @@ export const BLACKDUCK_PRCOMMENT_ENABLED_KEY = "blackduck_prComment_enabled";
 export const BLACKDUCKSCA_PRCOMMENT_ENABLED_KEY =
   "blackducksca_prComment_enabled";
 export const BLACKDUCKSCA_PRCOMMENT_ENABLED_KEY_CLASSIC_EDITOR =
-  "blackduckScaAutomationPrComment";
+  "blackduckScaPrCommentEnabled";
 /**
  * @deprecated Use blackducksca_fixpr_enabled instead. This can be removed in future release.
  */

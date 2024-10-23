@@ -563,7 +563,7 @@
       "groupName": "coverityScanOptions"
     },
     {
-      "name": "coverityAutomationPrComment",
+      "name": "coverityPrCommentEnabled",
       "type": "boolean",
       "label": "Add Comments to Pull Requests",
       "defaultValue": false,
@@ -789,7 +789,7 @@
       "groupName": "scanConfiguration"
     },
     {
-      "name": "blackduckScaAutomationPrComment",
+      "name": "blackduckScaPrCommentEnabled",
       "type": "boolean",
       "label": "Add Comments to Pull Requests",
       "defaultValue": false,

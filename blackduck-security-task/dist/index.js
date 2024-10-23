@@ -97,7 +97,7 @@ exports.COVERITY_WAITFORSCAN_KEY = "coverity_waitForScan";
 exports.COVERITY_WAITFORSCAN_KEY_CLASSIC_EDITOR = "coverityWaitForScan";
 exports.COVERITY_PROJECT_DIRECTORY_KEY_CLASSIC_EDITOR = "coverityProjectDirectory";
 exports.COVERITY_PRCOMMENT_ENABLED_KEY = "coverity_prComment_enabled";
-exports.COVERITY_PRCOMMENT_ENABLED_KEY_CLASSIC_EDITOR = "coverityAutomationPrComment";
+exports.COVERITY_PRCOMMENT_ENABLED_KEY_CLASSIC_EDITOR = "coverityPrCommentEnabled";
 exports.COVERITY_LOCAL_KEY = "coverity_local";
 exports.COVERITY_LOCAL_KEY_CLASSIC_EDITOR = "coverityLocal";
 exports.COVERITY_VERSION_KEY = "coverity_version";
@@ -160,7 +160,7 @@ exports.BLACKDUCKSCA_SCAN_FAILURE_SEVERITIES_KEY_CLASSIC_EDITOR = "blackduckScaS
  */
 exports.BLACKDUCK_PRCOMMENT_ENABLED_KEY = "blackduck_prComment_enabled";
 exports.BLACKDUCKSCA_PRCOMMENT_ENABLED_KEY = "blackducksca_prComment_enabled";
-exports.BLACKDUCKSCA_PRCOMMENT_ENABLED_KEY_CLASSIC_EDITOR = "blackduckScaAutomationPrComment";
+exports.BLACKDUCKSCA_PRCOMMENT_ENABLED_KEY_CLASSIC_EDITOR = "blackduckScaPrCommentEnabled";
 /**
  * @deprecated Use blackducksca_fixpr_enabled instead. This can be removed in future release.
  */

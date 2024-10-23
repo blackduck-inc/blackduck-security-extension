@@ -39,7 +39,7 @@ jobs:
       - name: versioning
         id: version-update
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUBTOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           extension_name=$(jq -r '.name' < vss-extension.json) 
           echo "EXTENSION_NAME=$extension_name" >> $GITHUB_ENV
@@ -70,11 +70,6 @@ jobs:
           echo "Updated package.json file"
           cat package.json
           echo
-
-          echo "Updating package-lock.json with the new version: ${new_version}"
-          jq --arg new_version "$new_version" '(.version = $new_version) | (.packages[""].version = $new_version)' package-lock.json > package-lock.json.tmp && mv package-lock.json.tmp package-lock.json
-          echo "Updated package-lock.json file"
-          echo
           
           echo "Updating task.json with the new version: ${new_version}"
           jq --argjson major "$current_major" --argjson minor "$current_minor"  --argjson patch "$current_patch" '(.version.Major = $major) | (.version.Minor = $minor) | (.version.Patch = $patch)' task.json > task.json.tmp && mv task.json.tmp task.json
@@ -85,17 +80,20 @@ jobs:
       - name: update extension version in file
         id: update-extension-version
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUBTOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          echo "Updating extension version in vss-extension.json, vss-extension-dev.json, extension_version.txt, package.json, package-lock.json & task.json file"
+          echo "Updating extension version in vss-extension.json, vss-extension-dev.json, package.json, package-lock.json & task.json file"
           git config --local user.name "$(git log -n 1 --pretty=format:%an)"
           git config --local user.email "$(git log -n 1 --pretty=format:%ae)"
           git checkout -b extension_version_update
-          git pull origin extension_version_update --rebase || true
           git add  vss-extension.json vss-extension-dev.json extension_version.txt
           cd blackduck-security-task
+          npm install
+          npm run all
           git add package.json package-lock.json task.json
+          cd dist
+          git add .
           git commit -m "upgrade extension version to ${{ env.NEW_VERSION }} [skip ci]"
           git push origin extension_version_update --force
           gh pr create --base main --head extension_version_update --title "Extension version upgrade to ${{ env.NEW_VERSION }}" --body "${{ env.EXTENSION_NAME }} version upgrade to ${{ env.NEW_VERSION }}" --fill
-          echo "Successful updated extension version in vss-extension.json, vss-extension-dev.json, extension_version.txt, package.json, package-lock.json & task.json file..."
+          echo "Successful updated extension version in vss-extension.json, vss-extension-dev.json, package.json, package-lock.json & task.json file..."

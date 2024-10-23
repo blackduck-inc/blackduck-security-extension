@@ -34,7 +34,7 @@ jobs:
       - name: versioning
         id: version-update
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUBTOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           extension_name=$(jq -r '.name' < vss-extension-dev.json) 
           echo "EXTENSION_NAME=$extension_name" >> $GITHUB_ENV
@@ -103,7 +103,7 @@ jobs:
         id: update-extension-version
         if: ${{  steps.publish-qaextension.conclusion == 'success' }}
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUBTOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           echo "Updating extension version in vss-extension-dev.json & extension_version.txt file"
           git config --local user.name "$(git log -n 1 --pretty=format:%an)"
