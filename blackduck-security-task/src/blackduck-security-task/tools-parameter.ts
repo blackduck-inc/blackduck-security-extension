@@ -48,7 +48,7 @@ import {
 export class BridgeToolsParameter {
   tempDir: string;
   private static STAGE_OPTION = "--stage";
-  private static BLACKDUCK_STAGE = "blackduck";
+  private static BLACKDUCKSCA_STAGE = "blackducksca";
   private static BD_STATE_FILE_NAME = "bd_input.json";
   private static INPUT_OPTION = "--input";
   private static POLARIS_STAGE = "polaris";
@@ -420,7 +420,7 @@ export class BridgeToolsParameter {
     command = BridgeToolsParameter.STAGE_OPTION.concat(
       BridgeToolsParameter.SPACE
     )
-      .concat(BridgeToolsParameter.BLACKDUCK_STAGE)
+      .concat(BridgeToolsParameter.BLACKDUCKSCA_STAGE)
       .concat(BridgeToolsParameter.SPACE)
       .concat(BridgeToolsParameter.INPUT_OPTION)
       .concat(BridgeToolsParameter.SPACE)
@@ -607,7 +607,7 @@ export class BridgeToolsParameter {
     ) {
       throw new Error(
         "Invalid value for "
-          .concat(constants.BLACKDUCK_FIXPR_MAXCOUNT_KEY)
+          .concat(constants.BLACKDUCKSCA_FIXPR_MAXCOUNT_KEY)
           .concat(constants.SPACE)
           .concat(ErrorCode.INVALID_BLACKDUCKSCA_FIXPR_MAXCOUNT.toString())
       );
@@ -617,10 +617,10 @@ export class BridgeToolsParameter {
     );
     if (createSinglePr && inputs.BLACKDUCKSCA_FIXPR_MAXCOUNT) {
       throw new Error(
-        constants.BLACKDUCK_FIXPR_MAXCOUNT_KEY.concat(
+        constants.BLACKDUCKSCA_FIXPR_MAXCOUNT_KEY.concat(
           " is not applicable with "
         )
-          .concat(constants.BLACKDUCK_FIXPR_CREATE_SINGLE_PR_KEY)
+          .concat(constants.BLACKDUCKSCA_FIXPR_CREATE_SINGLE_PR_KEY)
           .concat(constants.SPACE)
           .concat(
             ErrorCode.BLACKDUCKSCA_FIXPR_MAXCOUNT_NOT_APPLICABLE.toString()

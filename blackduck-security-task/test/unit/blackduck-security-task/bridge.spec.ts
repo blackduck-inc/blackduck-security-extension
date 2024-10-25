@@ -263,18 +263,18 @@ describe("Download Bridge", () => {
     let bridgeDefaultPath = "";
     if (osName === "linux") {
         bridgeDefaultPath = path.join(process.env["HOME"] as string, constants.BRIDGE_CLI_DEFAULT_PATH_LINUX);
-        bridgeUrl = "https://repo.blackduck.com/bds-integrations-release/com/blackduck/integration/bridge-cli/0.1.244/bridge-cli-0.1.244-linux64.zip"
+        bridgeUrl = "https://artifactory.internal.synopsys.com/artifactory/clops-local/clops.sig.synopsys.com/bridge/binaries/bridge-cli-bundle/2.9.2/bridge-cli-bundle-2.9.2-linux64.zip"
     } else if (osName === "win32") {
         bridgeDefaultPath = path.join(
             process.env["USERPROFILE"] as string, constants.BRIDGE_CLI_DEFAULT_PATH_WINDOWS)
-        bridgeUrl = "https://repo.blackduck.com/bds-integrations-release/com/blackduck/integration/bridge-cli/0.1.244/bridge-cli-0.1.244-win64.zip"
+        bridgeUrl = "https://artifactory.internal.synopsys.com/artifactory/clops-local/clops.sig.synopsys.com/bridge/binaries/bridge-cli-bundle/2.9.2/bridge-cli-bundle-2.9.2--win64.zip"
     } else if (osName === "darwin") {
         bridgeDefaultPath = path.join(
             process.env["HOME"] as string, constants.BRIDGE_CLI_DEFAULT_PATH_MAC)
             if (isIntel) {
-                bridgeUrl = "https://repo.blackduck.com/bds-integrations-release/com/blackduck/integration/bridge-cli/0.1.244/bridge-cli-0.1.244-macosx.zip"
+                bridgeUrl = "https://artifactory.internal.synopsys.com/artifactory/clops-local/clops.sig.synopsys.com/bridge/binaries/bridge-cli-bundle/2.9.2/bridge-cli-bundle-2.9.2-macosx.zip"
             } else {
-                bridgeUrl = "https://repo.blackduck.com/bds-integrations-release/com/blackduck/integration/bridge-cli/0.1.244/bridge-cli-0.1.244-macos_arm.zip"
+                bridgeUrl = "https://artifactory.internal.synopsys.com/artifactory/clops-local/clops.sig.synopsys.com/bridge/binaries/bridge-cli-bundle/2.9.2/bridge-cli-bundle-2.9.2-macos_arm.zip"
             }
     }
 
@@ -587,8 +587,8 @@ describe("Download Bridge", () => {
         });
 
         it("returns the URL for the latest version when neither BRIDGECLI_DOWNLOAD_URL nor BRIDGECLI_DOWNLOAD_VERSION are defined", async () => {
-            const bridgeUrl = "https://repo.blackduck.com/bds-integrations-release/com/blackduck/integration/bridge-cli/latest/bridge-cli"
-            sandbox.stub(bridge, "getBridgeVersionFromLatestURL").returns(Promise.resolve("0.1.244"));
+            const bridgeUrl = "https://artifactory.internal.synopsys.com/artifactory/clops-local/clops.sig.synopsys.com/bridge/binaries/bridge-cli-bundle"
+            sandbox.stub(bridge, "getBridgeVersionFromLatestURL").returns(Promise.resolve("2.9.2"));
             sandbox.stub(bridge, "getVersionUrl").returns(bridgeUrl);
             sandbox.stub(bridge, "checkIfBridgeVersionExists").returns(Promise.resolve(false));
             const result = await bridge.getBridgeUrl();
@@ -598,7 +598,7 @@ describe("Download Bridge", () => {
         it("returns the URL for the latest version when getBridgeVersionFromLatestURL is empty", async () => {
 
             sandbox.stub(bridge, "getBridgeVersionFromLatestURL").returns(Promise.resolve("/latest"));
-            sandbox.stub(bridge, "getVersionUrl").returns("bridge-cli/latest/bridge-cli");
+            sandbox.stub(bridge, "getVersionUrl").returns("bridge-cli-bundle/latest/bridge-cli-bundle");
             const result = await bridge.getBridgeUrl();
             expect(result).contains("/latest");
         });
@@ -606,7 +606,7 @@ describe("Download Bridge", () => {
         it("returns the URL for the latest version when getBridgeVersionFromLatestURL is empty: failure", async () => {
             sandbox.stub(bridge, "getLatestVersionUrl").returns("");
             sandbox.stub(bridge, "getBridgeVersionFromLatestURL").returns(Promise.resolve(""));
-            sandbox.stub(bridge, "getVersionUrl").returns("bridge-cli/0.0.0/bridge-cli-macosx.zip");
+            sandbox.stub(bridge, "getVersionUrl").returns("bridge-cli-bundle/0.0.0/bridge-cli-bundle-macosx.zip");
             sandbox.stub(bridge, "checkIfBridgeVersionExists").returns(Promise.resolve(false));
             const result = await bridge.getBridgeUrl().catch(errorObj => {
                 expect(errorObj.message).contains("Invalid artifactory latest url");
@@ -683,7 +683,7 @@ describe("Download Bridge", () => {
 
         it("BRIDGECLI_DOWNLOAD_URL is defined and invalid for current os", async () => {
             Object.defineProperty(inputs, "BRIDGECLI_DOWNLOAD_URL", {
-                value: "https://repo.blackduck.com/bds-integrations-release/com/blackduck/integration/bridge-cli/0.2.57/bridge-cli-0.2.57-win64.zip",
+                value: "https://artifactory.internal.synopsys.com/artifactory/clops-local/clops.sig.synopsys.com/bridge/binaries/bridge-cli-bundle/2.9.2/bridge-cli-bundle-2.9.2-win64.zip",
             });
             sandbox.stub(bridge, "checkIfBridgeVersionExists").returns(Promise.resolve(false));
             sandbox.stub(bridge, "getBridgeUrl").returns(Promise.resolve(bridgeUrl))
@@ -875,13 +875,13 @@ describe("Download Bridge", () => {
 
             sandbox.stub(bridge, "getBridgeVersionFromLatestURL").returns(Promise.resolve('0.2.1'));
 
-            const result = await bridge.getBridgeVersionFromLatestURL("https://repo.blackduck.com/bds-integrations-release/com/blackduck/integration/bridge-cli/latest/bridge-cli-macosx.zip");
+            const result = await bridge.getBridgeVersionFromLatestURL("https://artifactory.internal.synopsys.com/artifactory/clops-local/clops.sig.synopsys.com/bridge/binaries/bridge-cli-bundle-macosx.zip");
             assert.equal(result, '0.2.1');
         });
 
         it("Bridle cli latest version test: windows", async () => {
             const result = await bridge.getLatestVersionUrl();
-            expect(result).contains('/latest/bridge-cli');
+            expect(result).contains('/latest/bridge-cli-bundle');
         });
 
         it('Test getBridgeVersionFromLatestURL -status 200', async () => {
@@ -898,7 +898,7 @@ describe("Download Bridge", () => {
             sinon.stub(httpc, 'HttpClient').returns({
                 get: httpClientStub,
             } as any);
-            const result = await bridge.getBridgeVersionFromLatestURL("https://repo.blackduck.com/bds-integrations-release/com/blackduck/integration/bridge-cli/latest/bridge-cli-macosx.zip")
+            const result = await bridge.getBridgeVersionFromLatestURL("https://artifactory.internal.synopsys.com/artifactory/clops-local/clops.sig.synopsys.com/bridge/binaries/bridge-cli-bundle-macosx.zip")
             expect(result).contains('0.2.35')
 
         })
@@ -919,7 +919,7 @@ describe("Download Bridge", () => {
             } as any);
 
 
-            const result = await bridge.getBridgeVersionFromLatestURL("https://repo.blackduck.com/bds-integrations-release/com/blackduck/integration/bridge-cli/latest/bridge-cli-macosx.zip")
+            const result = await bridge.getBridgeVersionFromLatestURL("https://artifactory.internal.synopsys.com/artifactory/clops-local/clops.sig.synopsys.com/bridge/binaries/bridge-cli-bundle-macosx.zip")
             expect(result).contains('')
         })
 
@@ -938,7 +938,7 @@ describe("Download Bridge", () => {
                 get: httpClientStub,
             } as any);
 
-            const result = await bridge.getBridgeVersionFromLatestURL("https://repo.blackduck.com/bds-integrations-release/com/blackduck/integration/bridge-cli/latest/bridge-cli-macosx.zip")
+            const result = await bridge.getBridgeVersionFromLatestURL("https://artifactory.internal.synopsys.com/artifactory/clops-local/clops.sig.synopsys.com/bridge/binaries/bridge-cli-bundle-macosx.zip")
             expect(result).contains('')
         })
     })

@@ -6,7 +6,7 @@ export const BRIDGE_CLI_DEFAULT_PATH_WINDOWS = "\\bridge-cli";
 export const BRIDGE_CLI_DEFAULT_PATH_LINUX = "/bridge-cli";
 export const BRIDGE_CLI_EXECUTABLE_WINDOWS = "bridge-cli.exe";
 export const BRIDGE_CLI_EXECUTABLE_MAC_LINUX = "bridge-cli";
-export const BRIDGE_CLI_ZIP_FILE_NAME = "bridge-cli.zip";
+export const BRIDGE_CLI_ZIP_FILE_NAME = "bridge-cli-bundle.zip";
 
 export const APPLICATION_NAME = "blackduck-extension";
 export const AZURE_TOKEN_KEY = "azure_token";

@@ -20,7 +20,7 @@ exports.BRIDGE_CLI_DEFAULT_PATH_WINDOWS = "\\bridge-cli";
 exports.BRIDGE_CLI_DEFAULT_PATH_LINUX = "/bridge-cli";
 exports.BRIDGE_CLI_EXECUTABLE_WINDOWS = "bridge-cli.exe";
 exports.BRIDGE_CLI_EXECUTABLE_MAC_LINUX = "bridge-cli";
-exports.BRIDGE_CLI_ZIP_FILE_NAME = "bridge-cli.zip";
+exports.BRIDGE_CLI_ZIP_FILE_NAME = "bridge-cli-bundle.zip";
 exports.APPLICATION_NAME = "blackduck-extension";
 exports.AZURE_TOKEN_KEY = "azure_token";
 exports.POLARIS_AZURE_TOKEN_KEY_CLASSIC_EDITOR = "polarisAzureToken";
@@ -657,9 +657,9 @@ class Bridge {
     constructor() {
         this.bridgeExecutablePath = "";
         this.bridgeArtifactoryURL =
-            "https://repo.blackduck.com/bds-integrations-release/com/blackduck/integration/bridge-cli";
-        this.bridgeUrlPattern = this.bridgeArtifactoryURL.concat("/$version/bridge-cli-$version-$platform.zip");
-        this.bridgeUrlLatestPattern = this.bridgeArtifactoryURL.concat("/latest/bridge-cli-$platform.zip");
+            "https://artifactory.internal.synopsys.com/artifactory/clops-local/clops.sig.synopsys.com/bridge/binaries/bridge-cli-bundle";
+        this.bridgeUrlPattern = this.bridgeArtifactoryURL.concat("/$version/bridge-cli-bundle-$version-$platform.zip");
+        this.bridgeUrlLatestPattern = this.bridgeArtifactoryURL.concat("/latest/bridge-cli-bundle-$platform.zip");
     }
     extractBridge(fileInfo) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -858,11 +858,11 @@ class Bridge {
                     return Promise.reject(new Error(application_constant_1.INVALID_BRIDGE_CLI_URL.concat(constants.SPACE).concat(ErrorCodes_1.ErrorCode.INVALID_URL.toString())));
                 }
                 // To check whether bridge already exists with same version mentioned in bridge url
-                const versionsArray = bridgeUrl.match(".*bridge-cli-([0-9.]*).*");
+                const versionsArray = bridgeUrl.match(".*bridge-cli-bundle-([0-9.]*).*");
                 if (versionsArray) {
                     version = versionsArray[1];
                     if (!version) {
-                        const regex = /\w*(bridge-cli-(win64|linux64|macosx|macos_arm).zip)/;
+                        const regex = /\w*(bridge-cli-bundle-(win64|linux64|macosx|macos_arm).zip)/;
                         version = yield this.getBridgeVersionFromLatestURL(bridgeUrl.replace(regex, "versions.txt"));
                     }
                 }
@@ -2088,7 +2088,7 @@ class BridgeToolsParameter {
             stateFilePath = '"'.concat(stateFilePath).concat('"');
             taskLib.debug("Generated state json file at - ".concat(stateFilePath));
             command = BridgeToolsParameter.STAGE_OPTION.concat(BridgeToolsParameter.SPACE)
-                .concat(BridgeToolsParameter.BLACKDUCK_STAGE)
+                .concat(BridgeToolsParameter.BLACKDUCKSCA_STAGE)
                 .concat(BridgeToolsParameter.SPACE)
                 .concat(BridgeToolsParameter.INPUT_OPTION)
                 .concat(BridgeToolsParameter.SPACE)
@@ -2220,14 +2220,14 @@ class BridgeToolsParameter {
         if (inputs.BLACKDUCKSCA_FIXPR_MAXCOUNT &&
             isNaN(Number(inputs.BLACKDUCKSCA_FIXPR_MAXCOUNT))) {
             throw new Error("Invalid value for "
-                .concat(constants.BLACKDUCK_FIXPR_MAXCOUNT_KEY)
+                .concat(constants.BLACKDUCKSCA_FIXPR_MAXCOUNT_KEY)
                 .concat(constants.SPACE)
                 .concat(ErrorCodes_1.ErrorCode.INVALID_BLACKDUCKSCA_FIXPR_MAXCOUNT.toString()));
         }
         const createSinglePr = (0, utility_1.parseToBoolean)(inputs.BLACKDUCKSCA_FIXPR_CREATE_SINGLE_PR);
         if (createSinglePr && inputs.BLACKDUCKSCA_FIXPR_MAXCOUNT) {
-            throw new Error(constants.BLACKDUCK_FIXPR_MAXCOUNT_KEY.concat(" is not applicable with ")
-                .concat(constants.BLACKDUCK_FIXPR_CREATE_SINGLE_PR_KEY)
+            throw new Error(constants.BLACKDUCKSCA_FIXPR_MAXCOUNT_KEY.concat(" is not applicable with ")
+                .concat(constants.BLACKDUCKSCA_FIXPR_CREATE_SINGLE_PR_KEY)
                 .concat(constants.SPACE)
                 .concat(ErrorCodes_1.ErrorCode.BLACKDUCKSCA_FIXPR_MAXCOUNT_NOT_APPLICABLE.toString()));
         }
@@ -2570,7 +2570,7 @@ class BridgeToolsParameter {
     }
 }
 BridgeToolsParameter.STAGE_OPTION = "--stage";
-BridgeToolsParameter.BLACKDUCK_STAGE = "blackduck";
+BridgeToolsParameter.BLACKDUCKSCA_STAGE = "blackducksca";
 BridgeToolsParameter.BD_STATE_FILE_NAME = "bd_input.json";
 BridgeToolsParameter.INPUT_OPTION = "--input";
 BridgeToolsParameter.POLARIS_STAGE = "polaris";

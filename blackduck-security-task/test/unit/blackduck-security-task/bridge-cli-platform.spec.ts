@@ -24,7 +24,7 @@ describe("Platform", () => {
                 value: "linux"
             })
             bridgeDefaultPath = path.join(process.env["HOME"] as string, constants.BRIDGE_CLI_DEFAULT_PATH_LINUX);
-            bridgeUrl = "https://repo.blackduck.com/bds-integrations-release/com/blackduck/integration/bridge-cli/0.1.244/bridge-cli-0.1.244-linux64.zip"
+            bridgeUrl = "https://artifactory.internal.synopsys.com/artifactory/clops-local/clops.sig.synopsys.com/bridge/binaries/bridge-cli-bundle/0.1.244/bridge-cli-bundle-0.1.244-linux64.zip"
         })
 
         after(() => {
@@ -73,7 +73,7 @@ describe("Platform", () => {
             const cpuInfo = sandbox.stub(os, "cpus");
             cpuInfo.returns(fakeCpus);
             bridgeDefaultPath = path.join(process.env["HOME"] as string, constants.BRIDGE_CLI_DEFAULT_PATH_MAC);
-            bridgeUrl = "https://repo.blackduck.com/bds-integrations-release/com/blackduck/integration/bridge-cli/0.1.244/bridge-cli-0.1.244-macosx.zip"
+            bridgeUrl = "https://artifactory.internal.synopsys.com/artifactory/clops-local/clops.sig.synopsys.com/bridge/binaries/bridge-cli-bundle/0.1.244/bridge-cli-bundle-0.1.244-macosx.zip"
         })
 
         after(() => {
@@ -109,7 +109,7 @@ describe("Platform", () => {
 
             bridgeDefaultPath = path.join(
                 process.env["USERPROFILE"] as string, constants.BRIDGE_CLI_DEFAULT_PATH_WINDOWS)
-            bridgeUrl = "https://repo.blackduck.com/bds-integrations-release/com/blackduck/integration/bridge-cli/0.1.244/bridge-cli-0.1.244-win64.zip"
+            bridgeUrl = "https://artifactory.internal.synopsys.com/artifactory/clops-local/clops.sig.synopsys.com/bridge/binaries/bridge-cli-bundle/0.1.244/bridge-cli-bundle-0.1.244-win64.zip"
         })
 
         after(() => {
