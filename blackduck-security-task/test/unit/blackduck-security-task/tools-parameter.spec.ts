@@ -874,7 +874,7 @@ describe("Bridge CLI Tools Parameter test", () => {
              const jsonData = JSON.parse(jsonString);
              expect(jsonData.data.blackducksca.url).to.be.equals('https://test.com');
              expect(jsonData.data.blackducksca.token).to.be.equals('token');
-             expect(formattedCommand).contains('--stage blackduck');
+             expect(formattedCommand).contains('--stage blackducksca');
 
              blackduckStateFile = '"'.concat(blackduckStateFile).concat('"');
              expect(formattedCommand).contains('--input '.concat(blackduckStateFile));
@@ -894,7 +894,7 @@ describe("Bridge CLI Tools Parameter test", () => {
              expect(jsonData.data.blackducksca.url).to.be.equals('https://test.com');
              expect(jsonData.data.blackducksca.token).to.be.equals('token');
              expect(jsonData.data.blackducksca.automation.prcomment).to.be.equals(true);
-             expect(formattedCommand).contains('--stage blackduck');
+             expect(formattedCommand).contains('--stage blackducksca');
 
              blackduckStateFile = '"'.concat(blackduckStateFile).concat('"');
              expect(formattedCommand).contains('--input '.concat(blackduckStateFile));
@@ -913,7 +913,7 @@ describe("Bridge CLI Tools Parameter test", () => {
             expect(jsonData.data.blackducksca.url).to.be.equals('https://test.com');
             expect(jsonData.data.blackducksca.token).to.be.equals('token');
             expect(jsonData.data.blackducksca.automation).to.be.undefined;
-            expect(formattedCommand).contains('--stage blackduck');
+            expect(formattedCommand).contains('--stage blackducksca');
 
             blackduckStateFile = '"'.concat(blackduckStateFile).concat('"');
             expect(formattedCommand).contains('--input '.concat(blackduckStateFile));
@@ -958,7 +958,7 @@ describe("Bridge CLI Tools Parameter test", () => {
             expect(jsonData.data.azure.repository.name).to.be.equals('test-repo');
             expect(jsonData.data.azure.repository.branch.name).to.be.equals('refs/heads/feature/test-branch');
             expect(jsonData.data.azure.repository.pull.number).to.be.equals(95);
-            expect(formattedCommand).contains('--stage blackduck');
+            expect(formattedCommand).contains('--stage blackducksca');
 
             blackduckStateFile = '"'.concat(blackduckStateFile).concat('"');
             expect(formattedCommand).contains('--input '.concat(blackduckStateFile));
@@ -994,7 +994,7 @@ describe("Bridge CLI Tools Parameter test", () => {
             expect(jsonData.data.azure.repository.name).to.be.equals('test-repo');
             expect(jsonData.data.azure.repository.branch.name).to.be.equals('refs/heads/feature/test-branch');
             expect(jsonData.data.azure.repository.pull.number).to.be.equals(95);
-            expect(formattedCommand).contains('--stage blackduck');
+            expect(formattedCommand).contains('--stage blackducksca');
 
             blackduckStateFile = '"'.concat(blackduckStateFile).concat('"');
             expect(formattedCommand).contains('--input '.concat(blackduckStateFile));
@@ -1034,7 +1034,7 @@ describe("Bridge CLI Tools Parameter test", () => {
             expect(jsonData.data.azure.repository.name).to.be.equals('test-repo');
             expect(jsonData.data.azure.repository.branch.name).to.be.equals('refs/heads/feature/test-branch');
             expect(jsonData.data.azure.repository.pull.number).to.be.equals(95);
-            expect(formattedCommand).contains('--stage blackduck');
+            expect(formattedCommand).contains('--stage blackducksca');
 
             blackduckStateFile = '"'.concat(blackduckStateFile).concat('"');
             expect(formattedCommand).contains('--input '.concat(blackduckStateFile));
@@ -1074,7 +1074,7 @@ describe("Bridge CLI Tools Parameter test", () => {
             expect(jsonData.data.azure.repository.name).to.be.equals('test-repo');
             expect(jsonData.data.azure.repository.branch.name).to.be.equals('refs/heads/feature/test-branch');
             expect(jsonData.data.azure.repository.pull.number).to.be.equals(95);
-            expect(formattedCommand).contains('--stage blackduck');
+            expect(formattedCommand).contains('--stage blackducksca');
 
             blackduckStateFile = '"'.concat(blackduckStateFile).concat('"');
             expect(formattedCommand).contains('--input '.concat(blackduckStateFile));
@@ -1106,7 +1106,7 @@ describe("Bridge CLI Tools Parameter test", () => {
              expect(jsonData.data.azure.project.name).to.be.equals('test-project');
              expect(jsonData.data.azure.repository.name).to.be.equals('test-repo');
              expect(jsonData.data.azure.repository.branch.name).to.be.equals('test-branch');
-             expect(formattedCommand).contains('--stage blackduck');
+             expect(formattedCommand).contains('--stage blackducksca');
 
             blackduckStateFile = '"'.concat(blackduckStateFile).concat('"');
              expect(formattedCommand).contains('--input '.concat(blackduckStateFile));
@@ -1132,7 +1132,7 @@ describe("Bridge CLI Tools Parameter test", () => {
             expect(jsonData.data.blackducksca.url).to.be.equals('https://test.com');
             expect(jsonData.data.blackducksca.token).to.be.equals('token');
             expect(jsonData.data.blackducksca.fixpr.enabled).to.be.equals(true);
-            expect(formattedCommand).contains('--stage blackduck');
+            expect(formattedCommand).contains('--stage blackducksca');
 
             blackduckStateFile = '"'.concat(blackduckStateFile).concat('"');
             expect(formattedCommand).contains('--input '.concat(blackduckStateFile));
@@ -1159,7 +1159,7 @@ describe("Bridge CLI Tools Parameter test", () => {
             expect(jsonData.data.blackducksca.url).to.be.equals('https://test.com');
             expect(jsonData.data.blackducksca.token).to.be.equals('token');
             expect(jsonData.data.blackducksca.fixpr).to.be.undefined;
-            expect(formattedCommand).contains('--stage blackduck');
+            expect(formattedCommand).contains('--stage blackducksca');
 
             blackduckStateFile = '"'.concat(blackduckStateFile).concat('"');
             expect(formattedCommand).contains('--input '.concat(blackduckStateFile));
@@ -1192,7 +1192,7 @@ describe("Bridge CLI Tools Parameter test", () => {
             expect(jsonData.data.blackducksca.fixpr.maxCount).to.be.equals(1);
             expect(jsonData.data.blackducksca.fixpr.createSinglePR).to.be.equals(false);
             expect(jsonData.data.blackducksca.fixpr.useUpgradeGuidance).to.be.contains('LONG_TERM');
-            expect(formattedCommand).contains('--stage blackduck');
+            expect(formattedCommand).contains('--stage blackducksca');
 
             blackduckStateFile = '"'.concat(blackduckStateFile).concat('"');
             expect(formattedCommand).contains('--input '.concat(blackduckStateFile));
@@ -1263,7 +1263,7 @@ describe("Bridge CLI Tools Parameter test", () => {
              const jsonData = JSON.parse(jsonString);
              expect(jsonData.data.blackducksca.url).to.be.equals('https://test.com');
              expect(jsonData.data.blackducksca.token).to.be.equals('token');
-             expect(formattedCommand).contains('--stage blackduck');
+             expect(formattedCommand).contains('--stage blackducksca');
 
             blackduckStateFile = '"'.concat(blackduckStateFile).concat('"');
              expect(formattedCommand).contains('--input '.concat(blackduckStateFile));
@@ -1278,7 +1278,7 @@ describe("Bridge CLI Tools Parameter test", () => {
             const jsonData = JSON.parse(jsonString);
             expect(jsonData.data.blackducksca.url).to.be.equals('https://test.com');
             expect(jsonData.data.blackducksca.token).to.be.equals('token');
-            expect(formattedCommand).contains('--stage blackduck');
+            expect(formattedCommand).contains('--stage blackducksca');
 
             blackduckStateFile = '"'.concat(blackduckStateFile).concat('"');
             expect(formattedCommand).contains('--input '.concat(blackduckStateFile));
@@ -1299,7 +1299,7 @@ describe("Bridge CLI Tools Parameter test", () => {
             expect(jsonData.data.blackducksca.url).to.be.equals('https://test.com');
             expect(jsonData.data.blackducksca.token).to.be.equals('token');
             expect(jsonData.data.detect.install.directory).to.be.equals('/test');
-            expect(formattedCommand).contains('--stage blackduck');
+            expect(formattedCommand).contains('--stage blackducksca');
 
             blackduckStateFile = '"'.concat(blackduckStateFile).concat('"');
             expect(formattedCommand).contains('--input '.concat(blackduckStateFile));
@@ -1318,7 +1318,7 @@ describe("Bridge CLI Tools Parameter test", () => {
             expect(jsonData.data.blackducksca.url).to.be.equals('https://test.com');
             expect(jsonData.data.blackducksca.token).to.be.equals('token');
             expect(jsonData.data.blackducksca.reports.sarif.create).to.be.equals(true);
-            expect(formattedCommand).contains('--stage blackduck');
+            expect(formattedCommand).contains('--stage blackducksca');
 
             blackduckStateFile = '"'.concat(blackduckStateFile).concat('"');
             expect(formattedCommand).contains('--input '.concat(blackduckStateFile));
@@ -1338,7 +1338,7 @@ describe("Bridge CLI Tools Parameter test", () => {
             expect(jsonData.data.blackducksca.url).to.be.equals('https://test.com');
             expect(jsonData.data.blackducksca.token).to.be.equals('token');
             expect(jsonData.data.blackducksca.reports).to.be.undefined;
-            expect(formattedCommand).contains('--stage blackduck');
+            expect(formattedCommand).contains('--stage blackducksca');
 
             blackduckStateFile = '"'.concat(blackduckStateFile).concat('"');
             expect(formattedCommand).contains('--input '.concat(blackduckStateFile));
@@ -1364,7 +1364,7 @@ describe("Bridge CLI Tools Parameter test", () => {
             expect(jsonData.data.blackducksca.reports.sarif.file.path).to.be.equals('test-path');
             expect(jsonData.data.blackducksca.reports.sarif.severities).to.be.contains('CRITICAL');
             expect(jsonData.data.blackducksca.reports.sarif.groupSCAIssues).to.be.equals(false);
-            expect(formattedCommand).contains('--stage blackduck');
+            expect(formattedCommand).contains('--stage blackducksca');
 
             blackduckStateFile = '"'.concat(blackduckStateFile).concat('"');
             expect(formattedCommand).contains('--input '.concat(blackduckStateFile));
@@ -1384,7 +1384,7 @@ describe("Bridge CLI Tools Parameter test", () => {
             expect(jsonData.data.blackducksca.token).to.be.equals('token');
             expect(jsonData.data.blackducksca.waitForScan).to.be.equals(true);
             
-            expect(formattedCommand).contains('--stage blackduck');
+            expect(formattedCommand).contains('--stage blackducksca');
 
             blackduckStateFile = '"'.concat(blackduckStateFile).concat('"');
             expect(formattedCommand).contains('--input '.concat(blackduckStateFile));
@@ -1404,7 +1404,7 @@ describe("Bridge CLI Tools Parameter test", () => {
             expect(jsonData.data.blackducksca.url).to.be.equals('https://test.com');
             expect(jsonData.data.blackducksca.token).to.be.equals('token');
             expect(jsonData.data.project.directory).to.be.contains('blackduck_project_directory');
-            expect(formattedCommand).contains('--stage blackduck');
+            expect(formattedCommand).contains('--stage blackducksca');
 
             blackduckStateFile = '"'.concat(blackduckStateFile).concat('"');
             expect(formattedCommand).contains('--input '.concat(blackduckStateFile));
@@ -1422,7 +1422,7 @@ describe("Bridge CLI Tools Parameter test", () => {
 
             const jsonString = fs.readFileSync(blackduckStateFile, 'utf-8');
             const jsonData = JSON.parse(jsonString);
-            expect(formattedCommand).contains('--stage blackduck')
+            expect(formattedCommand).contains('--stage blackducksca')
             expect(jsonData.data.blackducksca.url).to.be.equals('BLACKDUCKSCA_URL')
             expect(jsonData.data.blackducksca.token).to.be.equals('BLACKDUCKSCA_API_TOKEN')
             expect(jsonData.data.detect.search.depth).to.be.equals(2)
