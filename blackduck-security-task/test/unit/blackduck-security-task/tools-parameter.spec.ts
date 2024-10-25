@@ -1210,8 +1210,8 @@ describe("Bridge CLI Tools Parameter test", () => {
                 const formattedCommand = await bridgeToolsParameter.getFormattedCommandForBlackduck();
             } catch (e) {
                 const errorObj = e as Error;
-                expect(errorObj.message).contains(constants.BLACKDUCK_FIXPR_MAXCOUNT_KEY
-                    .concat(' is not applicable with ').concat(constants.BLACKDUCK_FIXPR_CREATE_SINGLE_PR_KEY));
+                expect(errorObj.message).contains(constants.BLACKDUCKSCA_FIXPR_MAXCOUNT_KEY
+                    .concat(' is not applicable with ').concat(constants.BLACKDUCKSCA_FIXPR_CREATE_SINGLE_PR_KEY));
                 expect(errorObj.message).contains(ErrorCode.BLACKDUCKSCA_FIXPR_MAXCOUNT_NOT_APPLICABLE.toString());
             }
         });
@@ -1221,12 +1221,13 @@ describe("Bridge CLI Tools Parameter test", () => {
             Object.defineProperty(inputs, 'BLACKDUCKSCA_API_TOKEN', {value: 'token'})
             Object.defineProperty(inputs, 'BLACKDUCKSCA_FIXPR_ENABLED', {value: 'true'})
             Object.defineProperty(inputs, 'BLACKDUCKSCA_FIXPR_MAXCOUNT', {value: 'invalid-value'})
+            Object.defineProperty(inputs, 'AZURE_TOKEN', {value: 'token'})
 
             try {
                 const formattedCommand = await bridgeToolsParameter.getFormattedCommandForBlackduck();
             } catch (e) {
                 const errorObj = e as Error;
-                expect(errorObj.message).contains('Invalid value for '.concat(constants.BLACKDUCK_FIXPR_MAXCOUNT_KEY));
+                expect(errorObj.message).contains('Invalid value for '.concat(constants.BLACKDUCKSCA_FIXPR_MAXCOUNT_KEY));
                 expect(errorObj.message).contains(ErrorCode.INVALID_BLACKDUCKSCA_FIXPR_MAXCOUNT.toString());
             }
         });
