@@ -657,9 +657,9 @@ class Bridge {
     constructor() {
         this.bridgeExecutablePath = "";
         this.bridgeArtifactoryURL =
-            "https://repo.blackduck.com/bds-integrations-release/com/blackduck/integration/bridge-cli";
-        this.bridgeUrlPattern = this.bridgeArtifactoryURL.concat("/$version/bridge-cli-$version-$platform.zip");
-        this.bridgeUrlLatestPattern = this.bridgeArtifactoryURL.concat("/latest/bridge-cli-$platform.zip");
+            "https://artifactory.internal.synopsys.com/artifactory/clops-local/clops.sig.synopsys.com/bridge/binaries/bridge-cli-bundle";
+        this.bridgeUrlPattern = this.bridgeArtifactoryURL.concat("/$version/bridge-cli-bundle-$version-$platform.zip");
+        this.bridgeUrlLatestPattern = this.bridgeArtifactoryURL.concat("/latest/bridge-cli-bundle-$platform.zip");
     }
     extractBridge(fileInfo) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -858,11 +858,11 @@ class Bridge {
                     return Promise.reject(new Error(application_constant_1.INVALID_BRIDGE_CLI_URL.concat(constants.SPACE).concat(ErrorCodes_1.ErrorCode.INVALID_URL.toString())));
                 }
                 // To check whether bridge already exists with same version mentioned in bridge url
-                const versionsArray = bridgeUrl.match(".*bridge-cli-([0-9.]*).*");
+                const versionsArray = bridgeUrl.match(".*bridge-cli-bundle-([0-9.]*).*");
                 if (versionsArray) {
                     version = versionsArray[1];
                     if (!version) {
-                        const regex = /\w*(bridge-cli-(win64|linux64|macosx|macos_arm).zip)/;
+                        const regex = /\w*(bridge-cli-bundle-(win64|linux64|macosx|macos_arm).zip)/;
                         version = yield this.getBridgeVersionFromLatestURL(bridgeUrl.replace(regex, "versions.txt"));
                     }
                 }
