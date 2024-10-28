@@ -674,6 +674,7 @@ class Bridge {
     executeBridgeCommand(executablePath, workspace, command) {
         return __awaiter(this, void 0, void 0, function* () {
             taskLib.debug("extractedPath: ".concat(executablePath));
+            process.env["BRIDGE_CACHE_DIR"] = executablePath;
             const executableBridgePath = yield this.setBridgeExecutablePath(executablePath);
             if (!taskLib.exist(executableBridgePath)) {
                 throw new Error(application_constant_1.BRIDGE_CLI_EXECUTABLE_FILE_NOT_FOUND.concat(executableBridgePath)
