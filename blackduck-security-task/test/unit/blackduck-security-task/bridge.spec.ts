@@ -835,7 +835,7 @@ describe("Download Bridge", () => {
 
         it("Check If Version Exists - success", async () => {
 
-            sandbox.stub(fs, "readFileSync").returns('Bridge CLI Package: 0.1.1');
+            sandbox.stub(fs, "readFileSync").returns('bridge-cli-bundle: 0.1.1');
 
             const result = await bridge.checkIfVersionExists('0.1.1', bridgeDefaultPath);
             assert.equal(result, true);
@@ -887,7 +887,7 @@ describe("Download Bridge", () => {
         it('Test getBridgeVersionFromLatestURL -status 200', async () => {
             const incomingMessage: IncomingMessage = new IncomingMessage(new Socket())
             incomingMessage.statusCode = 200
-            const responseBody = "Bridge CLI Package:0.2.35\nbridge-cli: 0.2.35"
+            const responseBody = "Bridge CLI Package:0.2.35\nbridge-cli-bundle: 0.2.35"
 
             const response: ifm.IHttpClientResponse = {
                 message: incomingMessage,
@@ -906,7 +906,7 @@ describe("Download Bridge", () => {
         it('Test getBridgeVersionFromLatestURL exception', async () => {
             const incomingMessage: IncomingMessage = new IncomingMessage(new Socket())
             incomingMessage.statusCode = 200
-            const responseBody = "Bridge CLI Package:0.2.35\nbridge-cli: 0.2.35"
+            const responseBody = "bridge-cli-bundle: 0.2.35\nbridge-cli-bundle: 0.2.35"
 
             const response: ifm.IHttpClientResponse = {
                 message: incomingMessage,

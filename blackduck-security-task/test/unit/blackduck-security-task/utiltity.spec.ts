@@ -101,9 +101,9 @@ describe("Utilities", () => {
     context('getRemoteFile', async function () {
 
         it('getRemoteFile - success', async function () {
-            const downloadFileResponse = {filePath: "/", fileName: "bridge-cli.zip"} as DownloadFileResponse
+            const downloadFileResponse = {filePath: "/", fileName: "bridge-cli-bundle.zip"} as DownloadFileResponse
             sandbox.stub(toolLibLocal, "downloadTool").returns(Promise.resolve("/"));
-            const result = await utility.getRemoteFile("/", "https://blackduck.com/bridge-cli.zip");
+            const result = await utility.getRemoteFile("/", "https://blackduck.com/bridge-cli-bundle.zip");
             expect(result.fileName).equals(downloadFileResponse.fileName)
             expect(result.filePath).equals(downloadFileResponse.filePath)
         });

@@ -485,7 +485,7 @@ export class Bridge {
   ): Promise<boolean> {
     try {
       const contents = readFileSync(bridgeVersionFilePath, "utf-8");
-      return contents.includes("Bridge CLI Package: ".concat(bridgeVersion));
+      return contents.includes("bridge-cli-bundle: ".concat(bridgeVersion));
     } catch (e) {
       console.info(ERROR_READING_VERSION_FILE.concat((e as Error).message));
     }
