@@ -15,9 +15,9 @@ exports.POLARIS_MARK_BUILD_STATUS_KEY_CLASSIC_EDITOR = exports.MARK_BUILD_STATUS
 exports.VERSION_FILE_NOT_FOUND_AT = exports.VERSION_FILE_FOUND_AT = exports.LOOKING_FOR_BRIDGE_CLI_DEFAULT_PATH = exports.LOOKING_FOR_BRIDGE_CLI_INSTALL_DIR = exports.BRIDGE_CLI_FOUND_AT = exports.BRIDGE_CLI_DOWNLOAD_COMPLETED = exports.BRIDGE_CLI_URL_MESSAGE = exports.DOWNLOADING_BRIDGE_CLI = exports.CHECK_LATEST_BRIDGE_CLI_VERSION = exports.SKIP_DOWNLOAD_BRIDGE_CLI_WHEN_VERSION_NOT_FOUND = exports.FAILED_TO_GET_PULL_REQUEST_INFO = exports.MISSING_BOOL_VALUE = exports.REQUIRE_ONE_SCAN_TYPE = exports.INVALID_BLACKDUCKSCA_SCAN_FAILURE_SEVERITIES = exports.BRIDGE_CLI_DEFAULT_DIRECTORY_NOT_EXISTS = exports.BRIDGE_CLI_INSTALL_DIRECTORY_NOT_EXISTS = exports.BRIDGE_CLI_EXTRACT_DIRECTORY_NOT_FOUND = exports.WORKSPACE_DIR_NOT_FOUND = exports.BRIDGE_CLI_DOWNLOAD_FAILED_RETRY = exports.BRIDGE_CLI_DOWNLOAD_FAILED = exports.BRIDGE_CLI_ZIP_NOT_FOUND_FOR_EXTRACT = exports.WORKFLOW_FAILED = exports.INVALID_BRIDGE_CLI_URL = exports.INVALID_BRIDGE_CLI_URL_SPECIFIED_OS = exports.EMPTY_BRIDGE_CLI_URL = exports.BRIDGE_CLI_EXECUTABLE_FILE_NOT_FOUND = exports.BRIDGE_CLI_VERSION_NOT_FOUND = exports.MISSING_AZURE_TOKEN_FOR_FIX_PR_AND_PR_COMMENT = exports.BLACKDUCKSCA_SECURITY_SCAN_AZURE_DEVOPS_DOCS_URL = exports.DEFAULT_AZURE_API_URL = exports.MIN_SUPPORTED_BRIDGE_CLI_MAC_ARM_VERSION = exports.MAC_INTEL_PLATFORM = exports.MAC_ARM_PLATFORM = exports.LINUX_PLATFORM = exports.WINDOWS_PLATFORM = exports.NON_RETRY_HTTP_CODES = exports.RETRY_COUNT = exports.RETRY_DELAY_IN_MILLISECONDS = exports.SARIF_UPLOAD_FOLDER_ARTIFACT_NAME = exports.DEFAULT_POLARIS_SARIF_GENERATOR_DIRECTORY = exports.DEFAULT_BLACKDUCK_SARIF_GENERATOR_DIRECTORY = exports.SARIF_DEFAULT_FILE_NAME = exports.BRIDGE_CLI_LOCAL_DIRECTORY = exports.UPLOAD_FOLDER_ARTIFACT_NAME = exports.BRIDGECLI_INSTALL_DIRECTORY_KEY_CLASSIC_EDITOR = exports.BRIDGECLI_INSTALL_DIRECTORY_KEY = exports.SYNOPSYS_BRIDGE_INSTALL_DIRECTORY_KEY = exports.SRM_MARK_BUILD_STATUS_KEY_CLASSIC_EDITOR = exports.COVERITY_MARK_BUILD_STATUS_KEY_CLASSIC_EDITOR = exports.BLACKDUCKSCA_MARK_BUILD_STATUS_KEY_CLASSIC_EDITOR = void 0;
 exports.EXIT_CODE_MAP = exports.SARIF_GAS_API_RATE_LIMIT_FOR_ERROR = exports.PROVIDED_BLACKDUCKSCA_FAILURE_SEVERITIES_ERROR = exports.MISSING_BOOLEAN_VALUE_ERROR = exports.INVALID_VALUE_ERROR = exports.BRIDGE_DOWNLOAD_RETRY_ERROR = exports.SCAN_TYPE_REQUIRED_ERROR = exports.BRIDGE_DEFAULT_DIRECTORY_NOT_FOUND_ERROR = exports.BRIDGE_INSTALL_DIRECTORY_NOT_FOUND_ERROR = exports.BRIDGE_EXECUTABLE_NOT_FOUND_ERROR = exports.MARK_THE_BUILD_STATUS = exports.MARK_THE_BUILD_ON_BRIDGE_BREAK = exports.AZURE_PULL_REQUEST_NUMBER_IS_EMPTY = exports.BLACKDUCKSCA_SECURITY_SCAN_COMPLETED = exports.POLARISSCA_SARIF_REPORT_ENABLED = exports.BLACKDUCKSCA_SARIF_REPOST_ENABLED = exports.TASK_RETURN_STATUS = exports.NETWORK_AIR_GAP_ENABLED_SKIP_DOWNLOAD_BRIDGE_CLI = exports.UNABLE_TO_FIND_PULL_REQUEST_INFO = exports.GETTING_ALL_BRIDGE_VERSIONS_RETRY = exports.UNABLE_TO_GET_RECENT_BRIDGE_VERSION = exports.GETTING_LATEST_BRIDGE_VERSIONS_RETRY = exports.ERROR_READING_VERSION_FILE = void 0;
 const ErrorCodes_1 = __nccwpck_require__(8936);
-exports.BRIDGE_CLI_DEFAULT_PATH_MAC = "/bridge-cli-bundle"; //Path will be in home
-exports.BRIDGE_CLI_DEFAULT_PATH_WINDOWS = "\\bridge-cli-bundle";
-exports.BRIDGE_CLI_DEFAULT_PATH_LINUX = "/bridge-cli-bundle";
+exports.BRIDGE_CLI_DEFAULT_PATH_MAC = "/bridge-cli-bundle/bridge-cli-bundle-$version-$platform"; //Path will be in home
+exports.BRIDGE_CLI_DEFAULT_PATH_WINDOWS = "\\bridge-cli-bundle\\bridge-cli-bundle-$version-$platform";
+exports.BRIDGE_CLI_DEFAULT_PATH_LINUX = "/bridge-cli-bundle/bridge-cli-bundle-$version-$platform";
 exports.BRIDGE_CLI_EXECUTABLE_WINDOWS = "bridge-cli.exe";
 exports.BRIDGE_CLI_EXECUTABLE_MAC_LINUX = "bridge-cli";
 exports.BRIDGE_CLI_ZIP_FILE_NAME = "bridge-cli-bundle.zip";
@@ -655,6 +655,7 @@ const ErrorCodes_1 = __nccwpck_require__(8936);
 class Bridge {
     constructor() {
         this.bridgeExecutablePath = "";
+        this.bridgeVersion = "";
         this.bridgeArtifactoryURL =
             "https://artifactory.internal.synopsys.com/artifactory/clops-local/clops.sig.synopsys.com/bridge/binaries/bridge-cli-bundle";
         this.bridgeUrlPattern = this.bridgeArtifactoryURL.concat("/$version/bridge-cli-bundle-$version-$platform.zip");
@@ -887,6 +888,7 @@ class Bridge {
                     return Promise.resolve("");
                 }
             }
+            this.bridgeVersion = version;
             console.info(application_constant_1.DOWNLOADING_BRIDGE_CLI);
             console.info(application_constant_1.BRIDGE_CLI_URL_MESSAGE.concat(bridgeUrl));
             return bridgeUrl;
@@ -1007,16 +1009,28 @@ class Bridge {
     }
     getBridgeDefaultPath() {
         let bridgeDefaultPath = "";
+        let osType = "";
+        let bridgePathForOs = "";
+        let envType = "";
         const osName = process.platform;
         if (osName === "darwin") {
-            bridgeDefaultPath = path.join(process.env["HOME"], constants.BRIDGE_CLI_DEFAULT_PATH_MAC);
+            envType = "HOME";
+            osType = this.getMacOsSuffix();
+            bridgePathForOs = constants.BRIDGE_CLI_DEFAULT_PATH_MAC;
         }
         else if (osName === "linux") {
-            bridgeDefaultPath = path.join(process.env["HOME"], constants.BRIDGE_CLI_DEFAULT_PATH_LINUX);
+            envType = "HOME";
+            osType = constants.LINUX_PLATFORM;
+            bridgePathForOs = constants.BRIDGE_CLI_DEFAULT_PATH_LINUX;
         }
         else if (osName === "win32") {
-            bridgeDefaultPath = path.join(process.env["USERPROFILE"], constants.BRIDGE_CLI_DEFAULT_PATH_WINDOWS);
+            envType = "USERPROFILE";
+            osType = constants.WINDOWS_PLATFORM;
+            bridgePathForOs = constants.BRIDGE_CLI_DEFAULT_PATH_WINDOWS;
         }
+        bridgeDefaultPath = path.join(process.env[envType], bridgePathForOs
+            .replace("-$version", this.bridgeVersion != "" ? "-".concat(this.bridgeVersion) : "")
+            .replace("$platform", osType));
         taskLib.debug("bridgeDefaultPath:" + bridgeDefaultPath);
         return bridgeDefaultPath;
     }
@@ -1050,12 +1064,7 @@ class Bridge {
         const osName = process.platform;
         let bridgeDownloadUrl = this.bridgeUrlLatestPattern;
         if (osName === "darwin") {
-            const cpuInfo = os_1.default.cpus();
-            taskLib.debug(`cpuInfo :: ${JSON.stringify(cpuInfo)}`);
-            const isIntel = cpuInfo[0].model.includes("Intel");
-            const osSuffix = isIntel
-                ? constants.MAC_INTEL_PLATFORM
-                : constants.MAC_ARM_PLATFORM;
+            const osSuffix = this.getMacOsSuffix();
             bridgeDownloadUrl = bridgeDownloadUrl.replace("$platform", osSuffix);
         }
         else if (osName === "linux") {
@@ -1065,6 +1074,12 @@ class Bridge {
             bridgeDownloadUrl = bridgeDownloadUrl.replace("$platform", constants.WINDOWS_PLATFORM);
         }
         return bridgeDownloadUrl;
+    }
+    getMacOsSuffix() {
+        const cpuInfo = os_1.default.cpus();
+        taskLib.debug(`cpuInfo :: ${JSON.stringify(cpuInfo)}`);
+        const isIntel = cpuInfo[0].model.includes("Intel");
+        return isIntel ? constants.MAC_INTEL_PLATFORM : constants.MAC_ARM_PLATFORM;
     }
     setBridgeExecutablePath(filePath) {
         return __awaiter(this, void 0, void 0, function* () {

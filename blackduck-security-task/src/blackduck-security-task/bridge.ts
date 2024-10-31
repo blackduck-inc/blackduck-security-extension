@@ -57,12 +57,14 @@ import { ErrorCode } from "./enum/ErrorCodes";
 
 export class Bridge {
   bridgeExecutablePath: string;
+  bridgeVersion: string;
   bridgeArtifactoryURL: string;
   bridgeUrlPattern: string;
   bridgeUrlLatestPattern: string;
 
   constructor() {
     this.bridgeExecutablePath = "";
+    this.bridgeVersion = "";
     this.bridgeArtifactoryURL =
       "https://artifactory.internal.synopsys.com/artifactory/clops-local/clops.sig.synopsys.com/bridge/binaries/bridge-cli-bundle";
     this.bridgeUrlPattern = this.bridgeArtifactoryURL.concat(
@@ -402,6 +404,8 @@ export class Bridge {
       }
     }
 
+    this.bridgeVersion = version;
+
     console.info(DOWNLOADING_BRIDGE_CLI);
     console.info(BRIDGE_CLI_URL_MESSAGE.concat(bridgeUrl));
     return bridgeUrl;
@@ -542,19 +546,35 @@ export class Bridge {
     const osName = process.platform;
 
     if (osName === "darwin") {
+      const osType = this.getMacOsSuffix();
       bridgeDefaultPath = path.join(
-        process.env["HOME"] as string,
-        constants.BRIDGE_CLI_DEFAULT_PATH_MAC
+          process.env["HOME"] as string,
+          constants.BRIDGE_CLI_DEFAULT_PATH_MAC
+              .replace(
+                  "-$version",
+                  this.bridgeVersion != "" ? "-".concat(this.bridgeVersion) : ""
+              )
+              .replace("$platform", osType)
       );
     } else if (osName === "linux") {
       bridgeDefaultPath = path.join(
-        process.env["HOME"] as string,
-        constants.BRIDGE_CLI_DEFAULT_PATH_LINUX
+          process.env["HOME"] as string,
+          constants.BRIDGE_CLI_DEFAULT_PATH_LINUX
+              .replace(
+                  "-$version",
+                  this.bridgeVersion != "" ? "-".concat(this.bridgeVersion) : ""
+              )
+              .replace("$platform", constants.LINUX_PLATFORM)
       );
     } else if (osName === "win32") {
       bridgeDefaultPath = path.join(
-        process.env["USERPROFILE"] as string,
-        constants.BRIDGE_CLI_DEFAULT_PATH_WINDOWS
+          process.env["USERPROFILE"] as string,
+          constants.BRIDGE_CLI_DEFAULT_PATH_WINDOWS
+              .replace(
+                  "-$version",
+                  this.bridgeVersion != "" ? "-".concat(this.bridgeVersion) : ""
+              )
+              .replace("$platform", constants.WINDOWS_PLATFORM)
       );
     }
     taskLib.debug("bridgeDefaultPath:" + bridgeDefaultPath);
@@ -599,12 +619,7 @@ export class Bridge {
     const osName = process.platform;
     let bridgeDownloadUrl = this.bridgeUrlLatestPattern;
     if (osName === "darwin") {
-      const cpuInfo = os.cpus();
-      taskLib.debug(`cpuInfo :: ${JSON.stringify(cpuInfo)}`);
-      const isIntel = cpuInfo[0].model.includes("Intel");
-      const osSuffix = isIntel
-        ? constants.MAC_INTEL_PLATFORM
-        : constants.MAC_ARM_PLATFORM;
+      const osSuffix = this.getMacOsSuffix();
       bridgeDownloadUrl = bridgeDownloadUrl.replace("$platform", osSuffix);
     } else if (osName === "linux") {
       bridgeDownloadUrl = bridgeDownloadUrl.replace(
@@ -619,6 +634,13 @@ export class Bridge {
     }
 
     return bridgeDownloadUrl;
+  }
+
+  getMacOsSuffix(): string {
+    const cpuInfo = os.cpus();
+    taskLib.debug(`cpuInfo :: ${JSON.stringify(cpuInfo)}`);
+    const isIntel = cpuInfo[0].model.includes("Intel");
+    return isIntel ? constants.MAC_INTEL_PLATFORM : constants.MAC_ARM_PLATFORM;
   }
 
   async setBridgeExecutablePath(filePath: string): Promise<string> {

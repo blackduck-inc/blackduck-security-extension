@@ -6,7 +6,6 @@ import {assert, expect} from "chai";
 import * as sinon from "sinon";
 import path from "path";
 import * as constants from "../../../src/blackduck-security-task/application-constant";
-import * as taskLib from "azure-pipelines-task-lib";
 import os from "os";
 
 describe("Platform", () => {
@@ -23,7 +22,10 @@ describe("Platform", () => {
             Object.defineProperty(process, 'platform', {
                 value: "linux"
             })
-            bridgeDefaultPath = path.join(process.env["HOME"] as string, constants.BRIDGE_CLI_DEFAULT_PATH_LINUX);
+            bridgeDefaultPath = path.join(process.env["HOME"] as string,
+                constants.BRIDGE_CLI_DEFAULT_PATH_LINUX
+                    .replace("-$version", "")
+                    .replace("$platform", constants.LINUX_PLATFORM));
             bridgeUrl = "https://artifactory.internal.synopsys.com/artifactory/clops-local/clops.sig.synopsys.com/bridge/binaries/bridge-cli-bundle/0.1.244/bridge-cli-bundle-0.1.244-linux64.zip"
         })
 
@@ -72,7 +74,10 @@ describe("Platform", () => {
                 }]
             const cpuInfo = sandbox.stub(os, "cpus");
             cpuInfo.returns(fakeCpus);
-            bridgeDefaultPath = path.join(process.env["HOME"] as string, constants.BRIDGE_CLI_DEFAULT_PATH_MAC);
+            bridgeDefaultPath = path.join(process.env["HOME"] as string,
+                constants.BRIDGE_CLI_DEFAULT_PATH_MAC
+                    .replace("-$version", "")
+                    .replace("$platform", constants.MAC_INTEL_PLATFORM));
             bridgeUrl = "https://artifactory.internal.synopsys.com/artifactory/clops-local/clops.sig.synopsys.com/bridge/binaries/bridge-cli-bundle/0.1.244/bridge-cli-bundle-0.1.244-macosx.zip"
         })
 
@@ -108,7 +113,10 @@ describe("Platform", () => {
             })
 
             bridgeDefaultPath = path.join(
-                process.env["USERPROFILE"] as string, constants.BRIDGE_CLI_DEFAULT_PATH_WINDOWS)
+                process.env["USERPROFILE"] as string,
+                constants.BRIDGE_CLI_DEFAULT_PATH_WINDOWS
+                    .replace("-$version", "")
+                    .replace("$platform", constants.WINDOWS_PLATFORM))
             bridgeUrl = "https://artifactory.internal.synopsys.com/artifactory/clops-local/clops.sig.synopsys.com/bridge/binaries/bridge-cli-bundle/0.1.244/bridge-cli-bundle-0.1.244-win64.zip"
         })
 

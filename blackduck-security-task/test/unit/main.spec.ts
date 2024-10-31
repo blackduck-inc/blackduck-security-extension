@@ -16,6 +16,7 @@ describe("Main function test cases", () => {
     beforeEach(() => {
         sandbox = sinon.createSandbox();
         bridge = new Bridge();
+        bridge.bridgeVersion = "";
         process.env['BUILD_REPOSITORY_LOCALPATH']  = '/tmp'
     });
     afterEach(() => {
@@ -144,7 +145,7 @@ describe("Main function test cases", () => {
         it('air gap enabled: success', async () => {
             Object.defineProperty(inputs, 'ENABLE_NETWORK_AIRGAP', {value: true});
             sandbox.stub(Bridge.prototype, 'prepareCommand').resolves("test command")
-            sandbox.stub(Bridge.prototype, 'getBridgePath').resolves("test command")
+            sandbox.stub(Bridge.prototype, 'getBridgePath').resolves("test-path")
             sandbox.stub(Bridge.prototype, 'downloadAndExtractBridge').resolves("test-path")
             sandbox.stub(Bridge.prototype, 'executeBridgeCommand').resolves(0)
             main.run()
@@ -156,7 +157,7 @@ describe("Main function test cases", () => {
             sandbox.stub(Bridge.prototype, 'downloadAndExtractBridge').resolves("test-path")
             sandbox.stub(Bridge.prototype, 'executeBridgeCommand').resolves(0)
             main.run().catch(errorObj => {
-                expect(errorObj.message).includes("Default Bridge CLI path does not exist");
+                expect(errorObj.message).includes("Bridge CLI default directory does not exist");
             })
         });
     });
