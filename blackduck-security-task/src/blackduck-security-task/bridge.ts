@@ -86,7 +86,12 @@ export class Bridge {
 
     await extractZipped(fileInfo.filePath, extractZippedFilePath);
 
-    return Promise.resolve(extractZippedFilePath);
+    const extractedBridgeCliPath = path.join(
+      String(extractZippedFilePath),
+      String(this.getAppendedPath())
+    );
+
+    return Promise.resolve(extractedBridgeCliPath);
   }
 
   async executeBridgeCommand(

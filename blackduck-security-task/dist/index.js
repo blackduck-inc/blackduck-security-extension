@@ -670,7 +670,8 @@ class Bridge {
                 yield taskLib.rmRF(extractZippedFilePath);
             }
             yield (0, utility_2.extractZipped)(fileInfo.filePath, extractZippedFilePath);
-            return Promise.resolve(extractZippedFilePath);
+            const extractedBridgeCliPath = path.join(String(extractZippedFilePath), String(this.getAppendedPath()));
+            return Promise.resolve(extractedBridgeCliPath);
         });
     }
     executeBridgeCommand(executablePath, workspace, command) {
