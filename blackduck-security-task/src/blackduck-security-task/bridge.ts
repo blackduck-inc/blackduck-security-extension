@@ -545,40 +545,44 @@ export class Bridge {
     let bridgeDefaultPath = "";
     const osName = process.platform;
 
-    if (osName === "darwin") {
-      const osType = this.getMacOsSuffix();
+    if (osName === "darwin" || osName === "linux") {
       bridgeDefaultPath = path.join(
-          process.env["HOME"] as string,
-          constants.BRIDGE_CLI_DEFAULT_PATH_MAC
-              .replace(
-                  "-$version",
-                  this.bridgeVersion != "" ? "-".concat(this.bridgeVersion) : ""
-              )
-              .replace("$platform", osType)
-      );
-    } else if (osName === "linux") {
-      bridgeDefaultPath = path.join(
-          process.env["HOME"] as string,
-          constants.BRIDGE_CLI_DEFAULT_PATH_LINUX
-              .replace(
-                  "-$version",
-                  this.bridgeVersion != "" ? "-".concat(this.bridgeVersion) : ""
-              )
-              .replace("$platform", constants.LINUX_PLATFORM)
+        process.env["HOME"] as string,
+        constants.BRIDGE_CLI_DEFAULT_PATH_UNIX
       );
     } else if (osName === "win32") {
       bridgeDefaultPath = path.join(
-          process.env["USERPROFILE"] as string,
-          constants.BRIDGE_CLI_DEFAULT_PATH_WINDOWS
-              .replace(
-                  "-$version",
-                  this.bridgeVersion != "" ? "-".concat(this.bridgeVersion) : ""
-              )
-              .replace("$platform", constants.WINDOWS_PLATFORM)
+        process.env["USERPROFILE"] as string,
+        constants.BRIDGE_CLI_DEFAULT_PATH_WINDOWS
       );
     }
     taskLib.debug("bridgeDefaultPath:" + bridgeDefaultPath);
     return bridgeDefaultPath;
+  }
+
+  getAppendedPath(): string {
+    let bridgeAppendedPath = "";
+    const osName = process.platform;
+
+    if (osName === "darwin" || osName === "linux") {
+      let osPlatform = constants.LINUX_PLATFORM;
+      if (osName === "darwin") {
+        osPlatform = this.getMacOsSuffix();
+      }
+      bridgeAppendedPath =
+        constants.BRIDGE_CLI_DEFAULT_APPEND_PATH_UNIX.replace(
+          "-$version",
+          this.bridgeVersion != "" ? "-".concat(this.bridgeVersion) : ""
+        ).replace("$platform", osPlatform);
+    } else if (osName === "win32") {
+      bridgeAppendedPath =
+        constants.BRIDGE_CLI_DEFAULT_APPEND_PATH_WINDOWS.replace(
+          "-$version",
+          this.bridgeVersion != "" ? "-".concat(this.bridgeVersion) : ""
+        ).replace("$platform", constants.WINDOWS_PLATFORM);
+    }
+    taskLib.debug("bridgeAppendedPath:" + bridgeAppendedPath);
+    return bridgeAppendedPath;
   }
 
   // Get bridge version url
@@ -660,7 +664,10 @@ export class Bridge {
 
   //contains executable path with extension file
   async getBridgePath(): Promise<string> {
-    let bridgeDirectoryPath = this.getBridgeDefaultPath();
+    let bridgeDirectoryPath = path.join(
+      String(this.getBridgeDefaultPath()),
+      String(this.getAppendedPath())
+    );
     if (BRIDGECLI_INSTALL_DIRECTORY_KEY) {
       bridgeDirectoryPath = BRIDGECLI_INSTALL_DIRECTORY_KEY;
       console.info(LOOKING_FOR_BRIDGE_CLI_INSTALL_DIR);
@@ -673,8 +680,8 @@ export class Bridge {
       }
     } else {
       console.info(LOOKING_FOR_BRIDGE_CLI_DEFAULT_PATH);
-      if (ENABLE_NETWORK_AIRGAP && this.getBridgeDefaultPath()) {
-        if (!taskLib.exist(this.getBridgeDefaultPath())) {
+      if (ENABLE_NETWORK_AIRGAP && bridgeDirectoryPath) {
+        if (!taskLib.exist(bridgeDirectoryPath)) {
           throw new Error(
             BRIDGE_CLI_DEFAULT_DIRECTORY_NOT_EXISTS.concat(
               constants.SPACE
