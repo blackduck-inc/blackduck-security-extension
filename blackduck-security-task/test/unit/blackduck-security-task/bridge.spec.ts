@@ -262,23 +262,28 @@ describe("Download Bridge", () => {
     const isIntel = cpuInfo[0].model.includes("Intel")
     let bridgeDefaultPath = "";
     let bridgeExecutablePath = "";
+    let bridgeSubDir = "";
     if (osName === "linux") {
         bridgeDefaultPath = path.join(process.env["HOME"] as string, constants.BRIDGE_CLI_DEFAULT_PATH_UNIX);
         bridgeExecutablePath = bridgeDefaultPath.concat("/bridge-cli-bundle-linux64")
+        bridgeSubDir = "/bridge-cli-bundle-linux64";
         bridgeUrl = "https://artifactory.internal.synopsys.com/artifactory/clops-local/clops.sig.synopsys.com/bridge/binaries/bridge-cli-bundle/2.9.2/bridge-cli-bundle-2.9.2-linux64.zip"
     } else if (osName === "win32") {
         bridgeDefaultPath = path.join(
             process.env["USERPROFILE"] as string, constants.BRIDGE_CLI_DEFAULT_PATH_WINDOWS)
         bridgeExecutablePath = bridgeDefaultPath.concat("/bridge-cli-bundle-win64")
+        bridgeSubDir = "/bridge-cli-bundle-win64";
         bridgeUrl = "https://artifactory.internal.synopsys.com/artifactory/clops-local/clops.sig.synopsys.com/bridge/binaries/bridge-cli-bundle/2.9.2/bridge-cli-bundle-2.9.2--win64.zip"
     } else if (osName === "darwin") {
         bridgeDefaultPath = path.join(
             process.env["HOME"] as string, constants.BRIDGE_CLI_DEFAULT_PATH_UNIX)
             if (isIntel) {
                 bridgeExecutablePath = bridgeDefaultPath.concat("/bridge-cli-bundle-macosx")
+                bridgeSubDir = "/bridge-cli-bundle-macosx";
                 bridgeUrl = "https://artifactory.internal.synopsys.com/artifactory/clops-local/clops.sig.synopsys.com/bridge/binaries/bridge-cli-bundle/2.9.2/bridge-cli-bundle-2.9.2-macosx.zip"
             } else {
                 bridgeExecutablePath = bridgeDefaultPath.concat("/bridge-cli-bundle-mac_arm")
+                bridgeSubDir = "/bridge-cli-bundle-macos_arm";
                 bridgeUrl = "https://artifactory.internal.synopsys.com/artifactory/clops-local/clops.sig.synopsys.com/bridge/binaries/bridge-cli-bundle/2.9.2/bridge-cli-bundle-2.9.2-macos_arm.zip"
             }
     }
@@ -461,7 +466,7 @@ describe("Download Bridge", () => {
             });
             sandbox.stub(taskLib, "exist").returns(true)
             const result = await bridge.getBridgePath();
-            assert.equal(result, "/Users/test/bridgePath");
+            assert.equal(result, "/Users/test/bridgePath".concat(bridgeSubDir));
             Object.defineProperty(inputs, "BRIDGECLI_DOWNLOAD_URL", {
                 value: "",
             });

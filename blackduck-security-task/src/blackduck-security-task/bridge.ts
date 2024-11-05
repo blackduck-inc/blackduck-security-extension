@@ -714,9 +714,12 @@ export class Bridge {
       String(this.getDefaultBridgeSubDirectory())
     );
     if (BRIDGECLI_INSTALL_DIRECTORY_KEY) {
-      bridgeDirectoryPath = BRIDGECLI_INSTALL_DIRECTORY_KEY;
+      bridgeDirectoryPath = path.join(
+        String(BRIDGECLI_INSTALL_DIRECTORY_KEY),
+        String(this.getDefaultBridgeSubDirectory())
+      );
       console.info(LOOKING_FOR_BRIDGE_CLI_INSTALL_DIR);
-      if (!taskLib.exist(bridgeDirectoryPath)) {
+      if (!taskLib.exist(BRIDGECLI_INSTALL_DIRECTORY_KEY)) {
         throw new Error(
           BRIDGE_CLI_INSTALL_DIRECTORY_NOT_EXISTS.concat(
             constants.SPACE

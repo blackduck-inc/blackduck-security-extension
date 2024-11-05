@@ -1135,9 +1135,9 @@ class Bridge {
         return __awaiter(this, void 0, void 0, function* () {
             let bridgeDirectoryPath = path.join(String(this.getBridgeDefaultPath()), String(this.getDefaultBridgeSubDirectory()));
             if (input_1.BRIDGECLI_INSTALL_DIRECTORY_KEY) {
-                bridgeDirectoryPath = input_1.BRIDGECLI_INSTALL_DIRECTORY_KEY;
+                bridgeDirectoryPath = path.join(String(input_1.BRIDGECLI_INSTALL_DIRECTORY_KEY), String(this.getDefaultBridgeSubDirectory()));
                 console.info(application_constant_1.LOOKING_FOR_BRIDGE_CLI_INSTALL_DIR);
-                if (!taskLib.exist(bridgeDirectoryPath)) {
+                if (!taskLib.exist(input_1.BRIDGECLI_INSTALL_DIRECTORY_KEY)) {
                     throw new Error(application_constant_1.BRIDGE_CLI_INSTALL_DIRECTORY_NOT_EXISTS.concat(constants.SPACE).concat(ErrorCodes_1.ErrorCode.BRIDGE_INSTALL_DIRECTORY_NOT_EXIST.toString()));
                 }
             }
