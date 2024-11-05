@@ -892,7 +892,7 @@ describe("Download Bridge", () => {
         it('Test getBridgeVersionFromLatestURL -status 200', async () => {
             const incomingMessage: IncomingMessage = new IncomingMessage(new Socket())
             incomingMessage.statusCode = 200
-            const responseBody = "Bridge CLI Package:0.2.35\nbridge-cli-bundle: 0.2.35"
+            const responseBody = "bridge-cli-bundle:0.2.35\nbridge-cli-bundle: 0.2.35"
 
             const response: ifm.IHttpClientResponse = {
                 message: incomingMessage,

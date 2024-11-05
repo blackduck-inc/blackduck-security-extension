@@ -97,11 +97,13 @@ export class Bridge {
         String(bridgeInstallDirectory),
         String(this.getBridgeSubDirectoryWithVersion())
       );
-      taskLib.debug(
-        "Renaming bridge versioned path to default bridge-cli path"
-      );
       taskLib.debug("bridgePathWithVersion: " + bridgePathWithVersion);
-      renameSync(bridgePathWithVersion, bridgeCliFullPath);
+      if (taskLib.exist(bridgePathWithVersion)) {
+        taskLib.debug(
+          "Renaming bridge versioned path to default bridge-cli path"
+        );
+        renameSync(bridgePathWithVersion, bridgeCliFullPath);
+      }
     }
     taskLib.debug("Bridge Executable Path: " + bridgeCliFullPath);
     return Promise.resolve(bridgeCliFullPath);
@@ -543,7 +545,7 @@ export class Bridge {
           const htmlResponse = (await httpResponse.readBody()).trim();
           const lines = htmlResponse.split("\n");
           for (const line of lines) {
-            if (line.includes("Bridge CLI Package")) {
+            if (line.includes("bridge-cli-bundle")) {
               return line.split(":")[1].trim();
             }
           }
