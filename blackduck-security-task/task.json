@@ -3,7 +3,7 @@
   "id": "edd0f606-d9e3-4294-9d0d-64f9f1aadfde",
   "name": "BlackDuckSecurityScan",
   "friendlyName": "Black Duck Security Scan",
-  "description": "Run security scans on Polaris, Black Duck, Coverity or Software Risk Manager (SRM) platforms",
+  "description": "Run security scans on Polaris, Black Duck SCA, Coverity or Software Risk Manager (SRM) platforms",
   "helpMarkDown": "",
   "category": "Utility",
   "author": "Black Duck Software Inc.",
