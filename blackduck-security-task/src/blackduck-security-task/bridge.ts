@@ -16,7 +16,7 @@ import * as constants from "./application-constant";
 
 import * as inputs from "./input";
 import { extractZipped, getRemoteFile, parseToBoolean } from "./utility";
-import { readFileSync } from "fs";
+import { readFileSync, renameSync } from "fs";
 import { DownloadFileResponse } from "./model/download-file-response";
 import DomParser from "dom-parser";
 import {
@@ -76,22 +76,35 @@ export class Bridge {
   }
 
   async extractBridge(fileInfo: DownloadFileResponse): Promise<string> {
-    const extractZippedFilePath: string =
+    const bridgeInstallDirectory: string =
       inputs.BRIDGECLI_INSTALL_DIRECTORY_KEY || this.getBridgeDefaultPath();
 
+    const bridgeCliFullPath = path.join(
+      String(bridgeInstallDirectory),
+      String(this.getDefaultBridgeSubDirectory())
+    );
+    taskLib.debug("bridgeCliFullPath: " + bridgeCliFullPath);
+
     // Clear the existing bridge, if available
-    if (taskLib.exist(extractZippedFilePath)) {
-      await taskLib.rmRF(extractZippedFilePath);
+    if (taskLib.exist(bridgeCliFullPath)) {
+      await taskLib.rmRF(bridgeCliFullPath);
     }
 
-    await extractZipped(fileInfo.filePath, extractZippedFilePath);
+    await extractZipped(fileInfo.filePath, bridgeInstallDirectory);
 
-    const extractedBridgeCliPath = path.join(
-      String(extractZippedFilePath),
-      String(this.getAppendedPath())
-    );
-
-    return Promise.resolve(extractedBridgeCliPath);
+    if (this.bridgeVersion != "") {
+      const bridgePathWithVersion = path.join(
+        String(bridgeInstallDirectory),
+        String(this.getBridgeSubDirectoryWithVersion())
+      );
+      taskLib.debug(
+        "Renaming bridge versioned path to default bridge-cli path"
+      );
+      taskLib.debug("bridgePathWithVersion: " + bridgePathWithVersion);
+      renameSync(bridgePathWithVersion, bridgeCliFullPath);
+    }
+    taskLib.debug("Bridge Executable Path: " + bridgeCliFullPath);
+    return Promise.resolve(bridgeCliFullPath);
   }
 
   async executeBridgeCommand(
@@ -565,8 +578,8 @@ export class Bridge {
     return bridgeDefaultPath;
   }
 
-  getAppendedPath(): string {
-    let bridgeAppendedPath = "";
+  getDefaultBridgeSubDirectory(): string {
+    let bridgeSubDirectory = "";
     const osName = process.platform;
 
     if (osName === "darwin" || osName === "linux") {
@@ -574,20 +587,45 @@ export class Bridge {
       if (osName === "darwin") {
         osPlatform = this.getMacOsSuffix();
       }
-      bridgeAppendedPath =
-        constants.BRIDGE_CLI_DEFAULT_APPEND_PATH_UNIX.replace(
-          "-$version",
-          this.bridgeVersion != "" ? "-".concat(this.bridgeVersion) : ""
-        ).replace("$platform", osPlatform);
+      bridgeSubDirectory =
+        constants.BRIDGE_CLI_DEFAULT_SUBDIRECTORY_PATH_UNIX.concat("-").concat(
+          osPlatform
+        );
     } else if (osName === "win32") {
-      bridgeAppendedPath =
-        constants.BRIDGE_CLI_DEFAULT_APPEND_PATH_WINDOWS.replace(
-          "-$version",
-          this.bridgeVersion != "" ? "-".concat(this.bridgeVersion) : ""
-        ).replace("$platform", constants.WINDOWS_PLATFORM);
+      bridgeSubDirectory =
+        constants.BRIDGE_CLI_DEFAULT_SUBDIRECTORY_PATH_WINDOWS.concat(
+          "-"
+        ).concat(constants.WINDOWS_PLATFORM);
     }
-    taskLib.debug("bridgeAppendedPath:" + bridgeAppendedPath);
-    return bridgeAppendedPath;
+    taskLib.debug("bridgeSubDirectory:" + bridgeSubDirectory);
+    return bridgeSubDirectory;
+  }
+
+  getBridgeSubDirectoryWithVersion(): string {
+    let bridgeSubDirectoryWithVersion = "";
+    const osName = process.platform;
+    const version =
+      this.bridgeVersion != "" ? "-".concat(this.bridgeVersion) : "";
+
+    if (osName === "darwin" || osName === "linux") {
+      let osPlatform = constants.LINUX_PLATFORM;
+      if (osName === "darwin") {
+        osPlatform = this.getMacOsSuffix();
+      }
+      bridgeSubDirectoryWithVersion =
+        constants.BRIDGE_CLI_DEFAULT_SUBDIRECTORY_PATH_UNIX.concat(version)
+          .concat("-")
+          .concat(osPlatform);
+    } else if (osName === "win32") {
+      bridgeSubDirectoryWithVersion =
+        constants.BRIDGE_CLI_DEFAULT_SUBDIRECTORY_PATH_WINDOWS.concat(version)
+          .concat("-")
+          .concat(constants.WINDOWS_PLATFORM);
+    }
+    taskLib.debug(
+      "bridgeSubDirectoryWithVersion:" + bridgeSubDirectoryWithVersion
+    );
+    return bridgeSubDirectoryWithVersion;
   }
 
   // Get bridge version url
@@ -671,7 +709,7 @@ export class Bridge {
   async getBridgePath(): Promise<string> {
     let bridgeDirectoryPath = path.join(
       String(this.getBridgeDefaultPath()),
-      String(this.getAppendedPath())
+      String(this.getDefaultBridgeSubDirectory())
     );
     if (BRIDGECLI_INSTALL_DIRECTORY_KEY) {
       bridgeDirectoryPath = BRIDGECLI_INSTALL_DIRECTORY_KEY;

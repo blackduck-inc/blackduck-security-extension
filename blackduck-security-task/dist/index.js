@@ -8,7 +8,7 @@ require('./sourcemap-register.js');/******/ (() => { // webpackBootstrap
 
 // Copyright (c) 2024 Black Duck Software Inc. All rights reserved worldwide.
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.PROJECT_DIRECTORY_KEY = exports.POLARIS_TEST_SCA_TYPE_KEY_CLASSIC_EDITOR = exports.POLARIS_TEST_SCA_TYPE_KEY = exports.POLARIS_ASSESSMENT_MODE_KEY_CLASSIC_EDITOR = exports.POLARIS_ASSESSMENT_MODE_KEY = exports.POLARIS_REPORTS_SARIF_ISSUE_TYPES_KEY_CLASSIC_EDITOR = exports.POLARIS_REPORTS_SARIF_ISSUE_TYPES_KEY = exports.POLARIS_REPORTS_SARIF_GROUP_SCA_ISSUES_KEY_CLASSIC_EDITOR = exports.POLARIS_REPORTS_SARIF_GROUP_SCA_ISSUES_KEY = exports.POLARIS_REPORTS_SARIF_SEVERITIES_KEY_CLASSIC_EDITOR = exports.POLARIS_REPORTS_SARIF_SEVERITIES_KEY = exports.POLARIS_REPORTS_SARIF_FILE_PATH_KEY_CLASSIC_EDITOR = exports.POLARIS_REPORTS_SARIF_FILE_PATH_KEY = exports.POLARIS_REPORTS_SARIF_CREATE_KEY_CLASSIC_EDITOR = exports.POLARIS_REPORTS_SARIF_CREATE_KEY = exports.POLARIS_PR_COMMENT_SEVERITIES_KEY_CLASSIC_EDITOR = exports.POLARIS_PR_COMMENT_SEVERITIES_KEY = exports.POLARIS_PR_COMMENT_ENABLED_KEY_CLASSIC_EDITOR = exports.POLARIS_PR_COMMENT_ENABLED_KEY = exports.POLARIS_BRANCH_PARENT_NAME_KEY_CLASSIC_EDITOR = exports.POLARIS_BRANCH_PARENT_NAME_KEY = exports.POLARIS_BRANCH_NAME_KEY_CLASSIC_EDITOR = exports.POLARIS_BRANCH_NAME_KEY = exports.POLARIS_ASSESSMENT_TYPES_KEY_CLASSIC_EDITOR = exports.POLARIS_ASSESSMENT_TYPES_KEY = exports.POLARIS_PROJECT_NAME_KEY_CLASSIC_EDITOR = exports.POLARIS_PROJECT_NAME_KEY = exports.POLARIS_APPLICATION_NAME_KEY_CLASSIC_EDITOR = exports.POLARIS_APPLICATION_NAME_KEY = exports.POLARIS_ACCESS_TOKEN_KEY_CLASSIC_EDITOR = exports.POLARIS_ACCESS_TOKEN_KEY = exports.POLARIS_SERVER_URL_KEY_CLASSIC_EDITOR = exports.POLARIS_SERVER_URL_KEY = exports.SRM_KEY = exports.BLACKDUCKSCA_KEY = exports.COVERITY_KEY = exports.POLARIS_KEY = exports.SPACE = exports.SCAN_TYPE_KEY = exports.COVERITY_AZURE_TOKEN_KEY_CLASSIC_EDITOR = exports.BLACKDUCKSCA_AZURE_TOKEN_KEY_CLASSIC_EDITOR = exports.POLARIS_AZURE_TOKEN_KEY_CLASSIC_EDITOR = exports.AZURE_TOKEN_KEY = exports.BRIDGE_CLI_ZIP_FILE_NAME = exports.BRIDGE_CLI_EXECUTABLE_MAC_LINUX = exports.BRIDGE_CLI_EXECUTABLE_WINDOWS = exports.BRIDGE_CLI_DEFAULT_APPEND_PATH_WINDOWS = exports.BRIDGE_CLI_DEFAULT_APPEND_PATH_UNIX = exports.BRIDGE_CLI_DEFAULT_PATH_WINDOWS = exports.BRIDGE_CLI_DEFAULT_PATH_UNIX = void 0;
+exports.PROJECT_DIRECTORY_KEY = exports.POLARIS_TEST_SCA_TYPE_KEY_CLASSIC_EDITOR = exports.POLARIS_TEST_SCA_TYPE_KEY = exports.POLARIS_ASSESSMENT_MODE_KEY_CLASSIC_EDITOR = exports.POLARIS_ASSESSMENT_MODE_KEY = exports.POLARIS_REPORTS_SARIF_ISSUE_TYPES_KEY_CLASSIC_EDITOR = exports.POLARIS_REPORTS_SARIF_ISSUE_TYPES_KEY = exports.POLARIS_REPORTS_SARIF_GROUP_SCA_ISSUES_KEY_CLASSIC_EDITOR = exports.POLARIS_REPORTS_SARIF_GROUP_SCA_ISSUES_KEY = exports.POLARIS_REPORTS_SARIF_SEVERITIES_KEY_CLASSIC_EDITOR = exports.POLARIS_REPORTS_SARIF_SEVERITIES_KEY = exports.POLARIS_REPORTS_SARIF_FILE_PATH_KEY_CLASSIC_EDITOR = exports.POLARIS_REPORTS_SARIF_FILE_PATH_KEY = exports.POLARIS_REPORTS_SARIF_CREATE_KEY_CLASSIC_EDITOR = exports.POLARIS_REPORTS_SARIF_CREATE_KEY = exports.POLARIS_PR_COMMENT_SEVERITIES_KEY_CLASSIC_EDITOR = exports.POLARIS_PR_COMMENT_SEVERITIES_KEY = exports.POLARIS_PR_COMMENT_ENABLED_KEY_CLASSIC_EDITOR = exports.POLARIS_PR_COMMENT_ENABLED_KEY = exports.POLARIS_BRANCH_PARENT_NAME_KEY_CLASSIC_EDITOR = exports.POLARIS_BRANCH_PARENT_NAME_KEY = exports.POLARIS_BRANCH_NAME_KEY_CLASSIC_EDITOR = exports.POLARIS_BRANCH_NAME_KEY = exports.POLARIS_ASSESSMENT_TYPES_KEY_CLASSIC_EDITOR = exports.POLARIS_ASSESSMENT_TYPES_KEY = exports.POLARIS_PROJECT_NAME_KEY_CLASSIC_EDITOR = exports.POLARIS_PROJECT_NAME_KEY = exports.POLARIS_APPLICATION_NAME_KEY_CLASSIC_EDITOR = exports.POLARIS_APPLICATION_NAME_KEY = exports.POLARIS_ACCESS_TOKEN_KEY_CLASSIC_EDITOR = exports.POLARIS_ACCESS_TOKEN_KEY = exports.POLARIS_SERVER_URL_KEY_CLASSIC_EDITOR = exports.POLARIS_SERVER_URL_KEY = exports.SRM_KEY = exports.BLACKDUCKSCA_KEY = exports.COVERITY_KEY = exports.POLARIS_KEY = exports.SPACE = exports.SCAN_TYPE_KEY = exports.COVERITY_AZURE_TOKEN_KEY_CLASSIC_EDITOR = exports.BLACKDUCKSCA_AZURE_TOKEN_KEY_CLASSIC_EDITOR = exports.POLARIS_AZURE_TOKEN_KEY_CLASSIC_EDITOR = exports.AZURE_TOKEN_KEY = exports.BRIDGE_CLI_ZIP_FILE_NAME = exports.BRIDGE_CLI_EXECUTABLE_MAC_LINUX = exports.BRIDGE_CLI_EXECUTABLE_WINDOWS = exports.BRIDGE_CLI_DEFAULT_SUBDIRECTORY_PATH_WINDOWS = exports.BRIDGE_CLI_DEFAULT_SUBDIRECTORY_PATH_UNIX = exports.BRIDGE_CLI_DEFAULT_PATH_WINDOWS = exports.BRIDGE_CLI_DEFAULT_PATH_UNIX = void 0;
 exports.COVERITY_ARGS_KEY_CLASSIC_EDITOR_FOR_SRM = exports.COVERITY_ARGS_KEY_CLASSIC_EDITOR_FOR_POLARIS = exports.COVERITY_ARGS_KEY_CLASSIC_EDITOR = exports.COVERITY_ARGS_KEY = exports.COVERITY_CONFIG_PATH_KEY_CLASSIC_EDITOR_FOR_SRM = exports.COVERITY_CONFIG_PATH_KEY_CLASSIC_EDITOR_FOR_POLARIS = exports.COVERITY_CONFIG_PATH_KEY_CLASSIC_EDITOR = exports.COVERITY_CONFIG_PATH_KEY = exports.COVERITY_CLEAN_COMMAND_KEY_CLASSIC_EDITOR_FOR_SRM = exports.COVERITY_CLEAN_COMMAND_KEY_CLASSIC_EDITOR_FOR_POLARIS = exports.COVERITY_CLEAN_COMMAND_KEY_CLASSIC_EDITOR = exports.COVERITY_CLEAN_COMMAND_KEY = exports.COVERITY_BUILD_COMMAND_KEY_CLASSIC_EDITOR_FOR_SRM = exports.COVERITY_BUILD_COMMAND_KEY_CLASSIC_EDITOR_FOR_POLARIS = exports.COVERITY_BUILD_COMMAND_KEY_CLASSIC_EDITOR = exports.COVERITY_BUILD_COMMAND_KEY = exports.COVERITY_VERSION_KEY_CLASSIC_EDITOR = exports.COVERITY_VERSION_KEY = exports.COVERITY_LOCAL_KEY_CLASSIC_EDITOR = exports.COVERITY_LOCAL_KEY = exports.COVERITY_PRCOMMENT_ENABLED_KEY_CLASSIC_EDITOR = exports.COVERITY_PRCOMMENT_ENABLED_KEY = exports.COVERITY_PROJECT_DIRECTORY_KEY_CLASSIC_EDITOR = exports.COVERITY_WAITFORSCAN_KEY_CLASSIC_EDITOR = exports.COVERITY_WAITFORSCAN_KEY = exports.COVERITY_POLICY_VIEW_KEY_CLASSIC_EDITOR = exports.COVERITY_POLICY_VIEW_KEY = exports.COVERITY_EXECUTION_PATH_KEY_CLASSIC_EDITOR = exports.COVERITY_EXECUTION_PATH_KEY = exports.COVERITY_INSTALL_DIRECTORY_KEY_CLASSIC_EDITOR = exports.COVERITY_INSTALL_DIRECTORY_KEY = exports.COVERITY_STREAM_NAME_KEY_CLASSIC_EDITOR = exports.COVERITY_STREAM_NAME_KEY = exports.COVERITY_PROJECT_NAME_KEY_CLASSIC_EDITOR = exports.COVERITY_PROJECT_NAME_KEY = exports.COVERITY_PASSPHRASE_KEY_CLASSIC_EDITOR = exports.COVERITY_PASSPHRASE_KEY = exports.COVERITY_USER_KEY_CLASSIC_EDITOR = exports.COVERITY_USER_KEY = exports.COVERITY_URL_KEY_CLASSIC_EDITOR = exports.COVERITY_URL_KEY = exports.PROJECT_SOURCE_EXCLUDES_KEY_CLASSIC_EDITOR = exports.PROJECT_SOURCE_EXCLUDES_KEY = exports.PROJECT_SOURCE_PRESERVE_SYM_LINKS_KEY_CLASSIC_EDITOR = exports.PROJECT_SOURCE_PRESERVE_SYM_LINKS_KEY = exports.PROJECT_SOURCE_ARCHIVE_KEY_CLASSIC_EDITOR = exports.PROJECT_SOURCE_ARCHIVE_KEY = exports.POLARIS_WAITFORSCAN_KEY_CLASSIC_EDITOR = exports.POLARIS_WAITFORSCAN_KEY = exports.POLARIS_PROJECT_DIRECTORY_KEY_CLASSIC_EDITOR = void 0;
 exports.BLACKDUCK_REPORTS_SARIF_GROUP_SCA_ISSUES_KEY = exports.BLACKDUCKSCA_REPORTS_SARIF_SEVERITIES_KEY_CLASSIC_EDITOR = exports.BLACKDUCKSCA_REPORTS_SARIF_SEVERITIES_KEY = exports.BLACKDUCK_REPORTS_SARIF_SEVERITIES_KEY = exports.BLACKDUCKSCA_REPORTS_SARIF_FILE_PATH_KEY_CLASSIC_EDITOR = exports.BLACKDUCKSCA_REPORTS_SARIF_FILE_PATH_KEY = exports.BLACKDUCK_REPORTS_SARIF_FILE_PATH_KEY = exports.BLACKDUCKSCA_REPORTS_SARIF_CREATE_KEY_CLASSIC_EDITOR = exports.BLACKDUCKSCA_REPORTS_SARIF_CREATE_KEY = exports.BLACKDUCK_REPORTS_SARIF_CREATE_KEY = exports.BLACKDUCKSCA_PROJECT_DIRECTORY_KEY_CLASSIC_EDITOR = exports.BLACKDUCKSCA_WAITFORSCAN_KEY_CLASSIC_EDITOR = exports.BLACKDUCKSCA_WAITFORSCAN_KEY = exports.BLACKDUCK_WAITFORSCAN_KEY = exports.BLACKDUCKSCA_FIXPR_UPGRADE_GUIDANCE_KEY_CLASSIC_EDITOR = exports.BLACKDUCKSCA_FIXPR_UPGRADE_GUIDANCE_KEY = exports.BLACKDUCK_FIXPR_UPGRADE_GUIDANCE_KEY = exports.BLACKDUCKSCA_FIXPR_FILTER_SEVERITIES_KEY_CLASSIC_EDITOR = exports.BLACKDUCKSCA_FIXPR_FILTER_SEVERITIES_KEY = exports.BLACKDUCK_FIXPR_FILTER_SEVERITIES_KEY = exports.BLACKDUCKSCA_FIXPR_CREATE_SINGLE_PR_KEY_CLASSIC_EDITOR = exports.BLACKDUCKSCA_FIXPR_CREATE_SINGLE_PR_KEY = exports.BLACKDUCK_FIXPR_CREATE_SINGLE_PR_KEY = exports.BLACKDUCKSCA_FIXPR_MAXCOUNT_KEY_CLASSIC_EDITOR = exports.BLACKDUCKSCA_FIXPR_MAXCOUNT_KEY = exports.BLACKDUCK_FIXPR_MAXCOUNT_KEY = exports.BLACKDUCKSCA_FIXPR_ENABLED_KEY_CLASSIC_EDITOR = exports.BLACKDUCKSCA_FIXPR_ENABLED_KEY = exports.BLACKDUCK_FIXPR_ENABLED_KEY = exports.BLACKDUCKSCA_PRCOMMENT_ENABLED_KEY_CLASSIC_EDITOR = exports.BLACKDUCKSCA_PRCOMMENT_ENABLED_KEY = exports.BLACKDUCK_PRCOMMENT_ENABLED_KEY = exports.BLACKDUCKSCA_SCAN_FAILURE_SEVERITIES_KEY_CLASSIC_EDITOR = exports.BLACKDUCKSCA_SCAN_FAILURE_SEVERITIES_KEY = exports.BLACKDUCK_SCAN_FAILURE_SEVERITIES_KEY = exports.BLACKDUCKSCA_SCAN_FULL_KEY_CLASSIC_EDITOR = exports.BLACKDUCKSCA_SCAN_FULL_KEY = exports.BLACKDUCK_SCAN_FULL_KEY = exports.DETECT_EXECUTION_PATH_KEY_CLASSIC_EDITOR = exports.DETECT_EXECUTION_PATH_KEY = exports.BLACKDUCK_EXECUTION_PATH_KEY = exports.DETECT_INSTALL_DIRECTORY_KEY_CLASSIC_EDITOR = exports.DETECT_INSTALL_DIRECTORY_KEY = exports.BLACKDUCK_INSTALL_DIRECTORY_KEY = exports.BLACKDUCKSCA_TOKEN_KEY_CLASSIC_EDITOR = exports.BLACKDUCKSCA_TOKEN_KEY = exports.BLACKDUCK_TOKEN_KEY = exports.BLACKDUCKSCA_URL_KEY_CLASSIC_EDITOR = exports.BLACKDUCKSCA_URL_KEY = exports.BLACKDUCK_URL_KEY = void 0;
 exports.MARK_BUILD_STATUS_KEY = exports.RETURN_STATUS_KEY = exports.BRIDGECLI_DOWNLOAD_VERSION_KEY_CLASSIC_EDITOR = exports.BRIDGECLI_DOWNLOAD_VERSION_KEY = exports.SYNOPSYS_BRIDGE_DOWNLOAD_VERSION_KEY = exports.BRIDGECLI_DOWNLOAD_URL_KEY_CLASSIC_EDITOR = exports.BRIDGECLI_DOWNLOAD_URL_KEY = exports.SYNOPSYS_BRIDGE_DOWNLOAD_URL_KEY = exports.NETWORK_AIRGAP_KEY_CLASSIC_EDITOR = exports.NETWORK_AIRGAP_KEY = exports.BRIDGE_NETWORK_AIRGAP_KEY = exports.SRM_INCLUDE_DIAGNOSTICS_KEY_CLASSIC_EDITOR = exports.COVERITY_INCLUDE_DIAGNOSTICS_KEY_CLASSIC_EDITOR = exports.BLACKDUCKSCA_INCLUDE_DIAGNOSTICS_KEY_CLASSIC_EDITOR = exports.POLARIS_INCLUDE_DIAGNOSTICS_KEY_CLASSIC_EDITOR = exports.INCLUDE_DIAGNOSTICS_KEY = exports.SRM_PROJECT_DIRECTORY_KEY_CLASSIC_EDITOR = exports.SRM_WAITFORSCAN_KEY_CLASSIC_EDITOR = exports.SRM_WAITFORSCAN_KEY = exports.SRM_BRANCH_PARENT_KEY_CLASSIC_EDITOR = exports.SRM_BRANCH_PARENT_KEY = exports.SRM_BRANCH_NAME_KEY_CLASSIC_EDITOR = exports.SRM_BRANCH_NAME_KEY = exports.SRM_PROJECT_ID_KEY_CLASSIC_EDITOR = exports.SRM_PROJECT_ID_KEY = exports.SRM_PROJECT_NAME_KEY_CLASSIC_EDITOR = exports.SRM_PROJECT_NAME_KEY = exports.SRM_ASSESSMENT_TYPES_KEY_CLASSIC_EDITOR = exports.SRM_ASSESSMENT_TYPES_KEY = exports.SRM_APIKEY_KEY_CLASSIC_EDITOR = exports.SRM_APIKEY_KEY = exports.SRM_URL_KEY_CLASSIC_EDITOR = exports.SRM_URL_KEY = exports.DETECT_ARGS_KEY_CLASSIC_EDITOR_FOR_SRM = exports.DETECT_ARGS_KEY_CLASSIC_EDITOR_FOR_POLARIS = exports.DETECT_ARGS_KEY_CLASSIC_EDITOR = exports.DETECT_ARGS_KEY = exports.BLACKDUCK_ARGS_KEY = exports.DETECT_CONFIG_PATH_KEY_CLASSIC_EDITOR_FOR_SRM = exports.DETECT_CONFIG_PATH_KEY_CLASSIC_EDITOR_FOR_POLARIS = exports.DETECT_CONFIG_PATH_KEY_CLASSIC_EDITOR = exports.DETECT_CONFIG_PATH_KEY = exports.BLACKDUCK_CONFIG_PATH_KEY = exports.DETECT_DEPTH_KEY_CLASSIC_EDITOR_FOR_SRM = exports.DETECT_DEPTH_KEY_CLASSIC_EDITOR_FOR_POLARIS = exports.DETECT_DEPTH_KEY_CLASSIC_EDITOR = exports.DETECT_SEARCH_DEPTH_KEY = exports.BLACKDUCK_SEARCH_DEPTH_KEY = exports.BLACKDUCKSCA_REPORTS_SARIF_GROUP_SCA_ISSUES_KEY_CLASSIC_EDITOR = exports.BLACKDUCKSCA_REPORTS_SARIF_GROUP_SCA_ISSUES_KEY = void 0;
@@ -17,8 +17,8 @@ exports.EXIT_CODE_MAP = exports.SARIF_GAS_API_RATE_LIMIT_FOR_ERROR = exports.PRO
 const ErrorCodes_1 = __nccwpck_require__(8936);
 exports.BRIDGE_CLI_DEFAULT_PATH_UNIX = "/bridge-cli-bundle"; //Path will be in home
 exports.BRIDGE_CLI_DEFAULT_PATH_WINDOWS = "\\bridge-cli-bundle";
-exports.BRIDGE_CLI_DEFAULT_APPEND_PATH_UNIX = "/bridge-cli-bundle-$version-$platform"; //Path will be in home
-exports.BRIDGE_CLI_DEFAULT_APPEND_PATH_WINDOWS = "\\bridge-cli-bundle-$version-$platform";
+exports.BRIDGE_CLI_DEFAULT_SUBDIRECTORY_PATH_UNIX = "/bridge-cli-bundle"; //Subdirectory for bridle-cli
+exports.BRIDGE_CLI_DEFAULT_SUBDIRECTORY_PATH_WINDOWS = "\\bridge-cli-bundle";
 exports.BRIDGE_CLI_EXECUTABLE_WINDOWS = "bridge-cli.exe";
 exports.BRIDGE_CLI_EXECUTABLE_MAC_LINUX = "bridge-cli";
 exports.BRIDGE_CLI_ZIP_FILE_NAME = "bridge-cli-bundle.zip";
@@ -664,14 +664,22 @@ class Bridge {
     }
     extractBridge(fileInfo) {
         return __awaiter(this, void 0, void 0, function* () {
-            const extractZippedFilePath = inputs.BRIDGECLI_INSTALL_DIRECTORY_KEY || this.getBridgeDefaultPath();
+            const bridgeInstallDirectory = inputs.BRIDGECLI_INSTALL_DIRECTORY_KEY || this.getBridgeDefaultPath();
+            const bridgeCliFullPath = path.join(String(bridgeInstallDirectory), String(this.getDefaultBridgeSubDirectory()));
+            taskLib.debug("bridgeCliFullPath: " + bridgeCliFullPath);
             // Clear the existing bridge, if available
-            if (taskLib.exist(extractZippedFilePath)) {
-                yield taskLib.rmRF(extractZippedFilePath);
+            if (taskLib.exist(bridgeCliFullPath)) {
+                yield taskLib.rmRF(bridgeCliFullPath);
             }
-            yield (0, utility_2.extractZipped)(fileInfo.filePath, extractZippedFilePath);
-            const extractedBridgeCliPath = path.join(String(extractZippedFilePath), String(this.getAppendedPath()));
-            return Promise.resolve(extractedBridgeCliPath);
+            yield (0, utility_2.extractZipped)(fileInfo.filePath, bridgeInstallDirectory);
+            if (this.bridgeVersion != "") {
+                const bridgePathWithVersion = path.join(String(bridgeInstallDirectory), String(this.getBridgeSubDirectoryWithVersion()));
+                taskLib.debug("Renaming bridge versioned path to default bridge-cli path");
+                taskLib.debug("bridgePathWithVersion: " + bridgePathWithVersion);
+                (0, fs_1.renameSync)(bridgePathWithVersion, bridgeCliFullPath);
+            }
+            taskLib.debug("Bridge Executable Path: " + bridgeCliFullPath);
+            return Promise.resolve(bridgeCliFullPath);
         });
     }
     executeBridgeCommand(executablePath, workspace, command) {
@@ -1021,23 +1029,46 @@ class Bridge {
         taskLib.debug("bridgeDefaultPath:" + bridgeDefaultPath);
         return bridgeDefaultPath;
     }
-    getAppendedPath() {
-        let bridgeAppendedPath = "";
+    getDefaultBridgeSubDirectory() {
+        let bridgeSubDirectory = "";
         const osName = process.platform;
         if (osName === "darwin" || osName === "linux") {
             let osPlatform = constants.LINUX_PLATFORM;
             if (osName === "darwin") {
                 osPlatform = this.getMacOsSuffix();
             }
-            bridgeAppendedPath =
-                constants.BRIDGE_CLI_DEFAULT_APPEND_PATH_UNIX.replace("-$version", this.bridgeVersion != "" ? "-".concat(this.bridgeVersion) : "").replace("$platform", osPlatform);
+            bridgeSubDirectory =
+                constants.BRIDGE_CLI_DEFAULT_SUBDIRECTORY_PATH_UNIX.concat("-").concat(osPlatform);
         }
         else if (osName === "win32") {
-            bridgeAppendedPath =
-                constants.BRIDGE_CLI_DEFAULT_APPEND_PATH_WINDOWS.replace("-$version", this.bridgeVersion != "" ? "-".concat(this.bridgeVersion) : "").replace("$platform", constants.WINDOWS_PLATFORM);
+            bridgeSubDirectory =
+                constants.BRIDGE_CLI_DEFAULT_SUBDIRECTORY_PATH_WINDOWS.concat("-").concat(constants.WINDOWS_PLATFORM);
         }
-        taskLib.debug("bridgeAppendedPath:" + bridgeAppendedPath);
-        return bridgeAppendedPath;
+        taskLib.debug("bridgeSubDirectory:" + bridgeSubDirectory);
+        return bridgeSubDirectory;
+    }
+    getBridgeSubDirectoryWithVersion() {
+        let bridgeSubDirectoryWithVersion = "";
+        const osName = process.platform;
+        const version = this.bridgeVersion != "" ? "-".concat(this.bridgeVersion) : "";
+        if (osName === "darwin" || osName === "linux") {
+            let osPlatform = constants.LINUX_PLATFORM;
+            if (osName === "darwin") {
+                osPlatform = this.getMacOsSuffix();
+            }
+            bridgeSubDirectoryWithVersion =
+                constants.BRIDGE_CLI_DEFAULT_SUBDIRECTORY_PATH_UNIX.concat(version)
+                    .concat("-")
+                    .concat(osPlatform);
+        }
+        else if (osName === "win32") {
+            bridgeSubDirectoryWithVersion =
+                constants.BRIDGE_CLI_DEFAULT_SUBDIRECTORY_PATH_WINDOWS.concat(version)
+                    .concat("-")
+                    .concat(constants.WINDOWS_PLATFORM);
+        }
+        taskLib.debug("bridgeSubDirectoryWithVersion:" + bridgeSubDirectoryWithVersion);
+        return bridgeSubDirectoryWithVersion;
     }
     // Get bridge version url
     getVersionUrl(version) {
@@ -1100,7 +1131,7 @@ class Bridge {
     //contains executable path with extension file
     getBridgePath() {
         return __awaiter(this, void 0, void 0, function* () {
-            let bridgeDirectoryPath = path.join(String(this.getBridgeDefaultPath()), String(this.getAppendedPath()));
+            let bridgeDirectoryPath = path.join(String(this.getBridgeDefaultPath()), String(this.getDefaultBridgeSubDirectory()));
             if (input_1.BRIDGECLI_INSTALL_DIRECTORY_KEY) {
                 bridgeDirectoryPath = input_1.BRIDGECLI_INSTALL_DIRECTORY_KEY;
                 console.info(application_constant_1.LOOKING_FOR_BRIDGE_CLI_INSTALL_DIR);

@@ -3,10 +3,9 @@
 import { ErrorCode } from "./enum/ErrorCodes";
 export const BRIDGE_CLI_DEFAULT_PATH_UNIX = "/bridge-cli-bundle"; //Path will be in home
 export const BRIDGE_CLI_DEFAULT_PATH_WINDOWS = "\\bridge-cli-bundle";
-export const BRIDGE_CLI_DEFAULT_APPEND_PATH_UNIX =
-  "/bridge-cli-bundle-$version-$platform"; //Path will be in home
-export const BRIDGE_CLI_DEFAULT_APPEND_PATH_WINDOWS =
-  "\\bridge-cli-bundle-$version-$platform";
+export const BRIDGE_CLI_DEFAULT_SUBDIRECTORY_PATH_UNIX = "/bridge-cli-bundle"; //Subdirectory for bridle-cli
+export const BRIDGE_CLI_DEFAULT_SUBDIRECTORY_PATH_WINDOWS =
+  "\\bridge-cli-bundle";
 export const BRIDGE_CLI_EXECUTABLE_WINDOWS = "bridge-cli.exe";
 export const BRIDGE_CLI_EXECUTABLE_MAC_LINUX = "bridge-cli";
 export const BRIDGE_CLI_ZIP_FILE_NAME = "bridge-cli-bundle.zip";
