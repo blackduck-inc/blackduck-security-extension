@@ -45,7 +45,7 @@
         "ms.vss-distributed-task.tasks"
       ],
       "properties": {
-        "name": "BlackDuckSecurityScan"
+        "name": "blackduck-security-task"
       }
     }
   ]
