@@ -691,9 +691,51 @@ describe("Download Bridge", () => {
             assert.equal(result, bridgeDefaultPath);
         });
 
-        it("BRIDGECLI_DOWNLOAD_URL is defined and invalid for current os", async () => {
+        it("BRIDGECLI_DOWNLOAD_URL is defined and invalid for current win64 os", async () => {
             Object.defineProperty(inputs, "BRIDGECLI_DOWNLOAD_URL", {
                 value: "https://artifactory.internal.synopsys.com/artifactory/clops-local/clops.sig.synopsys.com/bridge/binaries/bridge-cli-bundle/2.9.2/bridge-cli-bundle-2.9.2-win64.zip",
+            });
+            sandbox.stub(bridge, "checkIfBridgeVersionExists").returns(Promise.resolve(false));
+            sandbox.stub(bridge, "getBridgeUrl").returns(Promise.resolve(bridgeUrl))
+
+            const downloadFileResponse = {} as DownloadFileResponse
+            downloadFileResponse.filePath = bridgeDefaultPath
+            sandbox.stub(utility, "getRemoteFile").returns(Promise.resolve(downloadFileResponse))
+            sandbox.stub(bridge, "extractBridge").throws(new Error("invalid url"))
+
+            await bridge.downloadAndExtractBridge("/").catch(errorObj => {
+                expect(errorObj.message).includes("Provided Bridge CLI url is not valid for the configured");
+            })
+
+            Object.defineProperty(inputs, "BRIDGECLI_DOWNLOAD_URL", {
+                value: "",
+            });
+        });
+
+        it("BRIDGECLI_DOWNLOAD_URL is defined and invalid for current linux os", async () => {
+            Object.defineProperty(inputs, "BRIDGECLI_DOWNLOAD_URL", {
+                value: "https://artifactory.internal.synopsys.com/artifactory/clops-local/clops.sig.synopsys.com/bridge/binaries/bridge-cli-bundle/2.9.2/bridge-cli-bundle-2.9.2-linux64.zip",
+            });
+            sandbox.stub(bridge, "checkIfBridgeVersionExists").returns(Promise.resolve(false));
+            sandbox.stub(bridge, "getBridgeUrl").returns(Promise.resolve(bridgeUrl))
+
+            const downloadFileResponse = {} as DownloadFileResponse
+            downloadFileResponse.filePath = bridgeDefaultPath
+            sandbox.stub(utility, "getRemoteFile").returns(Promise.resolve(downloadFileResponse))
+            sandbox.stub(bridge, "extractBridge").throws(new Error("invalid url"))
+
+            await bridge.downloadAndExtractBridge("/").catch(errorObj => {
+                expect(errorObj.message).includes("Provided Bridge CLI url is not valid for the configured");
+            })
+
+            Object.defineProperty(inputs, "BRIDGECLI_DOWNLOAD_URL", {
+                value: "",
+            });
+        });
+
+        it("BRIDGECLI_DOWNLOAD_URL is defined and invalid for current mac os", async () => {
+            Object.defineProperty(inputs, "BRIDGECLI_DOWNLOAD_URL", {
+                value: "https://artifactory.internal.synopsys.com/artifactory/clops-local/clops.sig.synopsys.com/bridge/binaries/bridge-cli-bundle/2.9.2/bridge-cli-bundle-2.9.2-macosx.zip",
             });
             sandbox.stub(bridge, "checkIfBridgeVersionExists").returns(Promise.resolve(false));
             sandbox.stub(bridge, "getBridgeUrl").returns(Promise.resolve(bridgeUrl))
