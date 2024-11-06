@@ -66,11 +66,11 @@ export function validateBridgeUrl(url: string): boolean {
   const osName = process.platform;
   taskLib.debug("osName:::" + osName);
   const fileNameComponent = url.substring(url.lastIndexOf("/"), url.length);
-  if (osName === "darwin") {
+  if (osName === constants.DARWIN) {
     return fileNameComponent.toLowerCase().includes("mac");
-  } else if (osName === "linux") {
+  } else if (osName === constants.LINUX) {
     return fileNameComponent.toLowerCase().includes("linux");
-  } else if (osName === "win32") {
+  } else if (osName === constants.WIN32) {
     return fileNameComponent.toLowerCase().includes("win");
   } else {
     return false;

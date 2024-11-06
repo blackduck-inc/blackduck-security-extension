@@ -436,7 +436,7 @@ export class Bridge {
     const osName = process.platform;
     let versionFilePath: string;
 
-    if (osName === "win32") {
+    if (osName === constants.WIN32) {
       versionFilePath = this.bridgeExecutablePath.concat("\\versions.txt");
     } else {
       versionFilePath = this.bridgeExecutablePath.concat("/versions.txt");
@@ -565,12 +565,12 @@ export class Bridge {
     let bridgeDefaultPath = "";
     const osName = process.platform;
 
-    if (osName === "darwin" || osName === "linux") {
+    if (osName === constants.DARWIN || osName === constants.LINUX) {
       bridgeDefaultPath = path.join(
         process.env["HOME"] as string,
         constants.BRIDGE_CLI_DEFAULT_PATH_UNIX
       );
-    } else if (osName === "win32") {
+    } else if (osName === constants.WIN32) {
       bridgeDefaultPath = path.join(
         process.env["USERPROFILE"] as string,
         constants.BRIDGE_CLI_DEFAULT_PATH_WINDOWS
@@ -584,16 +584,16 @@ export class Bridge {
     let bridgeSubDirectory = "";
     const osName = process.platform;
 
-    if (osName === "darwin" || osName === "linux") {
+    if (osName === constants.DARWIN || osName === constants.LINUX) {
       let osPlatform = constants.LINUX_PLATFORM;
-      if (osName === "darwin") {
+      if (osName === constants.DARWIN) {
         osPlatform = this.getMacOsSuffix();
       }
       bridgeSubDirectory =
         constants.BRIDGE_CLI_DEFAULT_SUBDIRECTORY_PATH_UNIX.concat("-").concat(
           osPlatform
         );
-    } else if (osName === "win32") {
+    } else if (osName === constants.WIN32) {
       bridgeSubDirectory =
         constants.BRIDGE_CLI_DEFAULT_SUBDIRECTORY_PATH_WINDOWS.concat(
           "-"
@@ -609,16 +609,16 @@ export class Bridge {
     const version =
       this.bridgeVersion != "" ? "-".concat(this.bridgeVersion) : "";
 
-    if (osName === "darwin" || osName === "linux") {
+    if (osName === constants.DARWIN || osName === constants.LINUX) {
       let osPlatform = constants.LINUX_PLATFORM;
-      if (osName === "darwin") {
+      if (osName === constants.DARWIN) {
         osPlatform = this.getMacOsSuffix();
       }
       bridgeSubDirectoryWithVersion =
         constants.BRIDGE_CLI_DEFAULT_SUBDIRECTORY_PATH_UNIX.concat(version)
           .concat("-")
           .concat(osPlatform);
-    } else if (osName === "win32") {
+    } else if (osName === constants.WIN32) {
       bridgeSubDirectoryWithVersion =
         constants.BRIDGE_CLI_DEFAULT_SUBDIRECTORY_PATH_WINDOWS.concat(version)
           .concat("-")
@@ -635,7 +635,7 @@ export class Bridge {
     const osName = process.platform;
     let bridgeDownloadUrl = this.bridgeUrlPattern.replace("$version", version);
     bridgeDownloadUrl = bridgeDownloadUrl.replace("$version", version);
-    if (osName === "darwin") {
+    if (osName === constants.DARWIN) {
       const isValidVersionForARM = semver.gte(
         version,
         constants.MIN_SUPPORTED_BRIDGE_CLI_MAC_ARM_VERSION
@@ -650,12 +650,12 @@ export class Bridge {
           : constants.MAC_ARM_PLATFORM;
       }
       bridgeDownloadUrl = bridgeDownloadUrl.replace("$platform", osSuffix);
-    } else if (osName === "linux") {
+    } else if (osName === constants.LINUX) {
       bridgeDownloadUrl = bridgeDownloadUrl.replace(
         "$platform",
         constants.LINUX_PLATFORM
       );
-    } else if (osName === "win32") {
+    } else if (osName === constants.WIN32) {
       bridgeDownloadUrl = bridgeDownloadUrl.replace(
         "$platform",
         constants.WINDOWS_PLATFORM
@@ -667,15 +667,15 @@ export class Bridge {
   getLatestVersionUrl(): string {
     const osName = process.platform;
     let bridgeDownloadUrl = this.bridgeUrlLatestPattern;
-    if (osName === "darwin") {
+    if (osName === constants.DARWIN) {
       const osSuffix = this.getMacOsSuffix();
       bridgeDownloadUrl = bridgeDownloadUrl.replace("$platform", osSuffix);
-    } else if (osName === "linux") {
+    } else if (osName === constants.LINUX) {
       bridgeDownloadUrl = bridgeDownloadUrl.replace(
         "$platform",
         constants.LINUX_PLATFORM
       );
-    } else if (osName === "win32") {
+    } else if (osName === constants.WIN32) {
       bridgeDownloadUrl = bridgeDownloadUrl.replace(
         "$platform",
         constants.WINDOWS_PLATFORM
@@ -693,12 +693,15 @@ export class Bridge {
   }
 
   async setBridgeExecutablePath(filePath: string): Promise<string> {
-    if (process.platform === "win32") {
+    if (process.platform === constants.WIN32) {
       this.bridgeExecutablePath = path.join(
         filePath,
         constants.BRIDGE_CLI_EXECUTABLE_WINDOWS
       );
-    } else if (process.platform === "darwin" || process.platform === "linux") {
+    } else if (
+      process.platform === constants.DARWIN ||
+      process.platform === constants.LINUX
+    ) {
       this.bridgeExecutablePath = path.join(
         filePath,
         constants.BRIDGE_CLI_EXECUTABLE_MAC_LINUX

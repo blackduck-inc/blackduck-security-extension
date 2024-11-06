@@ -12,8 +12,8 @@ exports.PROJECT_DIRECTORY_KEY = exports.POLARIS_TEST_SCA_TYPE_KEY_CLASSIC_EDITOR
 exports.COVERITY_ARGS_KEY_CLASSIC_EDITOR_FOR_SRM = exports.COVERITY_ARGS_KEY_CLASSIC_EDITOR_FOR_POLARIS = exports.COVERITY_ARGS_KEY_CLASSIC_EDITOR = exports.COVERITY_ARGS_KEY = exports.COVERITY_CONFIG_PATH_KEY_CLASSIC_EDITOR_FOR_SRM = exports.COVERITY_CONFIG_PATH_KEY_CLASSIC_EDITOR_FOR_POLARIS = exports.COVERITY_CONFIG_PATH_KEY_CLASSIC_EDITOR = exports.COVERITY_CONFIG_PATH_KEY = exports.COVERITY_CLEAN_COMMAND_KEY_CLASSIC_EDITOR_FOR_SRM = exports.COVERITY_CLEAN_COMMAND_KEY_CLASSIC_EDITOR_FOR_POLARIS = exports.COVERITY_CLEAN_COMMAND_KEY_CLASSIC_EDITOR = exports.COVERITY_CLEAN_COMMAND_KEY = exports.COVERITY_BUILD_COMMAND_KEY_CLASSIC_EDITOR_FOR_SRM = exports.COVERITY_BUILD_COMMAND_KEY_CLASSIC_EDITOR_FOR_POLARIS = exports.COVERITY_BUILD_COMMAND_KEY_CLASSIC_EDITOR = exports.COVERITY_BUILD_COMMAND_KEY = exports.COVERITY_VERSION_KEY_CLASSIC_EDITOR = exports.COVERITY_VERSION_KEY = exports.COVERITY_LOCAL_KEY_CLASSIC_EDITOR = exports.COVERITY_LOCAL_KEY = exports.COVERITY_PRCOMMENT_ENABLED_KEY_CLASSIC_EDITOR = exports.COVERITY_PRCOMMENT_ENABLED_KEY = exports.COVERITY_PROJECT_DIRECTORY_KEY_CLASSIC_EDITOR = exports.COVERITY_WAITFORSCAN_KEY_CLASSIC_EDITOR = exports.COVERITY_WAITFORSCAN_KEY = exports.COVERITY_POLICY_VIEW_KEY_CLASSIC_EDITOR = exports.COVERITY_POLICY_VIEW_KEY = exports.COVERITY_EXECUTION_PATH_KEY_CLASSIC_EDITOR = exports.COVERITY_EXECUTION_PATH_KEY = exports.COVERITY_INSTALL_DIRECTORY_KEY_CLASSIC_EDITOR = exports.COVERITY_INSTALL_DIRECTORY_KEY = exports.COVERITY_STREAM_NAME_KEY_CLASSIC_EDITOR = exports.COVERITY_STREAM_NAME_KEY = exports.COVERITY_PROJECT_NAME_KEY_CLASSIC_EDITOR = exports.COVERITY_PROJECT_NAME_KEY = exports.COVERITY_PASSPHRASE_KEY_CLASSIC_EDITOR = exports.COVERITY_PASSPHRASE_KEY = exports.COVERITY_USER_KEY_CLASSIC_EDITOR = exports.COVERITY_USER_KEY = exports.COVERITY_URL_KEY_CLASSIC_EDITOR = exports.COVERITY_URL_KEY = exports.PROJECT_SOURCE_EXCLUDES_KEY_CLASSIC_EDITOR = exports.PROJECT_SOURCE_EXCLUDES_KEY = exports.PROJECT_SOURCE_PRESERVE_SYM_LINKS_KEY_CLASSIC_EDITOR = exports.PROJECT_SOURCE_PRESERVE_SYM_LINKS_KEY = exports.PROJECT_SOURCE_ARCHIVE_KEY_CLASSIC_EDITOR = exports.PROJECT_SOURCE_ARCHIVE_KEY = exports.POLARIS_WAITFORSCAN_KEY_CLASSIC_EDITOR = exports.POLARIS_WAITFORSCAN_KEY = exports.POLARIS_PROJECT_DIRECTORY_KEY_CLASSIC_EDITOR = void 0;
 exports.BLACKDUCK_REPORTS_SARIF_GROUP_SCA_ISSUES_KEY = exports.BLACKDUCKSCA_REPORTS_SARIF_SEVERITIES_KEY_CLASSIC_EDITOR = exports.BLACKDUCKSCA_REPORTS_SARIF_SEVERITIES_KEY = exports.BLACKDUCK_REPORTS_SARIF_SEVERITIES_KEY = exports.BLACKDUCKSCA_REPORTS_SARIF_FILE_PATH_KEY_CLASSIC_EDITOR = exports.BLACKDUCKSCA_REPORTS_SARIF_FILE_PATH_KEY = exports.BLACKDUCK_REPORTS_SARIF_FILE_PATH_KEY = exports.BLACKDUCKSCA_REPORTS_SARIF_CREATE_KEY_CLASSIC_EDITOR = exports.BLACKDUCKSCA_REPORTS_SARIF_CREATE_KEY = exports.BLACKDUCK_REPORTS_SARIF_CREATE_KEY = exports.BLACKDUCKSCA_PROJECT_DIRECTORY_KEY_CLASSIC_EDITOR = exports.BLACKDUCKSCA_WAITFORSCAN_KEY_CLASSIC_EDITOR = exports.BLACKDUCKSCA_WAITFORSCAN_KEY = exports.BLACKDUCK_WAITFORSCAN_KEY = exports.BLACKDUCKSCA_FIXPR_UPGRADE_GUIDANCE_KEY_CLASSIC_EDITOR = exports.BLACKDUCKSCA_FIXPR_UPGRADE_GUIDANCE_KEY = exports.BLACKDUCK_FIXPR_UPGRADE_GUIDANCE_KEY = exports.BLACKDUCKSCA_FIXPR_FILTER_SEVERITIES_KEY_CLASSIC_EDITOR = exports.BLACKDUCKSCA_FIXPR_FILTER_SEVERITIES_KEY = exports.BLACKDUCK_FIXPR_FILTER_SEVERITIES_KEY = exports.BLACKDUCKSCA_FIXPR_CREATE_SINGLE_PR_KEY_CLASSIC_EDITOR = exports.BLACKDUCKSCA_FIXPR_CREATE_SINGLE_PR_KEY = exports.BLACKDUCK_FIXPR_CREATE_SINGLE_PR_KEY = exports.BLACKDUCKSCA_FIXPR_MAXCOUNT_KEY_CLASSIC_EDITOR = exports.BLACKDUCKSCA_FIXPR_MAXCOUNT_KEY = exports.BLACKDUCK_FIXPR_MAXCOUNT_KEY = exports.BLACKDUCKSCA_FIXPR_ENABLED_KEY_CLASSIC_EDITOR = exports.BLACKDUCKSCA_FIXPR_ENABLED_KEY = exports.BLACKDUCK_FIXPR_ENABLED_KEY = exports.BLACKDUCKSCA_PRCOMMENT_ENABLED_KEY_CLASSIC_EDITOR = exports.BLACKDUCKSCA_PRCOMMENT_ENABLED_KEY = exports.BLACKDUCK_PRCOMMENT_ENABLED_KEY = exports.BLACKDUCKSCA_SCAN_FAILURE_SEVERITIES_KEY_CLASSIC_EDITOR = exports.BLACKDUCKSCA_SCAN_FAILURE_SEVERITIES_KEY = exports.BLACKDUCK_SCAN_FAILURE_SEVERITIES_KEY = exports.BLACKDUCKSCA_SCAN_FULL_KEY_CLASSIC_EDITOR = exports.BLACKDUCKSCA_SCAN_FULL_KEY = exports.BLACKDUCK_SCAN_FULL_KEY = exports.DETECT_EXECUTION_PATH_KEY_CLASSIC_EDITOR = exports.DETECT_EXECUTION_PATH_KEY = exports.BLACKDUCK_EXECUTION_PATH_KEY = exports.DETECT_INSTALL_DIRECTORY_KEY_CLASSIC_EDITOR = exports.DETECT_INSTALL_DIRECTORY_KEY = exports.BLACKDUCK_INSTALL_DIRECTORY_KEY = exports.BLACKDUCKSCA_TOKEN_KEY_CLASSIC_EDITOR = exports.BLACKDUCKSCA_TOKEN_KEY = exports.BLACKDUCK_TOKEN_KEY = exports.BLACKDUCKSCA_URL_KEY_CLASSIC_EDITOR = exports.BLACKDUCKSCA_URL_KEY = exports.BLACKDUCK_URL_KEY = void 0;
 exports.MARK_BUILD_STATUS_KEY = exports.RETURN_STATUS_KEY = exports.BRIDGECLI_DOWNLOAD_VERSION_KEY_CLASSIC_EDITOR = exports.BRIDGECLI_DOWNLOAD_VERSION_KEY = exports.SYNOPSYS_BRIDGE_DOWNLOAD_VERSION_KEY = exports.BRIDGECLI_DOWNLOAD_URL_KEY_CLASSIC_EDITOR = exports.BRIDGECLI_DOWNLOAD_URL_KEY = exports.SYNOPSYS_BRIDGE_DOWNLOAD_URL_KEY = exports.NETWORK_AIRGAP_KEY_CLASSIC_EDITOR = exports.NETWORK_AIRGAP_KEY = exports.BRIDGE_NETWORK_AIRGAP_KEY = exports.SRM_INCLUDE_DIAGNOSTICS_KEY_CLASSIC_EDITOR = exports.COVERITY_INCLUDE_DIAGNOSTICS_KEY_CLASSIC_EDITOR = exports.BLACKDUCKSCA_INCLUDE_DIAGNOSTICS_KEY_CLASSIC_EDITOR = exports.POLARIS_INCLUDE_DIAGNOSTICS_KEY_CLASSIC_EDITOR = exports.INCLUDE_DIAGNOSTICS_KEY = exports.SRM_PROJECT_DIRECTORY_KEY_CLASSIC_EDITOR = exports.SRM_WAITFORSCAN_KEY_CLASSIC_EDITOR = exports.SRM_WAITFORSCAN_KEY = exports.SRM_BRANCH_PARENT_KEY_CLASSIC_EDITOR = exports.SRM_BRANCH_PARENT_KEY = exports.SRM_BRANCH_NAME_KEY_CLASSIC_EDITOR = exports.SRM_BRANCH_NAME_KEY = exports.SRM_PROJECT_ID_KEY_CLASSIC_EDITOR = exports.SRM_PROJECT_ID_KEY = exports.SRM_PROJECT_NAME_KEY_CLASSIC_EDITOR = exports.SRM_PROJECT_NAME_KEY = exports.SRM_ASSESSMENT_TYPES_KEY_CLASSIC_EDITOR = exports.SRM_ASSESSMENT_TYPES_KEY = exports.SRM_APIKEY_KEY_CLASSIC_EDITOR = exports.SRM_APIKEY_KEY = exports.SRM_URL_KEY_CLASSIC_EDITOR = exports.SRM_URL_KEY = exports.DETECT_ARGS_KEY_CLASSIC_EDITOR_FOR_SRM = exports.DETECT_ARGS_KEY_CLASSIC_EDITOR_FOR_POLARIS = exports.DETECT_ARGS_KEY_CLASSIC_EDITOR = exports.DETECT_ARGS_KEY = exports.BLACKDUCK_ARGS_KEY = exports.DETECT_CONFIG_PATH_KEY_CLASSIC_EDITOR_FOR_SRM = exports.DETECT_CONFIG_PATH_KEY_CLASSIC_EDITOR_FOR_POLARIS = exports.DETECT_CONFIG_PATH_KEY_CLASSIC_EDITOR = exports.DETECT_CONFIG_PATH_KEY = exports.BLACKDUCK_CONFIG_PATH_KEY = exports.DETECT_DEPTH_KEY_CLASSIC_EDITOR_FOR_SRM = exports.DETECT_DEPTH_KEY_CLASSIC_EDITOR_FOR_POLARIS = exports.DETECT_DEPTH_KEY_CLASSIC_EDITOR = exports.DETECT_SEARCH_DEPTH_KEY = exports.BLACKDUCK_SEARCH_DEPTH_KEY = exports.BLACKDUCKSCA_REPORTS_SARIF_GROUP_SCA_ISSUES_KEY_CLASSIC_EDITOR = exports.BLACKDUCKSCA_REPORTS_SARIF_GROUP_SCA_ISSUES_KEY = void 0;
-exports.VERSION_FILE_FOUND_AT = exports.LOOKING_FOR_BRIDGE_CLI_DEFAULT_PATH = exports.LOOKING_FOR_BRIDGE_CLI_INSTALL_DIR = exports.BRIDGE_CLI_FOUND_AT = exports.BRIDGE_CLI_DOWNLOAD_COMPLETED = exports.BRIDGE_CLI_URL_MESSAGE = exports.DOWNLOADING_BRIDGE_CLI = exports.CHECK_LATEST_BRIDGE_CLI_VERSION = exports.SKIP_DOWNLOAD_BRIDGE_CLI_WHEN_VERSION_NOT_FOUND = exports.FAILED_TO_GET_PULL_REQUEST_INFO = exports.MISSING_BOOL_VALUE = exports.REQUIRE_ONE_SCAN_TYPE = exports.INVALID_BLACKDUCKSCA_SCAN_FAILURE_SEVERITIES = exports.BRIDGE_CLI_DEFAULT_DIRECTORY_NOT_EXISTS = exports.BRIDGE_CLI_INSTALL_DIRECTORY_NOT_EXISTS = exports.BRIDGE_CLI_EXTRACT_DIRECTORY_NOT_FOUND = exports.WORKSPACE_DIR_NOT_FOUND = exports.BRIDGE_CLI_DOWNLOAD_FAILED_RETRY = exports.BRIDGE_CLI_DOWNLOAD_FAILED = exports.BRIDGE_CLI_ZIP_NOT_FOUND_FOR_EXTRACT = exports.WORKFLOW_FAILED = exports.INVALID_BRIDGE_CLI_URL = exports.INVALID_BRIDGE_CLI_URL_SPECIFIED_OS = exports.EMPTY_BRIDGE_CLI_URL = exports.BRIDGE_CLI_EXECUTABLE_FILE_NOT_FOUND = exports.BRIDGE_CLI_VERSION_NOT_FOUND = exports.MISSING_AZURE_TOKEN_FOR_FIX_PR_AND_PR_COMMENT = exports.BLACKDUCKSCA_SECURITY_SCAN_AZURE_DEVOPS_DOCS_URL = exports.DEFAULT_AZURE_API_URL = exports.MIN_SUPPORTED_BRIDGE_CLI_MAC_ARM_VERSION = exports.MAC_INTEL_PLATFORM = exports.MAC_ARM_PLATFORM = exports.LINUX_PLATFORM = exports.WINDOWS_PLATFORM = exports.NON_RETRY_HTTP_CODES = exports.RETRY_COUNT = exports.RETRY_DELAY_IN_MILLISECONDS = exports.SARIF_UPLOAD_FOLDER_ARTIFACT_NAME = exports.DEFAULT_POLARIS_SARIF_GENERATOR_DIRECTORY = exports.DEFAULT_BLACKDUCK_SARIF_GENERATOR_DIRECTORY = exports.SARIF_DEFAULT_FILE_NAME = exports.BRIDGE_CLI_LOCAL_DIRECTORY = exports.UPLOAD_FOLDER_ARTIFACT_NAME = exports.BRIDGECLI_INSTALL_DIRECTORY_KEY_CLASSIC_EDITOR = exports.BRIDGECLI_INSTALL_DIRECTORY_KEY = exports.SYNOPSYS_BRIDGE_INSTALL_DIRECTORY_KEY = exports.SRM_MARK_BUILD_STATUS_KEY_CLASSIC_EDITOR = exports.COVERITY_MARK_BUILD_STATUS_KEY_CLASSIC_EDITOR = exports.BLACKDUCKSCA_MARK_BUILD_STATUS_KEY_CLASSIC_EDITOR = exports.POLARIS_MARK_BUILD_STATUS_KEY_CLASSIC_EDITOR = void 0;
-exports.EXIT_CODE_MAP = exports.SARIF_GAS_API_RATE_LIMIT_FOR_ERROR = exports.PROVIDED_BLACKDUCKSCA_FAILURE_SEVERITIES_ERROR = exports.MISSING_BOOLEAN_VALUE_ERROR = exports.INVALID_VALUE_ERROR = exports.BRIDGE_DOWNLOAD_RETRY_ERROR = exports.SCAN_TYPE_REQUIRED_ERROR = exports.BRIDGE_DEFAULT_DIRECTORY_NOT_FOUND_ERROR = exports.BRIDGE_INSTALL_DIRECTORY_NOT_FOUND_ERROR = exports.BRIDGE_EXECUTABLE_NOT_FOUND_ERROR = exports.MARK_THE_BUILD_STATUS = exports.MARK_THE_BUILD_ON_BRIDGE_BREAK = exports.AZURE_PULL_REQUEST_NUMBER_IS_EMPTY = exports.BLACKDUCKSCA_SECURITY_SCAN_COMPLETED = exports.POLARISSCA_SARIF_REPORT_ENABLED = exports.BLACKDUCKSCA_SARIF_REPOST_ENABLED = exports.TASK_RETURN_STATUS = exports.NETWORK_AIR_GAP_ENABLED_SKIP_DOWNLOAD_BRIDGE_CLI = exports.UNABLE_TO_FIND_PULL_REQUEST_INFO = exports.GETTING_ALL_BRIDGE_VERSIONS_RETRY = exports.UNABLE_TO_GET_RECENT_BRIDGE_VERSION = exports.GETTING_LATEST_BRIDGE_VERSIONS_RETRY = exports.ERROR_READING_VERSION_FILE = exports.VERSION_FILE_NOT_FOUND_AT = void 0;
+exports.BRIDGE_CLI_FOUND_AT = exports.BRIDGE_CLI_DOWNLOAD_COMPLETED = exports.BRIDGE_CLI_URL_MESSAGE = exports.DOWNLOADING_BRIDGE_CLI = exports.CHECK_LATEST_BRIDGE_CLI_VERSION = exports.SKIP_DOWNLOAD_BRIDGE_CLI_WHEN_VERSION_NOT_FOUND = exports.FAILED_TO_GET_PULL_REQUEST_INFO = exports.MISSING_BOOL_VALUE = exports.REQUIRE_ONE_SCAN_TYPE = exports.INVALID_BLACKDUCKSCA_SCAN_FAILURE_SEVERITIES = exports.BRIDGE_CLI_DEFAULT_DIRECTORY_NOT_EXISTS = exports.BRIDGE_CLI_INSTALL_DIRECTORY_NOT_EXISTS = exports.BRIDGE_CLI_EXTRACT_DIRECTORY_NOT_FOUND = exports.WORKSPACE_DIR_NOT_FOUND = exports.BRIDGE_CLI_DOWNLOAD_FAILED_RETRY = exports.BRIDGE_CLI_DOWNLOAD_FAILED = exports.BRIDGE_CLI_ZIP_NOT_FOUND_FOR_EXTRACT = exports.WORKFLOW_FAILED = exports.INVALID_BRIDGE_CLI_URL = exports.INVALID_BRIDGE_CLI_URL_SPECIFIED_OS = exports.EMPTY_BRIDGE_CLI_URL = exports.BRIDGE_CLI_EXECUTABLE_FILE_NOT_FOUND = exports.BRIDGE_CLI_VERSION_NOT_FOUND = exports.MISSING_AZURE_TOKEN_FOR_FIX_PR_AND_PR_COMMENT = exports.BLACKDUCKSCA_SECURITY_SCAN_AZURE_DEVOPS_DOCS_URL = exports.DEFAULT_AZURE_API_URL = exports.MIN_SUPPORTED_BRIDGE_CLI_MAC_ARM_VERSION = exports.DARWIN = exports.LINUX = exports.WIN32 = exports.MAC_INTEL_PLATFORM = exports.MAC_ARM_PLATFORM = exports.LINUX_PLATFORM = exports.WINDOWS_PLATFORM = exports.NON_RETRY_HTTP_CODES = exports.RETRY_COUNT = exports.RETRY_DELAY_IN_MILLISECONDS = exports.SARIF_UPLOAD_FOLDER_ARTIFACT_NAME = exports.DEFAULT_POLARIS_SARIF_GENERATOR_DIRECTORY = exports.DEFAULT_BLACKDUCK_SARIF_GENERATOR_DIRECTORY = exports.SARIF_DEFAULT_FILE_NAME = exports.BRIDGE_CLI_LOCAL_DIRECTORY = exports.UPLOAD_FOLDER_ARTIFACT_NAME = exports.BRIDGECLI_INSTALL_DIRECTORY_KEY_CLASSIC_EDITOR = exports.BRIDGECLI_INSTALL_DIRECTORY_KEY = exports.SYNOPSYS_BRIDGE_INSTALL_DIRECTORY_KEY = exports.SRM_MARK_BUILD_STATUS_KEY_CLASSIC_EDITOR = exports.COVERITY_MARK_BUILD_STATUS_KEY_CLASSIC_EDITOR = exports.BLACKDUCKSCA_MARK_BUILD_STATUS_KEY_CLASSIC_EDITOR = exports.POLARIS_MARK_BUILD_STATUS_KEY_CLASSIC_EDITOR = void 0;
+exports.EXIT_CODE_MAP = exports.SARIF_GAS_API_RATE_LIMIT_FOR_ERROR = exports.PROVIDED_BLACKDUCKSCA_FAILURE_SEVERITIES_ERROR = exports.MISSING_BOOLEAN_VALUE_ERROR = exports.INVALID_VALUE_ERROR = exports.BRIDGE_DOWNLOAD_RETRY_ERROR = exports.SCAN_TYPE_REQUIRED_ERROR = exports.BRIDGE_DEFAULT_DIRECTORY_NOT_FOUND_ERROR = exports.BRIDGE_INSTALL_DIRECTORY_NOT_FOUND_ERROR = exports.BRIDGE_EXECUTABLE_NOT_FOUND_ERROR = exports.MARK_THE_BUILD_STATUS = exports.MARK_THE_BUILD_ON_BRIDGE_BREAK = exports.AZURE_PULL_REQUEST_NUMBER_IS_EMPTY = exports.BLACKDUCKSCA_SECURITY_SCAN_COMPLETED = exports.POLARISSCA_SARIF_REPORT_ENABLED = exports.BLACKDUCKSCA_SARIF_REPOST_ENABLED = exports.TASK_RETURN_STATUS = exports.NETWORK_AIR_GAP_ENABLED_SKIP_DOWNLOAD_BRIDGE_CLI = exports.UNABLE_TO_FIND_PULL_REQUEST_INFO = exports.GETTING_ALL_BRIDGE_VERSIONS_RETRY = exports.UNABLE_TO_GET_RECENT_BRIDGE_VERSION = exports.GETTING_LATEST_BRIDGE_VERSIONS_RETRY = exports.ERROR_READING_VERSION_FILE = exports.VERSION_FILE_NOT_FOUND_AT = exports.VERSION_FILE_FOUND_AT = exports.LOOKING_FOR_BRIDGE_CLI_DEFAULT_PATH = exports.LOOKING_FOR_BRIDGE_CLI_INSTALL_DIR = void 0;
 const ErrorCodes_1 = __nccwpck_require__(8936);
 exports.BRIDGE_CLI_DEFAULT_PATH_UNIX = "/bridge-cli-bundle"; //Path will be in home
 exports.BRIDGE_CLI_DEFAULT_PATH_WINDOWS = "\\bridge-cli-bundle";
@@ -313,6 +313,9 @@ exports.WINDOWS_PLATFORM = "win64";
 exports.LINUX_PLATFORM = "linux64";
 exports.MAC_ARM_PLATFORM = "macos_arm";
 exports.MAC_INTEL_PLATFORM = "macosx";
+exports.WIN32 = "win32";
+exports.LINUX = "linux";
+exports.DARWIN = "darwin";
 exports.MIN_SUPPORTED_BRIDGE_CLI_MAC_ARM_VERSION = "2.1.0";
 exports.DEFAULT_AZURE_API_URL = "https://dev.azure.com";
 exports.BLACKDUCKSCA_SECURITY_SCAN_AZURE_DEVOPS_DOCS_URL = "https://sig-product-docs.synopsys.com/bundle/bridge/page/documentation/c_synopsys-security-scan-for-azure-devops.html";
@@ -911,7 +914,7 @@ class Bridge {
             this.bridgeExecutablePath = yield this.getBridgePath();
             const osName = process.platform;
             let versionFilePath;
-            if (osName === "win32") {
+            if (osName === constants.WIN32) {
                 versionFilePath = this.bridgeExecutablePath.concat("\\versions.txt");
             }
             else {
@@ -1022,10 +1025,10 @@ class Bridge {
     getBridgeDefaultPath() {
         let bridgeDefaultPath = "";
         const osName = process.platform;
-        if (osName === "darwin" || osName === "linux") {
+        if (osName === constants.DARWIN || osName === constants.LINUX) {
             bridgeDefaultPath = path.join(process.env["HOME"], constants.BRIDGE_CLI_DEFAULT_PATH_UNIX);
         }
-        else if (osName === "win32") {
+        else if (osName === constants.WIN32) {
             bridgeDefaultPath = path.join(process.env["USERPROFILE"], constants.BRIDGE_CLI_DEFAULT_PATH_WINDOWS);
         }
         taskLib.debug("bridgeDefaultPath:" + bridgeDefaultPath);
@@ -1034,15 +1037,15 @@ class Bridge {
     getDefaultBridgeSubDirectory() {
         let bridgeSubDirectory = "";
         const osName = process.platform;
-        if (osName === "darwin" || osName === "linux") {
+        if (osName === constants.DARWIN || osName === constants.LINUX) {
             let osPlatform = constants.LINUX_PLATFORM;
-            if (osName === "darwin") {
+            if (osName === constants.DARWIN) {
                 osPlatform = this.getMacOsSuffix();
             }
             bridgeSubDirectory =
                 constants.BRIDGE_CLI_DEFAULT_SUBDIRECTORY_PATH_UNIX.concat("-").concat(osPlatform);
         }
-        else if (osName === "win32") {
+        else if (osName === constants.WIN32) {
             bridgeSubDirectory =
                 constants.BRIDGE_CLI_DEFAULT_SUBDIRECTORY_PATH_WINDOWS.concat("-").concat(constants.WINDOWS_PLATFORM);
         }
@@ -1053,9 +1056,9 @@ class Bridge {
         let bridgeSubDirectoryWithVersion = "";
         const osName = process.platform;
         const version = this.bridgeVersion != "" ? "-".concat(this.bridgeVersion) : "";
-        if (osName === "darwin" || osName === "linux") {
+        if (osName === constants.DARWIN || osName === constants.LINUX) {
             let osPlatform = constants.LINUX_PLATFORM;
-            if (osName === "darwin") {
+            if (osName === constants.DARWIN) {
                 osPlatform = this.getMacOsSuffix();
             }
             bridgeSubDirectoryWithVersion =
@@ -1063,7 +1066,7 @@ class Bridge {
                     .concat("-")
                     .concat(osPlatform);
         }
-        else if (osName === "win32") {
+        else if (osName === constants.WIN32) {
             bridgeSubDirectoryWithVersion =
                 constants.BRIDGE_CLI_DEFAULT_SUBDIRECTORY_PATH_WINDOWS.concat(version)
                     .concat("-")
@@ -1077,7 +1080,7 @@ class Bridge {
         const osName = process.platform;
         let bridgeDownloadUrl = this.bridgeUrlPattern.replace("$version", version);
         bridgeDownloadUrl = bridgeDownloadUrl.replace("$version", version);
-        if (osName === "darwin") {
+        if (osName === constants.DARWIN) {
             const isValidVersionForARM = semver_1.default.gte(version, constants.MIN_SUPPORTED_BRIDGE_CLI_MAC_ARM_VERSION);
             let osSuffix = constants.MAC_INTEL_PLATFORM;
             if (isValidVersionForARM) {
@@ -1090,10 +1093,10 @@ class Bridge {
             }
             bridgeDownloadUrl = bridgeDownloadUrl.replace("$platform", osSuffix);
         }
-        else if (osName === "linux") {
+        else if (osName === constants.LINUX) {
             bridgeDownloadUrl = bridgeDownloadUrl.replace("$platform", constants.LINUX_PLATFORM);
         }
-        else if (osName === "win32") {
+        else if (osName === constants.WIN32) {
             bridgeDownloadUrl = bridgeDownloadUrl.replace("$platform", constants.WINDOWS_PLATFORM);
         }
         return bridgeDownloadUrl;
@@ -1101,14 +1104,14 @@ class Bridge {
     getLatestVersionUrl() {
         const osName = process.platform;
         let bridgeDownloadUrl = this.bridgeUrlLatestPattern;
-        if (osName === "darwin") {
+        if (osName === constants.DARWIN) {
             const osSuffix = this.getMacOsSuffix();
             bridgeDownloadUrl = bridgeDownloadUrl.replace("$platform", osSuffix);
         }
-        else if (osName === "linux") {
+        else if (osName === constants.LINUX) {
             bridgeDownloadUrl = bridgeDownloadUrl.replace("$platform", constants.LINUX_PLATFORM);
         }
-        else if (osName === "win32") {
+        else if (osName === constants.WIN32) {
             bridgeDownloadUrl = bridgeDownloadUrl.replace("$platform", constants.WINDOWS_PLATFORM);
         }
         return bridgeDownloadUrl;
@@ -1121,10 +1124,11 @@ class Bridge {
     }
     setBridgeExecutablePath(filePath) {
         return __awaiter(this, void 0, void 0, function* () {
-            if (process.platform === "win32") {
+            if (process.platform === constants.WIN32) {
                 this.bridgeExecutablePath = path.join(filePath, constants.BRIDGE_CLI_EXECUTABLE_WINDOWS);
             }
-            else if (process.platform === "darwin" || process.platform === "linux") {
+            else if (process.platform === constants.DARWIN ||
+                process.platform === constants.LINUX) {
                 this.bridgeExecutablePath = path.join(filePath, constants.BRIDGE_CLI_EXECUTABLE_MAC_LINUX);
             }
             return this.bridgeExecutablePath;
@@ -2960,13 +2964,13 @@ function validateBridgeUrl(url) {
     const osName = process.platform;
     taskLib.debug("osName:::" + osName);
     const fileNameComponent = url.substring(url.lastIndexOf("/"), url.length);
-    if (osName === "darwin") {
+    if (osName === constants.DARWIN) {
         return fileNameComponent.toLowerCase().includes("mac");
     }
-    else if (osName === "linux") {
+    else if (osName === constants.LINUX) {
         return fileNameComponent.toLowerCase().includes("linux");
     }
-    else if (osName === "win32") {
+    else if (osName === constants.WIN32) {
         return fileNameComponent.toLowerCase().includes("win");
     }
     else {

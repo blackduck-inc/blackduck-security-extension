@@ -263,18 +263,18 @@ describe("Download Bridge", () => {
     let bridgeDefaultPath = "";
     let bridgeExecutablePath = "";
     let bridgeSubDir = "";
-    if (osName === "linux") {
+    if (osName === constants.LINUX) {
         bridgeDefaultPath = path.join(process.env["HOME"] as string, constants.BRIDGE_CLI_DEFAULT_PATH_UNIX);
         bridgeExecutablePath = bridgeDefaultPath.concat("/bridge-cli-bundle-linux64")
         bridgeSubDir = "/bridge-cli-bundle-linux64";
         bridgeUrl = "https://artifactory.internal.synopsys.com/artifactory/clops-local/clops.sig.synopsys.com/bridge/binaries/bridge-cli-bundle/2.9.2/bridge-cli-bundle-2.9.2-linux64.zip"
-    } else if (osName === "win32") {
+    } else if (osName === constants.WIN32) {
         bridgeDefaultPath = path.join(
             process.env["USERPROFILE"] as string, constants.BRIDGE_CLI_DEFAULT_PATH_WINDOWS)
         bridgeExecutablePath = bridgeDefaultPath.concat("/bridge-cli-bundle-win64")
         bridgeSubDir = "/bridge-cli-bundle-win64";
         bridgeUrl = "https://artifactory.internal.synopsys.com/artifactory/clops-local/clops.sig.synopsys.com/bridge/binaries/bridge-cli-bundle/2.9.2/bridge-cli-bundle-2.9.2--win64.zip"
-    } else if (osName === "darwin") {
+    } else if (osName === constants.DARWIN) {
         bridgeDefaultPath = path.join(
             process.env["HOME"] as string, constants.BRIDGE_CLI_DEFAULT_PATH_UNIX)
             if (isIntel) {
