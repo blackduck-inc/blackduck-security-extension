@@ -15,7 +15,7 @@ import * as constants from "../../../src/blackduck-security-task/application-con
 let tempPath = path.join(process.cwd(), 'TEMP');
 
 describe('Tool Tests', function () {
-    const fileName = "bridge-cli.zip"
+    const fileName = "bridge-cli-bundle.zip"
     let sandbox: sinon.SinonSandbox;
     before(function () {
         sandbox = sinon.createSandbox();

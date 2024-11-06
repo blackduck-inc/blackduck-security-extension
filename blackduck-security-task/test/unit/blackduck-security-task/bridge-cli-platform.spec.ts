@@ -1,12 +1,11 @@
 // Copyright (c) 2024 Black Duck Software Inc. All rights reserved worldwide.
 
-import {Bridge} from "../../../src/blackduck-security-task/bridge";
+import {BridgeCli} from "../../../src/blackduck-security-task/bridge-cli";
 import {after} from "mocha";
 import {assert, expect} from "chai";
 import * as sinon from "sinon";
 import path from "path";
 import * as constants from "../../../src/blackduck-security-task/application-constant";
-import * as taskLib from "azure-pipelines-task-lib";
 import os from "os";
 
 describe("Platform", () => {
@@ -16,15 +15,18 @@ describe("Platform", () => {
         const currentOsName = process.platform
         let bridgeUrl: string
         let bridgeDefaultPath = "";
-        let bridge: Bridge;
+        let bridge: BridgeCli;
 
         before(() => {
-            bridge = new Bridge();
+            bridge = new BridgeCli();
             Object.defineProperty(process, 'platform', {
                 value: "linux"
             })
-            bridgeDefaultPath = path.join(process.env["HOME"] as string, constants.BRIDGE_CLI_DEFAULT_PATH_LINUX);
-            bridgeUrl = "https://repo.blackduck.com/bds-integrations-release/com/blackduck/integration/bridge-cli/0.1.244/bridge-cli-0.1.244-linux64.zip"
+            bridgeDefaultPath = path.join(process.env["HOME"] as string,
+                constants.BRIDGE_CLI_DEFAULT_PATH_UNIX
+                    .replace("-$version", "")
+                    .replace("$platform", constants.LINUX_PLATFORM));
+            bridgeUrl = "https://artifactory.internal.synopsys.com/artifactory/clops-local/clops.sig.synopsys.com/bridge/binaries/bridge-cli-bundle/0.1.244/bridge-cli-bundle-0.1.244-linux64.zip"
         })
 
         after(() => {
@@ -39,7 +41,7 @@ describe("Platform", () => {
         });
 
         it("getBridgeDefaultPath", async () => {
-            const result = bridge.getBridgeDefaultPath();
+            const result = bridge.getDefaultBridgeCliPath();
             assert.equal(result, bridgeDefaultPath);
         });
     })
@@ -49,12 +51,12 @@ describe("Platform", () => {
         const currentOsName = process.platform
         let bridgeUrl: string
         let bridgeDefaultPath = "";
-        let bridge: Bridge;
+        let bridge: BridgeCli;
         let sandbox: sinon.SinonSandbox;
 
         before(() => {
             sandbox = sinon.createSandbox();
-            bridge = new Bridge();
+            bridge = new BridgeCli();
             Object.defineProperty(process, 'platform', {
                 value: "darwin"
             })
@@ -72,8 +74,11 @@ describe("Platform", () => {
                 }]
             const cpuInfo = sandbox.stub(os, "cpus");
             cpuInfo.returns(fakeCpus);
-            bridgeDefaultPath = path.join(process.env["HOME"] as string, constants.BRIDGE_CLI_DEFAULT_PATH_MAC);
-            bridgeUrl = "https://repo.blackduck.com/bds-integrations-release/com/blackduck/integration/bridge-cli/0.1.244/bridge-cli-0.1.244-macosx.zip"
+            bridgeDefaultPath = path.join(process.env["HOME"] as string,
+                constants.BRIDGE_CLI_DEFAULT_PATH_UNIX
+                    .replace("-$version", "")
+                    .replace("$platform", constants.MAC_INTEL_PLATFORM));
+            bridgeUrl = "https://artifactory.internal.synopsys.com/artifactory/clops-local/clops.sig.synopsys.com/bridge/binaries/bridge-cli-bundle/0.1.244/bridge-cli-bundle-0.1.244-macosx.zip"
         })
 
         after(() => {
@@ -88,7 +93,7 @@ describe("Platform", () => {
         });
 
         it("getBridgeDefaultPath", async () => {
-            const result = bridge.getBridgeDefaultPath();
+            const result = bridge.getDefaultBridgeCliPath();
             assert.equal(result, bridgeDefaultPath);
         });
     })
@@ -98,18 +103,21 @@ describe("Platform", () => {
         const currentOsName = process.platform
         let bridgeUrl: string
         let bridgeDefaultPath = "";
-        let bridge: Bridge;
+        let bridge: BridgeCli;
 
         before(() => {
             process.env["USERPROFILE"] = "C:/Users"
-            bridge = new Bridge();
+            bridge = new BridgeCli();
             Object.defineProperty(process, 'platform', {
                 value: "win32"
             })
 
             bridgeDefaultPath = path.join(
-                process.env["USERPROFILE"] as string, constants.BRIDGE_CLI_DEFAULT_PATH_WINDOWS)
-            bridgeUrl = "https://repo.blackduck.com/bds-integrations-release/com/blackduck/integration/bridge-cli/0.1.244/bridge-cli-0.1.244-win64.zip"
+                process.env["USERPROFILE"] as string,
+                constants.BRIDGE_CLI_DEFAULT_PATH_WINDOWS
+                    .replace("-$version", "")
+                    .replace("$platform", constants.WINDOWS_PLATFORM))
+            bridgeUrl = "https://artifactory.internal.synopsys.com/artifactory/clops-local/clops.sig.synopsys.com/bridge/binaries/bridge-cli-bundle/0.1.244/bridge-cli-bundle-0.1.244-win64.zip"
         })
 
         after(() => {
@@ -124,7 +132,7 @@ describe("Platform", () => {
         });
 
         it("getBridgeDefaultPath", () => {
-            const result = bridge.getBridgeDefaultPath();
+            const result = bridge.getDefaultBridgeCliPath();
             assert.equal(result, bridgeDefaultPath);
         });
     })

@@ -1,7 +1,7 @@
 import * as path from "path";
 import * as taskLib from "azure-pipelines-task-lib/task";
 import { HttpClient } from "typed-rest-client/HttpClient";
-import { BridgeToolsParameter } from "./tools-parameter";
+import { BridgeCliToolsParameter } from "./tools-parameter";
 import { sleep } from "./utility";
 import {
   validateBlackDuckSCAInputs,
@@ -16,7 +16,7 @@ import * as constants from "./application-constant";
 
 import * as inputs from "./input";
 import { extractZipped, getRemoteFile, parseToBoolean } from "./utility";
-import { readFileSync } from "fs";
+import { readFileSync, renameSync } from "fs";
 import { DownloadFileResponse } from "./model/download-file-response";
 import DomParser from "dom-parser";
 import {
@@ -55,57 +55,80 @@ import os from "os";
 import semver from "semver";
 import { ErrorCode } from "./enum/ErrorCodes";
 
-export class Bridge {
-  bridgeExecutablePath: string;
-  bridgeArtifactoryURL: string;
-  bridgeUrlPattern: string;
-  bridgeUrlLatestPattern: string;
+export class BridgeCli {
+  bridgeCliExecutablePath: string;
+  bridgeCliVersion: string;
+  bridgeCliArtifactoryURL: string;
+  bridgeCliUrlPattern: string;
+  bridgeCliUrlLatestPattern: string;
 
   constructor() {
-    this.bridgeExecutablePath = "";
-    this.bridgeArtifactoryURL =
-      "https://repo.blackduck.com/bds-integrations-release/com/blackduck/integration/bridge-cli";
-    this.bridgeUrlPattern = this.bridgeArtifactoryURL.concat(
-      "/$version/bridge-cli-$version-$platform.zip"
+    this.bridgeCliExecutablePath = "";
+    this.bridgeCliVersion = "";
+    this.bridgeCliArtifactoryURL =
+      "https://artifactory.internal.synopsys.com/artifactory/clops-local/clops.sig.synopsys.com/bridge/binaries/bridge-cli-bundle";
+    this.bridgeCliUrlPattern = this.bridgeCliArtifactoryURL.concat(
+      "/$version/bridge-cli-bundle-$version-$platform.zip"
     );
-    this.bridgeUrlLatestPattern = this.bridgeArtifactoryURL.concat(
-      "/latest/bridge-cli-$platform.zip"
+    this.bridgeCliUrlLatestPattern = this.bridgeCliArtifactoryURL.concat(
+      "/latest/bridge-cli-bundle-$platform.zip"
     );
   }
 
-  async extractBridge(fileInfo: DownloadFileResponse): Promise<string> {
-    const extractZippedFilePath: string =
-      inputs.BRIDGECLI_INSTALL_DIRECTORY_KEY || this.getBridgeDefaultPath();
+  async extractBridgeCli(fileInfo: DownloadFileResponse): Promise<string> {
+    const bridgeCliInstallDirectory: string =
+      inputs.BRIDGECLI_INSTALL_DIRECTORY_KEY || this.getDefaultBridgeCliPath();
+
+    const bridgeCliFullPath = path.join(
+      String(bridgeCliInstallDirectory),
+      String(this.getDefaultBridgeCliSubDirectory())
+    );
+    taskLib.debug("bridgeCliFullPath: " + bridgeCliFullPath);
 
     // Clear the existing bridge, if available
-    if (taskLib.exist(extractZippedFilePath)) {
-      await taskLib.rmRF(extractZippedFilePath);
+    if (taskLib.exist(bridgeCliFullPath)) {
+      await taskLib.rmRF(bridgeCliFullPath);
     }
 
-    await extractZipped(fileInfo.filePath, extractZippedFilePath);
+    await extractZipped(fileInfo.filePath, bridgeCliInstallDirectory);
 
-    return Promise.resolve(extractZippedFilePath);
+    if (this.bridgeCliVersion != "") {
+      const bridgeCliPathWithVersion = path.join(
+        String(bridgeCliInstallDirectory),
+        String(this.getBridgeCliSubDirectoryWithVersion())
+      );
+      taskLib.debug("bridgeCliPathWithVersion: " + bridgeCliPathWithVersion);
+      if (taskLib.exist(bridgeCliPathWithVersion)) {
+        taskLib.debug(
+          "Renaming bridge versioned path to default bridge-cli path"
+        );
+        renameSync(bridgeCliPathWithVersion, bridgeCliFullPath);
+      }
+    }
+    taskLib.debug("Bridge Executable Path: " + bridgeCliFullPath);
+    return Promise.resolve(bridgeCliFullPath);
   }
 
-  async executeBridgeCommand(
+  async executeBridgeCliCommand(
     executablePath: string,
     workspace: string,
     command: string
   ): Promise<number> {
     taskLib.debug("extractedPath: ".concat(executablePath));
+    process.env["BRIDGE_CACHE_DIR"] = executablePath;
 
-    const executableBridgePath = await this.setBridgeExecutablePath(
+    const executableBridgeCliPath = await this.setBridgeCliExecutablePath(
       executablePath
     );
-    if (!taskLib.exist(executableBridgePath)) {
+    if (!taskLib.exist(executableBridgeCliPath)) {
       throw new Error(
-        BRIDGE_CLI_EXECUTABLE_FILE_NOT_FOUND.concat(executableBridgePath)
+        BRIDGE_CLI_EXECUTABLE_FILE_NOT_FOUND.concat(executableBridgeCliPath)
           .concat(constants.SPACE)
           .concat(ErrorCode.BRIDGE_EXECUTABLE_NOT_FOUND.toString())
       );
     }
     try {
-      return await taskLib.exec(executableBridgePath, command, {
+      return await taskLib.exec(executableBridgeCliPath, command, {
         cwd: workspace,
       });
     } catch (errorObject) {
@@ -185,8 +208,8 @@ export class Bridge {
 
       if (parseToBoolean(inputs.INCLUDE_DIAGNOSTICS)) {
         formattedCommand = formattedCommand
-          .concat(BridgeToolsParameter.SPACE)
-          .concat(BridgeToolsParameter.DIAGNOSTICS_OPTION);
+          .concat(BridgeCliToolsParameter.SPACE)
+          .concat(BridgeCliToolsParameter.DIAGNOSTICS_OPTION);
       }
 
       console.log("Formatted command is - ".concat(formattedCommand));
@@ -235,7 +258,7 @@ export class Bridge {
   ): Promise<[string, string[]]> {
     const srmErrors: string[] = validateSrmInputs();
     if (srmErrors.length === 0 && inputs.SRM_URL) {
-      const commandFormatter = new BridgeToolsParameter(tempDir);
+      const commandFormatter = new BridgeCliToolsParameter(tempDir);
       formattedCommand = formattedCommand.concat(
         await commandFormatter.getFormattedCommandForSrm()
       );
@@ -249,7 +272,7 @@ export class Bridge {
   ): Promise<[string, string[]]> {
     // validating and preparing command for polaris
     const polarisErrors: string[] = validatePolarisInputs();
-    const commandFormatter = new BridgeToolsParameter(tempDir);
+    const commandFormatter = new BridgeCliToolsParameter(tempDir);
     if (polarisErrors.length === 0 && inputs.POLARIS_SERVER_URL) {
       formattedCommand = formattedCommand.concat(
         await commandFormatter.getFormattedCommandForPolaris()
@@ -265,7 +288,7 @@ export class Bridge {
     // validating and preparing command for coverity
     const coverityErrors: string[] = validateCoverityInputs();
     if (coverityErrors.length === 0 && inputs.COVERITY_URL) {
-      const coverityCommandFormatter = new BridgeToolsParameter(tempDir);
+      const coverityCommandFormatter = new BridgeCliToolsParameter(tempDir);
       formattedCommand = formattedCommand.concat(
         await coverityCommandFormatter.getFormattedCommandForCoverity()
       );
@@ -279,7 +302,7 @@ export class Bridge {
   ): Promise<[string, string[]]> {
     const blackduckErrors: string[] = validateBlackDuckSCAInputs();
     if (blackduckErrors.length === 0 && inputs.BLACKDUCKSCA_URL) {
-      const blackDuckCommandFormatter = new BridgeToolsParameter(tempDir);
+      const blackDuckCommandFormatter = new BridgeCliToolsParameter(tempDir);
       formattedCommand = formattedCommand.concat(
         await blackDuckCommandFormatter.getFormattedCommandForBlackduck()
       );
@@ -288,13 +311,13 @@ export class Bridge {
   }
 
   async validateBridgeVersion(version: string): Promise<boolean> {
-    const versions = await this.getAllAvailableBridgeVersions();
+    const versions = await this.getAllAvailableBridgeCliVersions();
     return Promise.resolve(versions.indexOf(version.trim()) !== -1);
   }
 
-  async downloadAndExtractBridge(tempDir: string): Promise<string> {
+  async downloadAndExtractBridgeCli(tempDir: string): Promise<string> {
     try {
-      const bridgeUrl = await this.getBridgeUrl();
+      const bridgeUrl = await this.getBridgeCliUrl();
 
       if (bridgeUrl != "" && bridgeUrl != null) {
         const downloadBridge: DownloadFileResponse = await getRemoteFile(
@@ -303,17 +326,17 @@ export class Bridge {
         );
         console.info(BRIDGE_CLI_DOWNLOAD_COMPLETED);
         // Extracting bridge
-        return await this.extractBridge(downloadBridge);
+        return await this.extractBridgeCli(downloadBridge);
       }
       if (
         inputs.BRIDGECLI_DOWNLOAD_VERSION &&
-        (await this.checkIfBridgeVersionExists(
+        (await this.checkIfBridgeCliVersionExists(
           inputs.BRIDGECLI_DOWNLOAD_VERSION
         ))
       ) {
-        return Promise.resolve(this.bridgeExecutablePath);
+        return Promise.resolve(this.bridgeCliExecutablePath);
       }
-      return this.bridgeExecutablePath;
+      return this.bridgeCliExecutablePath;
     } catch (e) {
       const errorObject = (e as Error).message;
       if (
@@ -344,7 +367,7 @@ export class Bridge {
     }
   }
 
-  async getBridgeUrl(): Promise<string | undefined> {
+  async getBridgeCliUrl(): Promise<string | undefined> {
     let bridgeUrl: string;
     let version = "";
     if (inputs.BRIDGECLI_DOWNLOAD_URL) {
@@ -360,12 +383,13 @@ export class Bridge {
         );
       }
       // To check whether bridge already exists with same version mentioned in bridge url
-      const versionsArray = bridgeUrl.match(".*bridge-cli-([0-9.]*).*");
+      const versionsArray = bridgeUrl.match(".*bridge-cli-bundle-([0-9.]*).*");
       if (versionsArray) {
         version = versionsArray[1];
         if (!version) {
-          const regex = /\w*(bridge-cli-(win64|linux64|macosx|macos_arm).zip)/;
-          version = await this.getBridgeVersionFromLatestURL(
+          const regex =
+            /\w*(bridge-cli-bundle-(win64|linux64|macosx|macos_arm).zip)/;
+          version = await this.getBridgeCliVersionFromLatestURL(
             bridgeUrl.replace(regex, "versions.txt")
           );
         }
@@ -387,58 +411,60 @@ export class Bridge {
       }
     } else {
       taskLib.debug(CHECK_LATEST_BRIDGE_CLI_VERSION);
-      version = await this.getBridgeVersionFromLatestURL(
-        this.bridgeArtifactoryURL.concat("/latest/versions.txt")
+      version = await this.getBridgeCliVersionFromLatestURL(
+        this.bridgeCliArtifactoryURL.concat("/latest/versions.txt")
       );
       bridgeUrl = this.getLatestVersionUrl();
     }
 
     if (version != "") {
-      if (await this.checkIfBridgeVersionExists(version)) {
+      if (await this.checkIfBridgeCliVersionExists(version)) {
         console.log(SKIP_DOWNLOAD_BRIDGE_CLI_WHEN_VERSION_NOT_FOUND);
         return Promise.resolve("");
       }
     }
+
+    this.bridgeCliVersion = version;
 
     console.info(DOWNLOADING_BRIDGE_CLI);
     console.info(BRIDGE_CLI_URL_MESSAGE.concat(bridgeUrl));
     return bridgeUrl;
   }
 
-  async checkIfBridgeVersionExists(bridgeVersion: string): Promise<boolean> {
-    this.bridgeExecutablePath = await this.getBridgePath();
+  async checkIfBridgeCliVersionExists(bridgeVersion: string): Promise<boolean> {
+    this.bridgeCliExecutablePath = await this.getBridgeCliPath();
     const osName = process.platform;
     let versionFilePath: string;
 
-    if (osName === "win32") {
-      versionFilePath = this.bridgeExecutablePath.concat("\\versions.txt");
+    if (osName === constants.WIN32) {
+      versionFilePath = this.bridgeCliExecutablePath.concat("\\versions.txt");
     } else {
-      versionFilePath = this.bridgeExecutablePath.concat("/versions.txt");
+      versionFilePath = this.bridgeCliExecutablePath.concat("/versions.txt");
     }
-    if (taskLib.exist(versionFilePath) && this.bridgeExecutablePath) {
-      taskLib.debug(BRIDGE_CLI_FOUND_AT.concat(this.bridgeExecutablePath));
-      taskLib.debug(VERSION_FILE_FOUND_AT.concat(this.bridgeExecutablePath));
+    if (taskLib.exist(versionFilePath) && this.bridgeCliExecutablePath) {
+      taskLib.debug(BRIDGE_CLI_FOUND_AT.concat(this.bridgeCliExecutablePath));
+      taskLib.debug(VERSION_FILE_FOUND_AT.concat(this.bridgeCliExecutablePath));
       if (await this.checkIfVersionExists(bridgeVersion, versionFilePath)) {
         return Promise.resolve(true);
       }
     } else {
       taskLib.debug(
-        VERSION_FILE_NOT_FOUND_AT.concat(this.bridgeExecutablePath)
+        VERSION_FILE_NOT_FOUND_AT.concat(this.bridgeCliExecutablePath)
       );
     }
     return Promise.resolve(false);
   }
 
-  async getAllAvailableBridgeVersions(): Promise<string[]> {
+  async getAllAvailableBridgeCliVersions(): Promise<string[]> {
     let htmlResponse = "";
-    const httpClient = new HttpClient("blackduck-task");
+    const httpClient = new HttpClient("blackduck-security-task");
 
     let retryCountLocal = RETRY_COUNT;
     let httpResponse;
     let retryDelay = RETRY_DELAY_IN_MILLISECONDS;
     const versionArray: string[] = [];
     do {
-      httpResponse = await httpClient.get(this.bridgeArtifactoryURL, {
+      httpResponse = await httpClient.get(this.bridgeCliArtifactoryURL, {
         Accept: "text/html",
       });
 
@@ -484,14 +510,14 @@ export class Bridge {
   ): Promise<boolean> {
     try {
       const contents = readFileSync(bridgeVersionFilePath, "utf-8");
-      return contents.includes("Bridge CLI Package: ".concat(bridgeVersion));
+      return contents.includes("bridge-cli-bundle: ".concat(bridgeVersion));
     } catch (e) {
       console.info(ERROR_READING_VERSION_FILE.concat((e as Error).message));
     }
     return false;
   }
 
-  async getBridgeVersionFromLatestURL(
+  async getBridgeCliVersionFromLatestURL(
     latestVersionsUrl: string
   ): Promise<string> {
     try {
@@ -519,7 +545,7 @@ export class Bridge {
           const htmlResponse = (await httpResponse.readBody()).trim();
           const lines = htmlResponse.split("\n");
           for (const line of lines) {
-            if (line.includes("Bridge CLI Package")) {
+            if (line.includes("bridge-cli-bundle")) {
               return line.split(":")[1].trim();
             }
           }
@@ -535,21 +561,16 @@ export class Bridge {
     return "";
   }
 
-  getBridgeDefaultPath(): string {
+  getDefaultBridgeCliPath(): string {
     let bridgeDefaultPath = "";
     const osName = process.platform;
 
-    if (osName === "darwin") {
+    if (osName === constants.DARWIN || osName === constants.LINUX) {
       bridgeDefaultPath = path.join(
         process.env["HOME"] as string,
-        constants.BRIDGE_CLI_DEFAULT_PATH_MAC
+        constants.BRIDGE_CLI_DEFAULT_PATH_UNIX
       );
-    } else if (osName === "linux") {
-      bridgeDefaultPath = path.join(
-        process.env["HOME"] as string,
-        constants.BRIDGE_CLI_DEFAULT_PATH_LINUX
-      );
-    } else if (osName === "win32") {
+    } else if (osName === constants.WIN32) {
       bridgeDefaultPath = path.join(
         process.env["USERPROFILE"] as string,
         constants.BRIDGE_CLI_DEFAULT_PATH_WINDOWS
@@ -559,12 +580,65 @@ export class Bridge {
     return bridgeDefaultPath;
   }
 
+  getDefaultBridgeCliSubDirectory(): string {
+    let bridgeSubDirectory = "";
+    const osName = process.platform;
+
+    if (osName === constants.DARWIN || osName === constants.LINUX) {
+      let osPlatform = constants.LINUX_PLATFORM;
+      if (osName === constants.DARWIN) {
+        osPlatform = this.getMacOsSuffix();
+      }
+      bridgeSubDirectory =
+        constants.BRIDGE_CLI_DEFAULT_SUBDIRECTORY_PATH_UNIX.concat("-").concat(
+          osPlatform
+        );
+    } else if (osName === constants.WIN32) {
+      bridgeSubDirectory =
+        constants.BRIDGE_CLI_DEFAULT_SUBDIRECTORY_PATH_WINDOWS.concat(
+          "-"
+        ).concat(constants.WINDOWS_PLATFORM);
+    }
+    taskLib.debug("bridgeSubDirectory:" + bridgeSubDirectory);
+    return bridgeSubDirectory;
+  }
+
+  getBridgeCliSubDirectoryWithVersion(): string {
+    let bridgeSubDirectoryWithVersion = "";
+    const osName = process.platform;
+    const version =
+      this.bridgeCliVersion != "" ? "-".concat(this.bridgeCliVersion) : "";
+
+    if (osName === constants.DARWIN || osName === constants.LINUX) {
+      let osPlatform = constants.LINUX_PLATFORM;
+      if (osName === constants.DARWIN) {
+        osPlatform = this.getMacOsSuffix();
+      }
+      bridgeSubDirectoryWithVersion =
+        constants.BRIDGE_CLI_DEFAULT_SUBDIRECTORY_PATH_UNIX.concat(version)
+          .concat("-")
+          .concat(osPlatform);
+    } else if (osName === constants.WIN32) {
+      bridgeSubDirectoryWithVersion =
+        constants.BRIDGE_CLI_DEFAULT_SUBDIRECTORY_PATH_WINDOWS.concat(version)
+          .concat("-")
+          .concat(constants.WINDOWS_PLATFORM);
+    }
+    taskLib.debug(
+      "bridgeSubDirectoryWithVersion:" + bridgeSubDirectoryWithVersion
+    );
+    return bridgeSubDirectoryWithVersion;
+  }
+
   // Get bridge version url
   getVersionUrl(version: string): string {
     const osName = process.platform;
-    let bridgeDownloadUrl = this.bridgeUrlPattern.replace("$version", version);
+    let bridgeDownloadUrl = this.bridgeCliUrlPattern.replace(
+      "$version",
+      version
+    );
     bridgeDownloadUrl = bridgeDownloadUrl.replace("$version", version);
-    if (osName === "darwin") {
+    if (osName === constants.DARWIN) {
       const isValidVersionForARM = semver.gte(
         version,
         constants.MIN_SUPPORTED_BRIDGE_CLI_MAC_ARM_VERSION
@@ -579,12 +653,12 @@ export class Bridge {
           : constants.MAC_ARM_PLATFORM;
       }
       bridgeDownloadUrl = bridgeDownloadUrl.replace("$platform", osSuffix);
-    } else if (osName === "linux") {
+    } else if (osName === constants.LINUX) {
       bridgeDownloadUrl = bridgeDownloadUrl.replace(
         "$platform",
         constants.LINUX_PLATFORM
       );
-    } else if (osName === "win32") {
+    } else if (osName === constants.WIN32) {
       bridgeDownloadUrl = bridgeDownloadUrl.replace(
         "$platform",
         constants.WINDOWS_PLATFORM
@@ -595,21 +669,16 @@ export class Bridge {
 
   getLatestVersionUrl(): string {
     const osName = process.platform;
-    let bridgeDownloadUrl = this.bridgeUrlLatestPattern;
-    if (osName === "darwin") {
-      const cpuInfo = os.cpus();
-      taskLib.debug(`cpuInfo :: ${JSON.stringify(cpuInfo)}`);
-      const isIntel = cpuInfo[0].model.includes("Intel");
-      const osSuffix = isIntel
-        ? constants.MAC_INTEL_PLATFORM
-        : constants.MAC_ARM_PLATFORM;
+    let bridgeDownloadUrl = this.bridgeCliUrlLatestPattern;
+    if (osName === constants.DARWIN) {
+      const osSuffix = this.getMacOsSuffix();
       bridgeDownloadUrl = bridgeDownloadUrl.replace("$platform", osSuffix);
-    } else if (osName === "linux") {
+    } else if (osName === constants.LINUX) {
       bridgeDownloadUrl = bridgeDownloadUrl.replace(
         "$platform",
         constants.LINUX_PLATFORM
       );
-    } else if (osName === "win32") {
+    } else if (osName === constants.WIN32) {
       bridgeDownloadUrl = bridgeDownloadUrl.replace(
         "$platform",
         constants.WINDOWS_PLATFORM
@@ -619,28 +688,44 @@ export class Bridge {
     return bridgeDownloadUrl;
   }
 
-  async setBridgeExecutablePath(filePath: string): Promise<string> {
-    if (process.platform === "win32") {
-      this.bridgeExecutablePath = path.join(
+  getMacOsSuffix(): string {
+    const cpuInfo = os.cpus();
+    taskLib.debug(`cpuInfo :: ${JSON.stringify(cpuInfo)}`);
+    const isIntel = cpuInfo[0].model.includes("Intel");
+    return isIntel ? constants.MAC_INTEL_PLATFORM : constants.MAC_ARM_PLATFORM;
+  }
+
+  async setBridgeCliExecutablePath(filePath: string): Promise<string> {
+    if (process.platform === constants.WIN32) {
+      this.bridgeCliExecutablePath = path.join(
         filePath,
         constants.BRIDGE_CLI_EXECUTABLE_WINDOWS
       );
-    } else if (process.platform === "darwin" || process.platform === "linux") {
-      this.bridgeExecutablePath = path.join(
+    } else if (
+      process.platform === constants.DARWIN ||
+      process.platform === constants.LINUX
+    ) {
+      this.bridgeCliExecutablePath = path.join(
         filePath,
         constants.BRIDGE_CLI_EXECUTABLE_MAC_LINUX
       );
     }
-    return this.bridgeExecutablePath;
+    return this.bridgeCliExecutablePath;
   }
 
   //contains executable path with extension file
-  async getBridgePath(): Promise<string> {
-    let bridgeDirectoryPath = this.getBridgeDefaultPath();
+  async getBridgeCliPath(): Promise<string> {
+    let bridgeDirectoryPath = path.join(
+      String(this.getDefaultBridgeCliPath()),
+      String(this.getDefaultBridgeCliSubDirectory())
+    );
     if (BRIDGECLI_INSTALL_DIRECTORY_KEY) {
-      bridgeDirectoryPath = BRIDGECLI_INSTALL_DIRECTORY_KEY;
+      bridgeDirectoryPath = path.join(
+        String(BRIDGECLI_INSTALL_DIRECTORY_KEY),
+        String(this.getDefaultBridgeCliSubDirectory())
+      );
       console.info(LOOKING_FOR_BRIDGE_CLI_INSTALL_DIR);
-      if (!taskLib.exist(bridgeDirectoryPath)) {
+      if (!taskLib.exist(BRIDGECLI_INSTALL_DIRECTORY_KEY)) {
         throw new Error(
           BRIDGE_CLI_INSTALL_DIRECTORY_NOT_EXISTS.concat(
             constants.SPACE
@@ -649,8 +734,8 @@ export class Bridge {
       }
     } else {
       console.info(LOOKING_FOR_BRIDGE_CLI_DEFAULT_PATH);
-      if (ENABLE_NETWORK_AIRGAP && this.getBridgeDefaultPath()) {
-        if (!taskLib.exist(this.getBridgeDefaultPath())) {
+      if (ENABLE_NETWORK_AIRGAP && bridgeDirectoryPath) {
+        if (!taskLib.exist(bridgeDirectoryPath)) {
           throw new Error(
             BRIDGE_CLI_DEFAULT_DIRECTORY_NOT_EXISTS.concat(
               constants.SPACE

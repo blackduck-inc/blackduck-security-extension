@@ -20,7 +20,7 @@
     "Open Source",
     "Build"
   ],
-  "description": "Run security scans on Polaris, Black Duck , Coverity or Software Risk Manager (SRM) platforms",
+  "description": "Run security scans on Polaris, Black Duck SCA, Coverity or Software Risk Manager (SRM) platforms",
   "categories": [
     "Azure Pipelines"
   ],
@@ -45,7 +45,7 @@
         "ms.vss-distributed-task.tasks"
       ],
       "properties": {
-        "name": "BlackDuckSecurityScan"
+        "name": "blackduck-security-task"
       }
     }
   ]

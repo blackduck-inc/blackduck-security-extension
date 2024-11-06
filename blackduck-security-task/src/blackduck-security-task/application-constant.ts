@@ -1,14 +1,15 @@
 // Copyright (c) 2024 Black Duck Software Inc. All rights reserved worldwide.
 
 import { ErrorCode } from "./enum/ErrorCodes";
-export const BRIDGE_CLI_DEFAULT_PATH_MAC = "/bridge-cli"; //Path will be in home
-export const BRIDGE_CLI_DEFAULT_PATH_WINDOWS = "\\bridge-cli";
-export const BRIDGE_CLI_DEFAULT_PATH_LINUX = "/bridge-cli";
+export const BRIDGE_CLI_DEFAULT_PATH_UNIX = "/bridge-cli-bundle"; //Path will be in home
+export const BRIDGE_CLI_DEFAULT_PATH_WINDOWS = "\\bridge-cli-bundle";
+export const BRIDGE_CLI_DEFAULT_SUBDIRECTORY_PATH_UNIX = "/bridge-cli-bundle"; //Subdirectory for bridle-cli
+export const BRIDGE_CLI_DEFAULT_SUBDIRECTORY_PATH_WINDOWS =
+  "\\bridge-cli-bundle";
 export const BRIDGE_CLI_EXECUTABLE_WINDOWS = "bridge-cli.exe";
 export const BRIDGE_CLI_EXECUTABLE_MAC_LINUX = "bridge-cli";
-export const BRIDGE_CLI_ZIP_FILE_NAME = "bridge-cli.zip";
+export const BRIDGE_CLI_ZIP_FILE_NAME = "bridge-cli-bundle.zip";
 
-export const APPLICATION_NAME = "blackduck-extension";
 export const AZURE_TOKEN_KEY = "azure_token";
 export const POLARIS_AZURE_TOKEN_KEY_CLASSIC_EDITOR = "polarisAzureToken";
 export const BLACKDUCKSCA_AZURE_TOKEN_KEY_CLASSIC_EDITOR =
@@ -442,6 +443,9 @@ export const WINDOWS_PLATFORM = "win64";
 export const LINUX_PLATFORM = "linux64";
 export const MAC_ARM_PLATFORM = "macos_arm";
 export const MAC_INTEL_PLATFORM = "macosx";
+export const WIN32 = "win32";
+export const LINUX = "linux";
+export const DARWIN = "darwin";
 export const MIN_SUPPORTED_BRIDGE_CLI_MAC_ARM_VERSION = "2.1.0";
 export const DEFAULT_AZURE_API_URL = "https://dev.azure.com";
 export const BLACKDUCKSCA_SECURITY_SCAN_AZURE_DEVOPS_DOCS_URL =
