@@ -598,7 +598,7 @@ exports.AzureService = AzureService;
 
 /***/ }),
 
-/***/ 1380:
+/***/ 3285:
 /***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
 
 "use strict";
@@ -639,7 +639,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.Bridge = void 0;
+exports.BridgeCli = void 0;
 const path = __importStar(__nccwpck_require__(1017));
 const taskLib = __importStar(__nccwpck_require__(347));
 const HttpClient_1 = __nccwpck_require__(5538);
@@ -656,49 +656,49 @@ const application_constant_1 = __nccwpck_require__(8673);
 const os_1 = __importDefault(__nccwpck_require__(2037));
 const semver_1 = __importDefault(__nccwpck_require__(1383));
 const ErrorCodes_1 = __nccwpck_require__(8936);
-class Bridge {
+class BridgeCli {
     constructor() {
-        this.bridgeExecutablePath = "";
-        this.bridgeVersion = "";
-        this.bridgeArtifactoryURL =
+        this.bridgeCliExecutablePath = "";
+        this.bridgeCliVersion = "";
+        this.bridgeCliArtifactoryURL =
             "https://artifactory.internal.synopsys.com/artifactory/clops-local/clops.sig.synopsys.com/bridge/binaries/bridge-cli-bundle";
-        this.bridgeUrlPattern = this.bridgeArtifactoryURL.concat("/$version/bridge-cli-bundle-$version-$platform.zip");
-        this.bridgeUrlLatestPattern = this.bridgeArtifactoryURL.concat("/latest/bridge-cli-bundle-$platform.zip");
+        this.bridgeCliUrlPattern = this.bridgeCliArtifactoryURL.concat("/$version/bridge-cli-bundle-$version-$platform.zip");
+        this.bridgeCliUrlLatestPattern = this.bridgeCliArtifactoryURL.concat("/latest/bridge-cli-bundle-$platform.zip");
     }
-    extractBridge(fileInfo) {
+    extractBridgeCli(fileInfo) {
         return __awaiter(this, void 0, void 0, function* () {
-            const bridgeInstallDirectory = inputs.BRIDGECLI_INSTALL_DIRECTORY_KEY || this.getBridgeDefaultPath();
-            const bridgeCliFullPath = path.join(String(bridgeInstallDirectory), String(this.getDefaultBridgeSubDirectory()));
+            const bridgeCliInstallDirectory = inputs.BRIDGECLI_INSTALL_DIRECTORY_KEY || this.getDefaultBridgeCliPath();
+            const bridgeCliFullPath = path.join(String(bridgeCliInstallDirectory), String(this.getDefaultBridgeCliSubDirectory()));
             taskLib.debug("bridgeCliFullPath: " + bridgeCliFullPath);
             // Clear the existing bridge, if available
             if (taskLib.exist(bridgeCliFullPath)) {
                 yield taskLib.rmRF(bridgeCliFullPath);
             }
-            yield (0, utility_2.extractZipped)(fileInfo.filePath, bridgeInstallDirectory);
-            if (this.bridgeVersion != "") {
-                const bridgePathWithVersion = path.join(String(bridgeInstallDirectory), String(this.getBridgeSubDirectoryWithVersion()));
-                taskLib.debug("bridgePathWithVersion: " + bridgePathWithVersion);
-                if (taskLib.exist(bridgePathWithVersion)) {
+            yield (0, utility_2.extractZipped)(fileInfo.filePath, bridgeCliInstallDirectory);
+            if (this.bridgeCliVersion != "") {
+                const bridgeCliPathWithVersion = path.join(String(bridgeCliInstallDirectory), String(this.getBridgeCliSubDirectoryWithVersion()));
+                taskLib.debug("bridgeCliPathWithVersion: " + bridgeCliPathWithVersion);
+                if (taskLib.exist(bridgeCliPathWithVersion)) {
                     taskLib.debug("Renaming bridge versioned path to default bridge-cli path");
-                    (0, fs_1.renameSync)(bridgePathWithVersion, bridgeCliFullPath);
+                    (0, fs_1.renameSync)(bridgeCliPathWithVersion, bridgeCliFullPath);
                 }
             }
             taskLib.debug("Bridge Executable Path: " + bridgeCliFullPath);
             return Promise.resolve(bridgeCliFullPath);
         });
     }
-    executeBridgeCommand(executablePath, workspace, command) {
+    executeBridgeCliCommand(executablePath, workspace, command) {
         return __awaiter(this, void 0, void 0, function* () {
             taskLib.debug("extractedPath: ".concat(executablePath));
             process.env["BRIDGE_CACHE_DIR"] = executablePath;
-            const executableBridgePath = yield this.setBridgeExecutablePath(executablePath);
-            if (!taskLib.exist(executableBridgePath)) {
-                throw new Error(application_constant_1.BRIDGE_CLI_EXECUTABLE_FILE_NOT_FOUND.concat(executableBridgePath)
+            const executableBridgeCliPath = yield this.setBridgeCliExecutablePath(executablePath);
+            if (!taskLib.exist(executableBridgeCliPath)) {
+                throw new Error(application_constant_1.BRIDGE_CLI_EXECUTABLE_FILE_NOT_FOUND.concat(executableBridgeCliPath)
                     .concat(constants.SPACE)
                     .concat(ErrorCodes_1.ErrorCode.BRIDGE_EXECUTABLE_NOT_FOUND.toString()));
             }
             try {
-                return yield taskLib.exec(executableBridgePath, command, {
+                return yield taskLib.exec(executableBridgeCliPath, command, {
                     cwd: workspace,
                 });
             }
@@ -752,8 +752,8 @@ class Bridge {
                 }
                 if ((0, utility_2.parseToBoolean)(inputs.INCLUDE_DIAGNOSTICS)) {
                     formattedCommand = formattedCommand
-                        .concat(tools_parameter_1.BridgeToolsParameter.SPACE)
-                        .concat(tools_parameter_1.BridgeToolsParameter.DIAGNOSTICS_OPTION);
+                        .concat(tools_parameter_1.BridgeCliToolsParameter.SPACE)
+                        .concat(tools_parameter_1.BridgeCliToolsParameter.DIAGNOSTICS_OPTION);
                 }
                 console.log("Formatted command is - ".concat(formattedCommand));
                 return Promise.resolve(formattedCommand);
@@ -787,7 +787,7 @@ class Bridge {
         return __awaiter(this, void 0, void 0, function* () {
             const srmErrors = (0, validator_1.validateSrmInputs)();
             if (srmErrors.length === 0 && inputs.SRM_URL) {
-                const commandFormatter = new tools_parameter_1.BridgeToolsParameter(tempDir);
+                const commandFormatter = new tools_parameter_1.BridgeCliToolsParameter(tempDir);
                 formattedCommand = formattedCommand.concat(yield commandFormatter.getFormattedCommandForSrm());
             }
             return [formattedCommand, srmErrors];
@@ -797,7 +797,7 @@ class Bridge {
         return __awaiter(this, void 0, void 0, function* () {
             // validating and preparing command for polaris
             const polarisErrors = (0, validator_1.validatePolarisInputs)();
-            const commandFormatter = new tools_parameter_1.BridgeToolsParameter(tempDir);
+            const commandFormatter = new tools_parameter_1.BridgeCliToolsParameter(tempDir);
             if (polarisErrors.length === 0 && inputs.POLARIS_SERVER_URL) {
                 formattedCommand = formattedCommand.concat(yield commandFormatter.getFormattedCommandForPolaris());
             }
@@ -809,7 +809,7 @@ class Bridge {
             // validating and preparing command for coverity
             const coverityErrors = (0, validator_1.validateCoverityInputs)();
             if (coverityErrors.length === 0 && inputs.COVERITY_URL) {
-                const coverityCommandFormatter = new tools_parameter_1.BridgeToolsParameter(tempDir);
+                const coverityCommandFormatter = new tools_parameter_1.BridgeCliToolsParameter(tempDir);
                 formattedCommand = formattedCommand.concat(yield coverityCommandFormatter.getFormattedCommandForCoverity());
             }
             return [formattedCommand, coverityErrors];
@@ -819,7 +819,7 @@ class Bridge {
         return __awaiter(this, void 0, void 0, function* () {
             const blackduckErrors = (0, validator_1.validateBlackDuckSCAInputs)();
             if (blackduckErrors.length === 0 && inputs.BLACKDUCKSCA_URL) {
-                const blackDuckCommandFormatter = new tools_parameter_1.BridgeToolsParameter(tempDir);
+                const blackDuckCommandFormatter = new tools_parameter_1.BridgeCliToolsParameter(tempDir);
                 formattedCommand = formattedCommand.concat(yield blackDuckCommandFormatter.getFormattedCommandForBlackduck());
             }
             return [formattedCommand, blackduckErrors];
@@ -827,25 +827,25 @@ class Bridge {
     }
     validateBridgeVersion(version) {
         return __awaiter(this, void 0, void 0, function* () {
-            const versions = yield this.getAllAvailableBridgeVersions();
+            const versions = yield this.getAllAvailableBridgeCliVersions();
             return Promise.resolve(versions.indexOf(version.trim()) !== -1);
         });
     }
-    downloadAndExtractBridge(tempDir) {
+    downloadAndExtractBridgeCli(tempDir) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const bridgeUrl = yield this.getBridgeUrl();
+                const bridgeUrl = yield this.getBridgeCliUrl();
                 if (bridgeUrl != "" && bridgeUrl != null) {
                     const downloadBridge = yield (0, utility_2.getRemoteFile)(tempDir, bridgeUrl);
                     console.info(application_constant_1.BRIDGE_CLI_DOWNLOAD_COMPLETED);
                     // Extracting bridge
-                    return yield this.extractBridge(downloadBridge);
+                    return yield this.extractBridgeCli(downloadBridge);
                 }
                 if (inputs.BRIDGECLI_DOWNLOAD_VERSION &&
-                    (yield this.checkIfBridgeVersionExists(inputs.BRIDGECLI_DOWNLOAD_VERSION))) {
-                    return Promise.resolve(this.bridgeExecutablePath);
+                    (yield this.checkIfBridgeCliVersionExists(inputs.BRIDGECLI_DOWNLOAD_VERSION))) {
+                    return Promise.resolve(this.bridgeCliExecutablePath);
                 }
-                return this.bridgeExecutablePath;
+                return this.bridgeCliExecutablePath;
             }
             catch (e) {
                 const errorObject = e.message;
@@ -864,7 +864,7 @@ class Bridge {
             }
         });
     }
-    getBridgeUrl() {
+    getBridgeCliUrl() {
         return __awaiter(this, void 0, void 0, function* () {
             let bridgeUrl;
             let version = "";
@@ -879,7 +879,7 @@ class Bridge {
                     version = versionsArray[1];
                     if (!version) {
                         const regex = /\w*(bridge-cli-bundle-(win64|linux64|macosx|macos_arm).zip)/;
-                        version = yield this.getBridgeVersionFromLatestURL(bridgeUrl.replace(regex, "versions.txt"));
+                        version = yield this.getBridgeCliVersionFromLatestURL(bridgeUrl.replace(regex, "versions.txt"));
                     }
                 }
             }
@@ -894,55 +894,55 @@ class Bridge {
             }
             else {
                 taskLib.debug(application_constant_1.CHECK_LATEST_BRIDGE_CLI_VERSION);
-                version = yield this.getBridgeVersionFromLatestURL(this.bridgeArtifactoryURL.concat("/latest/versions.txt"));
+                version = yield this.getBridgeCliVersionFromLatestURL(this.bridgeCliArtifactoryURL.concat("/latest/versions.txt"));
                 bridgeUrl = this.getLatestVersionUrl();
             }
             if (version != "") {
-                if (yield this.checkIfBridgeVersionExists(version)) {
+                if (yield this.checkIfBridgeCliVersionExists(version)) {
                     console.log(application_constant_1.SKIP_DOWNLOAD_BRIDGE_CLI_WHEN_VERSION_NOT_FOUND);
                     return Promise.resolve("");
                 }
             }
-            this.bridgeVersion = version;
+            this.bridgeCliVersion = version;
             console.info(application_constant_1.DOWNLOADING_BRIDGE_CLI);
             console.info(application_constant_1.BRIDGE_CLI_URL_MESSAGE.concat(bridgeUrl));
             return bridgeUrl;
         });
     }
-    checkIfBridgeVersionExists(bridgeVersion) {
+    checkIfBridgeCliVersionExists(bridgeVersion) {
         return __awaiter(this, void 0, void 0, function* () {
-            this.bridgeExecutablePath = yield this.getBridgePath();
+            this.bridgeCliExecutablePath = yield this.getBridgeCliPath();
             const osName = process.platform;
             let versionFilePath;
             if (osName === constants.WIN32) {
-                versionFilePath = this.bridgeExecutablePath.concat("\\versions.txt");
+                versionFilePath = this.bridgeCliExecutablePath.concat("\\versions.txt");
             }
             else {
-                versionFilePath = this.bridgeExecutablePath.concat("/versions.txt");
+                versionFilePath = this.bridgeCliExecutablePath.concat("/versions.txt");
             }
-            if (taskLib.exist(versionFilePath) && this.bridgeExecutablePath) {
-                taskLib.debug(application_constant_1.BRIDGE_CLI_FOUND_AT.concat(this.bridgeExecutablePath));
-                taskLib.debug(application_constant_1.VERSION_FILE_FOUND_AT.concat(this.bridgeExecutablePath));
+            if (taskLib.exist(versionFilePath) && this.bridgeCliExecutablePath) {
+                taskLib.debug(application_constant_1.BRIDGE_CLI_FOUND_AT.concat(this.bridgeCliExecutablePath));
+                taskLib.debug(application_constant_1.VERSION_FILE_FOUND_AT.concat(this.bridgeCliExecutablePath));
                 if (yield this.checkIfVersionExists(bridgeVersion, versionFilePath)) {
                     return Promise.resolve(true);
                 }
             }
             else {
-                taskLib.debug(application_constant_1.VERSION_FILE_NOT_FOUND_AT.concat(this.bridgeExecutablePath));
+                taskLib.debug(application_constant_1.VERSION_FILE_NOT_FOUND_AT.concat(this.bridgeCliExecutablePath));
             }
             return Promise.resolve(false);
         });
     }
-    getAllAvailableBridgeVersions() {
+    getAllAvailableBridgeCliVersions() {
         return __awaiter(this, void 0, void 0, function* () {
             let htmlResponse = "";
-            const httpClient = new HttpClient_1.HttpClient("blackduck-task");
+            const httpClient = new HttpClient_1.HttpClient("blackduck-security-task");
             let retryCountLocal = application_constant_1.RETRY_COUNT;
             let httpResponse;
             let retryDelay = application_constant_1.RETRY_DELAY_IN_MILLISECONDS;
             const versionArray = [];
             do {
-                httpResponse = yield httpClient.get(this.bridgeArtifactoryURL, {
+                httpResponse = yield httpClient.get(this.bridgeCliArtifactoryURL, {
                     Accept: "text/html",
                 });
                 if (!application_constant_1.NON_RETRY_HTTP_CODES.has(Number(httpResponse.message.statusCode))) {
@@ -986,7 +986,7 @@ class Bridge {
             return false;
         });
     }
-    getBridgeVersionFromLatestURL(latestVersionsUrl) {
+    getBridgeCliVersionFromLatestURL(latestVersionsUrl) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 const httpClient = new HttpClient_1.HttpClient("");
@@ -1022,7 +1022,7 @@ class Bridge {
             return "";
         });
     }
-    getBridgeDefaultPath() {
+    getDefaultBridgeCliPath() {
         let bridgeDefaultPath = "";
         const osName = process.platform;
         if (osName === constants.DARWIN || osName === constants.LINUX) {
@@ -1034,7 +1034,7 @@ class Bridge {
         taskLib.debug("bridgeDefaultPath:" + bridgeDefaultPath);
         return bridgeDefaultPath;
     }
-    getDefaultBridgeSubDirectory() {
+    getDefaultBridgeCliSubDirectory() {
         let bridgeSubDirectory = "";
         const osName = process.platform;
         if (osName === constants.DARWIN || osName === constants.LINUX) {
@@ -1052,10 +1052,10 @@ class Bridge {
         taskLib.debug("bridgeSubDirectory:" + bridgeSubDirectory);
         return bridgeSubDirectory;
     }
-    getBridgeSubDirectoryWithVersion() {
+    getBridgeCliSubDirectoryWithVersion() {
         let bridgeSubDirectoryWithVersion = "";
         const osName = process.platform;
-        const version = this.bridgeVersion != "" ? "-".concat(this.bridgeVersion) : "";
+        const version = this.bridgeCliVersion != "" ? "-".concat(this.bridgeCliVersion) : "";
         if (osName === constants.DARWIN || osName === constants.LINUX) {
             let osPlatform = constants.LINUX_PLATFORM;
             if (osName === constants.DARWIN) {
@@ -1078,7 +1078,7 @@ class Bridge {
     // Get bridge version url
     getVersionUrl(version) {
         const osName = process.platform;
-        let bridgeDownloadUrl = this.bridgeUrlPattern.replace("$version", version);
+        let bridgeDownloadUrl = this.bridgeCliUrlPattern.replace("$version", version);
         bridgeDownloadUrl = bridgeDownloadUrl.replace("$version", version);
         if (osName === constants.DARWIN) {
             const isValidVersionForARM = semver_1.default.gte(version, constants.MIN_SUPPORTED_BRIDGE_CLI_MAC_ARM_VERSION);
@@ -1103,7 +1103,7 @@ class Bridge {
     }
     getLatestVersionUrl() {
         const osName = process.platform;
-        let bridgeDownloadUrl = this.bridgeUrlLatestPattern;
+        let bridgeDownloadUrl = this.bridgeCliUrlLatestPattern;
         if (osName === constants.DARWIN) {
             const osSuffix = this.getMacOsSuffix();
             bridgeDownloadUrl = bridgeDownloadUrl.replace("$platform", osSuffix);
@@ -1122,24 +1122,24 @@ class Bridge {
         const isIntel = cpuInfo[0].model.includes("Intel");
         return isIntel ? constants.MAC_INTEL_PLATFORM : constants.MAC_ARM_PLATFORM;
     }
-    setBridgeExecutablePath(filePath) {
+    setBridgeCliExecutablePath(filePath) {
         return __awaiter(this, void 0, void 0, function* () {
             if (process.platform === constants.WIN32) {
-                this.bridgeExecutablePath = path.join(filePath, constants.BRIDGE_CLI_EXECUTABLE_WINDOWS);
+                this.bridgeCliExecutablePath = path.join(filePath, constants.BRIDGE_CLI_EXECUTABLE_WINDOWS);
             }
             else if (process.platform === constants.DARWIN ||
                 process.platform === constants.LINUX) {
-                this.bridgeExecutablePath = path.join(filePath, constants.BRIDGE_CLI_EXECUTABLE_MAC_LINUX);
+                this.bridgeCliExecutablePath = path.join(filePath, constants.BRIDGE_CLI_EXECUTABLE_MAC_LINUX);
             }
-            return this.bridgeExecutablePath;
+            return this.bridgeCliExecutablePath;
         });
     }
     //contains executable path with extension file
-    getBridgePath() {
+    getBridgeCliPath() {
         return __awaiter(this, void 0, void 0, function* () {
-            let bridgeDirectoryPath = path.join(String(this.getBridgeDefaultPath()), String(this.getDefaultBridgeSubDirectory()));
+            let bridgeDirectoryPath = path.join(String(this.getDefaultBridgeCliPath()), String(this.getDefaultBridgeCliSubDirectory()));
             if (input_1.BRIDGECLI_INSTALL_DIRECTORY_KEY) {
-                bridgeDirectoryPath = path.join(String(input_1.BRIDGECLI_INSTALL_DIRECTORY_KEY), String(this.getDefaultBridgeSubDirectory()));
+                bridgeDirectoryPath = path.join(String(input_1.BRIDGECLI_INSTALL_DIRECTORY_KEY), String(this.getDefaultBridgeCliSubDirectory()));
                 console.info(application_constant_1.LOOKING_FOR_BRIDGE_CLI_INSTALL_DIR);
                 if (!taskLib.exist(input_1.BRIDGECLI_INSTALL_DIRECTORY_KEY)) {
                     throw new Error(application_constant_1.BRIDGE_CLI_INSTALL_DIRECTORY_NOT_EXISTS.concat(constants.SPACE).concat(ErrorCodes_1.ErrorCode.BRIDGE_INSTALL_DIRECTORY_NOT_EXIST.toString()));
@@ -1170,7 +1170,7 @@ class Bridge {
         });
     }
 }
-exports.Bridge = Bridge;
+exports.BridgeCli = BridgeCli;
 
 
 /***/ }),
@@ -1880,7 +1880,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.BridgeToolsParameter = void 0;
+exports.BridgeCliToolsParameter = void 0;
 const path_1 = __importDefault(__nccwpck_require__(1017));
 const inputs = __importStar(__nccwpck_require__(264));
 const input_1 = __nccwpck_require__(264);
@@ -1894,7 +1894,7 @@ const url = __importStar(__nccwpck_require__(7310));
 const azure_service_client_1 = __nccwpck_require__(6504);
 const ErrorCodes_1 = __nccwpck_require__(8936);
 const application_constant_1 = __nccwpck_require__(8673);
-class BridgeToolsParameter {
+class BridgeCliToolsParameter {
     constructor(tempDir) {
         this.tempDir = tempDir;
     }
@@ -2019,18 +2019,18 @@ class BridgeToolsParameter {
             // Remove empty data from json object
             polData = (0, utility_1.filterEmptyData)(polData);
             const inputJson = JSON.stringify(polData);
-            let stateFilePath = path_1.default.join(this.tempDir, BridgeToolsParameter.POLARIS_STATE_FILE_NAME);
+            let stateFilePath = path_1.default.join(this.tempDir, BridgeCliToolsParameter.POLARIS_STATE_FILE_NAME);
             taskLib.writeFile(stateFilePath, inputJson);
             // Wrap the file path with double quotes, to make it work with directory path with space as well
             stateFilePath = '"'.concat(stateFilePath).concat('"');
             taskLib.debug("Generated state json file at - ".concat(stateFilePath));
-            command = BridgeToolsParameter.STAGE_OPTION.concat(BridgeToolsParameter.SPACE)
-                .concat(BridgeToolsParameter.POLARIS_STAGE)
-                .concat(BridgeToolsParameter.SPACE)
-                .concat(BridgeToolsParameter.INPUT_OPTION)
-                .concat(BridgeToolsParameter.SPACE)
+            command = BridgeCliToolsParameter.STAGE_OPTION.concat(BridgeCliToolsParameter.SPACE)
+                .concat(BridgeCliToolsParameter.POLARIS_STAGE)
+                .concat(BridgeCliToolsParameter.SPACE)
+                .concat(BridgeCliToolsParameter.INPUT_OPTION)
+                .concat(BridgeCliToolsParameter.SPACE)
                 .concat(stateFilePath)
-                .concat(BridgeToolsParameter.SPACE);
+                .concat(BridgeCliToolsParameter.SPACE);
             return command;
         });
     }
@@ -2139,18 +2139,18 @@ class BridgeToolsParameter {
             // Remove empty data from json object
             blackduckData = (0, utility_1.filterEmptyData)(blackduckData);
             const inputJson = JSON.stringify(blackduckData);
-            let stateFilePath = path_1.default.join(this.tempDir, BridgeToolsParameter.BD_STATE_FILE_NAME);
+            let stateFilePath = path_1.default.join(this.tempDir, BridgeCliToolsParameter.BD_STATE_FILE_NAME);
             taskLib.writeFile(stateFilePath, inputJson);
             // Wrap the file path with double quotes, to make it work with directory path with space as well
             stateFilePath = '"'.concat(stateFilePath).concat('"');
             taskLib.debug("Generated state json file at - ".concat(stateFilePath));
-            command = BridgeToolsParameter.STAGE_OPTION.concat(BridgeToolsParameter.SPACE)
-                .concat(BridgeToolsParameter.BLACKDUCKSCA_STAGE)
-                .concat(BridgeToolsParameter.SPACE)
-                .concat(BridgeToolsParameter.INPUT_OPTION)
-                .concat(BridgeToolsParameter.SPACE)
+            command = BridgeCliToolsParameter.STAGE_OPTION.concat(BridgeCliToolsParameter.SPACE)
+                .concat(BridgeCliToolsParameter.BLACKDUCKSCA_STAGE)
+                .concat(BridgeCliToolsParameter.SPACE)
+                .concat(BridgeCliToolsParameter.INPUT_OPTION)
+                .concat(BridgeCliToolsParameter.SPACE)
                 .concat(stateFilePath)
-                .concat(BridgeToolsParameter.SPACE);
+                .concat(BridgeCliToolsParameter.SPACE);
             return command;
         });
     }
@@ -2258,18 +2258,18 @@ class BridgeToolsParameter {
             // Remove empty data from json object
             covData = (0, utility_1.filterEmptyData)(covData);
             const inputJson = JSON.stringify(covData);
-            let stateFilePath = path_1.default.join(this.tempDir, BridgeToolsParameter.COVERITY_STATE_FILE_NAME);
+            let stateFilePath = path_1.default.join(this.tempDir, BridgeCliToolsParameter.COVERITY_STATE_FILE_NAME);
             taskLib.writeFile(stateFilePath, inputJson);
             // Wrap the file path with double quotes, to make it work with directory path with space as well
             stateFilePath = '"'.concat(stateFilePath).concat('"');
             taskLib.debug("Generated state json file at - ".concat(stateFilePath));
-            command = BridgeToolsParameter.STAGE_OPTION.concat(BridgeToolsParameter.SPACE)
-                .concat(BridgeToolsParameter.COVERITY_STAGE)
-                .concat(BridgeToolsParameter.SPACE)
-                .concat(BridgeToolsParameter.INPUT_OPTION)
-                .concat(BridgeToolsParameter.SPACE)
+            command = BridgeCliToolsParameter.STAGE_OPTION.concat(BridgeCliToolsParameter.SPACE)
+                .concat(BridgeCliToolsParameter.COVERITY_STAGE)
+                .concat(BridgeCliToolsParameter.SPACE)
+                .concat(BridgeCliToolsParameter.INPUT_OPTION)
+                .concat(BridgeCliToolsParameter.SPACE)
                 .concat(stateFilePath)
-                .concat(BridgeToolsParameter.SPACE);
+                .concat(BridgeCliToolsParameter.SPACE);
             return command;
         });
     }
@@ -2391,18 +2391,18 @@ class BridgeToolsParameter {
             // Remove empty data from json object
             srmData = (0, utility_1.filterEmptyData)(srmData);
             const inputJson = JSON.stringify(srmData);
-            let stateFilePath = path_1.default.join(this.tempDir, BridgeToolsParameter.SRM_STATE_FILE_NAME);
+            let stateFilePath = path_1.default.join(this.tempDir, BridgeCliToolsParameter.SRM_STATE_FILE_NAME);
             taskLib.writeFile(stateFilePath, inputJson);
             // Wrap the file path with double quotes, to make it work with directory path with space as well
             stateFilePath = '"'.concat(stateFilePath).concat('"');
             taskLib.debug("Generated state json file at - ".concat(stateFilePath));
-            command = BridgeToolsParameter.STAGE_OPTION.concat(BridgeToolsParameter.SPACE)
-                .concat(BridgeToolsParameter.SRM_STAGE)
-                .concat(BridgeToolsParameter.SPACE)
-                .concat(BridgeToolsParameter.INPUT_OPTION)
-                .concat(BridgeToolsParameter.SPACE)
+            command = BridgeCliToolsParameter.STAGE_OPTION.concat(BridgeCliToolsParameter.SPACE)
+                .concat(BridgeCliToolsParameter.SRM_STAGE)
+                .concat(BridgeCliToolsParameter.SPACE)
+                .concat(BridgeCliToolsParameter.INPUT_OPTION)
+                .concat(BridgeCliToolsParameter.SPACE)
                 .concat(stateFilePath)
-                .concat(BridgeToolsParameter.SPACE);
+                .concat(BridgeCliToolsParameter.SPACE);
             return command;
         });
     }
@@ -2626,19 +2626,19 @@ class BridgeToolsParameter {
         return blackDuckDetectInputData.data;
     }
 }
-BridgeToolsParameter.STAGE_OPTION = "--stage";
-BridgeToolsParameter.BLACKDUCKSCA_STAGE = "blackducksca";
-BridgeToolsParameter.BD_STATE_FILE_NAME = "bd_input.json";
-BridgeToolsParameter.INPUT_OPTION = "--input";
-BridgeToolsParameter.POLARIS_STAGE = "polaris";
-BridgeToolsParameter.POLARIS_STATE_FILE_NAME = "polaris_input.json";
-BridgeToolsParameter.SPACE = " ";
-BridgeToolsParameter.COVERITY_STATE_FILE_NAME = "coverity_input.json";
-BridgeToolsParameter.COVERITY_STAGE = "connect";
-BridgeToolsParameter.DIAGNOSTICS_OPTION = "--diagnostics";
-BridgeToolsParameter.SRM_STAGE = "srm";
-BridgeToolsParameter.SRM_STATE_FILE_NAME = "srm_input.json";
-exports.BridgeToolsParameter = BridgeToolsParameter;
+BridgeCliToolsParameter.STAGE_OPTION = "--stage";
+BridgeCliToolsParameter.BLACKDUCKSCA_STAGE = "blackducksca";
+BridgeCliToolsParameter.BD_STATE_FILE_NAME = "bd_input.json";
+BridgeCliToolsParameter.INPUT_OPTION = "--input";
+BridgeCliToolsParameter.POLARIS_STAGE = "polaris";
+BridgeCliToolsParameter.POLARIS_STATE_FILE_NAME = "polaris_input.json";
+BridgeCliToolsParameter.SPACE = " ";
+BridgeCliToolsParameter.COVERITY_STATE_FILE_NAME = "coverity_input.json";
+BridgeCliToolsParameter.COVERITY_STAGE = "connect";
+BridgeCliToolsParameter.DIAGNOSTICS_OPTION = "--diagnostics";
+BridgeCliToolsParameter.SRM_STAGE = "srm";
+BridgeCliToolsParameter.SRM_STATE_FILE_NAME = "srm_input.json";
+exports.BridgeCliToolsParameter = BridgeCliToolsParameter;
 
 
 /***/ }),
@@ -3078,7 +3078,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.getStatusFromError = exports.getExitMessage = exports.run = void 0;
 const utility_1 = __nccwpck_require__(8383);
-const bridge_1 = __nccwpck_require__(1380);
+const bridge_cli_1 = __nccwpck_require__(3285);
 const taskLib = __importStar(__nccwpck_require__(347));
 const task_1 = __nccwpck_require__(347);
 const constants = __importStar(__nccwpck_require__(8673));
@@ -3096,20 +3096,20 @@ function run() {
         taskLib.debug(`workSpaceDir: ${workSpaceDir}`);
         let azurePrResponse;
         try {
-            const bridge = new bridge_1.Bridge();
+            const bridge = new bridge_cli_1.BridgeCli();
             (0, input_1.showLogForDeprecatedInputs)();
             // Prepare tool commands
             const command = yield bridge.prepareCommand(tempDir);
             let bridgePath = "";
             if (!inputs.ENABLE_NETWORK_AIRGAP) {
-                bridgePath = yield bridge.downloadAndExtractBridge(tempDir);
+                bridgePath = yield bridge.downloadAndExtractBridgeCli(tempDir);
             }
             else {
                 console.log(application_constant_1.NETWORK_AIR_GAP_ENABLED_SKIP_DOWNLOAD_BRIDGE_CLI);
-                bridgePath = yield bridge.getBridgePath();
+                bridgePath = yield bridge.getBridgeCliPath();
             }
             // Execute prepared commands
-            const result = yield bridge.executeBridgeCommand(bridgePath, (0, utility_1.getWorkSpaceDirectory)(), command);
+            const result = yield bridge.executeBridgeCliCommand(bridgePath, (0, utility_1.getWorkSpaceDirectory)(), command);
             // The statement set the exit code in the 'status' variable which can be used in the YAML file
             if ((0, utility_1.parseToBoolean)(inputs.RETURN_STATUS)) {
                 console.log(application_constant_1.TASK_RETURN_STATUS);

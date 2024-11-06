@@ -3,13 +3,13 @@
 import {assert, expect} from "chai";
 import * as sinon from "sinon";
 import {SinonStub} from "sinon";
-import {Bridge} from "../../../src/blackduck-security-task/bridge";
+import {BridgeCli} from "../../../src/blackduck-security-task/bridge-cli";
 import * as utility from "../../../src/blackduck-security-task/utility";
 import {extractZipped} from "../../../src/blackduck-security-task/utility";
 import {DownloadFileResponse} from "../../../src/blackduck-security-task/model/download-file-response";
 import * as path from "path";
 import * as inputs from "../../../src/blackduck-security-task/input";
-import {BridgeToolsParameter} from "../../../src/blackduck-security-task/tools-parameter";
+import {BridgeCliToolsParameter} from "../../../src/blackduck-security-task/tools-parameter";
 import * as validator from "../../../src/blackduck-security-task/validator";
 import * as constants from "../../../src/blackduck-security-task/application-constant";
 import fs from "fs";
@@ -27,11 +27,11 @@ describe("Bridge CLI test", () => {
     Object.defineProperty(constants, "NON_RETRY_HTTP_CODES", {value: new Set([200,201,401,403,416]), configurable: true});
     context('Bridge command preparation', () => {
         let sandbox: sinon.SinonSandbox;
-        let bridge: Bridge;
+        let bridgeCli: BridgeCli;
 
         beforeEach(() => {
             sandbox = sinon.createSandbox();
-            bridge = new Bridge();
+            bridgeCli = new BridgeCli();
         });
 
         afterEach(() => {
@@ -42,12 +42,12 @@ describe("Bridge CLI test", () => {
             Object.defineProperty(inputs, 'POLARIS_SERVER_URL', {value: 'server_url'});
 
             sandbox.stub(validator, "validateScanTypes").returns([]);
-            sandbox.stub(BridgeToolsParameter.prototype, "getFormattedCommandForPolaris").callsFake(() =>
-                Promise.resolve("./bridge --stage polaris --state polaris_input.json"));
+            sandbox.stub(BridgeCliToolsParameter.prototype, "getFormattedCommandForPolaris").callsFake(() =>
+                Promise.resolve("./bridge-cli --stage polaris --state polaris_input.json"));
             sandbox.stub(validator, "validatePolarisInputs").returns([]);
 
-            const preparedCommand = await bridge.prepareCommand("/temp");
-            expect(preparedCommand).contains("./bridge --stage polaris --state polaris_input.json")
+            const preparedCommand = await bridgeCli.prepareCommand("/temp");
+            expect(preparedCommand).contains("./bridge-cli --stage polaris --state polaris_input.json")
 
             Object.defineProperty(inputs, 'POLARIS_SERVER_URL', {value: ""});
         });
@@ -55,7 +55,7 @@ describe("Bridge CLI test", () => {
         it('should fail with no scan type provied error', async function () {
             sandbox.stub(validator, "validateScanTypes").returns(["bridge_polaris_serverUrl", "bridge_coverity_connect_url","bridge_blackduck_url","bridge_srm_url"]);
 
-            bridge.prepareCommand("/temp").catch(errorObje => {
+            bridgeCli.prepareCommand("/temp").catch(errorObje => {
                 expect(errorObje.message).includes("Requires at least one scan type");
             })
         });
@@ -65,7 +65,7 @@ describe("Bridge CLI test", () => {
 
             sandbox.stub(validator, "validatePolarisInputs").returns([`[bridge_polaris_accessToken,bridge_polaris_application_name,bridge_polaris_project_name,bridge_polaris_assessment_types] - required parameters for polaris is missing ${ErrorCode.MISSING_REQUIRED_PARAMETERS.toString()}`]);
 
-            bridge.prepareCommand("/temp").catch(errorObje => {
+            bridgeCli.prepareCommand("/temp").catch(errorObje => {
                 expect(errorObje.message).includes("required parameters for polaris is missing");
                 expect(errorObje.message).includes(ErrorCode.MISSING_REQUIRED_PARAMETERS.toString());
             })
@@ -82,12 +82,12 @@ describe("Bridge CLI test", () => {
             Object.defineProperty(inputs, 'POLARIS_SERVER_URL', {value: 'server_url'});
 
             sandbox.stub(validator, "validateScanTypes").returns([]);
-            sandbox.stub(BridgeToolsParameter.prototype, "getFormattedCommandForPolaris").callsFake(() => {
+            sandbox.stub(BridgeCliToolsParameter.prototype, "getFormattedCommandForPolaris").callsFake(() => {
                 throw new Error("Invalid value for bridge_polaris_assessment_types".concat(constants.SPACE).concat(ErrorCode.INVALID_POLARIS_ASSESSMENT_TYPES.toString()))
             });
             sandbox.stub(validator, "validatePolarisInputs").returns([]);
 
-            bridge.prepareCommand("/temp").catch(errorObje => {
+            bridgeCli.prepareCommand("/temp").catch(errorObje => {
                 expect(errorObje.message).includes("Invalid value for bridge_polaris_assessment_types");
                 expect(errorObje.message).includes(ErrorCode.INVALID_POLARIS_ASSESSMENT_TYPES.toString());
             })
@@ -101,13 +101,13 @@ describe("Bridge CLI test", () => {
             Object.defineProperty(inputs, 'BLACKDUCKSCA_SCAN_FAILURE_SEVERITIES', {value: ''});
 
             sandbox.stub(validator, "validateScanTypes").returns([]);
-            sandbox.stub(BridgeToolsParameter.prototype, "getFormattedCommandForBlackduck").callsFake(() => {
+            sandbox.stub(BridgeCliToolsParameter.prototype, "getFormattedCommandForBlackduck").callsFake(() => {
                 throw new Error("Invalid value for failureSeverities".concat(constants.SPACE).concat(ErrorCode.INVALID_BLACKDUCKSCA_FAILURE_SEVERITIES.toString()))
             });
             sandbox.stub(validator, "validateBlackDuckSCAInputs").returns([]);
 
             try {
-                await bridge.prepareCommand("/temp");
+                await bridgeCli.prepareCommand("/temp");
             } catch (e) {
                 const errorObject = e as Error;
                 expect(errorObject.message).includes("Invalid value for failureSeverities");
@@ -123,11 +123,11 @@ describe("Bridge CLI test", () => {
             Object.defineProperty(inputs, 'COVERITY_URL', {value: 'https://test.com'});
 
             sandbox.stub(validator, "validateScanTypes").returns([]);
-            sandbox.stub(BridgeToolsParameter.prototype, "getFormattedCommandForCoverity").callsFake(() => Promise.resolve("./bridge --stage connect --state coverity_input.json"));
+            sandbox.stub(BridgeCliToolsParameter.prototype, "getFormattedCommandForCoverity").callsFake(() => Promise.resolve("./bridge-cli --stage connect --state coverity_input.json"));
             sandbox.stub(validator, "validateCoverityInputs").returns([]);
 
-            const preparedCommand = await bridge.prepareCommand("/temp");
-            expect(preparedCommand).contains("./bridge --stage connect --state coverity_input.json")
+            const preparedCommand = await bridgeCli.prepareCommand("/temp");
+            expect(preparedCommand).contains("./bridge-cli --stage connect --state coverity_input.json")
 
             Object.defineProperty(inputs, 'COVERITY_URL', {value: ""});
         });
@@ -136,7 +136,7 @@ describe("Bridge CLI test", () => {
 
             Object.defineProperty(inputs, 'COVERITY_URL', {value: 'https://test.com'});
             sandbox.stub(validator, "validateCoverityInputs").returns([`[bridge_coverity_connect_user_password,bridge_coverity_connect_project_name,bridge_coverity_connect_stream_name] - required parameters for coverity is missing ${ErrorCode.MISSING_REQUIRED_PARAMETERS.toString()}`]);
-            bridge.prepareCommand("/temp").catch(errorObje => {
+            bridgeCli.prepareCommand("/temp").catch(errorObje => {
                 expect(errorObje.message).equals(`[bridge_coverity_connect_user_password,bridge_coverity_connect_project_name,bridge_coverity_connect_stream_name] - required parameters for coverity is missing ${ErrorCode.MISSING_REQUIRED_PARAMETERS.toString()}`);            })
             Object.defineProperty(inputs, 'COVERITY_URL', {value: ""})
         });
@@ -146,12 +146,12 @@ describe("Bridge CLI test", () => {
             Object.defineProperty(inputs, 'SRM_URL', {value: 'srm_url'});
 
             sandbox.stub(validator, "validateScanTypes").returns([]);
-            sandbox.stub(BridgeToolsParameter.prototype, "getFormattedCommandForSrm").callsFake(() =>
-                Promise.resolve("./bridge --stage srm --state srm_input.json"));
+            sandbox.stub(BridgeCliToolsParameter.prototype, "getFormattedCommandForSrm").callsFake(() =>
+                Promise.resolve("./bridge-cli --stage srm --state srm_input.json"));
             sandbox.stub(validator, "validateSrmInputs").returns([]);
 
-            const preparedCommand = await bridge.prepareCommand("/temp");
-            expect(preparedCommand).contains("./bridge --stage srm --state srm_input.json")
+            const preparedCommand = await bridgeCli.prepareCommand("/temp");
+            expect(preparedCommand).contains("./bridge-cli --stage srm --state srm_input.json")
 
             Object.defineProperty(inputs, 'SRM_URL', {value: ""});
         });
@@ -161,7 +161,7 @@ describe("Bridge CLI test", () => {
 
             sandbox.stub(validator, "validateSrmInputs").returns([`[bridge_srm_apikey, bridge_srm_assessment_types] - required parameters for SRM is missing ${ErrorCode.MISSING_REQUIRED_PARAMETERS.toString()}`]);
 
-            bridge.prepareCommand("/temp").catch(errorObje => {
+            bridgeCli.prepareCommand("/temp").catch(errorObje => {
                 expect(errorObje.message).equals(`[bridge_srm_apikey, bridge_srm_assessment_types] - required parameters for SRM is missing ${ErrorCode.MISSING_REQUIRED_PARAMETERS.toString()}`);
                 expect(errorObje.message).includes(ErrorCode.MISSING_REQUIRED_PARAMETERS.toString());
             })
@@ -172,12 +172,12 @@ describe("Bridge CLI test", () => {
             Object.defineProperty(inputs, 'SRM_URL', {value: 'srm_url'});
 
             sandbox.stub(validator, "validateScanTypes").returns([]);
-            sandbox.stub(BridgeToolsParameter.prototype, "getFormattedCommandForSrm").callsFake(() => {
+            sandbox.stub(BridgeCliToolsParameter.prototype, "getFormattedCommandForSrm").callsFake(() => {
                 throw new Error("Invalid value for bridge_srm_assessment_types".concat(constants.SPACE).concat(ErrorCode.INVALID_SRM_ASSESSMENT_TYPES.toString()))
             });
             sandbox.stub(validator, "validateSrmInputs").returns([]);
             try {
-                await bridge.prepareCommand("/temp");
+                await bridgeCli.prepareCommand("/temp");
             } catch (e) {
                 const errorObject = e as Error;
                 expect(errorObject.message).includes("Invalid value for bridge_srm_assessment_types");
@@ -192,12 +192,12 @@ describe("Bridge CLI test", () => {
             Object.defineProperty(inputs, 'SCAN_TYPE', {value: "polaris"});
 
             sandbox.stub(validator, "validateScanTypes").returns([]);
-            sandbox.stub(BridgeToolsParameter.prototype, "getFormattedCommandForPolaris").callsFake(() =>
-                Promise.resolve("./bridge --stage polaris --state polaris_input.json"));
+            sandbox.stub(BridgeCliToolsParameter.prototype, "getFormattedCommandForPolaris").callsFake(() =>
+                Promise.resolve("./bridge-cli --stage polaris --state polaris_input.json"));
             sandbox.stub(validator, "validatePolarisInputs").returns([]);
 
-            const preparedCommand = await bridge.prepareCommand("/temp");
-            expect(preparedCommand).contains("./bridge --stage polaris --state polaris_input.json")
+            const preparedCommand = await bridgeCli.prepareCommand("/temp");
+            expect(preparedCommand).contains("./bridge-cli --stage polaris --state polaris_input.json")
 
             Object.defineProperty(inputs, 'POLARIS_SERVER_URL', {value: ""});
             Object.defineProperty(inputs, 'SCAN_TYPE', {value: ""});
@@ -208,11 +208,11 @@ describe("Bridge CLI test", () => {
             Object.defineProperty(inputs, 'SCAN_TYPE', {value: "coverity"});
 
             sandbox.stub(validator, "validateScanTypes").returns([]);
-            sandbox.stub(BridgeToolsParameter.prototype, "getFormattedCommandForCoverity").callsFake(() => Promise.resolve("./bridge --stage connect --state coverity_input.json"));
+            sandbox.stub(BridgeCliToolsParameter.prototype, "getFormattedCommandForCoverity").callsFake(() => Promise.resolve("./bridge-cli --stage connect --state coverity_input.json"));
             sandbox.stub(validator, "validateCoverityInputs").returns([]);
 
-            const preparedCommand = await bridge.prepareCommand("/temp");
-            expect(preparedCommand).contains("./bridge --stage connect --state coverity_input.json")
+            const preparedCommand = await bridgeCli.prepareCommand("/temp");
+            expect(preparedCommand).contains("./bridge-cli --stage connect --state coverity_input.json")
 
             Object.defineProperty(inputs, 'COVERITY_URL', {value: ""});
             Object.defineProperty(inputs, 'SCAN_TYPE', {value: ""});
@@ -223,11 +223,11 @@ describe("Bridge CLI test", () => {
             Object.defineProperty(inputs, 'BLACKDUCKSCA_API_TOKEN', {value: 'token'});
             Object.defineProperty(inputs, 'SCAN_TYPE', {value: "blackducksca"});
             sandbox.stub(validator, "validateScanTypes").returns([]);
-            sandbox.stub(BridgeToolsParameter.prototype, "getFormattedCommandForBlackduck").callsFake(() => Promise.resolve("./bridge --stage blackduck --state bd_input.json"));
+            sandbox.stub(BridgeCliToolsParameter.prototype, "getFormattedCommandForBlackduck").callsFake(() => Promise.resolve("./bridge-cli --stage blackduck --state bd_input.json"));
             sandbox.stub(validator, "validateBlackDuckSCAInputs").returns([]);
 
-            const preparedCommand = await bridge.prepareCommand("/temp");
-            expect(preparedCommand).contains("./bridge --stage blackduck --state bd_input.json")
+            const preparedCommand = await bridgeCli.prepareCommand("/temp");
+            expect(preparedCommand).contains("./bridge-cli --stage blackduck --state bd_input.json")
 
             Object.defineProperty(inputs, 'BLACKDUCKSCA_URL', {value: ''});
             Object.defineProperty(inputs, 'SCAN_TYPE', {value: ""});
@@ -238,12 +238,12 @@ describe("Bridge CLI test", () => {
             Object.defineProperty(inputs, 'SCAN_TYPE', {value: "srm"});
 
             sandbox.stub(validator, "validateScanTypes").returns([]);
-            sandbox.stub(BridgeToolsParameter.prototype, "getFormattedCommandForSrm").callsFake(() =>
-                Promise.resolve("./bridge --stage srm --state srm_input.json"));
+            sandbox.stub(BridgeCliToolsParameter.prototype, "getFormattedCommandForSrm").callsFake(() =>
+                Promise.resolve("./bridge-cli --stage srm --state srm_input.json"));
             sandbox.stub(validator, "validateSrmInputs").returns([]);
 
-            const preparedCommand = await bridge.prepareCommand("/temp");
-            expect(preparedCommand).contains("./bridge --stage srm --state srm_input.json")
+            const preparedCommand = await bridgeCli.prepareCommand("/temp");
+            expect(preparedCommand).contains("./bridge-cli --stage srm --state srm_input.json")
 
             Object.defineProperty(inputs, 'SRM_URL', {value: ""});
             Object.defineProperty(inputs, 'SCAN_TYPE', {value: ""});
@@ -256,68 +256,68 @@ describe("Bridge CLI test", () => {
 
 describe("Download Bridge", () => {
     let sandbox: sinon.SinonSandbox;
-    let bridgeUrl: string
+    let bridgeCliUrl: string
     const osName = process.platform
     const cpuInfo = os.cpus()
     const isIntel = cpuInfo[0].model.includes("Intel")
-    let bridgeDefaultPath = "";
-    let bridgeExecutablePath = "";
-    let bridgeSubDir = "";
+    let bridgeCliDefaultPath = "";
+    let bridgeCliExecutablePath = "";
+    let bridgeCliSubDir = "";
     if (osName === constants.LINUX) {
-        bridgeDefaultPath = path.join(process.env["HOME"] as string, constants.BRIDGE_CLI_DEFAULT_PATH_UNIX);
-        bridgeExecutablePath = bridgeDefaultPath.concat("/bridge-cli-bundle-linux64")
-        bridgeSubDir = "/bridge-cli-bundle-linux64";
-        bridgeUrl = "https://artifactory.internal.synopsys.com/artifactory/clops-local/clops.sig.synopsys.com/bridge/binaries/bridge-cli-bundle/2.9.2/bridge-cli-bundle-2.9.2-linux64.zip"
+        bridgeCliDefaultPath = path.join(process.env["HOME"] as string, constants.BRIDGE_CLI_DEFAULT_PATH_UNIX);
+        bridgeCliExecutablePath = bridgeCliDefaultPath.concat("/bridge-cli-bundle-linux64")
+        bridgeCliSubDir = "/bridge-cli-bundle-linux64";
+        bridgeCliUrl = "https://artifactory.internal.synopsys.com/artifactory/clops-local/clops.sig.synopsys.com/bridge/binaries/bridge-cli-bundle/2.9.2/bridge-cli-bundle-2.9.2-linux64.zip"
     } else if (osName === constants.WIN32) {
-        bridgeDefaultPath = path.join(
+        bridgeCliDefaultPath = path.join(
             process.env["USERPROFILE"] as string, constants.BRIDGE_CLI_DEFAULT_PATH_WINDOWS)
-        bridgeExecutablePath = bridgeDefaultPath.concat("/bridge-cli-bundle-win64")
-        bridgeSubDir = "/bridge-cli-bundle-win64";
-        bridgeUrl = "https://artifactory.internal.synopsys.com/artifactory/clops-local/clops.sig.synopsys.com/bridge/binaries/bridge-cli-bundle/2.9.2/bridge-cli-bundle-2.9.2--win64.zip"
+        bridgeCliExecutablePath = bridgeCliDefaultPath.concat("/bridge-cli-bundle-win64")
+        bridgeCliSubDir = "/bridge-cli-bundle-win64";
+        bridgeCliUrl = "https://artifactory.internal.synopsys.com/artifactory/clops-local/clops.sig.synopsys.com/bridge/binaries/bridge-cli-bundle/2.9.2/bridge-cli-bundle-2.9.2--win64.zip"
     } else if (osName === constants.DARWIN) {
-        bridgeDefaultPath = path.join(
+        bridgeCliDefaultPath = path.join(
             process.env["HOME"] as string, constants.BRIDGE_CLI_DEFAULT_PATH_UNIX)
             if (isIntel) {
-                bridgeExecutablePath = bridgeDefaultPath.concat("/bridge-cli-bundle-macosx")
-                bridgeSubDir = "/bridge-cli-bundle-macosx";
-                bridgeUrl = "https://artifactory.internal.synopsys.com/artifactory/clops-local/clops.sig.synopsys.com/bridge/binaries/bridge-cli-bundle/2.9.2/bridge-cli-bundle-2.9.2-macosx.zip"
+                bridgeCliExecutablePath = bridgeCliDefaultPath.concat("/bridge-cli-bundle-macosx")
+                bridgeCliSubDir = "/bridge-cli-bundle-macosx";
+                bridgeCliUrl = "https://artifactory.internal.synopsys.com/artifactory/clops-local/clops.sig.synopsys.com/bridge/binaries/bridge-cli-bundle/2.9.2/bridge-cli-bundle-2.9.2-macosx.zip"
             } else {
-                bridgeExecutablePath = bridgeDefaultPath.concat("/bridge-cli-bundle-mac_arm")
-                bridgeSubDir = "/bridge-cli-bundle-macos_arm";
-                bridgeUrl = "https://artifactory.internal.synopsys.com/artifactory/clops-local/clops.sig.synopsys.com/bridge/binaries/bridge-cli-bundle/2.9.2/bridge-cli-bundle-2.9.2-macos_arm.zip"
+                bridgeCliExecutablePath = bridgeCliDefaultPath.concat("/bridge-cli-bundle-mac_arm")
+                bridgeCliSubDir = "/bridge-cli-bundle-macos_arm";
+                bridgeCliUrl = "https://artifactory.internal.synopsys.com/artifactory/clops-local/clops.sig.synopsys.com/bridge/binaries/bridge-cli-bundle/2.9.2/bridge-cli-bundle-2.9.2-macos_arm.zip"
             }
     }
 
     context("air mode is enabled, executeBridgeCommand", () => {
-        let bridge: Bridge;
+        let bridgeCli: BridgeCli;
         beforeEach(() => {
             sandbox = sinon.createSandbox();
-            bridge = new Bridge();
+            bridgeCli = new BridgeCli();
         });
 
         afterEach(() => {
             sandbox.restore();
         });
-        it("Execute Bridge Command - linux/mac success BRIDGECLI_INSTALL_DIRECTORY_KEY empty", async () => {
+        it("Execute Bridge CLI Command - linux/mac success BRIDGECLI_INSTALL_DIRECTORY_KEY empty", async () => {
             sandbox.stub(taskLib, "exec").resolves(0)
-            sandbox.stub(bridge, "getBridgeDefaultPath").resolves('')
-            sandbox.stub(bridge, "setBridgeExecutablePath").resolves('')
+            sandbox.stub(bridgeCli, "getDefaultBridgeCliPath").resolves('')
+            sandbox.stub(bridgeCli, "setBridgeCliExecutablePath").resolves('')
 
             Object.defineProperty(inputs, 'ENABLE_NETWORK_AIRGAP', {value: true});
             Object.defineProperty(inputs, 'BRIDGECLI_INSTALL_DIRECTORY_KEY', {value: ''});
-            bridge.executeBridgeCommand(bridgeDefaultPath, bridgeDefaultPath, bridgeDefaultPath).catch(errorObj => {
+            bridgeCli.executeBridgeCliCommand(bridgeCliDefaultPath, bridgeCliDefaultPath, bridgeCliDefaultPath).catch(errorObj => {
                 expect(errorObj.message).includes("Bridge CLI executable file could not be found at")
                 expect(errorObj.message).includes(ErrorCode.BRIDGE_EXECUTABLE_NOT_FOUND.toString())
             })
         });
 
-        it("Execute Bridge Command - linux/mac success BRIDGECLI_INSTALL_DIRECTORY_KEY empty: failure", async () => {
+        it("Execute Bridge CLI Command - linux/mac success BRIDGECLI_INSTALL_DIRECTORY_KEY empty: failure", async () => {
             sandbox.stub(taskLib, "exec").resolves(0)
             sandbox.stub(taskLib, "exist").returns(false)
-            sandbox.stub(bridge, "getBridgeDefaultPath").resolves('/tmp')
+            sandbox.stub(bridgeCli, "getDefaultBridgeCliPath").resolves('/tmp')
             Object.defineProperty(inputs, 'ENABLE_NETWORK_AIRGAP', {value: true});
             Object.defineProperty(inputs, 'BRIDGECLI_INSTALL_DIRECTORY_KEY', {value: ''});
-            const res = bridge.getBridgePath().catch(errorObj => {
+            const res = bridgeCli.getBridgeCliPath().catch(errorObj => {
                 console.log(errorObj.message)
                 expect(errorObj.message).includes("Bridge CLI default directory does not exist")
                 expect(errorObj.message).includes(ErrorCode.DEFAULT_DIRECTORY_NOT_FOUND.toString())
@@ -325,13 +325,13 @@ describe("Download Bridge", () => {
             Object.defineProperty(inputs, 'ENABLE_NETWORK_AIRGAP', {value: false});
         });
 
-        it("Execute Bridge Command - linux/mac success getDefaultDirectory empty: failure", async () => {
+        it("Execute Bridge CLI Command - linux/mac success getDefaultDirectory empty: failure", async () => {
             sandbox.stub(taskLib, "exec").resolves(0)
             sandbox.stub(taskLib, "exist").returns(false)
             Object.defineProperty(inputs, 'BRIDGECLI_INSTALL_DIRECTORY_KEY', {value: ''});
-            sandbox.stub(bridge, "getBridgeDefaultPath").resolves('')
+            sandbox.stub(bridgeCli, "getDefaultBridgeCliPath").resolves('')
             Object.defineProperty(inputs, 'ENABLE_NETWORK_AIRGAP', {value: true});
-            const res = bridge.getBridgePath().catch(errorObj => {
+            const res = bridgeCli.getBridgeCliPath().catch(errorObj => {
                 console.log(errorObj.message)
                 expect(errorObj.message).includes("Bridge CLI default directory does not exist")
                 expect(errorObj.message).includes(ErrorCode.DEFAULT_DIRECTORY_NOT_FOUND.toString())
@@ -339,24 +339,24 @@ describe("Download Bridge", () => {
             Object.defineProperty(inputs, 'ENABLE_NETWORK_AIRGAP', {value: false});
         });
 
-        it("Execute Bridge Command - linux/mac success getDefaultDirectory empty: success", async () => {
+        it("Execute Bridge CLi Command - linux/mac success getDefaultDirectory empty: success", async () => {
             sandbox.stub(taskLib, "exec").resolves(0)
             sandbox.stub(taskLib, "exist").returns(true)
             Object.defineProperty(inputs, 'BRIDGECLI_INSTALL_DIRECTORY_KEY', {value: '/Users/test'});
-            sandbox.stub(bridge, "getBridgeDefaultPath").resolves('')
+            sandbox.stub(bridgeCli, "getDefaultBridgeCliPath").resolves('')
             Object.defineProperty(inputs, 'ENABLE_NETWORK_AIRGAP', {value: true});
-            const res = bridge.getBridgePath();
+            const res = bridgeCli.getBridgeCliPath();
             Object.defineProperty(inputs, 'ENABLE_NETWORK_AIRGAP', {value: false});
         });
 
-        it("Execute Bridge Command - linux/mac success BRIDGECLI_INSTALL_DIRECTORY_KEY not empty", async () => {
+        it("Execute Bridge CLI Command - linux/mac success BRIDGECLI_INSTALL_DIRECTORY_KEY not empty", async () => {
             sandbox.stub(taskLib, "exec").resolves(0)
-            sandbox.stub(bridge, "getBridgeDefaultPath").resolves('/tmp')
-            sandbox.stub(bridge, "setBridgeExecutablePath").resolves('/tmp')
+            sandbox.stub(bridgeCli, "getDefaultBridgeCliPath").resolves('/tmp')
+            sandbox.stub(bridgeCli, "setBridgeCliExecutablePath").resolves('/tmp')
 
             Object.defineProperty(inputs, 'ENABLE_NETWORK_AIRGAP', {value: true});
             Object.defineProperty(inputs, 'BRIDGECLI_INSTALL_DIRECTORY_KEY', {value: '/tmp/'});
-            bridge.executeBridgeCommand(bridgeDefaultPath, bridgeDefaultPath, bridgeDefaultPath).catch(errorObj => {
+            bridgeCli.executeBridgeCliCommand(bridgeCliDefaultPath, bridgeCliDefaultPath, bridgeCliDefaultPath).catch(errorObj => {
                 expect(errorObj.message).includes("does not exist")
                 expect(errorObj.message).includes(ErrorCode.BRIDGE_EXECUTABLE_NOT_FOUND.toString())
             })
@@ -364,23 +364,23 @@ describe("Download Bridge", () => {
 
         });
 
-        it("Execute Bridge Command - exception", async () => {
+        it("Execute Bridge CLI Command - exception", async () => {
             sandbox.stub(taskLib, "exec").rejects()
-            sandbox.stub(bridge, "getBridgeDefaultPath").resolves('/tmp')
-            sandbox.stub(bridge, "setBridgeExecutablePath").resolves('/tmp')
+            sandbox.stub(bridgeCli, "getDefaultBridgeCliPath").resolves('/tmp')
+            sandbox.stub(bridgeCli, "setBridgeCliExecutablePath").resolves('/tmp')
             Object.defineProperty(inputs, 'BRIDGECLI_INSTALL_DIRECTORY_KEY', {value: '/tmp/'});
-            bridge.executeBridgeCommand(bridgeDefaultPath, bridgeDefaultPath, bridgeDefaultPath).catch(errorObj => {
+            bridgeCli.executeBridgeCliCommand(bridgeCliDefaultPath, bridgeCliDefaultPath, bridgeCliDefaultPath).catch(errorObj => {
                 expect(errorObj.message).includes("Error")
             })
             Object.defineProperty(inputs, 'ENABLE_NETWORK_AIRGAP', {value: false});
 
         });
     })
-    context("extractBridge", () => {
-        let bridge: Bridge;
+    context("extractBridgeCli", () => {
+        let bridgeCli: BridgeCli;
         beforeEach(() => {
             sandbox = sinon.createSandbox();
-            bridge = new Bridge();
+            bridgeCli = new BridgeCli();
         });
 
         afterEach(() => {
@@ -389,16 +389,16 @@ describe("Download Bridge", () => {
 
         it("returns the value of BRIDGECLI_INSTALL_DIRECTORY_KEY when it is defined and valid - success", async () => {
             Object.defineProperty(inputs, "BRIDGECLI_INSTALL_DIRECTORY_KEY", {
-                value: bridgeDefaultPath,
+                value: bridgeCliDefaultPath,
             });
             Object.defineProperty(inputs, 'ENABLE_NETWORK_AIRGAP', {value: false});
             sandbox.stub(fs, "existsSync").returns(true);
             sandbox.stub(taskLib, "rmRF");
             sandbox.stub(utility, "extractZipped").returns(Promise.resolve(true));
             const downloadFileResponse = {} as DownloadFileResponse
-            downloadFileResponse.filePath = bridgeDefaultPath
-            const result = await bridge.extractBridge(downloadFileResponse);
-            assert.equal(result, bridgeExecutablePath);
+            downloadFileResponse.filePath = bridgeCliDefaultPath
+            const result = await bridgeCli.extractBridgeCli(downloadFileResponse);
+            assert.equal(result, bridgeCliExecutablePath);
             Object.defineProperty(inputs, "BRIDGECLI_INSTALL_DIRECTORY_KEY", {
                 value: "",
             });
@@ -407,26 +407,26 @@ describe("Download Bridge", () => {
 
     })
 
-    context("executeBridgeCommand", () => {
-        let bridge: Bridge;
+    context("executeBridgeCliCommand", () => {
+        let bridgeCli: BridgeCli;
         beforeEach(() => {
             sandbox = sinon.createSandbox();
-            bridge = new Bridge();
+            bridgeCli = new BridgeCli();
         });
 
         afterEach(() => {
             sandbox.restore();
         });
-        it("Execute Bridge Command - linux/mac success", async () => {
+        it("Execute Bridge CLI Command - linux/mac success", async () => {
             sandbox.stub(taskLib, "exec").resolves(0)
             sandbox.stub(taskLib, "exist").returns(true);
-            const res = await bridge.executeBridgeCommand(bridgeDefaultPath, bridgeDefaultPath, bridgeDefaultPath)
+            const res = await bridgeCli.executeBridgeCliCommand(bridgeCliDefaultPath, bridgeCliDefaultPath, bridgeCliDefaultPath)
             assert.equal(res, 0)
         });
 
-        it("Execute Bridge Command - linux/mac failure", async () => {
+        it("Execute Bridge CLI Command - linux/mac failure", async () => {
             sandbox.stub(taskLib, "exec").resolves(9)
-            await bridge.executeBridgeCommand(bridgeDefaultPath, bridgeDefaultPath, bridgeDefaultPath)
+            await bridgeCli.executeBridgeCliCommand(bridgeCliDefaultPath, bridgeCliDefaultPath, bridgeCliDefaultPath)
                 .catch(errorObj => {
                     console.log(errorObj.message)
                     expect(errorObj.message).includes("Bridge CLI executable file could not be found at")
@@ -434,11 +434,11 @@ describe("Download Bridge", () => {
                 })
         });
     })
-    context("getBridgeUrl", () => {
-        let bridge: Bridge;
+    context("getBridgeCliUrl", () => {
+        let bridgeCli: BridgeCli;
         beforeEach(() => {
             sandbox = sinon.createSandbox();
-            bridge = new Bridge();
+            bridgeCli = new BridgeCli();
         });
 
         afterEach(() => {
@@ -447,36 +447,36 @@ describe("Download Bridge", () => {
 
         it("returns the value of BRIDGECLI_DOWNLOAD_URL when it is defined and valid", async () => {
             Object.defineProperty(inputs, "BRIDGECLI_DOWNLOAD_URL", {
-                value: bridgeUrl,
+                value: bridgeCliUrl,
             });
 
             sandbox.stub(validator, "validateBridgeUrl").returns(true);
-            sandbox.stub(bridge, "checkIfBridgeVersionExists").returns(Promise.resolve(false));
+            sandbox.stub(bridgeCli, "checkIfBridgeCliVersionExists").returns(Promise.resolve(false));
 
-            const result = await bridge.getBridgeUrl();
-            assert.equal(result, bridgeUrl);
+            const result = await bridgeCli.getBridgeCliUrl();
+            assert.equal(result, bridgeCliUrl);
             Object.defineProperty(inputs, "BRIDGECLI_DOWNLOAD_URL", {
                 value: "",
             });
         });
 
-        it("getBridgePath if BRIDGECLI_INSTALL_DIRECTORY_KEY is not empty", async () => {
+        it("getBridgeCliPath if BRIDGECLI_INSTALL_DIRECTORY_KEY is not empty", async () => {
             Object.defineProperty(inputs, "BRIDGECLI_INSTALL_DIRECTORY_KEY", {
                 value: '/Users/test/bridgePath',
             });
             sandbox.stub(taskLib, "exist").returns(true)
-            const result = await bridge.getBridgePath();
-            assert.equal(result, "/Users/test/bridgePath".concat(bridgeSubDir));
+            const result = await bridgeCli.getBridgeCliPath();
+            assert.equal(result, "/Users/test/bridgePath".concat(bridgeCliSubDir));
             Object.defineProperty(inputs, "BRIDGECLI_DOWNLOAD_URL", {
                 value: "",
             });
         });
 
-        it("getBridgePath if BRIDGECLI_INSTALL_DIRECTORY_KEY is empty", async () => {
+        it("getBridgeCliPath if BRIDGECLI_INSTALL_DIRECTORY_KEY is empty", async () => {
             Object.defineProperty(inputs, "BRIDGECLI_INSTALL_DIRECTORY_KEY", {
                 value: '',
             });
-            const result = await bridge.getBridgePath();
+            const result = await bridgeCli.getBridgeCliPath();
             expect(result).contains("bridge-cli");
             Object.defineProperty(inputs, "BRIDGECLI_DOWNLOAD_URL", {
                 value: "",
@@ -485,13 +485,13 @@ describe("Download Bridge", () => {
 
         it("returns the value of BRIDGECLI_DOWNLOAD_URL when it is defined, valid and version exists", async () => {
             Object.defineProperty(inputs, "BRIDGECLI_DOWNLOAD_URL", {
-                value: bridgeUrl,
+                value: bridgeCliUrl,
             });
 
             sandbox.stub(validator, "validateBridgeUrl").returns(true);
-            sandbox.stub(bridge, "checkIfBridgeVersionExists").returns(Promise.resolve(true));
+            sandbox.stub(bridgeCli, "checkIfBridgeCliVersionExists").returns(Promise.resolve(true));
 
-            const result = await bridge.getBridgeUrl();
+            const result = await bridgeCli.getBridgeCliUrl();
             assert.equal(result, "");
             Object.defineProperty(inputs, "BRIDGECLI_DOWNLOAD_URL", {
                 value: "",
@@ -502,7 +502,7 @@ describe("Download Bridge", () => {
             Object.defineProperty(inputs, "BRIDGECLI_DOWNLOAD_URL", {
                 value: "invalid-url",
             });
-            bridge.getBridgeUrl().catch(errorObj => {
+            bridgeCli.getBridgeCliUrl().catch(errorObj => {
                 expect(errorObj.message).includes("Invalid URL")
             })
 
@@ -515,10 +515,10 @@ describe("Download Bridge", () => {
             Object.defineProperty(inputs, "BRIDGECLI_DOWNLOAD_VERSION", {
                 value: "0.1.244",
             });
-            sandbox.stub(bridge, "validateBridgeVersion").returns(Promise.resolve(true));
-            sandbox.stub(bridge, "getVersionUrl").returns(bridgeUrl);
-            sandbox.stub(bridge, "checkIfBridgeVersionExists").returns(Promise.resolve(true));
-            const result = await bridge.getBridgeUrl();
+            sandbox.stub(bridgeCli, "validateBridgeVersion").returns(Promise.resolve(true));
+            sandbox.stub(bridgeCli, "getVersionUrl").returns(bridgeCliUrl);
+            sandbox.stub(bridgeCli, "checkIfBridgeCliVersionExists").returns(Promise.resolve(true));
+            const result = await bridgeCli.getBridgeCliUrl();
             expect(result).equals("");
             Object.defineProperty(inputs, "BRIDGECLI_DOWNLOAD_VERSION", {
                 value: "",
@@ -529,10 +529,10 @@ describe("Download Bridge", () => {
             Object.defineProperty(inputs, "BRIDGECLI_DOWNLOAD_VERSION", {
                 value: "0.1.244",
             });
-            sandbox.stub(bridge, "validateBridgeVersion").returns(Promise.resolve(true));
-            sandbox.stub(bridge, "checkIfBridgeVersionExists").returns(Promise.resolve(true));
-            sandbox.stub(bridge, "getVersionUrl").returns(bridgeUrl);
-            const result = await bridge.getBridgeUrl();
+            sandbox.stub(bridgeCli, "validateBridgeVersion").returns(Promise.resolve(true));
+            sandbox.stub(bridgeCli, "checkIfBridgeCliVersionExists").returns(Promise.resolve(true));
+            sandbox.stub(bridgeCli, "getVersionUrl").returns(bridgeCliUrl);
+            const result = await bridgeCli.getBridgeCliUrl();
             expect(result).equals("");
             Object.defineProperty(inputs, "BRIDGECLI_DOWNLOAD_VERSION", {
                 value: "",
@@ -543,7 +543,7 @@ describe("Download Bridge", () => {
 
             Object.defineProperty(inputs, 'BLACKDUCKSCA_URL', {value: 'https://test.com'});
             sandbox.stub(validator, "validateBlackDuckSCAInputs").returns([`[bridge_blackduck_url,bridge_blackduck_token] - required parameters for coverity is missing ${ErrorCode.MISSING_REQUIRED_PARAMETERS.toString()}`]);
-            bridge.prepareCommand("/temp").catch(errorObje => {
+            bridgeCli.prepareCommand("/temp").catch(errorObje => {
                 expect(errorObje.message).equals(`[bridge_blackduck_url,bridge_blackduck_token] - required parameters for coverity is missing ${ErrorCode.MISSING_REQUIRED_PARAMETERS.toString()}`);            })
             Object.defineProperty(inputs, 'BLACKDUCKSCA_URL', {value: ''})
         });
@@ -552,11 +552,11 @@ describe("Download Bridge", () => {
             Object.defineProperty(inputs, 'BLACKDUCKSCA_URL', {value: 'https://test.com'});
             Object.defineProperty(inputs, 'BLACKDUCKSCA_API_TOKEN', {value: 'token'});
             sandbox.stub(validator, "validateScanTypes").returns([]);
-            sandbox.stub(BridgeToolsParameter.prototype, "getFormattedCommandForBlackduck").callsFake(() => Promise.resolve("./bridge --stage blackduck --state bd_input.json"));
+            sandbox.stub(BridgeCliToolsParameter.prototype, "getFormattedCommandForBlackduck").callsFake(() => Promise.resolve("./bridge-cli --stage blackduck --state bd_input.json"));
             sandbox.stub(validator, "validateBlackDuckSCAInputs").returns([]);
 
-            const preparedCommand = await bridge.prepareCommand("/temp");
-            expect(preparedCommand).contains("./bridge --stage blackduck --state bd_input.json")
+            const preparedCommand = await bridgeCli.prepareCommand("/temp");
+            expect(preparedCommand).contains("./bridge-cli --stage blackduck --state bd_input.json")
 
             Object.defineProperty(inputs, 'BLACKDUCKSCA_URL', {value: ''});
         });
@@ -569,16 +569,16 @@ describe("Download Bridge", () => {
             Object.defineProperty(inputs, 'POLARIS_SERVER_URL', {value: 'server_url'});
 
             sandbox.stub(validator, "validateScanTypes").returns([]);
-            sandbox.stub(BridgeToolsParameter.prototype, "getFormattedCommandForPolaris").callsFake(() =>
-                Promise.resolve("./bridge --stage polaris --state polaris_input.json"));
+            sandbox.stub(BridgeCliToolsParameter.prototype, "getFormattedCommandForPolaris").callsFake(() =>
+                Promise.resolve("./bridge-cli --stage polaris --state polaris_input.json"));
             sandbox.stub(validator, "validatePolarisInputs").returns([]);
 
-            sandbox.stub(BridgeToolsParameter.prototype, "getFormattedCommandForBlackduck").callsFake(() => Promise.resolve(" --stage blackduck --state bd_input.json"));
+            sandbox.stub(BridgeCliToolsParameter.prototype, "getFormattedCommandForBlackduck").callsFake(() => Promise.resolve(" --stage blackduck --state bd_input.json"));
             sandbox.stub(validator, "validateBlackDuckSCAInputs").returns([]);
 
-            const preparedCommand = await bridge.prepareCommand("/temp");
+            const preparedCommand = await bridgeCli.prepareCommand("/temp");
             console.log("preparedCommand::::" + preparedCommand)
-            expect(preparedCommand).contains("./bridge --stage polaris --state polaris_input.json --stage blackduck --state bd_input.json")
+            expect(preparedCommand).contains("./bridge-cli --stage polaris --state polaris_input.json --stage blackduck --state bd_input.json")
 
             Object.defineProperty(inputs, 'BLACKDUCKSCA_URL', {value: ''});
         });
@@ -587,8 +587,8 @@ describe("Download Bridge", () => {
             Object.defineProperty(inputs, "BRIDGECLI_DOWNLOAD_VERSION", {
                 value: "invalid-version",
             });
-            sandbox.stub(bridge, "validateBridgeVersion").returns(Promise.resolve(false));
-            bridge.getBridgeUrl().catch(errorObj => {
+            sandbox.stub(bridgeCli, "validateBridgeVersion").returns(Promise.resolve(false));
+            bridgeCli.getBridgeCliUrl().catch(errorObj => {
                 expect(errorObj.message).includes("Provided Bridge CLI version not found in artifactory")
             })
             Object.defineProperty(inputs, "BRIDGECLI_DOWNLOAD_VERSION", {
@@ -597,38 +597,38 @@ describe("Download Bridge", () => {
         });
 
         it("returns the URL for the latest version when neither BRIDGECLI_DOWNLOAD_URL nor BRIDGECLI_DOWNLOAD_VERSION are defined", async () => {
-            const bridgeUrl = "https://artifactory.internal.synopsys.com/artifactory/clops-local/clops.sig.synopsys.com/bridge/binaries/bridge-cli-bundle"
-            sandbox.stub(bridge, "getBridgeVersionFromLatestURL").returns(Promise.resolve("2.9.2"));
-            sandbox.stub(bridge, "getVersionUrl").returns(bridgeUrl);
-            sandbox.stub(bridge, "checkIfBridgeVersionExists").returns(Promise.resolve(false));
-            const result = await bridge.getBridgeUrl();
-            expect(result).contains(bridgeUrl);
+            const bridgeCliUrl = "https://artifactory.internal.synopsys.com/artifactory/clops-local/clops.sig.synopsys.com/bridge/binaries/bridge-cli-bundle"
+            sandbox.stub(bridgeCli, "getBridgeCliVersionFromLatestURL").returns(Promise.resolve("2.9.2"));
+            sandbox.stub(bridgeCli, "getVersionUrl").returns(bridgeCliUrl);
+            sandbox.stub(bridgeCli, "checkIfBridgeCliVersionExists").returns(Promise.resolve(false));
+            const result = await bridgeCli.getBridgeCliUrl();
+            expect(result).contains(bridgeCliUrl);
         });
 
-        it("returns the URL for the latest version when getBridgeVersionFromLatestURL is empty", async () => {
+        it("returns the URL for the latest version when getBridgeCliVersionFromLatestURL is empty", async () => {
 
-            sandbox.stub(bridge, "getBridgeVersionFromLatestURL").returns(Promise.resolve("/latest"));
-            sandbox.stub(bridge, "getVersionUrl").returns("bridge-cli-bundle/latest/bridge-cli-bundle");
-            const result = await bridge.getBridgeUrl();
+            sandbox.stub(bridgeCli, "getBridgeCliVersionFromLatestURL").returns(Promise.resolve("/latest"));
+            sandbox.stub(bridgeCli, "getVersionUrl").returns("bridge-cli-bundle/latest/bridge-cli-bundle");
+            const result = await bridgeCli.getBridgeCliUrl();
             expect(result).contains("/latest");
         });
 
-        it("returns the URL for the latest version when getBridgeVersionFromLatestURL is empty: failure", async () => {
-            sandbox.stub(bridge, "getLatestVersionUrl").returns("");
-            sandbox.stub(bridge, "getBridgeVersionFromLatestURL").returns(Promise.resolve(""));
-            sandbox.stub(bridge, "getVersionUrl").returns("bridge-cli-bundle/0.0.0/bridge-cli-bundle-macosx.zip");
-            sandbox.stub(bridge, "checkIfBridgeVersionExists").returns(Promise.resolve(false));
-            const result = await bridge.getBridgeUrl().catch(errorObj => {
+        it("returns the URL for the latest version when getBridgeCliVersionFromLatestURL is empty: failure", async () => {
+            sandbox.stub(bridgeCli, "getLatestVersionUrl").returns("");
+            sandbox.stub(bridgeCli, "getBridgeCliVersionFromLatestURL").returns(Promise.resolve(""));
+            sandbox.stub(bridgeCli, "getVersionUrl").returns("bridge-cli-bundle/0.0.0/bridge-cli-bundle-macosx.zip");
+            sandbox.stub(bridgeCli, "checkIfBridgeCliVersionExists").returns(Promise.resolve(false));
+            const result = await bridgeCli.getBridgeCliUrl().catch(errorObj => {
                 expect(errorObj.message).contains("Invalid artifactory latest url");
             })
         });
     });
 
-    context("validateBridgeVersion", () => {
-        let bridge: Bridge;
+    context("validateBridgeCliVersion", () => {
+        let bridgeCli: BridgeCli;
         beforeEach(() => {
             sandbox = sinon.createSandbox();
-            bridge = new Bridge();
+            bridgeCli = new BridgeCli();
         });
 
         afterEach(() => {
@@ -638,23 +638,23 @@ describe("Download Bridge", () => {
         versionArray.push("0.1.244")
 
         it("When version is available", async () => {
-            sandbox.stub(bridge, "getAllAvailableBridgeVersions").returns(Promise.resolve(versionArray));
-            const result = await bridge.validateBridgeVersion("0.1.244")
+            sandbox.stub(bridgeCli, "getAllAvailableBridgeCliVersions").returns(Promise.resolve(versionArray));
+            const result = await bridgeCli.validateBridgeVersion("0.1.244")
             expect(result).equals(true);
         });
 
         it("When version is not available", async () => {
-            sandbox.stub(bridge, "getAllAvailableBridgeVersions").returns(Promise.resolve(versionArray));
-            const result = await bridge.validateBridgeVersion("0.1.245")
+            sandbox.stub(bridgeCli, "getAllAvailableBridgeCliVersions").returns(Promise.resolve(versionArray));
+            const result = await bridgeCli.validateBridgeVersion("0.1.245")
             expect(result).equals(false);
         });
     });
 
-    context("downloadBridge", () => {
-        let bridge: Bridge;
+    context("downloadBridgeCli", () => {
+        let bridgeCli: BridgeCli;
         beforeEach(() => {
             sandbox = sinon.createSandbox();
-            bridge = new Bridge();
+            bridgeCli = new BridgeCli();
         });
 
         afterEach(() => {
@@ -663,47 +663,47 @@ describe("Download Bridge", () => {
 
         it("BRIDGECLI_DOWNLOAD_VERSION is defined and valid", async () => {
             Object.defineProperty(inputs, "BRIDGECLI_DOWNLOAD_VERSION", {value: "0.1.244"});
-            bridge.bridgeExecutablePath = bridgeDefaultPath
-            sandbox.stub(bridge,"getBridgeUrl").returns(Promise.resolve(""))
-            sandbox.stub(bridge,"getBridgeVersionFromLatestURL").returns(Promise.resolve("0.1.244"))
-            sandbox.stub(bridge, "checkIfBridgeVersionExists").returns(Promise.resolve(true));
+            bridgeCli.bridgeCliExecutablePath = bridgeCliDefaultPath
+            sandbox.stub(bridgeCli,"getBridgeCliUrl").returns(Promise.resolve(""))
+            sandbox.stub(bridgeCli,"getBridgeCliVersionFromLatestURL").returns(Promise.resolve("0.1.244"))
+            sandbox.stub(bridgeCli, "checkIfBridgeCliVersionExists").returns(Promise.resolve(true));
 
-            const result = await bridge.downloadAndExtractBridge("/");
-            assert.equal(result, bridgeDefaultPath);
+            const result = await bridgeCli.downloadAndExtractBridgeCli("/");
+            assert.equal(result, bridgeCliDefaultPath);
 
             Object.defineProperty(inputs, "BRIDGECLI_DOWNLOAD_VERSION", {
                 value: "",
             });
-            bridge.bridgeExecutablePath = "";
+            bridgeCli.bridgeCliExecutablePath = "";
         });
 
         it("BRIDGECLI_DOWNLOAD_VERSION is not defined, get Bridge url - success", async () => {
-            bridge.bridgeExecutablePath = bridgeDefaultPath
-            sandbox.stub(bridge, "checkIfBridgeVersionExists").returns(Promise.resolve(false));
-            sandbox.stub(bridge, "getBridgeUrl").returns(Promise.resolve(bridgeUrl))
+            bridgeCli.bridgeCliExecutablePath = bridgeCliDefaultPath
+            sandbox.stub(bridgeCli, "checkIfBridgeCliVersionExists").returns(Promise.resolve(false));
+            sandbox.stub(bridgeCli, "getBridgeCliUrl").returns(Promise.resolve(bridgeCliUrl))
 
             const downloadFileResponse = {} as DownloadFileResponse
-            downloadFileResponse.filePath = bridgeDefaultPath
+            downloadFileResponse.filePath = bridgeCliDefaultPath
             sandbox.stub(utility, "getRemoteFile").returns(Promise.resolve(downloadFileResponse))
-            sandbox.stub(bridge, "extractBridge").returns(Promise.resolve(bridgeDefaultPath))
+            sandbox.stub(bridgeCli, "extractBridgeCli").returns(Promise.resolve(bridgeCliDefaultPath))
 
-            const result = await bridge.downloadAndExtractBridge("/")
-            assert.equal(result, bridgeDefaultPath);
+            const result = await bridgeCli.downloadAndExtractBridgeCli("/")
+            assert.equal(result, bridgeCliDefaultPath);
         });
 
         it("BRIDGECLI_DOWNLOAD_URL is defined and invalid for current win64 os", async () => {
             Object.defineProperty(inputs, "BRIDGECLI_DOWNLOAD_URL", {
                 value: "https://artifactory.internal.synopsys.com/artifactory/clops-local/clops.sig.synopsys.com/bridge/binaries/bridge-cli-bundle/2.9.2/bridge-cli-bundle-2.9.2-win64.zip",
             });
-            sandbox.stub(bridge, "checkIfBridgeVersionExists").returns(Promise.resolve(false));
-            sandbox.stub(bridge, "getBridgeUrl").returns(Promise.resolve(bridgeUrl))
+            sandbox.stub(bridgeCli, "checkIfBridgeCliVersionExists").returns(Promise.resolve(false));
+            sandbox.stub(bridgeCli, "getBridgeCliUrl").returns(Promise.resolve(bridgeCliUrl))
 
             const downloadFileResponse = {} as DownloadFileResponse
-            downloadFileResponse.filePath = bridgeDefaultPath
+            downloadFileResponse.filePath = bridgeCliDefaultPath
             sandbox.stub(utility, "getRemoteFile").returns(Promise.resolve(downloadFileResponse))
-            sandbox.stub(bridge, "extractBridge").throws(new Error("invalid url"))
+            sandbox.stub(bridgeCli, "extractBridgeCli").throws(new Error("invalid url"))
 
-            await bridge.downloadAndExtractBridge("/").catch(errorObj => {
+            await bridgeCli.downloadAndExtractBridgeCli("/").catch(errorObj => {
                 expect(errorObj.message).includes("Provided Bridge CLI url is not valid for the configured");
             })
 
@@ -716,15 +716,15 @@ describe("Download Bridge", () => {
             Object.defineProperty(inputs, "BRIDGECLI_DOWNLOAD_URL", {
                 value: "https://artifactory.internal.synopsys.com/artifactory/clops-local/clops.sig.synopsys.com/bridge/binaries/bridge-cli-bundle/2.9.2/bridge-cli-bundle-2.9.2-linux64.zip",
             });
-            sandbox.stub(bridge, "checkIfBridgeVersionExists").returns(Promise.resolve(false));
-            sandbox.stub(bridge, "getBridgeUrl").returns(Promise.resolve(bridgeUrl))
+            sandbox.stub(bridgeCli, "checkIfBridgeCliVersionExists").returns(Promise.resolve(false));
+            sandbox.stub(bridgeCli, "getBridgeCliUrl").returns(Promise.resolve(bridgeCliUrl))
 
             const downloadFileResponse = {} as DownloadFileResponse
-            downloadFileResponse.filePath = bridgeDefaultPath
+            downloadFileResponse.filePath = bridgeCliDefaultPath
             sandbox.stub(utility, "getRemoteFile").returns(Promise.resolve(downloadFileResponse))
-            sandbox.stub(bridge, "extractBridge").throws(new Error("invalid url"))
+            sandbox.stub(bridgeCli, "extractBridgeCli").throws(new Error("invalid url"))
 
-            await bridge.downloadAndExtractBridge("/").catch(errorObj => {
+            await bridgeCli.downloadAndExtractBridgeCli("/").catch(errorObj => {
                 expect(errorObj.message).includes("Provided Bridge CLI url is not valid for the configured");
             })
 
@@ -737,15 +737,15 @@ describe("Download Bridge", () => {
             Object.defineProperty(inputs, "BRIDGECLI_DOWNLOAD_URL", {
                 value: "https://artifactory.internal.synopsys.com/artifactory/clops-local/clops.sig.synopsys.com/bridge/binaries/bridge-cli-bundle/2.9.2/bridge-cli-bundle-2.9.2-macosx.zip",
             });
-            sandbox.stub(bridge, "checkIfBridgeVersionExists").returns(Promise.resolve(false));
-            sandbox.stub(bridge, "getBridgeUrl").returns(Promise.resolve(bridgeUrl))
+            sandbox.stub(bridgeCli, "checkIfBridgeCliVersionExists").returns(Promise.resolve(false));
+            sandbox.stub(bridgeCli, "getBridgeCliUrl").returns(Promise.resolve(bridgeCliUrl))
 
             const downloadFileResponse = {} as DownloadFileResponse
-            downloadFileResponse.filePath = bridgeDefaultPath
+            downloadFileResponse.filePath = bridgeCliDefaultPath
             sandbox.stub(utility, "getRemoteFile").returns(Promise.resolve(downloadFileResponse))
-            sandbox.stub(bridge, "extractBridge").throws(new Error("invalid url"))
+            sandbox.stub(bridgeCli, "extractBridgeCli").throws(new Error("invalid url"))
 
-            await bridge.downloadAndExtractBridge("/").catch(errorObj => {
+            await bridgeCli.downloadAndExtractBridgeCli("/").catch(errorObj => {
                 expect(errorObj.message).includes("Provided Bridge CLI url is not valid for the configured");
             })
 
@@ -755,12 +755,12 @@ describe("Download Bridge", () => {
         });
 
         it("BRIDGECLI_DOWNLOAD_VERSION is not defined, valid without Bridge url", async () => {
-            bridge.bridgeExecutablePath = bridgeDefaultPath
-            sandbox.stub(bridge, "checkIfBridgeVersionExists").returns(Promise.resolve(false));
-            sandbox.stub(bridge, "getBridgeUrl").returns(Promise.resolve(undefined));
+            bridgeCli.bridgeCliExecutablePath = bridgeCliDefaultPath
+            sandbox.stub(bridgeCli, "checkIfBridgeCliVersionExists").returns(Promise.resolve(false));
+            sandbox.stub(bridgeCli, "getBridgeCliUrl").returns(Promise.resolve(undefined));
 
-            const result = await bridge.downloadAndExtractBridge("/");
-            assert.equal(result, bridgeDefaultPath);
+            const result = await bridgeCli.downloadAndExtractBridgeCli("/");
+            assert.equal(result, bridgeCliDefaultPath);
 
             Object.defineProperty(inputs, "BRIDGECLI_DOWNLOAD_VERSION", {
                 value: "",
@@ -768,11 +768,11 @@ describe("Download Bridge", () => {
         });
 
         it("BRIDGECLI_DOWNLOAD_VERSION is not defined, throw exception", async () => {
-            bridge.bridgeExecutablePath = bridgeDefaultPath
-            sandbox.stub(bridge, "checkIfBridgeVersionExists").returns(Promise.resolve(false));
-            sandbox.stub(bridge, "getBridgeUrl").throws(new Error("empty"));
+            bridgeCli.bridgeCliExecutablePath = bridgeCliDefaultPath
+            sandbox.stub(bridgeCli, "checkIfBridgeCliVersionExists").returns(Promise.resolve(false));
+            sandbox.stub(bridgeCli, "getBridgeCliUrl").throws(new Error("empty"));
 
-            await bridge.downloadAndExtractBridge("/").catch(errorObj => {
+            await bridgeCli.downloadAndExtractBridgeCli("/").catch(errorObj => {
                 expect(errorObj.message).includes("Provided Bridge CLI URL cannot be empty");
                 expect(errorObj.message).includes(ErrorCode.BRIDGE_CLI_URL_CANNOT_BE_EMPTY.toString());
             })
@@ -784,12 +784,12 @@ describe("Download Bridge", () => {
             Object.defineProperty(inputs, 'INCLUDE_DIAGNOSTICS', {value: 'true'});
 
             sandbox.stub(validator, "validateScanTypes").returns([]);
-            sandbox.stub(BridgeToolsParameter.prototype, "getFormattedCommandForPolaris").callsFake(() =>
-                Promise.resolve("./bridge --stage polaris --state polaris_input.json"));
+            sandbox.stub(BridgeCliToolsParameter.prototype, "getFormattedCommandForPolaris").callsFake(() =>
+                Promise.resolve("./bridge-cli --stage polaris --state polaris_input.json"));
             sandbox.stub(validator, "validatePolarisInputs").returns([]);
 
-            const preparedCommand = await bridge.prepareCommand("/temp");
-            expect(preparedCommand).contains("./bridge --stage polaris --state polaris_input.json --diagnostics")
+            const preparedCommand = await bridgeCli.prepareCommand("/temp");
+            expect(preparedCommand).contains("./bridge-cli --stage polaris --state polaris_input.json --diagnostics")
 
             Object.defineProperty(inputs, 'POLARIS_SERVER_URL', {value: ""});
         });
@@ -799,12 +799,12 @@ describe("Download Bridge", () => {
             Object.defineProperty(inputs, 'INCLUDE_DIAGNOSTICS', {value: 'false'});
 
             sandbox.stub(validator, "validateScanTypes").returns([]);
-            sandbox.stub(BridgeToolsParameter.prototype, "getFormattedCommandForPolaris").callsFake(() =>
-                Promise.resolve("./bridge --stage polaris --state polaris_input.json"));
+            sandbox.stub(BridgeCliToolsParameter.prototype, "getFormattedCommandForPolaris").callsFake(() =>
+                Promise.resolve("./bridge-cli --stage polaris --state polaris_input.json"));
             sandbox.stub(validator, "validatePolarisInputs").returns([]);
 
-            const preparedCommand = await bridge.prepareCommand("/temp");
-            expect(preparedCommand).contains("./bridge --stage polaris --state polaris_input.json")
+            const preparedCommand = await bridgeCli.prepareCommand("/temp");
+            expect(preparedCommand).contains("./bridge-cli --stage polaris --state polaris_input.json")
 
             Object.defineProperty(inputs, 'POLARIS_SERVER_URL', {value: ""});
         });
@@ -812,11 +812,11 @@ describe("Download Bridge", () => {
 
     });
 
-    context("checkIfBridgeVersionExists", () => {
-        let bridge: Bridge;
+    context("checkIfBridgeCliVersionExists", () => {
+        let bridgeCli: BridgeCli;
         beforeEach(() => {
             sandbox = sinon.createSandbox();
-            bridge = new Bridge();
+            bridgeCli = new BridgeCli();
         });
 
         afterEach(() => {
@@ -824,61 +824,61 @@ describe("Download Bridge", () => {
         });
 
         it("BRIDGECLI_INSTALL_DIRECTORY_KEY is defined and valid", async () => {
-            Object.defineProperty(inputs, "BRIDGECLI_INSTALL_DIRECTORY_KEY", {value: bridgeDefaultPath});
-            bridge.bridgeExecutablePath = bridgeDefaultPath
-            sandbox.stub(bridge, "checkIfVersionExists").returns(Promise.resolve(true));
+            Object.defineProperty(inputs, "BRIDGECLI_INSTALL_DIRECTORY_KEY", {value: bridgeCliDefaultPath});
+            bridgeCli.bridgeCliExecutablePath = bridgeCliDefaultPath
+            sandbox.stub(bridgeCli, "checkIfVersionExists").returns(Promise.resolve(true));
             sandbox.stub(taskLib, "exist").returns(true);
 
-            const result = await bridge.checkIfBridgeVersionExists("0.1.244");
+            const result = await bridgeCli.checkIfBridgeCliVersionExists("0.1.244");
             assert.equal(result, true);
 
             Object.defineProperty(inputs, "BRIDGECLI_INSTALL_DIRECTORY_KEY", {
                 value: "",
             });
-            bridge.bridgeExecutablePath = "";
+            bridgeCli.bridgeCliExecutablePath = "";
         });
 
         it("BRIDGECLI_INSTALL_DIRECTORY_KEY is defined and valid: windows", async () => {
-            Object.defineProperty(inputs, "BRIDGECLI_INSTALL_DIRECTORY_KEY", {value: bridgeDefaultPath});
+            Object.defineProperty(inputs, "BRIDGECLI_INSTALL_DIRECTORY_KEY", {value: bridgeCliDefaultPath});
             Object.defineProperty(process, 'platform', {value: 'win32'});
             sandbox.stub(taskLib, "exist").returns(true)
-            sandbox.stub(bridge, "checkIfVersionExists").returns(Promise.resolve(true));
+            sandbox.stub(bridgeCli, "checkIfVersionExists").returns(Promise.resolve(true));
 
-            const result = await bridge.checkIfBridgeVersionExists("0.1.244");
+            const result = await bridgeCli.checkIfBridgeCliVersionExists("0.1.244");
             assert.equal(result, true);
 
             Object.defineProperty(inputs, "BRIDGECLI_INSTALL_DIRECTORY_KEY", {
                 value: "",
             });
-            bridge.bridgeExecutablePath = "";
+            bridgeCli.bridgeCliExecutablePath = "";
         });
 
         it("BRIDGECLI_INSTALL_DIRECTORY_KEY is defined and valid and version does not exists", async () => {
             Object.defineProperty(inputs, "BRIDGECLI_INSTALL_DIRECTORY_KEY", {value: "/path/path"});
-            bridge.bridgeExecutablePath = bridgeDefaultPath
+            bridgeCli.bridgeCliExecutablePath = bridgeCliDefaultPath
             sandbox.stub(taskLib, "exist").returns(true)
-            sandbox.stub(bridge, "checkIfVersionExists").returns(Promise.resolve(false));
-            const result = await bridge.checkIfBridgeVersionExists("0.1.244");
+            sandbox.stub(bridgeCli, "checkIfVersionExists").returns(Promise.resolve(false));
+            const result = await bridgeCli.checkIfBridgeCliVersionExists("0.1.244");
             assert.equal(result, false);
 
             Object.defineProperty(inputs, "BRIDGECLI_INSTALL_DIRECTORY_KEY", {
                 value: "",
             });
-            bridge.bridgeExecutablePath = "";
+            bridgeCli.bridgeCliExecutablePath = "";
         });
 
         it("BRIDGECLI_INSTALL_DIRECTORY_KEY is not defined", async () => {
-            sandbox.stub(bridge, "checkIfVersionExists").returns(Promise.resolve(true));
+            sandbox.stub(bridgeCli, "checkIfVersionExists").returns(Promise.resolve(true));
             sandbox.stub(taskLib, "exist").returns(true);
-            const result = await bridge.checkIfBridgeVersionExists("0.1.244");
+            const result = await bridgeCli.checkIfBridgeCliVersionExists("0.1.244");
             assert.equal(result, true);
         });
     })
     context("checkIfVersionExists", () => {
-        let bridge: Bridge;
+        let bridgeCli: BridgeCli;
         beforeEach(() => {
             sandbox = sinon.createSandbox();
-            bridge = new Bridge();
+            bridgeCli = new BridgeCli();
         });
 
         afterEach(() => {
@@ -889,7 +889,7 @@ describe("Download Bridge", () => {
 
             sandbox.stub(fs, "readFileSync").returns('bridge-cli-bundle: 0.1.1');
 
-            const result = await bridge.checkIfVersionExists('0.1.1', bridgeDefaultPath);
+            const result = await bridgeCli.checkIfVersionExists('0.1.1', bridgeCliDefaultPath);
             assert.equal(result, true);
         });
 
@@ -897,25 +897,25 @@ describe("Download Bridge", () => {
 
             sandbox.stub(fs, "readFileSync").returns('0.1.1');
 
-            const result = await bridge.checkIfVersionExists('0.1.1', bridgeDefaultPath);
+            const result = await bridgeCli.checkIfVersionExists('0.1.1', bridgeCliDefaultPath);
             assert.equal(result, false);
         });
 
         it("Check If Version Exists - exception", async () => {
             sandbox.stub(fs, "readFileSync").throws(new Error("file not found"))
-            await bridge.checkIfVersionExists('0.1.1', bridgeDefaultPath).catch(errorObj => {
+            await bridgeCli.checkIfVersionExists('0.1.1', bridgeCliDefaultPath).catch(errorObj => {
                 expect(errorObj.message).includes("file not found")
             })
         });
     })
 
-    context("getBridgeVersionFromLatestURL", () => {
+    context("getBridgeCliVersionFromLatestURL", () => {
 
         let httpClientStub: SinonStub<any[], Promise<httpc.HttpClientResponse>>;
-        let bridge: Bridge;
+        let bridgeCli: BridgeCli;
         beforeEach(() => {
             sandbox = sinon.createSandbox();
-            bridge = new Bridge();
+            bridgeCli = new BridgeCli();
             httpClientStub = sinon.stub()
         });
 
@@ -925,18 +925,18 @@ describe("Download Bridge", () => {
 
         it("Get Latest Version - success", async () => {
 
-            sandbox.stub(bridge, "getBridgeVersionFromLatestURL").returns(Promise.resolve('0.2.1'));
+            sandbox.stub(bridgeCli, "getBridgeCliVersionFromLatestURL").returns(Promise.resolve('0.2.1'));
 
-            const result = await bridge.getBridgeVersionFromLatestURL("https://artifactory.internal.synopsys.com/artifactory/clops-local/clops.sig.synopsys.com/bridge/binaries/bridge-cli-bundle-macosx.zip");
+            const result = await bridgeCli.getBridgeCliVersionFromLatestURL("https://artifactory.internal.synopsys.com/artifactory/clops-local/clops.sig.synopsys.com/bridge/binaries/bridge-cli-bundle-macosx.zip");
             assert.equal(result, '0.2.1');
         });
 
         it("Bridle cli latest version test: windows", async () => {
-            const result = await bridge.getLatestVersionUrl();
+            const result = await bridgeCli.getLatestVersionUrl();
             expect(result).contains('/latest/bridge-cli-bundle');
         });
 
-        it('Test getBridgeVersionFromLatestURL -status 200', async () => {
+        it('Test getBridgeCliVersionFromLatestURL -status 200', async () => {
             const incomingMessage: IncomingMessage = new IncomingMessage(new Socket())
             incomingMessage.statusCode = 200
             const responseBody = "bridge-cli-bundle:0.2.35\nbridge-cli-bundle: 0.2.35"
@@ -950,12 +950,12 @@ describe("Download Bridge", () => {
             sinon.stub(httpc, 'HttpClient').returns({
                 get: httpClientStub,
             } as any);
-            const result = await bridge.getBridgeVersionFromLatestURL("https://artifactory.internal.synopsys.com/artifactory/clops-local/clops.sig.synopsys.com/bridge/binaries/bridge-cli-bundle-macosx.zip")
+            const result = await bridgeCli.getBridgeCliVersionFromLatestURL("https://artifactory.internal.synopsys.com/artifactory/clops-local/clops.sig.synopsys.com/bridge/binaries/bridge-cli-bundle-macosx.zip")
             expect(result).contains('0.2.35')
 
         })
 
-        it('Test getBridgeVersionFromLatestURL exception', async () => {
+        it('Test getBridgeCliVersionFromLatestURL exception', async () => {
             const incomingMessage: IncomingMessage = new IncomingMessage(new Socket())
             incomingMessage.statusCode = 200
             const responseBody = "bridge-cli-bundle: 0.2.35\nbridge-cli-bundle: 0.2.35"
@@ -971,11 +971,11 @@ describe("Download Bridge", () => {
             } as any);
 
 
-            const result = await bridge.getBridgeVersionFromLatestURL("https://artifactory.internal.synopsys.com/artifactory/clops-local/clops.sig.synopsys.com/bridge/binaries/bridge-cli-bundle-macosx.zip")
+            const result = await bridgeCli.getBridgeCliVersionFromLatestURL("https://artifactory.internal.synopsys.com/artifactory/clops-local/clops.sig.synopsys.com/bridge/binaries/bridge-cli-bundle-macosx.zip")
             expect(result).contains('')
         })
 
-        it('Test getBridgeVersionFromLatestURL -status 500', async () => {
+        it('Test getBridgeCliVersionFromLatestURL -status 500', async () => {
             const incomingMessage: IncomingMessage = new IncomingMessage(new Socket())
             incomingMessage.statusCode = 500
             const responseBody = "error"
@@ -990,18 +990,18 @@ describe("Download Bridge", () => {
                 get: httpClientStub,
             } as any);
 
-            const result = await bridge.getBridgeVersionFromLatestURL("https://artifactory.internal.synopsys.com/artifactory/clops-local/clops.sig.synopsys.com/bridge/binaries/bridge-cli-bundle-macosx.zip")
+            const result = await bridgeCli.getBridgeCliVersionFromLatestURL("https://artifactory.internal.synopsys.com/artifactory/clops-local/clops.sig.synopsys.com/bridge/binaries/bridge-cli-bundle-macosx.zip")
             expect(result).contains('')
         })
     })
 
-    context("getAllAvailableBridgeVersions", () => {
+    context("getAllAvailableBridgeCliVersions", () => {
 
         let httpClientStub: SinonStub<any[], Promise<httpc.HttpClientResponse>>;
-        let bridge: Bridge;
+        let bridgeCli: BridgeCli;
         beforeEach(() => {
             sandbox = sinon.createSandbox();
-            bridge = new Bridge();
+            bridgeCli = new BridgeCli();
             httpClientStub = sinon.stub()
         });
 
@@ -1009,7 +1009,7 @@ describe("Download Bridge", () => {
             sinon.restore();
         });
 
-        it('Test getAllAvailableBridgeVersions -status 200', async () => {
+        it('Test getAllAvailableBridgeCliVersions -status 200', async () => {
             const incomingMessage: IncomingMessage = new IncomingMessage(new Socket())
             incomingMessage.statusCode = 200
             const responseBody = "<a href=\"0.1.168/\">0.1.168/</a>\n" +
@@ -1027,12 +1027,12 @@ describe("Download Bridge", () => {
             sinon.stub(httpc, 'HttpClient').returns({
                 get: httpClientStub,
             } as any);
-            const result = await bridge.getAllAvailableBridgeVersions()
+            const result = await bridgeCli.getAllAvailableBridgeCliVersions()
             expect(result).contains('0.1.198')
 
         })
 
-        it('Test getAllAvailableBridgeVersions -status 500', async () => {
+        it('Test getAllAvailableBridgeCliVersions -status 500', async () => {
             const incomingMessage: IncomingMessage = new IncomingMessage(new Socket())
             incomingMessage.statusCode = 500
             const responseBody = "error"
@@ -1047,7 +1047,7 @@ describe("Download Bridge", () => {
                 get: httpClientStub,
             } as any);
 
-            const result = await bridge.getAllAvailableBridgeVersions()
+            const result = await bridgeCli.getAllAvailableBridgeCliVersions()
             expect(result).empty
         })
     })

@@ -45,7 +45,7 @@ import {
   MISSING_BOOL_VALUE,
 } from "./application-constant";
 
-export class BridgeToolsParameter {
+export class BridgeCliToolsParameter {
   tempDir: string;
   private static STAGE_OPTION = "--stage";
   private static BLACKDUCKSCA_STAGE = "blackducksca";
@@ -240,7 +240,7 @@ export class BridgeToolsParameter {
 
     let stateFilePath = path.join(
       this.tempDir,
-      BridgeToolsParameter.POLARIS_STATE_FILE_NAME
+      BridgeCliToolsParameter.POLARIS_STATE_FILE_NAME
     );
     taskLib.writeFile(stateFilePath, inputJson);
 
@@ -249,15 +249,15 @@ export class BridgeToolsParameter {
 
     taskLib.debug("Generated state json file at - ".concat(stateFilePath));
 
-    command = BridgeToolsParameter.STAGE_OPTION.concat(
-      BridgeToolsParameter.SPACE
+    command = BridgeCliToolsParameter.STAGE_OPTION.concat(
+      BridgeCliToolsParameter.SPACE
     )
-      .concat(BridgeToolsParameter.POLARIS_STAGE)
-      .concat(BridgeToolsParameter.SPACE)
-      .concat(BridgeToolsParameter.INPUT_OPTION)
-      .concat(BridgeToolsParameter.SPACE)
+      .concat(BridgeCliToolsParameter.POLARIS_STAGE)
+      .concat(BridgeCliToolsParameter.SPACE)
+      .concat(BridgeCliToolsParameter.INPUT_OPTION)
+      .concat(BridgeCliToolsParameter.SPACE)
       .concat(stateFilePath)
-      .concat(BridgeToolsParameter.SPACE);
+      .concat(BridgeCliToolsParameter.SPACE);
     return command;
   }
 
@@ -408,7 +408,7 @@ export class BridgeToolsParameter {
 
     let stateFilePath = path.join(
       this.tempDir,
-      BridgeToolsParameter.BD_STATE_FILE_NAME
+      BridgeCliToolsParameter.BD_STATE_FILE_NAME
     );
     taskLib.writeFile(stateFilePath, inputJson);
 
@@ -417,15 +417,15 @@ export class BridgeToolsParameter {
 
     taskLib.debug("Generated state json file at - ".concat(stateFilePath));
 
-    command = BridgeToolsParameter.STAGE_OPTION.concat(
-      BridgeToolsParameter.SPACE
+    command = BridgeCliToolsParameter.STAGE_OPTION.concat(
+      BridgeCliToolsParameter.SPACE
     )
-      .concat(BridgeToolsParameter.BLACKDUCKSCA_STAGE)
-      .concat(BridgeToolsParameter.SPACE)
-      .concat(BridgeToolsParameter.INPUT_OPTION)
-      .concat(BridgeToolsParameter.SPACE)
+      .concat(BridgeCliToolsParameter.BLACKDUCKSCA_STAGE)
+      .concat(BridgeCliToolsParameter.SPACE)
+      .concat(BridgeCliToolsParameter.INPUT_OPTION)
+      .concat(BridgeCliToolsParameter.SPACE)
       .concat(stateFilePath)
-      .concat(BridgeToolsParameter.SPACE);
+      .concat(BridgeCliToolsParameter.SPACE);
     return command;
   }
 
@@ -579,7 +579,7 @@ export class BridgeToolsParameter {
 
     let stateFilePath = path.join(
       this.tempDir,
-      BridgeToolsParameter.COVERITY_STATE_FILE_NAME
+      BridgeCliToolsParameter.COVERITY_STATE_FILE_NAME
     );
     taskLib.writeFile(stateFilePath, inputJson);
 
@@ -588,15 +588,15 @@ export class BridgeToolsParameter {
 
     taskLib.debug("Generated state json file at - ".concat(stateFilePath));
 
-    command = BridgeToolsParameter.STAGE_OPTION.concat(
-      BridgeToolsParameter.SPACE
+    command = BridgeCliToolsParameter.STAGE_OPTION.concat(
+      BridgeCliToolsParameter.SPACE
     )
-      .concat(BridgeToolsParameter.COVERITY_STAGE)
-      .concat(BridgeToolsParameter.SPACE)
-      .concat(BridgeToolsParameter.INPUT_OPTION)
-      .concat(BridgeToolsParameter.SPACE)
+      .concat(BridgeCliToolsParameter.COVERITY_STAGE)
+      .concat(BridgeCliToolsParameter.SPACE)
+      .concat(BridgeCliToolsParameter.INPUT_OPTION)
+      .concat(BridgeCliToolsParameter.SPACE)
       .concat(stateFilePath)
-      .concat(BridgeToolsParameter.SPACE);
+      .concat(BridgeCliToolsParameter.SPACE);
     return command;
   }
 
@@ -753,7 +753,7 @@ export class BridgeToolsParameter {
 
     let stateFilePath = path.join(
       this.tempDir,
-      BridgeToolsParameter.SRM_STATE_FILE_NAME
+      BridgeCliToolsParameter.SRM_STATE_FILE_NAME
     );
     taskLib.writeFile(stateFilePath, inputJson);
 
@@ -761,15 +761,15 @@ export class BridgeToolsParameter {
     stateFilePath = '"'.concat(stateFilePath).concat('"');
     taskLib.debug("Generated state json file at - ".concat(stateFilePath));
 
-    command = BridgeToolsParameter.STAGE_OPTION.concat(
-      BridgeToolsParameter.SPACE
+    command = BridgeCliToolsParameter.STAGE_OPTION.concat(
+      BridgeCliToolsParameter.SPACE
     )
-      .concat(BridgeToolsParameter.SRM_STAGE)
-      .concat(BridgeToolsParameter.SPACE)
-      .concat(BridgeToolsParameter.INPUT_OPTION)
-      .concat(BridgeToolsParameter.SPACE)
+      .concat(BridgeCliToolsParameter.SRM_STAGE)
+      .concat(BridgeCliToolsParameter.SPACE)
+      .concat(BridgeCliToolsParameter.INPUT_OPTION)
+      .concat(BridgeCliToolsParameter.SPACE)
       .concat(stateFilePath)
-      .concat(BridgeToolsParameter.SPACE);
+      .concat(BridgeCliToolsParameter.SPACE);
 
     return command;
   }

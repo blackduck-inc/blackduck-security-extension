@@ -2,7 +2,7 @@
 
 import {expect} from "chai";
 import * as sinon from "sinon";
-import {BridgeToolsParameter} from "../../../src/blackduck-security-task/tools-parameter";
+import {BridgeCliToolsParameter} from "../../../src/blackduck-security-task/tools-parameter";
 import * as process from "process";
 import * as path from "path";
 import * as taskLib from "azure-pipelines-task-lib/task";
@@ -20,14 +20,14 @@ import { ErrorCode } from "../../../src/blackduck-security-task/enum/ErrorCodes"
 describe("Bridge CLI Tools Parameter test", () => {
     context('Polaris command preparation', () => {
         let sandbox: sinon.SinonSandbox;
-        let bridgeToolsParameter: BridgeToolsParameter;
+        let bridgeToolsParameter: BridgeCliToolsParameter;
         let polarisStateFile: string;
 
         beforeEach(() => {
             sandbox = sinon.createSandbox();
             const tempDir = process.cwd();
             polarisStateFile = path.join(tempDir, "polaris_input.json");
-            bridgeToolsParameter = new BridgeToolsParameter(tempDir);
+            bridgeToolsParameter = new BridgeCliToolsParameter(tempDir);
         });
 
         afterEach(() => {
@@ -372,14 +372,14 @@ describe("Bridge CLI Tools Parameter test", () => {
 
     context('Coverity command preparation', () => {
         let sandbox: sinon.SinonSandbox;
-        let bridgeToolsParameter: BridgeToolsParameter;
+        let bridgeToolsParameter: BridgeCliToolsParameter;
         let coverityStateFile: string;
 
         beforeEach(() => {
             sandbox = sinon.createSandbox();
             const tempDir = process.cwd();
             coverityStateFile = path.join(tempDir, "coverity_input.json");
-            bridgeToolsParameter = new BridgeToolsParameter(tempDir);
+            bridgeToolsParameter = new BridgeCliToolsParameter(tempDir);
         });
 
         afterEach(() => {
@@ -836,14 +836,14 @@ describe("Bridge CLI Tools Parameter test", () => {
 
     context('Black Duck command preparation', () => {
         let sandbox: sinon.SinonSandbox;
-        let bridgeToolsParameter: BridgeToolsParameter;
+        let bridgeToolsParameter: BridgeCliToolsParameter;
         let blackduckStateFile: string;
 
         beforeEach(() => {
             sandbox = sinon.createSandbox();
             const tempDir = process.cwd();
             blackduckStateFile = path.join(tempDir, "bd_input.json");
-            bridgeToolsParameter = new BridgeToolsParameter(tempDir);
+            bridgeToolsParameter = new BridgeCliToolsParameter(tempDir);
         });
 
         afterEach(() => {
@@ -1433,14 +1433,14 @@ describe("Bridge CLI Tools Parameter test", () => {
 
     context('SRM command preparation',()=>{
         let sandbox: sinon.SinonSandbox;
-        let bridgeToolsParameter: BridgeToolsParameter;
+        let bridgeToolsParameter: BridgeCliToolsParameter;
         let srmStateFile: string;
 
         beforeEach(() => {
             sandbox = sinon.createSandbox();
             const tempDir = process.cwd();
             srmStateFile = path.join(tempDir, "srm_input.json");
-            bridgeToolsParameter = new BridgeToolsParameter(tempDir);
+            bridgeToolsParameter = new BridgeCliToolsParameter(tempDir);
         });
         afterEach(()=>{
             taskLib.rmRF(srmStateFile);

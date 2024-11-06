@@ -1,6 +1,6 @@
 // Copyright (c) 2024 Black Duck Software Inc. All rights reserved worldwide.
 
-import {Bridge} from "../../../src/blackduck-security-task/bridge";
+import {BridgeCli} from "../../../src/blackduck-security-task/bridge-cli";
 import {after} from "mocha";
 import {assert, expect} from "chai";
 import * as sinon from "sinon";
@@ -15,10 +15,10 @@ describe("Platform", () => {
         const currentOsName = process.platform
         let bridgeUrl: string
         let bridgeDefaultPath = "";
-        let bridge: Bridge;
+        let bridge: BridgeCli;
 
         before(() => {
-            bridge = new Bridge();
+            bridge = new BridgeCli();
             Object.defineProperty(process, 'platform', {
                 value: "linux"
             })
@@ -41,7 +41,7 @@ describe("Platform", () => {
         });
 
         it("getBridgeDefaultPath", async () => {
-            const result = bridge.getBridgeDefaultPath();
+            const result = bridge.getDefaultBridgeCliPath();
             assert.equal(result, bridgeDefaultPath);
         });
     })
@@ -51,12 +51,12 @@ describe("Platform", () => {
         const currentOsName = process.platform
         let bridgeUrl: string
         let bridgeDefaultPath = "";
-        let bridge: Bridge;
+        let bridge: BridgeCli;
         let sandbox: sinon.SinonSandbox;
 
         before(() => {
             sandbox = sinon.createSandbox();
-            bridge = new Bridge();
+            bridge = new BridgeCli();
             Object.defineProperty(process, 'platform', {
                 value: "darwin"
             })
@@ -93,7 +93,7 @@ describe("Platform", () => {
         });
 
         it("getBridgeDefaultPath", async () => {
-            const result = bridge.getBridgeDefaultPath();
+            const result = bridge.getDefaultBridgeCliPath();
             assert.equal(result, bridgeDefaultPath);
         });
     })
@@ -103,11 +103,11 @@ describe("Platform", () => {
         const currentOsName = process.platform
         let bridgeUrl: string
         let bridgeDefaultPath = "";
-        let bridge: Bridge;
+        let bridge: BridgeCli;
 
         before(() => {
             process.env["USERPROFILE"] = "C:/Users"
-            bridge = new Bridge();
+            bridge = new BridgeCli();
             Object.defineProperty(process, 'platform', {
                 value: "win32"
             })
@@ -132,7 +132,7 @@ describe("Platform", () => {
         });
 
         it("getBridgeDefaultPath", () => {
-            const result = bridge.getBridgeDefaultPath();
+            const result = bridge.getDefaultBridgeCliPath();
             assert.equal(result, bridgeDefaultPath);
         });
     })

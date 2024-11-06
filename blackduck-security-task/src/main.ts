@@ -7,7 +7,7 @@ import {
   IS_PR_EVENT,
   parseToBoolean,
 } from "./blackduck-security-task/utility";
-import { Bridge } from "./blackduck-security-task/bridge";
+import { BridgeCli } from "./blackduck-security-task/bridge-cli";
 import * as taskLib from "azure-pipelines-task-lib/task";
 import { TaskResult } from "azure-pipelines-task-lib/task";
 import * as constants from "./blackduck-security-task/application-constant";
@@ -38,21 +38,21 @@ export async function run() {
   taskLib.debug(`workSpaceDir: ${workSpaceDir}`);
   let azurePrResponse: AzurePrResponse | undefined;
   try {
-    const bridge = new Bridge();
+    const bridge = new BridgeCli();
 
     showLogForDeprecatedInputs();
     // Prepare tool commands
     const command: string = await bridge.prepareCommand(tempDir);
     let bridgePath = "";
     if (!inputs.ENABLE_NETWORK_AIRGAP) {
-      bridgePath = await bridge.downloadAndExtractBridge(tempDir);
+      bridgePath = await bridge.downloadAndExtractBridgeCli(tempDir);
     } else {
       console.log(NETWORK_AIR_GAP_ENABLED_SKIP_DOWNLOAD_BRIDGE_CLI);
-      bridgePath = await bridge.getBridgePath();
+      bridgePath = await bridge.getBridgeCliPath();
     }
 
     // Execute prepared commands
-    const result: number = await bridge.executeBridgeCommand(
+    const result: number = await bridge.executeBridgeCliCommand(
       bridgePath,
       getWorkSpaceDirectory(),
       command

@@ -4,19 +4,19 @@ import {assert, expect} from "chai";
 import * as sinon from "sinon";
 import * as main from "../../src/main";
 import * as inputs from "../../src/blackduck-security-task/input";
-import { Bridge } from "../../src/blackduck-security-task/bridge";
+import { BridgeCli } from "../../src/blackduck-security-task/bridge-cli";
 import * as diagnostics from "../../src/blackduck-security-task/diagnostics";
 import { ErrorCode } from "../../src/blackduck-security-task/enum/ErrorCodes";
 
 describe("Main function test cases", () => {
 
     let sandbox: sinon.SinonSandbox;
-    let bridge: Bridge;
+    let bridge: BridgeCli;
 
     beforeEach(() => {
         sandbox = sinon.createSandbox();
-        bridge = new Bridge();
-        bridge.bridgeVersion = "";
+        bridge = new BridgeCli();
+        bridge.bridgeCliVersion = "";
         process.env['BUILD_REPOSITORY_LOCALPATH']  = '/tmp'
     });
     afterEach(() => {
@@ -29,9 +29,9 @@ describe("Main function test cases", () => {
 
         it('should call upload diagnostics: success with value true', async () => {
             Object.defineProperty(inputs, 'INCLUDE_DIAGNOSTICS', {value: 'true'});
-            sandbox.stub(Bridge.prototype, 'prepareCommand').resolves("test command")
-            sandbox.stub(Bridge.prototype, 'downloadAndExtractBridge').resolves("test-path")
-            sandbox.stub(Bridge.prototype, 'executeBridgeCommand').resolves(0)
+            sandbox.stub(BridgeCli.prototype, 'prepareCommand').resolves("test command")
+            sandbox.stub(BridgeCli.prototype, 'downloadAndExtractBridgeCli').resolves("test-path")
+            sandbox.stub(BridgeCli.prototype, 'executeBridgeCliCommand').resolves(0)
             sandbox.stub(diagnostics, 'uploadDiagnostics').returns(undefined)
             main.run()
             assert.strictEqual(diagnostics.uploadDiagnostics("test"), undefined);
@@ -40,9 +40,9 @@ describe("Main function test cases", () => {
 
         it('should call upload diagnostics: success with value false', async () => {
             Object.defineProperty(inputs, 'INCLUDE_DIAGNOSTICS', {value: 'false'});
-            sandbox.stub(Bridge.prototype, 'prepareCommand').resolves("test command")
-            sandbox.stub(Bridge.prototype, 'downloadAndExtractBridge').resolves("test-path")
-            sandbox.stub(Bridge.prototype, 'executeBridgeCommand').resolves(0)
+            sandbox.stub(BridgeCli.prototype, 'prepareCommand').resolves("test command")
+            sandbox.stub(BridgeCli.prototype, 'downloadAndExtractBridgeCli').resolves("test-path")
+            sandbox.stub(BridgeCli.prototype, 'executeBridgeCliCommand').resolves(0)
             sandbox.stub(diagnostics, 'uploadDiagnostics').returns(undefined)
             main.run()
             assert.strictEqual(diagnostics.uploadDiagnostics("test"), undefined);
@@ -51,9 +51,9 @@ describe("Main function test cases", () => {
 
         it('should call upload diagnostics: failure', async () => {
             Object.defineProperty(inputs, 'INCLUDE_DIAGNOSTICS', {value: 'true'});
-            sandbox.stub(Bridge.prototype, 'prepareCommand').resolves("test command")
-            sandbox.stub(Bridge.prototype, 'downloadAndExtractBridge').resolves("test-path")
-            sandbox.stub(Bridge.prototype, 'executeBridgeCommand').resolves(0)
+            sandbox.stub(BridgeCli.prototype, 'prepareCommand').resolves("test command")
+            sandbox.stub(BridgeCli.prototype, 'downloadAndExtractBridgeCli').resolves("test-path")
+            sandbox.stub(BridgeCli.prototype, 'executeBridgeCliCommand').resolves(0)
             sandbox.stub(diagnostics,'uploadDiagnostics').throws(new Error("Error uploading artifacts"))
             main.run().catch(errorObj => {
                 expect(errorObj.message).includes("Error uploading artifacts");
@@ -66,9 +66,9 @@ describe("Main function test cases", () => {
 
         it('should call uploadSarifResultAsArtifact with BLACKDUCKSCA_REPORTS_SARIF_CREATE true: success', async () => {
             Object.defineProperty(inputs, 'BLACKDUCKSCA_REPORTS_SARIF_CREATE', {value: 'true'});
-            sandbox.stub(Bridge.prototype, 'prepareCommand').resolves("test command")
-            sandbox.stub(Bridge.prototype, 'downloadAndExtractBridge').resolves("test-path")
-            sandbox.stub(Bridge.prototype, 'executeBridgeCommand').resolves(0)
+            sandbox.stub(BridgeCli.prototype, 'prepareCommand').resolves("test command")
+            sandbox.stub(BridgeCli.prototype, 'downloadAndExtractBridgeCli').resolves("test-path")
+            sandbox.stub(BridgeCli.prototype, 'executeBridgeCliCommand').resolves(0)
             sandbox.stub(diagnostics, 'uploadSarifResultAsArtifact').returns(undefined)
             main.run()
             assert.strictEqual(diagnostics.uploadSarifResultAsArtifact("Blackduck SARIF Generator", ""), undefined);
@@ -76,9 +76,9 @@ describe("Main function test cases", () => {
 
         it('should call uploadSarifResultAsArtifact with BLACKDUCKSCA_REPORTS_SARIF_CREATE true: failure', async () => {
             Object.defineProperty(inputs, 'BLACKDUCKSCA_REPORTS_SARIF_CREATE', {value: 'true'});
-            sandbox.stub(Bridge.prototype, 'prepareCommand').resolves("test command")
-            sandbox.stub(Bridge.prototype, 'downloadAndExtractBridge').resolves("test-path")
-            sandbox.stub(Bridge.prototype, 'executeBridgeCommand').resolves(0)
+            sandbox.stub(BridgeCli.prototype, 'prepareCommand').resolves("test command")
+            sandbox.stub(BridgeCli.prototype, 'downloadAndExtractBridgeCli').resolves("test-path")
+            sandbox.stub(BridgeCli.prototype, 'executeBridgeCliCommand').resolves(0)
             sandbox.stub(diagnostics,'uploadSarifResultAsArtifact').throws(new Error("Error uploading artifacts"))
             main.run().catch(errorObj => {
                 expect(errorObj.message).includes("Error uploading artifacts");
@@ -87,9 +87,9 @@ describe("Main function test cases", () => {
 
         it('should call uploadSarifResultAsArtifact with POLARIS_REPORTS_SARIF_CREATE true: success', async () => {
             Object.defineProperty(inputs, 'POLARIS_REPORTS_SARIF_CREATE', {value: 'true'});
-            sandbox.stub(Bridge.prototype, 'prepareCommand').resolves("test command")
-            sandbox.stub(Bridge.prototype, 'downloadAndExtractBridge').resolves("test-path")
-            sandbox.stub(Bridge.prototype, 'executeBridgeCommand').resolves(0)
+            sandbox.stub(BridgeCli.prototype, 'prepareCommand').resolves("test command")
+            sandbox.stub(BridgeCli.prototype, 'downloadAndExtractBridgeCli').resolves("test-path")
+            sandbox.stub(BridgeCli.prototype, 'executeBridgeCliCommand').resolves(0)
             sandbox.stub(diagnostics, 'uploadSarifResultAsArtifact').returns(undefined)
             main.run()
             assert.strictEqual(diagnostics.uploadSarifResultAsArtifact("Polaris SARIF Generator", ""), undefined);
@@ -97,9 +97,9 @@ describe("Main function test cases", () => {
 
         it('should call uploadSarifResultAsArtifact with POLARIS_REPORTS_SARIF_CREATE true: failure', async () => {
             Object.defineProperty(inputs, 'POLARIS_REPORTS_SARIF_CREATE', {value: 'true'});
-            sandbox.stub(Bridge.prototype, 'prepareCommand').resolves("test command")
-            sandbox.stub(Bridge.prototype, 'downloadAndExtractBridge').resolves("test-path")
-            sandbox.stub(Bridge.prototype, 'executeBridgeCommand').resolves(0)
+            sandbox.stub(BridgeCli.prototype, 'prepareCommand').resolves("test command")
+            sandbox.stub(BridgeCli.prototype, 'downloadAndExtractBridgeCli').resolves("test-path")
+            sandbox.stub(BridgeCli.prototype, 'executeBridgeCliCommand').resolves(0)
             sandbox.stub(diagnostics,'uploadSarifResultAsArtifact').throws(new Error("Error uploading artifacts"))
             main.run().catch(errorObj => {
                 expect(errorObj.message).includes("Error uploading artifacts");
@@ -112,9 +112,9 @@ describe("Main function test cases", () => {
 
         it('should call uploadSarifResultAsArtifact with BLACKDUCKSCA_REPORTS_SARIF_CREATE true: success', async () => {
             Object.defineProperty(inputs, 'BLACKDUCKSCA_REPORTS_SARIF_CREATE', {value: 'true'});
-            sandbox.stub(Bridge.prototype, 'prepareCommand').resolves("test command")
-            sandbox.stub(Bridge.prototype, 'downloadAndExtractBridge').resolves("test-path")
-            sandbox.stub(Bridge.prototype, 'executeBridgeCommand').resolves(0)
+            sandbox.stub(BridgeCli.prototype, 'prepareCommand').resolves("test command")
+            sandbox.stub(BridgeCli.prototype, 'downloadAndExtractBridgeCli').resolves("test-path")
+            sandbox.stub(BridgeCli.prototype, 'executeBridgeCliCommand').resolves(0)
             sandbox.stub(diagnostics, 'uploadSarifResultAsArtifact').returns(undefined)
             main.run()
             assert.strictEqual(diagnostics.uploadSarifResultAsArtifact("Blackduck SARIF Generator", ""), undefined);
@@ -122,9 +122,9 @@ describe("Main function test cases", () => {
 
         it('should call uploadSarifResultAsArtifact with BLACKDUCKSCA_REPORTS_SARIF_CREATE true: failure', async () => {
             Object.defineProperty(inputs, 'BLACKDUCKSCA_REPORTS_SARIF_CREATE', {value: 'true'});
-            sandbox.stub(Bridge.prototype, 'prepareCommand').resolves("test command")
-            sandbox.stub(Bridge.prototype, 'downloadAndExtractBridge').resolves("test-path")
-            sandbox.stub(Bridge.prototype, 'executeBridgeCommand').resolves(0)
+            sandbox.stub(BridgeCli.prototype, 'prepareCommand').resolves("test command")
+            sandbox.stub(BridgeCli.prototype, 'downloadAndExtractBridgeCli').resolves("test-path")
+            sandbox.stub(BridgeCli.prototype, 'executeBridgeCliCommand').resolves(0)
             sandbox.stub(diagnostics,'uploadSarifResultAsArtifact').throws(new Error("Error uploading artifacts"))
             main.run().catch(errorObj => {
                 expect(errorObj.message).includes("Error uploading artifacts");
@@ -144,18 +144,18 @@ describe("Main function test cases", () => {
     context('air gap function', () => {
         it('air gap enabled: success', async () => {
             Object.defineProperty(inputs, 'ENABLE_NETWORK_AIRGAP', {value: true});
-            sandbox.stub(Bridge.prototype, 'prepareCommand').resolves("test command")
-            sandbox.stub(Bridge.prototype, 'getBridgePath').resolves("test-path")
-            sandbox.stub(Bridge.prototype, 'downloadAndExtractBridge').resolves("test-path")
-            sandbox.stub(Bridge.prototype, 'executeBridgeCommand').resolves(0)
+            sandbox.stub(BridgeCli.prototype, 'prepareCommand').resolves("test command")
+            sandbox.stub(BridgeCli.prototype, 'getBridgeCliPath').resolves("test-path")
+            sandbox.stub(BridgeCli.prototype, 'downloadAndExtractBridgeCli').resolves("test-path")
+            sandbox.stub(BridgeCli.prototype, 'executeBridgeCliCommand').resolves(0)
             main.run()
         });
 
         it('air gap enabled: failure', async () => {
             Object.defineProperty(inputs, 'ENABLE_NETWORK_AIRGAP', {value: true});
-            sandbox.stub(Bridge.prototype, 'prepareCommand').resolves("test command")
-            sandbox.stub(Bridge.prototype, 'downloadAndExtractBridge').resolves("test-path")
-            sandbox.stub(Bridge.prototype, 'executeBridgeCommand').resolves(0)
+            sandbox.stub(BridgeCli.prototype, 'prepareCommand').resolves("test command")
+            sandbox.stub(BridgeCli.prototype, 'downloadAndExtractBridgeCli').resolves("test-path")
+            sandbox.stub(BridgeCli.prototype, 'executeBridgeCliCommand').resolves(0)
             main.run().catch(errorObj => {
                 expect(errorObj.message).includes("Bridge CLI default directory does not exist");
             })
