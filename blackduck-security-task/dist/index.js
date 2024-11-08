@@ -1988,7 +1988,7 @@ class BridgeCliToolsParameter {
             }
             // Set Coverity or Blackduck Arbitrary Arguments
             polData.data.coverity = this.setCoverityArbitraryArgs();
-            polData.data.detect = this.setBlackDuckDetectArgs();
+            polData.data.detect = this.setDetectArgs();
             const azureData = this.getAzureRepoInfo();
             const isPrCommentEnabled = (0, utility_1.parseToBoolean)(inputs.POLARIS_PR_COMMENT_ENABLED);
             const azurePrResponse = yield this.updateAzurePrNumberForManualTriggerFlow(azureData, isPrCommentEnabled);
@@ -2384,7 +2384,7 @@ class BridgeCliToolsParameter {
             }
             // Set Coverity or Blackduck Arbitrary Arguments
             const coverityArgs = this.setCoverityArbitraryArgs();
-            const blackduckArgs = this.setBlackDuckDetectArgs();
+            const blackduckArgs = this.setDetectArgs();
             if (Object.keys(coverityArgs).length > 0) {
                 srmData.data.coverity = Object.assign(Object.assign({}, srmData.data.coverity), coverityArgs);
             }
@@ -2612,6 +2612,25 @@ class BridgeCliToolsParameter {
                 directory: inputs.DETECT_INSTALL_DIRECTORY,
             };
         }
+        if (inputs.DETECT_SEARCH_DEPTH &&
+            Number.isInteger(parseInt(inputs.DETECT_SEARCH_DEPTH))) {
+            blackDuckDetectInputData.data.search = {
+                depth: parseInt(inputs.DETECT_SEARCH_DEPTH),
+            };
+        }
+        if (inputs.DETECT_CONFIG_PATH) {
+            blackDuckDetectInputData.data.config = {
+                path: inputs.DETECT_CONFIG_PATH,
+            };
+        }
+        if (inputs.DETECT_ARGS) {
+            blackDuckDetectInputData.data.args = inputs.DETECT_ARGS;
+        }
+        return blackDuckDetectInputData.data;
+    }
+    // detect config tool for SRM and Polaris
+    setDetectArgs() {
+        const blackDuckDetectInputData = { data: {} };
         if (inputs.DETECT_SEARCH_DEPTH &&
             Number.isInteger(parseInt(inputs.DETECT_SEARCH_DEPTH))) {
             blackDuckDetectInputData.data.search = {
