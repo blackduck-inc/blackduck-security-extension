@@ -449,8 +449,7 @@ export const DARWIN = "darwin";
 export const MIN_SUPPORTED_BRIDGE_CLI_MAC_ARM_VERSION = "2.1.0";
 export const DEFAULT_AZURE_API_URL = "https://dev.azure.com";
 export const BLACKDUCKSCA_SECURITY_SCAN_AZURE_DEVOPS_DOCS_URL =
-  "https://sig-product-docs.synopsys.com/bundle/bridge/page/documentation/c_synopsys-security-scan-for-azure-devops.html";
-
+  "https://documentation.blackduck.com/bundle/bridge/page/documentation/c_additional-azure-parameters.html";
 // Error Messages
 export const MISSING_AZURE_TOKEN_FOR_FIX_PR_AND_PR_COMMENT =
   "Missing required azure token for fix pull request/automation comment";
@@ -582,7 +581,7 @@ export const EXIT_CODE_MAP = new Map<string, string>([
   ],
   [
     ErrorCode.MISSING_REQUIRED_PARAMETERS.toString(),
-    "Required Parameters for Scan Type (Polaris/BlackDuck/Coverity/SRM) are missing",
+    "Required Parameters for Scan Type (Polaris/BlackDuck SCA/Coverity/SRM) are missing",
   ],
   [
     ErrorCode.AGENT_TEMP_DIRECTORY_NOT_SET.toString(),

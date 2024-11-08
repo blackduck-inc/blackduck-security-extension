@@ -364,9 +364,9 @@ export class BridgeCliToolsParameter {
     // Check and put environment variable for fix pull request
     if (isFixPrEnabled) {
       if (isPullRequest) {
-        console.info("Black Duck Fix PR ignored for pull request scan");
+        console.info("Black Duck SCA Fix PR ignored for pull request scan");
       } else {
-        console.log("Black Duck Fix PR is enabled");
+        console.log("Black Duck SCA Fix PR is enabled");
         blackduckData.data.blackducksca.fixpr = this.setBlackDuckFixPrInputs();
         blackduckData.data.azure = azureData;
       }
@@ -375,10 +375,10 @@ export class BridgeCliToolsParameter {
     if (isPrCommentEnabled) {
       if (!isPullRequest) {
         console.info(
-          "Black Duck PR comment is ignored for non pull request scan"
+          "Black Duck SCA PR comment is ignored for non pull request scan"
         );
       } else {
-        console.info("BlackDuck PR comment is enabled");
+        console.info("Black Duck SCA PR comment is enabled");
         blackduckData.data.azure = azureData;
         blackduckData.data.environment = this.setEnvironmentScanPullData();
         blackduckData.data.blackducksca.automation = { prcomment: true };
@@ -396,7 +396,7 @@ export class BridgeCliToolsParameter {
           this.setSarifReportsInputsForBlackduck();
       } else {
         console.info(
-          "Black Duck SARIF report create/upload is ignored for pull request scan"
+          "Black Duck SCA SARIF report create/upload is ignored for pull request scan"
         );
       }
     }
@@ -745,7 +745,7 @@ export class BridgeCliToolsParameter {
       srmData.data.coverity = { ...srmData.data.coverity, ...coverityArgs };
     }
     if (Object.keys(blackduckArgs).length > 0) {
-      srmData.data.detect = blackduckArgs;
+      srmData.data.detect = { ...srmData.data.detect, ...blackduckArgs };
     }
     // Remove empty data from json object
     srmData = filterEmptyData(srmData);

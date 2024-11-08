@@ -939,7 +939,7 @@
       "groupName": "blackduckScaToolOptions"
     },
     {
-      "name": "blackduckScaSearchDepthForPolaris",
+      "name": "detectSearchDepthForPolaris",
       "type": "string",
       "label": "Search Depth",
       "defaultValue": "",
@@ -949,7 +949,7 @@
       "groupName": "blackduckScaToolOptionsForPolaris"
     },
     {
-      "name": "blackduckScaConfigPathForPolaris",
+      "name": "DetectConfigPathForPolaris",
       "type": "string",
       "label": "Config File Path",
       "defaultValue": "",
@@ -959,7 +959,7 @@
       "groupName": "blackduckScaToolOptionsForPolaris"
     },
     {
-      "name": "blackduckScaArgsForPolaris",
+      "name": "DetectArgsForPolaris",
       "type": "string",
       "label": "Additional Arguments",
       "defaultValue": "",
@@ -969,7 +969,7 @@
       "groupName": "blackduckScaToolOptionsForPolaris"
     },
     {
-      "name": "blackduckScaSearchDepthForSrm",
+      "name": "DetectSearchDepthForSrm",
       "type": "string",
       "label": "Search Depth",
       "defaultValue": "",
@@ -979,7 +979,7 @@
       "groupName": "blackduckScaToolOptionsForSrm"
     },
     {
-      "name": "blackduckScaConfigPathForSrm",
+      "name": "DetectConfigPathForSrm",
       "type": "string",
       "label": "Config File Path",
       "defaultValue": "",
@@ -989,7 +989,7 @@
       "groupName": "blackduckScaToolOptionsForSrm"
     },
     {
-      "name": "blackduckScaArgsForSrm",
+      "name": "DetectArgsForSrm",
       "type": "string",
       "label": "Additional Arguments",
       "defaultValue": "",
