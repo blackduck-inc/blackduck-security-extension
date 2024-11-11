@@ -12,4 +12,4 @@ Black Duck Security Scan supports Azure integration with the following Black Duc
 
 Black Duck solution functionality is invoked directly by Bridge CLI, and indirectly by the BlackDuck Security Scan, which downloads Bridge CLI and calls the respective adapters to run corresponding scans.
 
-Documentation - https://documentation.blackduck.com/bundle/bridge/page/documentation/c_additional-azure-parameters.html
+Documentation - https://documentation.blackduck.com/bundle/bridge/page/documentation/c_security-scan-for-azure-devops.html
