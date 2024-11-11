@@ -900,6 +900,7 @@ class BridgeCli {
             }
             if (version != "") {
                 if (yield this.checkIfBridgeCliVersionExists(version)) {
+                    console.info(application_constant_1.BRIDGECLI_VERSION, version);
                     console.log(application_constant_1.SKIP_DOWNLOAD_BRIDGE_CLI_WHEN_VERSION_NOT_FOUND);
                     return Promise.resolve("");
                 }

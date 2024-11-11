@@ -420,6 +420,7 @@ export class BridgeCli {
 
     if (version != "") {
       if (await this.checkIfBridgeCliVersionExists(version)) {
+        console.info(BRIDGECLI_VERSION, version);
         console.log(SKIP_DOWNLOAD_BRIDGE_CLI_WHEN_VERSION_NOT_FOUND);
         return Promise.resolve("");
       }
