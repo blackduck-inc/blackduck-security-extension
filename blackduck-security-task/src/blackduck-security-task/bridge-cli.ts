@@ -50,6 +50,7 @@ import {
   UNABLE_TO_GET_RECENT_BRIDGE_VERSION,
   VERSION_FILE_FOUND_AT,
   VERSION_FILE_NOT_FOUND_AT,
+  BRIDGECLI_VERSION,
 } from "./application-constant";
 import os from "os";
 import semver from "semver";
@@ -425,7 +426,7 @@ export class BridgeCli {
     }
 
     this.bridgeCliVersion = version;
-
+    console.info(BRIDGECLI_VERSION, version);
     console.info(DOWNLOADING_BRIDGE_CLI);
     console.info(BRIDGE_CLI_URL_MESSAGE.concat(bridgeUrl));
     return bridgeUrl;

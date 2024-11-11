@@ -490,6 +490,7 @@ export const CHECK_LATEST_BRIDGE_CLI_VERSION =
   "Checking for latest version of Bridge CLI to download and configure";
 export const DOWNLOADING_BRIDGE_CLI = "Downloading and configuring Bridge CLI";
 export const BRIDGE_CLI_URL_MESSAGE = "Bridge CLI URL is - ";
+export const BRIDGECLI_VERSION = "Bridge CLI version is - ";
 export const BRIDGE_CLI_DOWNLOAD_COMPLETED =
   "Download of Bridge CLI has been completed";
 export const BRIDGE_CLI_FOUND_AT = "Bridge CLI executable found at ";
