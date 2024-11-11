@@ -267,7 +267,7 @@
       "label": "Wait For Scan Completion",
       "defaultValue": true,
       "required": false,
-      "helpMarkDown": "Specifies if the workflow should wait for the analysis to complete. Default value: true. If set to false, post merge workflows like PR comment, Fix PR, SARIF etc will not be applicable.",
+      "helpMarkDown": "Specifies if the workflow should wait for the analysis to complete. Default value: true. If set to false, post merge workflows like PR comment, SARIF etc will not be applicable.",
       "visibleRule": "scanType = polaris",
       "groupName": "scanConfiguration"
     },
@@ -518,7 +518,7 @@
       "label": "Wait For Scan Completion",
       "defaultValue": true,
       "required": false,
-      "helpMarkDown": "Specifies if the workflow should wait for the analysis to complete. Default value: true. If set to false, post merge workflows like PR comment, Fix PR, SARIF etc will not be applicable.",
+      "helpMarkDown": "Specifies if the workflow should wait for the analysis to complete. Default value: true. If set to false, post merge workflows like PR comment etc will not be applicable.",
       "visibleRule": "scanType = coverity",
       "groupName": "scanConfiguration"
     },
@@ -894,7 +894,7 @@
       "label": "Scan Failure Severities",
       "defaultValue": "",
       "required": false,
-      "helpMarkDown": "Build will be broken, if specified severity threshold is met. <a href='https://community.synopsys.com/s/article/Black-Duck-Configuring-Policy-Management' target='_blank'>Click Here</a> for more info.",
+      "helpMarkDown": "Build will be broken, if specified severity threshold is met. <a href='https://community.blackduck.com/s/article/Black-Duck-Configuring-Policy-Management' target='_blank'>Click Here</a> for more info.",
       "visibleRule": "scanType = blackducksca",
       "groupName": "blackduckScaScanOptions"
     },
@@ -1080,7 +1080,7 @@
       "label": "Wait For Scan Completion",
       "defaultValue": true,
       "required": false,
-      "helpMarkDown": "Specifies if the workflow should wait for the analysis to complete. Default value: true. If set to false, post merge workflows like PR comment, Fix PR, SARIF etc will not be applicable.",
+      "helpMarkDown": "Specifies if the workflow should wait for the analysis to complete. Default value: true. If set to false, post merge workflows will not be applicable.",
       "visibleRule": "scanType = srm",
       "groupName": "scanConfiguration"
     },
