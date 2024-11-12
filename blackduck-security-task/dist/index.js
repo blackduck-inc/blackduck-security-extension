@@ -318,7 +318,7 @@ exports.LINUX = "linux";
 exports.DARWIN = "darwin";
 exports.MIN_SUPPORTED_BRIDGE_CLI_MAC_ARM_VERSION = "2.1.0";
 exports.DEFAULT_AZURE_API_URL = "https://dev.azure.com";
-exports.BLACKDUCKSCA_SECURITY_SCAN_AZURE_DEVOPS_DOCS_URL = "https://sig-product-docs.synopsys.com/bundle/bridge/page/documentation/c_synopsys-security-scan-for-azure-devops.html";
+exports.BLACKDUCKSCA_SECURITY_SCAN_AZURE_DEVOPS_DOCS_URL = "https://documentation.blackduck.com/bundle/bridge/page/documentation/c_additional-azure-parameters.html";
 // Error Messages
 exports.MISSING_AZURE_TOKEN_FOR_FIX_PR_AND_PR_COMMENT = "Missing required azure token for fix pull request/automation comment";
 exports.BRIDGE_CLI_VERSION_NOT_FOUND = "Provided Bridge CLI version not found in artifactory";
@@ -403,7 +403,7 @@ exports.EXIT_CODE_MAP = new Map([
     ],
     [
         ErrorCodes_1.ErrorCode.MISSING_REQUIRED_PARAMETERS.toString(),
-        "Required Parameters for Scan Type (Polaris/BlackDuck/Coverity/SRM) are missing",
+        "Required Parameters for Scan Type (Polaris/BlackDuck SCA/Coverity/SRM) are missing",
     ],
     [
         ErrorCodes_1.ErrorCode.AGENT_TEMP_DIRECTORY_NOT_SET.toString(),
@@ -1988,7 +1988,7 @@ class BridgeCliToolsParameter {
             }
             // Set Coverity or Blackduck Arbitrary Arguments
             polData.data.coverity = this.setCoverityArbitraryArgs();
-            polData.data.detect = this.setBlackDuckDetectArgs();
+            polData.data.detect = this.setDetectArgs();
             const azureData = this.getAzureRepoInfo();
             const isPrCommentEnabled = (0, utility_1.parseToBoolean)(inputs.POLARIS_PR_COMMENT_ENABLED);
             const azurePrResponse = yield this.updateAzurePrNumberForManualTriggerFlow(azureData, isPrCommentEnabled);
@@ -2107,20 +2107,20 @@ class BridgeCliToolsParameter {
             // Check and put environment variable for fix pull request
             if (isFixPrEnabled) {
                 if (isPullRequest) {
-                    console.info("Black Duck Fix PR ignored for pull request scan");
+                    console.info("Black Duck SCA Fix PR ignored for pull request scan");
                 }
                 else {
-                    console.log("Black Duck Fix PR is enabled");
+                    console.log("Black Duck SCA Fix PR is enabled");
                     blackduckData.data.blackducksca.fixpr = this.setBlackDuckFixPrInputs();
                     blackduckData.data.azure = azureData;
                 }
             }
             if (isPrCommentEnabled) {
                 if (!isPullRequest) {
-                    console.info("Black Duck PR comment is ignored for non pull request scan");
+                    console.info("Black Duck SCA PR comment is ignored for non pull request scan");
                 }
                 else {
-                    console.info("BlackDuck PR comment is enabled");
+                    console.info("Black Duck SCA PR comment is enabled");
                     blackduckData.data.azure = azureData;
                     blackduckData.data.environment = this.setEnvironmentScanPullData();
                     blackduckData.data.blackducksca.automation = { prcomment: true };
@@ -2136,7 +2136,7 @@ class BridgeCliToolsParameter {
                         this.setSarifReportsInputsForBlackduck();
                 }
                 else {
-                    console.info("Black Duck SARIF report create/upload is ignored for pull request scan");
+                    console.info("Black Duck SCA SARIF report create/upload is ignored for pull request scan");
                 }
             }
             // Remove empty data from json object
@@ -2384,12 +2384,12 @@ class BridgeCliToolsParameter {
             }
             // Set Coverity or Blackduck Arbitrary Arguments
             const coverityArgs = this.setCoverityArbitraryArgs();
-            const blackduckArgs = this.setBlackDuckDetectArgs();
+            const blackduckArgs = this.setDetectArgs();
             if (Object.keys(coverityArgs).length > 0) {
                 srmData.data.coverity = Object.assign(Object.assign({}, srmData.data.coverity), coverityArgs);
             }
             if (Object.keys(blackduckArgs).length > 0) {
-                srmData.data.detect = blackduckArgs;
+                srmData.data.detect = Object.assign(Object.assign({}, srmData.data.detect), blackduckArgs);
             }
             // Remove empty data from json object
             srmData = (0, utility_1.filterEmptyData)(srmData);
@@ -2612,6 +2612,25 @@ class BridgeCliToolsParameter {
                 directory: inputs.DETECT_INSTALL_DIRECTORY,
             };
         }
+        if (inputs.DETECT_SEARCH_DEPTH &&
+            Number.isInteger(parseInt(inputs.DETECT_SEARCH_DEPTH))) {
+            blackDuckDetectInputData.data.search = {
+                depth: parseInt(inputs.DETECT_SEARCH_DEPTH),
+            };
+        }
+        if (inputs.DETECT_CONFIG_PATH) {
+            blackDuckDetectInputData.data.config = {
+                path: inputs.DETECT_CONFIG_PATH,
+            };
+        }
+        if (inputs.DETECT_ARGS) {
+            blackDuckDetectInputData.data.args = inputs.DETECT_ARGS;
+        }
+        return blackDuckDetectInputData.data;
+    }
+    // detect config tool for SRM and Polaris
+    setDetectArgs() {
+        const blackDuckDetectInputData = { data: {} };
         if (inputs.DETECT_SEARCH_DEPTH &&
             Number.isInteger(parseInt(inputs.DETECT_SEARCH_DEPTH))) {
             blackDuckDetectInputData.data.search = {

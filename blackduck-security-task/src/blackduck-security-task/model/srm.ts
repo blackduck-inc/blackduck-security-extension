@@ -7,7 +7,6 @@ import { AsyncMode } from "./async-mode";
 export interface Srm {
   srm: SrmData;
   coverity?: CoverityDetails;
-  blackducksca?: BlackduckDetails;
   detect?: BlackduckDetails;
   project?: ProjectData;
 }
