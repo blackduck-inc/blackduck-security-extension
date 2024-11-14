@@ -129,25 +129,25 @@
       "label": "Bridge CLI Download URL",
       "defaultValue": "",
       "required": false,
-      "helpMarkDown": "URL for downloading Bridge CLI",
+      "helpMarkDown": "Provide the URL from where bridge-cli-bundle zip file can be downloaded. Note: You must provide the full download url which includes the zip file path.",
       "groupName": "bridgecliOptions"
     },
     {
       "name": "bridgeCliDownloadVersion",
       "type": "string",
-      "label": "Bridge CLI Version",
+      "label": "Bridge CLI Download Version",
       "defaultValue": "",
       "required": false,
-      "helpMarkDown": "Bridge CLI version to be downloaded.",
+      "helpMarkDown": "Provide the specific Bridge CLI version you want to download from Black Duck artifactory.",
       "groupName": "bridgecliOptions"
     },
     {
       "name": "bridgeCliInstallDirectory",
       "type": "string",
-      "label": "Bridge CLI Installation Path",
+      "label": "Bridge CLI Installation Directory",
       "defaultValue": "",
       "required": false,
-      "helpMarkDown": "Path where Bridge CLI will be configured.",
+      "helpMarkDown": "Provide the Bridge CLI installation path on the agent where it will be installed during the build.",
       "groupName": "bridgecliOptions"
     },
     {
@@ -191,7 +191,7 @@
       "label": "Access Token",
       "defaultValue": "",
       "required": true,
-      "helpMarkDown": "Access token for Polaris.",
+      "helpMarkDown": "Access token for Polaris Server with proper authorization.",
       "visibleRule": "scanType = polaris",
       "groupName": "scanConfiguration"
     },
@@ -201,7 +201,7 @@
       "label": "Assessment Types",
       "defaultValue": "",
       "required": true,
-      "helpMarkDown": "Polaris Assessment Types seperated by commas. <a href='https://polaris.synopsys.com/developer/default/polaris-documentation/t_how-to-test' target='_blank'>Click Here</a> for more info.",
+      "helpMarkDown": "Polaris assessment types. Supported values: SCA or SAST or both SCA, SAST",
       "visibleRule": "scanType = polaris",
       "groupName": "scanConfiguration"
     },
@@ -211,7 +211,7 @@
       "label": "SCA Test Type",
       "defaultValue": "",
       "required": false,
-      "helpMarkDown": "Polaris test type to trigger signature scan or package manager scan.",
+      "helpMarkDown": "Polaris test type to trigger signature scan or package manager scan. Default value: SCA-PACKAGE. Supported values: SCA-PACKAGE or SCA-SIGNATURE",
       "visibleRule": "scanType = polaris",
       "groupName": "scanConfiguration"
     },
@@ -257,7 +257,7 @@
       "label": "Include Diagnostics",
       "defaultValue": false,
       "required": false,
-      "helpMarkDown": "All diagnostics files will be available to download when 'true' passed.",
+      "helpMarkDown": "Bridge CLI diagnostics will be uploaded in Artifact. Supported values: true or false",
       "visibleRule": "scanType = polaris",
       "groupName": "scanConfiguration"
     },
@@ -277,7 +277,7 @@
       "label": "Polaris Application",
       "defaultValue": "",
       "required": false,
-      "helpMarkDown": "Application name in Polaris. If not provided, Azure repository name will be set as default value.",
+      "helpMarkDown": "Application name in Polaris Server. If not provided, Azure repository name will be set as default value.",
       "visibleRule": "scanType = polaris",
       "groupName": "polarisScanOptions"
     },
@@ -287,7 +287,7 @@
       "label": "Polaris Project",
       "defaultValue": "",
       "required": false,
-      "helpMarkDown": "Project name in Polaris. If not provided, Azure repository name will be set as default value.",
+      "helpMarkDown": "Project name in Polaris Server. If not provided, Azure repository name will be set as default value.",
       "visibleRule": "scanType = polaris",
       "groupName": "polarisScanOptions"
     },
@@ -297,7 +297,7 @@
       "label": "Polaris Branch",
       "defaultValue": "",
       "required": false,
-      "helpMarkDown": "Branch name in Polaris.",
+      "helpMarkDown": "Branch name in Polaris Server.",
       "visibleRule": "scanType = polaris",
       "groupName": "polarisScanOptions"
     },
@@ -307,7 +307,7 @@
       "label": "Assessment Mode",
       "defaultValue": "",
       "required": false,
-      "helpMarkDown": "The test mode type of this scan",
+      "helpMarkDown": "The test mode type of this scan. Supported values: CI or SOURCE_UPLOAD, Default: CI",
       "visibleRule": "scanType = polaris",
       "options": {
         "": "Select",
@@ -352,7 +352,7 @@
       "label": "Add Comments to Pull Requests",
       "defaultValue": false,
       "required": false,
-      "helpMarkDown": "Applicable to pull requests only, Requires Azure Token.",
+      "helpMarkDown": "Add automatic pull request comment based on Polaris scan result. Supported values: true or false. Requires Azure Token.",
       "visibleRule": "scanType = polaris",
       "groupName": "polarisPREnable"
     },
@@ -362,7 +362,7 @@
       "label": "PR Comment Severities",
       "defaultValue": "",
       "required": false,
-      "helpMarkDown": "Applicable to pull requests only",
+      "helpMarkDown": "Comma separated list of severities. Comments are created for issues where the issue severity matches one of the values specified using this option. Supported values: CRITICAL,HIGH,MEDIUM,LOW,INFORMATIONAL",
       "visibleRule": "polarisPrCommentEnabled = true",
       "groupName": "polarisPREnable"
     },
@@ -382,7 +382,7 @@
       "label": "Generate SARIF Report",
       "defaultValue": false,
       "required": false,
-      "helpMarkDown": "Enable/disable SARIF report generation.",
+      "helpMarkDown": "SARIF report will be uploaded as a Artifact.",
       "visibleRule": "scanType = polaris",
       "groupName": "polarisSarifReport"
     },
@@ -508,7 +508,7 @@
       "label": "Include Diagnostics",
       "defaultValue": false,
       "required": false,
-      "helpMarkDown": "All diagnostics files will be available to download when 'true' passed.",
+      "helpMarkDown": "Bridge CLI diagnostics will be uploaded in Artifact. Supported values: true or false",
       "visibleRule": "scanType = coverity",
       "groupName": "scanConfiguration"
     },
@@ -568,7 +568,7 @@
       "label": "Add Comments to Pull Requests",
       "defaultValue": false,
       "required": false,
-      "helpMarkDown": "Applicable to pull requests only, Requires Azure Token.",
+      "helpMarkDown": "Add automatic pull request comment based on Coverity scan result. Supported values: true or false. Requires Azure Token.",
       "visibleRule": "coverityWaitForScan = true",
       "groupName": "coverityPREnable"
     },
@@ -615,10 +615,10 @@
     {
       "name": "coverityInstallDirectory",
       "type": "string",
-      "label": "Installation Path",
+      "label": "Installation Directory",
       "defaultValue": "",
       "required": false,
-      "helpMarkDown": "Directory path to install Coverity.",
+      "helpMarkDown": "Provide the Coverity installation path on the agent where it will be installed during the build.",
       "visibleRule": "scanType = coverity",
       "groupName": "coverityToolOptions"
     },
@@ -705,7 +705,7 @@
     {
       "name": "coverityExecutionPath",
       "type": "string",
-      "label": "Coverity Installation Path",
+      "label": "Coverity Execution Path",
       "defaultValue": "",
       "required": false,
       "helpMarkDown": "Path to Coverity CLI.",
@@ -728,7 +728,7 @@
       "label": "Access Token",
       "defaultValue": "",
       "required": true,
-      "helpMarkDown": "API token for Black Duck SCA.",
+      "helpMarkDown": "API token for Black Duck SCA Server with proper authorization.",
       "visibleRule": "scanType = blackducksca",
       "groupName": "scanConfiguration"
     },
@@ -774,7 +774,7 @@
       "label": "Include Diagnostics",
       "defaultValue": false,
       "required": false,
-      "helpMarkDown": "All diagnostics files will be available to download when 'true' passed.",
+      "helpMarkDown": "Bridge CLI diagnostics will be uploaded in Artifact. Supported values: true or false",
       "visibleRule": "scanType = blackducksca",
       "groupName": "scanConfiguration"
     },
@@ -794,7 +794,7 @@
       "label": "Add Comments to Pull Requests",
       "defaultValue": false,
       "required": false,
-      "helpMarkDown": "Applicable to pull requests only, Requires Azure Token.",
+      "helpMarkDown": "Add automatic pull request comment based on Black Duck SCA scan result. Supported values: true or false. Requires Azure Token.",
       "visibleRule": "blackduckScaWaitForScan = true",
       "groupName": "blackduckScaPREnable"
     },
@@ -844,7 +844,7 @@
       "label": "Generate SARIF Report",
       "defaultValue": false,
       "required": false,
-      "helpMarkDown": "Enable/disable SARIF report generation",
+      "helpMarkDown": "SARIF report will be uploaded as a Artifact.",
       "visibleRule": "scanType = blackducksca",
       "groupName": "blackduckScaSarifReport"
     },
@@ -884,7 +884,7 @@
       "label": "Full Scan",
       "defaultValue": "",
       "required": false,
-      "helpMarkDown": "Specifies whether full scan is required or not.",
+      "helpMarkDown": "Specifies whether full scan is required or not. Supported values: true or false",
       "visibleRule": "scanType = blackducksca",
       "groupName": "blackduckScaScanOptions"
     },
@@ -894,7 +894,7 @@
       "label": "Scan Failure Severities",
       "defaultValue": "",
       "required": false,
-      "helpMarkDown": "Build will be broken, if specified severity threshold is met. <a href='https://community.blackduck.com/s/article/Black-Duck-Configuring-Policy-Management' target='_blank'>Click Here</a> for more info.",
+      "helpMarkDown": "Specify scan failure severities of Black Duck SCA. Supported values: ALL, NONE, BLOCKER, CRITICAL, MAJOR, MINOR, OK, TRIVIAL, UNSPECIFIED",
       "visibleRule": "scanType = blackducksca",
       "groupName": "blackduckScaScanOptions"
     },
@@ -931,10 +931,10 @@
     {
       "name": "detectInstallDirectory",
       "type": "string",
-      "label": "Detect Installation Path",
+      "label": "Detect Installation Directory",
       "defaultValue": "",
       "required": false,
-      "helpMarkDown": "Directory path to install Detect.",
+      "helpMarkDown": "Provide the Detect installation path on the agent where it will be installed during the build",
       "visibleRule": "scanType = blackducksca",
       "groupName": "blackduckScaToolOptions"
     },
@@ -954,7 +954,7 @@
       "label": "Config File Path",
       "defaultValue": "",
       "required": false,
-      "helpMarkDown": "Black Duck SCA config file path (.properties/.yml).",
+      "helpMarkDown": "Detect config file path (.properties/.yml).",
       "visibleRule": "scanType = polaris",
       "groupName": "blackduckScaToolOptionsForPolaris"
     },
@@ -964,7 +964,7 @@
       "label": "Additional Arguments",
       "defaultValue": "",
       "required": false,
-      "helpMarkDown": "Additional Black Duck SCA Arguments separated by space.",
+      "helpMarkDown": "Additional Detect Arguments separated by space.",
       "visibleRule": "scanType = polaris",
       "groupName": "blackduckScaToolOptionsForPolaris"
     },
@@ -984,7 +984,7 @@
       "label": "Config File Path",
       "defaultValue": "",
       "required": false,
-      "helpMarkDown": "Black Duck SCA config file path (.properties/.yml).",
+      "helpMarkDown": "Detect config file path (.properties/.yml).",
       "visibleRule": "scanType = srm",
       "groupName": "blackduckScaToolOptionsForSrm"
     },
@@ -994,14 +994,14 @@
       "label": "Additional Arguments",
       "defaultValue": "",
       "required": false,
-      "helpMarkDown": "Additional Black Duck SCA Arguments separated by space.",
+      "helpMarkDown": "Additional Detect Arguments separated by space.",
       "visibleRule": "scanType = srm",
       "groupName": "blackduckScaToolOptionsForSrm"
     },
     {
       "name": "detectExecutionPath",
       "type": "string",
-      "label": "Detect Installation Path",
+      "label": "Detect Execution Path",
       "defaultValue": "",
       "required": false,
       "helpMarkDown": "Path to the Black Duck SCA Detect jar file to use.",
@@ -1024,7 +1024,7 @@
       "label": "API Key",
       "defaultValue": "",
       "required": true,
-      "helpMarkDown": "API Key for SRM server.",
+      "helpMarkDown": "API Key for SRM server with proper authorization",
       "visibleRule": "scanType = srm",
       "groupName": "scanConfiguration"
     },
@@ -1034,7 +1034,7 @@
       "label": "Assessment Types",
       "defaultValue": "",
       "required": true,
-      "helpMarkDown": "SRM Assessment Types separated by comma. Supported values: SAST, SCA.",
+      "helpMarkDown": "SRM assessment types. Supported values: SCA or SAST or both SCA, SAST",
       "visibleRule": "scanType = srm",
       "groupName": "scanConfiguration"
     },
@@ -1070,7 +1070,7 @@
       "label": "Include Diagnostics",
       "defaultValue": false,
       "required": false,
-      "helpMarkDown": "All diagnostics files will be available to download when 'true' passed.",
+      "helpMarkDown": "Bridge CLI diagnostics will be uploaded in Artifact. Supported values: true or false",
       "visibleRule": "scanType = srm",
       "groupName": "scanConfiguration"
     },
