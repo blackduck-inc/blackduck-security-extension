@@ -147,7 +147,7 @@
       "label": "Bridge CLI Installation Directory",
       "defaultValue": "",
       "required": false,
-      "helpMarkDown": "Provide the Bridge CLI installation path on the agent where it will be installed during the build.",
+      "helpMarkDown": "Provide the Bridge CLI installation directory on the agent where it will be installed during the build.",
       "groupName": "bridgecliOptions"
     },
     {
@@ -618,7 +618,7 @@
       "label": "Installation Directory",
       "defaultValue": "",
       "required": false,
-      "helpMarkDown": "Provide the Coverity installation path on the agent where it will be installed during the build.",
+      "helpMarkDown": "Provide the Coverity installation directory on the agent where it will be installed during the build.",
       "visibleRule": "scanType = coverity",
       "groupName": "coverityToolOptions"
     },
@@ -708,7 +708,7 @@
       "label": "Coverity Execution Path",
       "defaultValue": "",
       "required": false,
-      "helpMarkDown": "Path to Coverity CLI.",
+      "helpMarkDown": "Provide the Coverity execution path on the agent where it will be installed during the build.",
       "visibleRule": "scanType = srm",
       "groupName": "coverityToolOptionsForSrm"
     },
@@ -934,7 +934,7 @@
       "label": "Detect Installation Directory",
       "defaultValue": "",
       "required": false,
-      "helpMarkDown": "Provide the Detect installation path on the agent where it will be installed during the build",
+      "helpMarkDown": "Provide the Detect installation directory on the agent where it will be installed during the build",
       "visibleRule": "scanType = blackducksca",
       "groupName": "blackduckScaToolOptions"
     },
@@ -1004,7 +1004,7 @@
       "label": "Detect Execution Path",
       "defaultValue": "",
       "required": false,
-      "helpMarkDown": "Path to the Black Duck SCA Detect jar file to use.",
+      "helpMarkDown": "Provide the Detect execution path on the agent where it will be installed during the build.",
       "visibleRule": "scanType = srm",
       "groupName": "blackduckScaToolOptionsForSrm"
     },
