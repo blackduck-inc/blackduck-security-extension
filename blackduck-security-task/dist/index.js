@@ -197,7 +197,7 @@ exports.BLACKDUCKSCA_FIXPR_UPGRADE_GUIDANCE_KEY_CLASSIC_EDITOR = "blackduckScaFi
 exports.BLACKDUCK_WAITFORSCAN_KEY = "blackduck_waitForScan";
 exports.BLACKDUCKSCA_WAITFORSCAN_KEY = "blackducksca_waitForScan";
 exports.BLACKDUCKSCA_WAITFORSCAN_KEY_CLASSIC_EDITOR = "blackduckScaWaitForScan";
-exports.BLACKDUCKSCA_PROJECT_DIRECTORY_KEY_CLASSIC_EDITOR = "blackduckProjectDirectory";
+exports.BLACKDUCKSCA_PROJECT_DIRECTORY_KEY_CLASSIC_EDITOR = "blackduckScaProjectDirectory";
 /**
  * @deprecated Use blackducksca_reports_sarif_create instead. This can be removed in future release.
  */
@@ -691,7 +691,6 @@ class BridgeCli {
     executeBridgeCliCommand(executablePath, workspace, command) {
         return __awaiter(this, void 0, void 0, function* () {
             taskLib.debug("extractedPath: ".concat(executablePath));
-            process.env["BRIDGE_CACHE_DIR"] = executablePath;
             const executableBridgeCliPath = yield this.setBridgeCliExecutablePath(executablePath);
             if (!taskLib.exist(executableBridgeCliPath)) {
                 throw new Error(application_constant_1.BRIDGE_CLI_EXECUTABLE_FILE_NOT_FOUND.concat(executableBridgeCliPath)
