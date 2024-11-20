@@ -197,7 +197,7 @@ exports.BLACKDUCKSCA_FIXPR_UPGRADE_GUIDANCE_KEY_CLASSIC_EDITOR = "blackduckScaFi
 exports.BLACKDUCK_WAITFORSCAN_KEY = "blackduck_waitForScan";
 exports.BLACKDUCKSCA_WAITFORSCAN_KEY = "blackducksca_waitForScan";
 exports.BLACKDUCKSCA_WAITFORSCAN_KEY_CLASSIC_EDITOR = "blackduckScaWaitForScan";
-exports.BLACKDUCKSCA_PROJECT_DIRECTORY_KEY_CLASSIC_EDITOR = "blackduckProjectDirectory";
+exports.BLACKDUCKSCA_PROJECT_DIRECTORY_KEY_CLASSIC_EDITOR = "blackduckScaProjectDirectory";
 /**
  * @deprecated Use blackducksca_reports_sarif_create instead. This can be removed in future release.
  */

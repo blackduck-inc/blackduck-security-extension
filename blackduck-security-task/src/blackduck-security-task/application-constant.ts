@@ -278,7 +278,7 @@ export const BLACKDUCKSCA_WAITFORSCAN_KEY_CLASSIC_EDITOR =
   "blackduckScaWaitForScan";
 
 export const BLACKDUCKSCA_PROJECT_DIRECTORY_KEY_CLASSIC_EDITOR =
-  "blackduckProjectDirectory";
+  "blackduckScaProjectDirectory";
 
 /**
  * @deprecated Use blackducksca_reports_sarif_create instead. This can be removed in future release.
