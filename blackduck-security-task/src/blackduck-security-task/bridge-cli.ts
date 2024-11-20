@@ -116,7 +116,6 @@ export class BridgeCli {
     command: string
   ): Promise<number> {
     taskLib.debug("extractedPath: ".concat(executablePath));
-    process.env["BRIDGE_CACHE_DIR"] = executablePath;
 
     const executableBridgeCliPath = await this.setBridgeCliExecutablePath(
       executablePath
