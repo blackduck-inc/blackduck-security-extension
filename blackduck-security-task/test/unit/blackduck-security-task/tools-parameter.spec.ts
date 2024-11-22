@@ -1202,7 +1202,7 @@ describe("Bridge CLI Tools Parameter test", () => {
             Object.defineProperty(inputs, 'BLACKDUCKSCA_URL', {value: 'https://test.com'})
             Object.defineProperty(inputs, 'BLACKDUCKSCA_API_TOKEN', {value: 'token'})
             Object.defineProperty(inputs, 'BLACKDUCKSCA_FIXPR_ENABLED', {value: 'true'})
-            Object.defineProperty(inputs, 'BLACKDUCKSCA_FIXPR_MAX_COUNT', {value: 1})
+            Object.defineProperty(inputs, 'BLACKDUCKSCA_FIXPR_MAXCOUNT', {value: 1})
             Object.defineProperty(inputs, 'BLACKDUCKSCA_FIXPR_CREATE_SINGLE_PR', {value: 'true'})
             Object.defineProperty(inputs, 'AZURE_TOKEN', {value: 'token'})
 
@@ -1235,7 +1235,7 @@ describe("Bridge CLI Tools Parameter test", () => {
         it('should fail for invalid azure token value with fix pr true', function () {
             Object.defineProperty(inputs, 'BLACKDUCKSCA_URL', {value: 'https://test.com'})
             Object.defineProperty(inputs, 'BLACKDUCKSCA_API_TOKEN', {value: 'token'})
-            Object.defineProperty(inputs, 'BLACKDUCKSCA_FIX_PR_ENABLED', {value: 'true'})
+            Object.defineProperty(inputs, 'BLACKDUCKSCA_FIXPR_ENABLED', {value: 'true'})
             const getStubVariable = sandbox.stub(taskLib, "getVariable")
             getStubVariable.withArgs("System.AccessToken").returns("")
             try {
