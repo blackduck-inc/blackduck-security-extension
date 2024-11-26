@@ -26,7 +26,7 @@ describe("Platform", () => {
                 constants.BRIDGE_CLI_DEFAULT_PATH_UNIX
                     .replace("-$version", "")
                     .replace("$platform", constants.LINUX_PLATFORM));
-            bridgeUrl = "https://artifactory.internal.synopsys.com/artifactory/clops-local/clops.sig.synopsys.com/bridge/binaries/bridge-cli-bundle/0.1.244/bridge-cli-bundle-0.1.244-linux64.zip"
+            bridgeUrl = "https://repo.blackduck.com/bds-integrations-release/com/blackduck/integration/bridge/binaries/bridge-cli-bundle/0.1.244/bridge-cli-bundle-0.1.244-linux64.zip"
         })
 
         after(() => {
@@ -78,7 +78,7 @@ describe("Platform", () => {
                 constants.BRIDGE_CLI_DEFAULT_PATH_UNIX
                     .replace("-$version", "")
                     .replace("$platform", constants.MAC_INTEL_PLATFORM));
-            bridgeUrl = "https://artifactory.internal.synopsys.com/artifactory/clops-local/clops.sig.synopsys.com/bridge/binaries/bridge-cli-bundle/0.1.244/bridge-cli-bundle-0.1.244-macosx.zip"
+            bridgeUrl = "https://repo.blackduck.com/bds-integrations-release/com/blackduck/integration/bridge/binaries/bridge-cli-bundle/0.1.244/bridge-cli-bundle-0.1.244-macosx.zip"
         })
 
         after(() => {
@@ -117,7 +117,7 @@ describe("Platform", () => {
                 constants.BRIDGE_CLI_DEFAULT_PATH_WINDOWS
                     .replace("-$version", "")
                     .replace("$platform", constants.WINDOWS_PLATFORM))
-            bridgeUrl = "https://artifactory.internal.synopsys.com/artifactory/clops-local/clops.sig.synopsys.com/bridge/binaries/bridge-cli-bundle/0.1.244/bridge-cli-bundle-0.1.244-win64.zip"
+            bridgeUrl = "https://repo.blackduck.com/bds-integrations-release/com/blackduck/integration/bridge/binaries/bridge-cli-bundle/0.1.244/bridge-cli-bundle-0.1.244-win64.zip"
         })
 
         after(() => {

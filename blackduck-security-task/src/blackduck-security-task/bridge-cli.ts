@@ -67,7 +67,7 @@ export class BridgeCli {
     this.bridgeCliExecutablePath = "";
     this.bridgeCliVersion = "";
     this.bridgeCliArtifactoryURL =
-      "https://artifactory.internal.synopsys.com/artifactory/clops-local/clops.sig.synopsys.com/bridge/binaries/bridge-cli-bundle";
+      "https://repo.blackduck.com/bds-integrations-release/com/blackduck/integration/bridge/binaries/bridge-cli-bundle";
     this.bridgeCliUrlPattern = this.bridgeCliArtifactoryURL.concat(
       "/$version/bridge-cli-bundle-$version-$platform.zip"
     );
