@@ -218,9 +218,9 @@ export class BridgeCliToolsParameter {
 
         if (inputs.POLARIS_PR_COMMENT_SEVERITIES) {
           polData.data.polaris.prcomment.severities =
-            inputs.POLARIS_PR_COMMENT_SEVERITIES
-                .filter((severity) => severity)
-                .map((severity) => severity.trim());
+            inputs.POLARIS_PR_COMMENT_SEVERITIES.filter(
+              (severity) => severity
+            ).map((severity) => severity.trim());
         }
       }
     }
