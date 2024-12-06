@@ -12,7 +12,7 @@
     "Minor": 0,
     "Patch": 0
   },
-  "instanceNameFormat": "Black Duck Software Inc.",
+  "instanceNameFormat": "Black Duck Security Scan",
   "groups": [
     {
       "name": "scanConfiguration",
