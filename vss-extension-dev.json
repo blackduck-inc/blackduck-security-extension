@@ -1,9 +1,9 @@
 {
   "manifestVersion": 1,
-  "id": "QATPublisher",
+  "id": "blackduck-security-scan",
   "name": "Black Duck Security Scan",
   "version": "2.0.0",
-  "publisher": "QATPublisher",
+    "publisher": "BlackduckExtensionTest",
   "targets": [
     {
       "id": "Microsoft.VisualStudio.Services"
