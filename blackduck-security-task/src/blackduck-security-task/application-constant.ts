@@ -430,7 +430,7 @@ export const BRIDGECLI_INSTALL_DIRECTORY_KEY_CLASSIC_EDITOR =
 
 export const UPLOAD_FOLDER_ARTIFACT_NAME = "bridge_cli_diagnostics";
 export const BRIDGE_CLI_LOCAL_DIRECTORY = ".bridge";
-export const SARIF_DEFAULT_FILE_NAME = "report.sarif.json";
+export const SARIF_DEFAULT_FILE_NAME = "report.sarif";
 export const DEFAULT_BLACKDUCK_SARIF_GENERATOR_DIRECTORY =
   "Blackduck SCA SARIF Generator";
 export const DEFAULT_POLARIS_SARIF_GENERATOR_DIRECTORY =
