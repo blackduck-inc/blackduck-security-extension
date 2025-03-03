@@ -61,6 +61,10 @@ export class BridgeCliToolsParameter {
   private static SRM_STAGE = "srm";
   private static SRM_STATE_FILE_NAME = "srm_input.json";
 
+  private static OUTPUT_OPTION = "--out";
+  private static BD_OUTPUT_FILE_NAME = "bd_output.json";
+  private static POLARIS_OUTPUT_FILE_NAME = "polaris_output.json";
+
   constructor(tempDir: string) {
     this.tempDir = tempDir;
   }
@@ -251,6 +255,11 @@ export class BridgeCliToolsParameter {
 
     taskLib.debug("Generated state json file at - ".concat(stateFilePath));
 
+    let outPutFilePath = path.join(
+        this.tempDir,
+        BridgeCliToolsParameter.POLARIS_OUTPUT_FILE_NAME
+    );
+
     command = BridgeCliToolsParameter.STAGE_OPTION.concat(
       BridgeCliToolsParameter.SPACE
     )
@@ -259,6 +268,10 @@ export class BridgeCliToolsParameter {
       .concat(BridgeCliToolsParameter.INPUT_OPTION)
       .concat(BridgeCliToolsParameter.SPACE)
       .concat(stateFilePath)
+      .concat(BridgeCliToolsParameter.SPACE)
+      .concat(BridgeCliToolsParameter.OUTPUT_OPTION)
+      .concat(BridgeCliToolsParameter.SPACE)
+      .concat(outPutFilePath)
       .concat(BridgeCliToolsParameter.SPACE);
     return command;
   }
@@ -419,6 +432,11 @@ export class BridgeCliToolsParameter {
 
     taskLib.debug("Generated state json file at - ".concat(stateFilePath));
 
+    let outPutFilePath = path.join(
+        this.tempDir,
+        BridgeCliToolsParameter.BD_OUTPUT_FILE_NAME
+    );
+
     command = BridgeCliToolsParameter.STAGE_OPTION.concat(
       BridgeCliToolsParameter.SPACE
     )
@@ -427,6 +445,10 @@ export class BridgeCliToolsParameter {
       .concat(BridgeCliToolsParameter.INPUT_OPTION)
       .concat(BridgeCliToolsParameter.SPACE)
       .concat(stateFilePath)
+      .concat(BridgeCliToolsParameter.SPACE)
+      .concat(BridgeCliToolsParameter.OUTPUT_OPTION)
+      .concat(BridgeCliToolsParameter.SPACE)
+      .concat(outPutFilePath)
       .concat(BridgeCliToolsParameter.SPACE);
     return command;
   }
