@@ -765,4 +765,10 @@ export class BridgeCli {
     retryDelay = retryDelay * 2;
     return retryDelay;
   }
+
+  // Read output file to extract sarif file path
+  async getBridgeSarifFilePath(formattedCommand: string): Promise<string> {
+    const bridgeSarifPath = new BridgeCliToolsParameter(formattedCommand);
+    return bridgeSarifPath.getSarifFilePath(formattedCommand);
+  }
 }

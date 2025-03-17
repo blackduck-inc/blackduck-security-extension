@@ -6,6 +6,7 @@ import { AZURE_TOKEN } from "./input";
 import { Polaris } from "./model/polaris";
 import { Coverity, CoverityArbitrary, CoverityConnect } from "./model/coverity";
 import { Srm } from "./model/srm";
+import * as fs from "fs";
 import {
   BlackduckSCA,
   BLACKDUCKSCA_SCAN_FAILURE_SEVERITIES,
@@ -255,9 +256,9 @@ export class BridgeCliToolsParameter {
 
     taskLib.debug("Generated state json file at - ".concat(stateFilePath));
 
-    let outPutFilePath = path.join(
-        this.tempDir,
-        BridgeCliToolsParameter.POLARIS_OUTPUT_FILE_NAME
+    const outPutFilePath = path.join(
+      this.tempDir,
+      BridgeCliToolsParameter.POLARIS_OUTPUT_FILE_NAME
     );
 
     command = BridgeCliToolsParameter.STAGE_OPTION.concat(
@@ -432,9 +433,9 @@ export class BridgeCliToolsParameter {
 
     taskLib.debug("Generated state json file at - ".concat(stateFilePath));
 
-    let outPutFilePath = path.join(
-        this.tempDir,
-        BridgeCliToolsParameter.BD_OUTPUT_FILE_NAME
+    const outPutFilePath = path.join(
+      this.tempDir,
+      BridgeCliToolsParameter.BD_OUTPUT_FILE_NAME
     );
 
     command = BridgeCliToolsParameter.STAGE_OPTION.concat(
@@ -1137,5 +1138,33 @@ export class BridgeCliToolsParameter {
     }
 
     return blackDuckDetectInputData.data;
+  }
+
+  getSarifFilePath(formattedCommandString: string): string {
+    let destFilePath;
+    try {
+      const fileName = this.extractOutputFile(formattedCommandString);
+      const data = fs.readFileSync(fileName, "utf-8");
+      const jsonData = JSON.parse(data);
+      if (fileName === "polaris_output.json") {
+        const sarifFilePath = jsonData?.polaris?.reports?.sarif?.file?.output;
+        destFilePath = path.join(this.tempDir, ".blackduc/ontegration/sarif");
+        fs.promises.copyFile(sarifFilePath, destFilePath);
+        return sarifFilePath;
+      } else if (fileName === "bd_output.json") {
+        const sarifFilePath =
+          jsonData?.blackducksca?.reports?.sarif?.file?.output;
+        destFilePath = path.join(this.tempDir, ".blackduc/ontegration/sarif");
+        fs.promises.copyFile(sarifFilePath, destFilePath);
+        return sarifFilePath;
+      }
+    } catch (error) {
+      return `Error reading or parsing JSON file: ${(error as Error).message}`;
+    }
+    return "";
+  }
+  extractOutputFile(command: string): string {
+    const match = command.match(/--out\s+(\S+)/);
+    return match ? match[1] : "";
   }
 }

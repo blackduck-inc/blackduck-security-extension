@@ -1171,6 +1171,13 @@ class BridgeCli {
             return retryDelay;
         });
     }
+    // Read output file to extract sarif file path
+    getBridgeSarifFilePath(formattedCommand) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const bridgeSarifPath = new tools_parameter_1.BridgeCliToolsParameter(formattedCommand);
+            return bridgeSarifPath.getSarifFilePath(formattedCommand);
+        });
+    }
 }
 exports.BridgeCli = BridgeCli;
 
@@ -1886,6 +1893,7 @@ exports.BridgeCliToolsParameter = void 0;
 const path_1 = __importDefault(__nccwpck_require__(1017));
 const inputs = __importStar(__nccwpck_require__(264));
 const input_1 = __nccwpck_require__(264);
+const fs = __importStar(__nccwpck_require__(7147));
 const blackduckSCA_1 = __nccwpck_require__(3175);
 const azure_1 = __nccwpck_require__(5895);
 const constants = __importStar(__nccwpck_require__(8673));
@@ -2026,12 +2034,17 @@ class BridgeCliToolsParameter {
             // Wrap the file path with double quotes, to make it work with directory path with space as well
             stateFilePath = '"'.concat(stateFilePath).concat('"');
             taskLib.debug("Generated state json file at - ".concat(stateFilePath));
+            const outPutFilePath = path_1.default.join(this.tempDir, BridgeCliToolsParameter.POLARIS_OUTPUT_FILE_NAME);
             command = BridgeCliToolsParameter.STAGE_OPTION.concat(BridgeCliToolsParameter.SPACE)
                 .concat(BridgeCliToolsParameter.POLARIS_STAGE)
                 .concat(BridgeCliToolsParameter.SPACE)
                 .concat(BridgeCliToolsParameter.INPUT_OPTION)
                 .concat(BridgeCliToolsParameter.SPACE)
                 .concat(stateFilePath)
+                .concat(BridgeCliToolsParameter.SPACE)
+                .concat(BridgeCliToolsParameter.OUTPUT_OPTION)
+                .concat(BridgeCliToolsParameter.SPACE)
+                .concat(outPutFilePath)
                 .concat(BridgeCliToolsParameter.SPACE);
             return command;
         });
@@ -2146,12 +2159,17 @@ class BridgeCliToolsParameter {
             // Wrap the file path with double quotes, to make it work with directory path with space as well
             stateFilePath = '"'.concat(stateFilePath).concat('"');
             taskLib.debug("Generated state json file at - ".concat(stateFilePath));
+            const outPutFilePath = path_1.default.join(this.tempDir, BridgeCliToolsParameter.BD_OUTPUT_FILE_NAME);
             command = BridgeCliToolsParameter.STAGE_OPTION.concat(BridgeCliToolsParameter.SPACE)
                 .concat(BridgeCliToolsParameter.BLACKDUCKSCA_STAGE)
                 .concat(BridgeCliToolsParameter.SPACE)
                 .concat(BridgeCliToolsParameter.INPUT_OPTION)
                 .concat(BridgeCliToolsParameter.SPACE)
                 .concat(stateFilePath)
+                .concat(BridgeCliToolsParameter.SPACE)
+                .concat(BridgeCliToolsParameter.OUTPUT_OPTION)
+                .concat(BridgeCliToolsParameter.SPACE)
+                .concat(outPutFilePath)
                 .concat(BridgeCliToolsParameter.SPACE);
             return command;
         });
@@ -2646,6 +2664,35 @@ class BridgeCliToolsParameter {
         }
         return blackDuckDetectInputData.data;
     }
+    getSarifFilePath(formattedCommandString) {
+        var _a, _b, _c, _d, _e, _f, _g, _h;
+        let destFilePath;
+        try {
+            const fileName = this.extractOutputFile(formattedCommandString);
+            const data = fs.readFileSync(fileName, "utf-8");
+            const jsonData = JSON.parse(data);
+            if (fileName === "polaris_output.json") {
+                const sarifFilePath = (_d = (_c = (_b = (_a = jsonData === null || jsonData === void 0 ? void 0 : jsonData.polaris) === null || _a === void 0 ? void 0 : _a.reports) === null || _b === void 0 ? void 0 : _b.sarif) === null || _c === void 0 ? void 0 : _c.file) === null || _d === void 0 ? void 0 : _d.output;
+                destFilePath = path_1.default.join(this.tempDir, ".blackduc/ontegration/sarif");
+                fs.promises.copyFile(sarifFilePath, destFilePath);
+                return sarifFilePath;
+            }
+            else if (fileName === "bd_output.json") {
+                const sarifFilePath = (_h = (_g = (_f = (_e = jsonData === null || jsonData === void 0 ? void 0 : jsonData.blackducksca) === null || _e === void 0 ? void 0 : _e.reports) === null || _f === void 0 ? void 0 : _f.sarif) === null || _g === void 0 ? void 0 : _g.file) === null || _h === void 0 ? void 0 : _h.output;
+                destFilePath = path_1.default.join(this.tempDir, ".blackduc/ontegration/sarif");
+                fs.promises.copyFile(sarifFilePath, destFilePath);
+                return sarifFilePath;
+            }
+        }
+        catch (error) {
+            return `Error reading or parsing JSON file: ${error.message}`;
+        }
+        return "";
+    }
+    extractOutputFile(command) {
+        const match = command.match(/--out\s+(\S+)/);
+        return match ? match[1] : "";
+    }
 }
 BridgeCliToolsParameter.STAGE_OPTION = "--stage";
 BridgeCliToolsParameter.BLACKDUCKSCA_STAGE = "blackducksca";
@@ -2659,6 +2706,9 @@ BridgeCliToolsParameter.COVERITY_STAGE = "connect";
 BridgeCliToolsParameter.DIAGNOSTICS_OPTION = "--diagnostics";
 BridgeCliToolsParameter.SRM_STAGE = "srm";
 BridgeCliToolsParameter.SRM_STATE_FILE_NAME = "srm_input.json";
+BridgeCliToolsParameter.OUTPUT_OPTION = "--out";
+BridgeCliToolsParameter.BD_OUTPUT_FILE_NAME = "bd_output.json";
+BridgeCliToolsParameter.POLARIS_OUTPUT_FILE_NAME = "polaris_output.json";
 exports.BridgeCliToolsParameter = BridgeCliToolsParameter;
 
 
@@ -3116,6 +3166,7 @@ function run() {
         const workSpaceDir = (0, utility_1.getWorkSpaceDirectory)();
         taskLib.debug(`workSpaceDir: ${workSpaceDir}`);
         let azurePrResponse;
+        let sarifFilePath = "";
         try {
             const bridge = new bridge_cli_1.BridgeCli();
             (0, input_1.showLogForDeprecatedInputs)();
@@ -3135,6 +3186,8 @@ function run() {
             if ((0, utility_1.parseToBoolean)(inputs.RETURN_STATUS)) {
                 console.log(application_constant_1.TASK_RETURN_STATUS);
             }
+            // Read output file to extract sarif upload path
+            sarifFilePath = yield bridge.getBridgeSarifFilePath(command);
         }
         catch (error) {
             throw error;
@@ -3143,12 +3196,14 @@ function run() {
             if ((0, utility_1.parseToBoolean)(inputs.BLACKDUCKSCA_REPORTS_SARIF_CREATE)) {
                 if (!utility_1.IS_PR_EVENT) {
                     console.log(application_constant_1.BLACKDUCKSCA_SARIF_REPOST_ENABLED);
+                    // Check If sarifFilePath is empty or not based on that call the uploadSarifResultAsArtifact
                     (0, diagnostics_1.uploadSarifResultAsArtifact)(constants.DEFAULT_BLACKDUCK_SARIF_GENERATOR_DIRECTORY, inputs.BLACKDUCKSCA_REPORTS_SARIF_FILE_PATH);
                 }
             }
             if ((0, utility_1.parseToBoolean)(inputs.POLARIS_REPORTS_SARIF_CREATE)) {
                 if (!utility_1.IS_PR_EVENT) {
                     console.log(application_constant_1.POLARISSCA_SARIF_REPORT_ENABLED);
+                    // Check If sarifFilePath is empty or not based on that call the uploadSarifResultAsArtifact
                     (0, diagnostics_1.uploadSarifResultAsArtifact)(constants.DEFAULT_POLARIS_SARIF_GENERATOR_DIRECTORY, inputs.POLARIS_REPORTS_SARIF_FILE_PATH);
                 }
             }
