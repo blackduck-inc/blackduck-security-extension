@@ -441,12 +441,14 @@ export const RETRY_COUNT = 3;
 export const NON_RETRY_HTTP_CODES = new Set([200, 201, 401, 403, 416]);
 export const WINDOWS_PLATFORM = "win64";
 export const LINUX_PLATFORM = "linux64";
+export const LINUX_ARM_PLATFORM = "linux_arm";
 export const MAC_ARM_PLATFORM = "macos_arm";
 export const MAC_INTEL_PLATFORM = "macosx";
 export const WIN32 = "win32";
 export const LINUX = "linux";
 export const DARWIN = "darwin";
 export const MIN_SUPPORTED_BRIDGE_CLI_MAC_ARM_VERSION = "2.1.0";
+export const MIN_SUPPORTED_BRIDGE_CLI_LINUX_ARM_VERSION = "2.1.0";
 export const DEFAULT_AZURE_API_URL = "https://dev.azure.com";
 export const BLACKDUCKSCA_SECURITY_SCAN_AZURE_DEVOPS_DOCS_URL =
   "https://documentation.blackduck.com/bundle/bridge/page/documentation/c_additional-azure-parameters.html";
