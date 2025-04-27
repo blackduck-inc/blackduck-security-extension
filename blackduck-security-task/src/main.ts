@@ -37,6 +37,7 @@ export async function run() {
   const workSpaceDir = getWorkSpaceDirectory();
   taskLib.debug(`workSpaceDir: ${workSpaceDir}`);
   let azurePrResponse: AzurePrResponse | undefined;
+  let sarifFilePath = "";
   try {
     const bridge = new BridgeCli();
 
@@ -62,12 +63,15 @@ export async function run() {
     if (parseToBoolean(inputs.RETURN_STATUS)) {
       console.log(TASK_RETURN_STATUS);
     }
+    // Read output file to extract sarif upload path
+    sarifFilePath = await bridge.getBridgeSarifFilePath(command);
   } catch (error: any) {
     throw error;
   } finally {
     if (parseToBoolean(inputs.BLACKDUCKSCA_REPORTS_SARIF_CREATE)) {
       if (!IS_PR_EVENT) {
         console.log(BLACKDUCKSCA_SARIF_REPOST_ENABLED);
+        // Check If sarifFilePath is empty or not based on that call the uploadSarifResultAsArtifact
         uploadSarifResultAsArtifact(
           constants.DEFAULT_BLACKDUCK_SARIF_GENERATOR_DIRECTORY,
           inputs.BLACKDUCKSCA_REPORTS_SARIF_FILE_PATH
@@ -78,6 +82,7 @@ export async function run() {
     if (parseToBoolean(inputs.POLARIS_REPORTS_SARIF_CREATE)) {
       if (!IS_PR_EVENT) {
         console.log(POLARISSCA_SARIF_REPORT_ENABLED);
+        // Check If sarifFilePath is empty or not based on that call the uploadSarifResultAsArtifact
         uploadSarifResultAsArtifact(
           constants.DEFAULT_POLARIS_SARIF_GENERATOR_DIRECTORY,
           inputs.POLARIS_REPORTS_SARIF_FILE_PATH
