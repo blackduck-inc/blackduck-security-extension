@@ -9,6 +9,7 @@ export interface Srm {
   coverity?: CoverityDetails;
   detect?: BlackduckDetails;
   project?: ProjectData;
+  bridge?: Bridge;
 }
 
 export interface SrmData extends AsyncMode {
@@ -30,6 +31,12 @@ export interface BranchInfo {
 export interface ProjectData {
   directory?: string;
 }
+export interface Bridge {
+  invoked: Invoked
+}
 
+export interface Invoked {
+  from: string
+}
 export interface CoverityDetails extends ExecutionPath, CoverityArbitrary {}
 export interface BlackduckDetails extends ExecutionPath, BlackDuckDetect {}

@@ -9,6 +9,7 @@ export interface Coverity {
   project?: ProjectData;
   azure?: AzureData;
   environment?: Environment;
+  bridge?: Bridge;
 }
 
 export interface ProjectData {
@@ -55,4 +56,11 @@ export interface Command {
 
 export interface Config {
   path: string;
+}
+export interface Bridge {
+  invoked: Invoked
+}
+
+export interface Invoked {
+  from: string
 }
