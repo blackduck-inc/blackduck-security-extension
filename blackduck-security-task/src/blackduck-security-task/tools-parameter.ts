@@ -65,6 +65,7 @@ export class BridgeCliToolsParameter {
     this.tempDir = tempDir;
   }
 
+
   async getFormattedCommandForPolaris(): Promise<string> {
     let command = "";
     const assessmentTypeArray: string[] = [];
@@ -235,6 +236,18 @@ export class BridgeCliToolsParameter {
       }
     }
 
+    // Set ADO Cloud or EE URL to Custom header in input.json file
+    const azureUrl = this.getAzureUrl();
+    if(azureUrl ==  constants.DEFAULT_AZURE_API_URL){
+      if (polData.data.bridge?.invoked) {
+        polData.data.bridge.invoked.from = "Integrations-ado-cloud";
+      }
+    } else {
+      if (polData.data.bridge?.invoked) {
+        polData.data.bridge.invoked.from = "Integrations-ado-ee";
+      }
+    }
+
     // Remove empty data from json object
     polData = filterEmptyData(polData);
 
@@ -400,6 +413,18 @@ export class BridgeCliToolsParameter {
         console.info(
           "Black Duck SCA SARIF report create/upload is ignored for pull request scan"
         );
+      }
+    }
+
+    // Set ADO Cloud or EE URL to Custom header in input.json file
+    const azureUrl = this.getAzureUrl();
+    if(azureUrl ==  constants.DEFAULT_AZURE_API_URL){
+      if (blackduckData.data.bridge?.invoked) {
+        blackduckData.data.bridge.invoked.from = "Integrations-ado-cloud";
+      }
+    } else {
+      if (blackduckData.data.bridge?.invoked) {
+        blackduckData.data.bridge.invoked.from = "Integrations-ado-ee";
       }
     }
 
@@ -573,6 +598,18 @@ export class BridgeCliToolsParameter {
       this.setCoverityArbitraryArgs() as CoverityConnect,
       covData.data.coverity
     );
+
+    // Set ADO Cloud or EE URL to Custom header in input.json file
+    const azureUrl = this.getAzureUrl();
+    if(azureUrl ==  constants.DEFAULT_AZURE_API_URL){
+      if (covData.data.bridge?.invoked) {
+        covData.data.bridge.invoked.from = "Integrations-ado-cloud";
+      }
+    } else {
+      if (covData.data.bridge?.invoked) {
+        covData.data.bridge.invoked.from = "Integrations-ado-ee";
+      }
+    }
 
     // Remove empty data from json object
     covData = filterEmptyData(covData);
@@ -748,6 +785,17 @@ export class BridgeCliToolsParameter {
     }
     if (Object.keys(blackduckArgs).length > 0) {
       srmData.data.detect = { ...srmData.data.detect, ...blackduckArgs };
+    }
+    // Set ADO Cloud or EE URL to Custom header in input.json file
+    const azureUrl = this.getAzureUrl();
+    if(azureUrl ==  constants.DEFAULT_AZURE_API_URL){
+      if (srmData.data.bridge?.invoked) {
+        srmData.data.bridge.invoked.from = "Integrations-ado-cloud";
+      }
+    } else {
+      if (srmData.data.bridge?.invoked) {
+        srmData.data.bridge.invoked.from = "Integrations-ado-ee";
+      }
     }
     // Remove empty data from json object
     srmData = filterEmptyData(srmData);
@@ -1115,5 +1163,26 @@ export class BridgeCliToolsParameter {
     }
 
     return blackDuckDetectInputData.data;
+  }
+
+  // Get Azure server or cloud url
+  private getAzureUrl(): string {
+    let azureInstanceUrl = "";
+    const collectionEnvUri =
+        taskLib.getVariable(AZURE_ENVIRONMENT_VARIABLES.AZURE_ORGANIZATION) || "";
+
+    if (collectionEnvUri != "") {
+      const parsedUrl = url.parse(collectionEnvUri);
+      azureInstanceUrl = `${parsedUrl.protocol}//${parsedUrl.host}`;
+      if (
+          parsedUrl.host &&
+          parsedUrl.host.indexOf(".visualstudio.com") !== -1
+      ) {
+        if (parsedUrl.host.split(".")[0]) {
+          azureInstanceUrl = constants.DEFAULT_AZURE_API_URL;
+        }
+      }
+    }
+    return azureInstanceUrl;
   }
 }
