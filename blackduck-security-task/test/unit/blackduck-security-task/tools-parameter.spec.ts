@@ -41,6 +41,7 @@ describe("Bridge CLI Tools Parameter test", () => {
             Object.defineProperty(inputs, 'POLARIS_ASSESSMENT_TYPES', {value: ['SCA','sast']})
             Object.defineProperty(inputs, 'POLARIS_TRIAGE', {value: ''})
             Object.defineProperty(inputs, 'POLARIS_TEST_SCA_TYPE', {value: ''})
+            Object.defineProperty(inputs, 'POLARIS_TEST_SAST_TYPE', {value: ''})
             Object.defineProperty(inputs, 'COVERITY_BUILD_COMMAND', {value: ''})
             Object.defineProperty(inputs, 'COVERITY_CLEAN_COMMAND', {value: ''})
             Object.defineProperty(inputs, 'COVERITY_CONFIG_PATH', {value: ''})
@@ -331,6 +332,35 @@ describe("Bridge CLI Tools Parameter test", () => {
             expect(jsonData.data.polaris.project.name).to.be.contains('POLARIS_PROJECT_NAME');
             expect(jsonData.data.polaris.branch.name).to.be.contains('feature1');
             expect(jsonData.data.polaris.waitForScan).to.be.equals(true);
+
+            expect(formattedCommand).contains('--stage polaris');
+
+            polarisStateFile = '"'.concat(polarisStateFile).concat('"');
+            expect(formattedCommand).contains('--input '.concat(polarisStateFile))
+        });
+
+        it('should success for polaris command formation with polaris test sca and sast type', async function () {
+            Object.defineProperty(inputs, 'POLARIS_SERVER_URL', {value: 'server_url'})
+            Object.defineProperty(inputs, 'POLARIS_ACCESS_TOKEN', {value: 'access_token'})
+            Object.defineProperty(inputs, 'POLARIS_ASSESSMENT_TYPES', {value: ['SCA','SAST']})
+            Object.defineProperty(inputs, 'POLARIS_APPLICATION_NAME', {value: 'POLARIS_APPLICATION_NAME'})
+            Object.defineProperty(inputs, 'POLARIS_PROJECT_NAME', {value: 'POLARIS_PROJECT_NAME'})
+            Object.defineProperty(inputs, 'POLARIS_BRANCH_NAME', {value: 'feature1'})
+            Object.defineProperty(inputs, 'POLARIS_TEST_SCA_TYPE', {value: 'SCA-SIGNATURE'})
+            Object.defineProperty(inputs, 'POLARIS_TEST_SAST_TYPE', {value: 'SAST_RAPID'})
+
+            const formattedCommand = await bridgeToolsParameter.getFormattedCommandForPolaris();
+
+            const jsonString = fs.readFileSync(polarisStateFile, 'utf-8');
+            const jsonData = JSON.parse(jsonString);
+            expect(jsonData.data.polaris.serverUrl).to.be.contains('server_url');
+            expect(jsonData.data.polaris.accesstoken).to.be.contains('access_token');
+            expect(jsonData.data.polaris.assessment.types).to.be.contains('SCA','SAST');
+            expect(jsonData.data.polaris.application.name).to.be.contains('POLARIS_APPLICATION_NAME');
+            expect(jsonData.data.polaris.project.name).to.be.contains('POLARIS_PROJECT_NAME');
+            expect(jsonData.data.polaris.branch.name).to.be.contains('feature1');
+            expect(jsonData.data.polaris.test.sca.type).to.be.contains('SCA-SIGNATURE');
+            expect(jsonData.data.polaris.test.sast.type).to.be.contains('SAST_RAPID');
 
             expect(formattedCommand).contains('--stage polaris');
 

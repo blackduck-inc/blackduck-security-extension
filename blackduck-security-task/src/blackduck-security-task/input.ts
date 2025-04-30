@@ -289,6 +289,11 @@ export const POLARIS_TEST_SCA_TYPE = getInput(
   constants.POLARIS_TEST_SCA_TYPE_KEY_CLASSIC_EDITOR,
   null
 );
+export const POLARIS_TEST_SAST_TYPE = getInput(
+  constants.POLARIS_TEST_SAST_TYPE_KEY,
+  constants.POLARIS_TEST_SAST_TYPE_KEY_CLASSIC_EDITOR,
+  null
+);
 export const POLARIS_WAITFORSCAN = getInput(
   constants.POLARIS_WAITFORSCAN_KEY,
   constants.POLARIS_WAITFORSCAN_KEY_CLASSIC_EDITOR,
