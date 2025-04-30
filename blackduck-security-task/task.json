@@ -221,7 +221,7 @@
       "label": "SAST Test Type",
       "defaultValue": "",
       "required": false,
-      "helpMarkDown": "Polaris test type to trigger sigma rapid scan. Supported value: SAST_RAPID",
+      "helpMarkDown": "Polaris test type to trigger sigma rapid scan or full scan. Default value: SAST_FULL. Supported values: SAST_RAPID or SAST_FULL",
       "visibleRule": "scanType = polaris",
       "groupName": "scanConfiguration"
     },
