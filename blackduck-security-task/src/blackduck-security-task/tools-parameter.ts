@@ -135,13 +135,13 @@ export class BridgeCliToolsParameter {
       }
 
       if (inputs.POLARIS_TEST_SAST_TYPE) {
-        const polarisTestSastTypeList = inputs.POLARIS_TEST_SAST_TYPE.split(",")
-          .map((polarisTestSastType) => polarisTestSastType.trim());
-        if (polarisTestSastTypeList.length > 0) {
-          polData.data.polaris.test.sast = {
-            type: polarisTestSastTypeList,
-          };
-        }
+        const polarisTestSastTypeList: string[] =
+          inputs.POLARIS_TEST_SAST_TYPE.split(",").map((polarisTestSastType) =>
+            polarisTestSastType.trim()
+          );
+        polData.data.polaris.test.sast = {
+          type: polarisTestSastTypeList,
+        };
       }
     }
 

@@ -1960,14 +1960,10 @@ class BridgeCliToolsParameter {
                     };
                 }
                 if (inputs.POLARIS_TEST_SAST_TYPE) {
-                    const polarisTestSastTypeList = inputs.POLARIS_TEST_SAST_TYPE.split(",")
-                        .filter((polarisTestSastType) => polarisTestSastType && polarisTestSastType.trim() !== "")
-                        .map((polarisTestSastType) => polarisTestSastType.trim());
-                    if (polarisTestSastTypeList.length > 0) {
-                        polData.data.polaris.test.sast = {
-                            type: polarisTestSastTypeList,
-                        };
-                    }
+                    const polarisTestSastTypeList = inputs.POLARIS_TEST_SAST_TYPE.split(",").map((polarisTestSastType) => polarisTestSastType.trim());
+                    polData.data.polaris.test.sast = {
+                        type: polarisTestSastTypeList,
+                    };
                 }
             }
             if ((0, utility_1.isBoolean)(inputs.POLARIS_WAITFORSCAN)) {
