@@ -70,7 +70,9 @@ export async function extractZipped(
   }
 
   try {
+    console.info(constants.EXTRACTING_BRIDGE_CLI_ARCHIVE);
     await utility.extractZipWithQuiet(file, destinationPath);
+    console.info(constants.BRIDGE_CLI_EXTRACTION_COMPLETED);
     return Promise.resolve(true);
   } catch (error) {
     return Promise.reject(error);
