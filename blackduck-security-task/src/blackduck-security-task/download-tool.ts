@@ -54,7 +54,6 @@ export async function downloadTool(
       // make sure that the folder exists
       tl.mkdirP(path.dirname(destPath));
 
-      tl.debug(tl.loc("TOOL_LIB_Downloading", url));
       tl.debug("destination " + destPath);
 
       if (fs.existsSync(destPath)) {
