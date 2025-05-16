@@ -1323,7 +1323,6 @@ function downloadTool(url, fileName, handlers, additionalHeaders) {
                 tl.debug(fileName);
                 // make sure that the folder exists
                 tl.mkdirP(path.dirname(destPath));
-                tl.debug(tl.loc("TOOL_LIB_Downloading", url));
                 tl.debug("destination " + destPath);
                 if (fs.existsSync(destPath)) {
                     tl.debug("Destination file path already exists");
