@@ -60,19 +60,19 @@ describe("Utilities", () => {
     context('extractZipped', () => {
 
         it('extractZipped - success', async function () {
-            sandbox.stub(toolLib, "extractZip").returns(Promise.resolve("/"));
+            sandbox.stub(utility, "extractZipWithQuiet").returns(Promise.resolve("/"));
             const result = await utility.extractZipped("bridge.zip", "/dest_path");
             expect(result).equals(true)
         });
 
         it('extractZipped - failure', async function () {
-            sandbox.stub(toolLib, "extractZip").throws(new Error("invalid path"));
+            sandbox.stub(utility, "extractZipWithQuiet").throws(new Error("invalid path"));
             await utility.extractZipped("bridge.zip", "/dest_path").catch(error => {
                 expect(error.message).includes("invalid path")})
         });
 
         it('extractZipped - failure- file name empty', async function () {
-            sandbox.stub(toolLib, "extractZip").returns(Promise.resolve("/"));
+            sandbox.stub(utility, "extractZipWithQuiet").returns(Promise.resolve("/"));
             await utility.extractZipped("", "/dest_path").catch(errorObj => {
                 expect(errorObj.message).includes("File does not exist");
                 expect(errorObj.message).includes(ErrorCode.FILE_DOES_NOT_EXIST.toString());
@@ -80,7 +80,7 @@ describe("Utilities", () => {
         });
 
         it('extractZipped - failure- destination path empty', async function () {
-            sandbox.stub(toolLib, "extractZip").returns(Promise.resolve("/"));
+            sandbox.stub(utility, "extractZipWithQuiet").returns(Promise.resolve("/"));
             await utility.extractZipped("bridge.zip", "").catch(errorObj => {
                 expect(errorObj.message).includes("No destination directory found");
                 expect(errorObj.message).includes(ErrorCode.NO_DESTINATION_DIRECTORY.toString());
