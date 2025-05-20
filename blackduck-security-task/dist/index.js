@@ -2707,7 +2707,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.getMappedTaskResult = exports.equalsIgnoreCase = exports.getStatusCode = exports.extractBranchName = exports.isPullRequestEvent = exports.IS_PR_EVENT = exports.filterEmptyData = exports.getDefaultSarifReportPath = exports.sleep = exports.getWorkSpaceDirectory = exports.isBoolean = exports.parseToBoolean = exports.getRemoteFile = exports.extractZipWithQuiet = exports.extractZipped = exports.getTempDir = exports.cleanUrl = void 0;
+exports.getMappedTaskResult = exports.equalsIgnoreCase = exports.getStatusCode = exports.extractBranchName = exports.isPullRequestEvent = exports.IS_PR_EVENT = exports.filterEmptyData = exports.getDefaultSarifReportPath = exports.sleep = exports.getWorkSpaceDirectory = exports.isBoolean = exports.parseToBoolean = exports.getRemoteFile = exports._getAgentTemp = exports._createExtractFolder = exports.extractZipWithQuiet = exports.extractZipped = exports.getTempDir = exports.cleanUrl = void 0;
 const path_1 = __importDefault(__nccwpck_require__(1017));
 const utility = __importStar(__nccwpck_require__(8383));
 const constants = __importStar(__nccwpck_require__(8673));
@@ -2786,6 +2786,7 @@ function _createExtractFolder(dest) {
     taskLib.mkdirP(dest);
     return dest;
 }
+exports._createExtractFolder = _createExtractFolder;
 function _getAgentTemp() {
     taskLib.assertAgent("2.115.0");
     const tempDirectory = taskLib.getVariable("Agent.TempDirectory");
@@ -2794,6 +2795,7 @@ function _getAgentTemp() {
     }
     return tempDirectory;
 }
+exports._getAgentTemp = _getAgentTemp;
 function getRemoteFile(destFilePath, url) {
     return __awaiter(this, void 0, void 0, function* () {
         if (url == null || url.length === 0) {

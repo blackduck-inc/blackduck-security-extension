@@ -111,14 +111,16 @@ export async function extractZipWithQuiet(
   }
   return dest;
 }
-function _createExtractFolder(dest?: string): string {
+
+export function _createExtractFolder(dest?: string): string {
   if (!dest) {
     dest = path.join(_getAgentTemp(), uuidv4());
   }
   taskLib.mkdirP(dest);
   return dest;
 }
-function _getAgentTemp(): string {
+
+export function _getAgentTemp(): string {
   taskLib.assertAgent("2.115.0");
   const tempDirectory = taskLib.getVariable("Agent.TempDirectory");
   if (!tempDirectory) {
