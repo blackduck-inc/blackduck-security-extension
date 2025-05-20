@@ -12,8 +12,8 @@ exports.PROJECT_DIRECTORY_KEY = exports.POLARIS_TEST_SCA_TYPE_KEY_CLASSIC_EDITOR
 exports.COVERITY_ARGS_KEY_CLASSIC_EDITOR_FOR_SRM = exports.COVERITY_ARGS_KEY_CLASSIC_EDITOR_FOR_POLARIS = exports.COVERITY_ARGS_KEY_CLASSIC_EDITOR = exports.COVERITY_ARGS_KEY = exports.COVERITY_CONFIG_PATH_KEY_CLASSIC_EDITOR_FOR_SRM = exports.COVERITY_CONFIG_PATH_KEY_CLASSIC_EDITOR_FOR_POLARIS = exports.COVERITY_CONFIG_PATH_KEY_CLASSIC_EDITOR = exports.COVERITY_CONFIG_PATH_KEY = exports.COVERITY_CLEAN_COMMAND_KEY_CLASSIC_EDITOR_FOR_SRM = exports.COVERITY_CLEAN_COMMAND_KEY_CLASSIC_EDITOR_FOR_POLARIS = exports.COVERITY_CLEAN_COMMAND_KEY_CLASSIC_EDITOR = exports.COVERITY_CLEAN_COMMAND_KEY = exports.COVERITY_BUILD_COMMAND_KEY_CLASSIC_EDITOR_FOR_SRM = exports.COVERITY_BUILD_COMMAND_KEY_CLASSIC_EDITOR_FOR_POLARIS = exports.COVERITY_BUILD_COMMAND_KEY_CLASSIC_EDITOR = exports.COVERITY_BUILD_COMMAND_KEY = exports.COVERITY_VERSION_KEY_CLASSIC_EDITOR = exports.COVERITY_VERSION_KEY = exports.COVERITY_LOCAL_KEY_CLASSIC_EDITOR = exports.COVERITY_LOCAL_KEY = exports.COVERITY_PRCOMMENT_ENABLED_KEY_CLASSIC_EDITOR = exports.COVERITY_PRCOMMENT_ENABLED_KEY = exports.COVERITY_PROJECT_DIRECTORY_KEY_CLASSIC_EDITOR = exports.COVERITY_WAITFORSCAN_KEY_CLASSIC_EDITOR = exports.COVERITY_WAITFORSCAN_KEY = exports.COVERITY_POLICY_VIEW_KEY_CLASSIC_EDITOR = exports.COVERITY_POLICY_VIEW_KEY = exports.COVERITY_EXECUTION_PATH_KEY_CLASSIC_EDITOR = exports.COVERITY_EXECUTION_PATH_KEY = exports.COVERITY_INSTALL_DIRECTORY_KEY_CLASSIC_EDITOR = exports.COVERITY_INSTALL_DIRECTORY_KEY = exports.COVERITY_STREAM_NAME_KEY_CLASSIC_EDITOR = exports.COVERITY_STREAM_NAME_KEY = exports.COVERITY_PROJECT_NAME_KEY_CLASSIC_EDITOR = exports.COVERITY_PROJECT_NAME_KEY = exports.COVERITY_PASSPHRASE_KEY_CLASSIC_EDITOR = exports.COVERITY_PASSPHRASE_KEY = exports.COVERITY_USER_KEY_CLASSIC_EDITOR = exports.COVERITY_USER_KEY = exports.COVERITY_URL_KEY_CLASSIC_EDITOR = exports.COVERITY_URL_KEY = exports.PROJECT_SOURCE_EXCLUDES_KEY_CLASSIC_EDITOR = exports.PROJECT_SOURCE_EXCLUDES_KEY = exports.PROJECT_SOURCE_PRESERVE_SYM_LINKS_KEY_CLASSIC_EDITOR = exports.PROJECT_SOURCE_PRESERVE_SYM_LINKS_KEY = exports.PROJECT_SOURCE_ARCHIVE_KEY_CLASSIC_EDITOR = exports.PROJECT_SOURCE_ARCHIVE_KEY = exports.POLARIS_WAITFORSCAN_KEY_CLASSIC_EDITOR = exports.POLARIS_WAITFORSCAN_KEY = exports.POLARIS_PROJECT_DIRECTORY_KEY_CLASSIC_EDITOR = void 0;
 exports.BLACKDUCK_REPORTS_SARIF_GROUP_SCA_ISSUES_KEY = exports.BLACKDUCKSCA_REPORTS_SARIF_SEVERITIES_KEY_CLASSIC_EDITOR = exports.BLACKDUCKSCA_REPORTS_SARIF_SEVERITIES_KEY = exports.BLACKDUCK_REPORTS_SARIF_SEVERITIES_KEY = exports.BLACKDUCKSCA_REPORTS_SARIF_FILE_PATH_KEY_CLASSIC_EDITOR = exports.BLACKDUCKSCA_REPORTS_SARIF_FILE_PATH_KEY = exports.BLACKDUCK_REPORTS_SARIF_FILE_PATH_KEY = exports.BLACKDUCKSCA_REPORTS_SARIF_CREATE_KEY_CLASSIC_EDITOR = exports.BLACKDUCKSCA_REPORTS_SARIF_CREATE_KEY = exports.BLACKDUCK_REPORTS_SARIF_CREATE_KEY = exports.BLACKDUCKSCA_PROJECT_DIRECTORY_KEY_CLASSIC_EDITOR = exports.BLACKDUCKSCA_WAITFORSCAN_KEY_CLASSIC_EDITOR = exports.BLACKDUCKSCA_WAITFORSCAN_KEY = exports.BLACKDUCK_WAITFORSCAN_KEY = exports.BLACKDUCKSCA_FIXPR_UPGRADE_GUIDANCE_KEY_CLASSIC_EDITOR = exports.BLACKDUCKSCA_FIXPR_UPGRADE_GUIDANCE_KEY = exports.BLACKDUCK_FIXPR_UPGRADE_GUIDANCE_KEY = exports.BLACKDUCKSCA_FIXPR_FILTER_SEVERITIES_KEY_CLASSIC_EDITOR = exports.BLACKDUCKSCA_FIXPR_FILTER_SEVERITIES_KEY = exports.BLACKDUCK_FIXPR_FILTER_SEVERITIES_KEY = exports.BLACKDUCKSCA_FIXPR_CREATE_SINGLE_PR_KEY_CLASSIC_EDITOR = exports.BLACKDUCKSCA_FIXPR_CREATE_SINGLE_PR_KEY = exports.BLACKDUCK_FIXPR_CREATE_SINGLE_PR_KEY = exports.BLACKDUCKSCA_FIXPR_MAXCOUNT_KEY_CLASSIC_EDITOR = exports.BLACKDUCKSCA_FIXPR_MAXCOUNT_KEY = exports.BLACKDUCK_FIXPR_MAXCOUNT_KEY = exports.BLACKDUCKSCA_FIXPR_ENABLED_KEY_CLASSIC_EDITOR = exports.BLACKDUCKSCA_FIXPR_ENABLED_KEY = exports.BLACKDUCK_FIXPR_ENABLED_KEY = exports.BLACKDUCKSCA_PRCOMMENT_ENABLED_KEY_CLASSIC_EDITOR = exports.BLACKDUCKSCA_PRCOMMENT_ENABLED_KEY = exports.BLACKDUCK_PRCOMMENT_ENABLED_KEY = exports.BLACKDUCKSCA_SCAN_FAILURE_SEVERITIES_KEY_CLASSIC_EDITOR = exports.BLACKDUCKSCA_SCAN_FAILURE_SEVERITIES_KEY = exports.BLACKDUCK_SCAN_FAILURE_SEVERITIES_KEY = exports.BLACKDUCKSCA_SCAN_FULL_KEY_CLASSIC_EDITOR = exports.BLACKDUCKSCA_SCAN_FULL_KEY = exports.BLACKDUCK_SCAN_FULL_KEY = exports.DETECT_EXECUTION_PATH_KEY_CLASSIC_EDITOR = exports.DETECT_EXECUTION_PATH_KEY = exports.BLACKDUCK_EXECUTION_PATH_KEY = exports.DETECT_INSTALL_DIRECTORY_KEY_CLASSIC_EDITOR = exports.DETECT_INSTALL_DIRECTORY_KEY = exports.BLACKDUCK_INSTALL_DIRECTORY_KEY = exports.BLACKDUCKSCA_TOKEN_KEY_CLASSIC_EDITOR = exports.BLACKDUCKSCA_TOKEN_KEY = exports.BLACKDUCK_TOKEN_KEY = exports.BLACKDUCKSCA_URL_KEY_CLASSIC_EDITOR = exports.BLACKDUCKSCA_URL_KEY = exports.BLACKDUCK_URL_KEY = void 0;
 exports.MARK_BUILD_STATUS_KEY = exports.RETURN_STATUS_KEY = exports.BRIDGECLI_DOWNLOAD_VERSION_KEY_CLASSIC_EDITOR = exports.BRIDGECLI_DOWNLOAD_VERSION_KEY = exports.SYNOPSYS_BRIDGE_DOWNLOAD_VERSION_KEY = exports.BRIDGECLI_DOWNLOAD_URL_KEY_CLASSIC_EDITOR = exports.BRIDGECLI_DOWNLOAD_URL_KEY = exports.SYNOPSYS_BRIDGE_DOWNLOAD_URL_KEY = exports.NETWORK_AIRGAP_KEY_CLASSIC_EDITOR = exports.NETWORK_AIRGAP_KEY = exports.BRIDGE_NETWORK_AIRGAP_KEY = exports.SRM_INCLUDE_DIAGNOSTICS_KEY_CLASSIC_EDITOR = exports.COVERITY_INCLUDE_DIAGNOSTICS_KEY_CLASSIC_EDITOR = exports.BLACKDUCKSCA_INCLUDE_DIAGNOSTICS_KEY_CLASSIC_EDITOR = exports.POLARIS_INCLUDE_DIAGNOSTICS_KEY_CLASSIC_EDITOR = exports.INCLUDE_DIAGNOSTICS_KEY = exports.SRM_PROJECT_DIRECTORY_KEY_CLASSIC_EDITOR = exports.SRM_WAITFORSCAN_KEY_CLASSIC_EDITOR = exports.SRM_WAITFORSCAN_KEY = exports.SRM_BRANCH_PARENT_KEY_CLASSIC_EDITOR = exports.SRM_BRANCH_PARENT_KEY = exports.SRM_BRANCH_NAME_KEY_CLASSIC_EDITOR = exports.SRM_BRANCH_NAME_KEY = exports.SRM_PROJECT_ID_KEY_CLASSIC_EDITOR = exports.SRM_PROJECT_ID_KEY = exports.SRM_PROJECT_NAME_KEY_CLASSIC_EDITOR = exports.SRM_PROJECT_NAME_KEY = exports.SRM_ASSESSMENT_TYPES_KEY_CLASSIC_EDITOR = exports.SRM_ASSESSMENT_TYPES_KEY = exports.SRM_APIKEY_KEY_CLASSIC_EDITOR = exports.SRM_APIKEY_KEY = exports.SRM_URL_KEY_CLASSIC_EDITOR = exports.SRM_URL_KEY = exports.DETECT_ARGS_KEY_CLASSIC_EDITOR_FOR_SRM = exports.DETECT_ARGS_KEY_CLASSIC_EDITOR_FOR_POLARIS = exports.DETECT_ARGS_KEY_CLASSIC_EDITOR = exports.DETECT_ARGS_KEY = exports.BLACKDUCK_ARGS_KEY = exports.DETECT_CONFIG_PATH_KEY_CLASSIC_EDITOR_FOR_SRM = exports.DETECT_CONFIG_PATH_KEY_CLASSIC_EDITOR_FOR_POLARIS = exports.DETECT_CONFIG_PATH_KEY_CLASSIC_EDITOR = exports.DETECT_CONFIG_PATH_KEY = exports.BLACKDUCK_CONFIG_PATH_KEY = exports.DETECT_DEPTH_KEY_CLASSIC_EDITOR_FOR_SRM = exports.DETECT_DEPTH_KEY_CLASSIC_EDITOR_FOR_POLARIS = exports.DETECT_DEPTH_KEY_CLASSIC_EDITOR = exports.DETECT_SEARCH_DEPTH_KEY = exports.BLACKDUCK_SEARCH_DEPTH_KEY = exports.BLACKDUCKSCA_REPORTS_SARIF_GROUP_SCA_ISSUES_KEY_CLASSIC_EDITOR = exports.BLACKDUCKSCA_REPORTS_SARIF_GROUP_SCA_ISSUES_KEY = void 0;
-exports.BRIDGE_CLI_DOWNLOAD_COMPLETED = exports.BRIDGECLI_VERSION = exports.BRIDGE_CLI_URL_MESSAGE = exports.DOWNLOADING_BRIDGE_CLI = exports.CHECK_LATEST_BRIDGE_CLI_VERSION = exports.SKIP_DOWNLOAD_BRIDGE_CLI_WHEN_VERSION_NOT_FOUND = exports.FAILED_TO_GET_PULL_REQUEST_INFO = exports.MISSING_BOOL_VALUE = exports.REQUIRE_ONE_SCAN_TYPE = exports.INVALID_BLACKDUCKSCA_SCAN_FAILURE_SEVERITIES = exports.BRIDGE_CLI_DEFAULT_DIRECTORY_NOT_EXISTS = exports.BRIDGE_CLI_INSTALL_DIRECTORY_NOT_EXISTS = exports.BRIDGE_CLI_EXTRACT_DIRECTORY_NOT_FOUND = exports.WORKSPACE_DIR_NOT_FOUND = exports.BRIDGE_CLI_DOWNLOAD_FAILED_RETRY = exports.BRIDGE_CLI_DOWNLOAD_FAILED = exports.BRIDGE_CLI_ZIP_NOT_FOUND_FOR_EXTRACT = exports.WORKFLOW_FAILED = exports.INVALID_BRIDGE_CLI_URL = exports.INVALID_BRIDGE_CLI_URL_SPECIFIED_OS = exports.EMPTY_BRIDGE_CLI_URL = exports.BRIDGE_CLI_EXECUTABLE_FILE_NOT_FOUND = exports.BRIDGE_CLI_VERSION_NOT_FOUND = exports.MISSING_AZURE_TOKEN_FOR_FIX_PR_AND_PR_COMMENT = exports.BLACKDUCKSCA_SECURITY_SCAN_AZURE_DEVOPS_DOCS_URL = exports.DEFAULT_AZURE_API_URL = exports.MIN_SUPPORTED_BRIDGE_CLI_MAC_ARM_VERSION = exports.DARWIN = exports.LINUX = exports.WIN32 = exports.MAC_INTEL_PLATFORM = exports.MAC_ARM_PLATFORM = exports.LINUX_PLATFORM = exports.WINDOWS_PLATFORM = exports.NON_RETRY_HTTP_CODES = exports.RETRY_COUNT = exports.RETRY_DELAY_IN_MILLISECONDS = exports.SARIF_UPLOAD_FOLDER_ARTIFACT_NAME = exports.DEFAULT_POLARIS_SARIF_GENERATOR_DIRECTORY = exports.DEFAULT_BLACKDUCK_SARIF_GENERATOR_DIRECTORY = exports.SARIF_DEFAULT_FILE_NAME = exports.BRIDGE_CLI_LOCAL_DIRECTORY = exports.UPLOAD_FOLDER_ARTIFACT_NAME = exports.BRIDGECLI_INSTALL_DIRECTORY_KEY_CLASSIC_EDITOR = exports.BRIDGECLI_INSTALL_DIRECTORY_KEY = exports.SYNOPSYS_BRIDGE_INSTALL_DIRECTORY_KEY = exports.SRM_MARK_BUILD_STATUS_KEY_CLASSIC_EDITOR = exports.COVERITY_MARK_BUILD_STATUS_KEY_CLASSIC_EDITOR = exports.BLACKDUCKSCA_MARK_BUILD_STATUS_KEY_CLASSIC_EDITOR = exports.POLARIS_MARK_BUILD_STATUS_KEY_CLASSIC_EDITOR = void 0;
-exports.EXIT_CODE_MAP = exports.SARIF_GAS_API_RATE_LIMIT_FOR_ERROR = exports.PROVIDED_BLACKDUCKSCA_FAILURE_SEVERITIES_ERROR = exports.MISSING_BOOLEAN_VALUE_ERROR = exports.INVALID_VALUE_ERROR = exports.BRIDGE_DOWNLOAD_RETRY_ERROR = exports.SCAN_TYPE_REQUIRED_ERROR = exports.BRIDGE_DEFAULT_DIRECTORY_NOT_FOUND_ERROR = exports.BRIDGE_INSTALL_DIRECTORY_NOT_FOUND_ERROR = exports.BRIDGE_EXECUTABLE_NOT_FOUND_ERROR = exports.MARK_THE_BUILD_STATUS = exports.MARK_THE_BUILD_ON_BRIDGE_BREAK = exports.AZURE_PULL_REQUEST_NUMBER_IS_EMPTY = exports.BLACKDUCKSCA_SECURITY_SCAN_COMPLETED = exports.POLARISSCA_SARIF_REPORT_ENABLED = exports.BLACKDUCKSCA_SARIF_REPOST_ENABLED = exports.TASK_RETURN_STATUS = exports.NETWORK_AIR_GAP_ENABLED_SKIP_DOWNLOAD_BRIDGE_CLI = exports.UNABLE_TO_FIND_PULL_REQUEST_INFO = exports.GETTING_ALL_BRIDGE_VERSIONS_RETRY = exports.UNABLE_TO_GET_RECENT_BRIDGE_VERSION = exports.GETTING_LATEST_BRIDGE_VERSIONS_RETRY = exports.ERROR_READING_VERSION_FILE = exports.VERSION_FILE_NOT_FOUND_AT = exports.VERSION_FILE_FOUND_AT = exports.LOOKING_FOR_BRIDGE_CLI_DEFAULT_PATH = exports.LOOKING_FOR_BRIDGE_CLI_INSTALL_DIR = exports.BRIDGE_CLI_FOUND_AT = void 0;
+exports.BRIDGE_CLI_URL_MESSAGE = exports.BRIDGE_CLI_EXTRACTION_COMPLETED = exports.EXTRACTING_BRIDGE_CLI_ARCHIVE = exports.DOWNLOADING_BRIDGE_CLI = exports.CHECK_LATEST_BRIDGE_CLI_VERSION = exports.SKIP_DOWNLOAD_BRIDGE_CLI_WHEN_VERSION_NOT_FOUND = exports.FAILED_TO_GET_PULL_REQUEST_INFO = exports.MISSING_BOOL_VALUE = exports.REQUIRE_ONE_SCAN_TYPE = exports.INVALID_BLACKDUCKSCA_SCAN_FAILURE_SEVERITIES = exports.BRIDGE_CLI_DEFAULT_DIRECTORY_NOT_EXISTS = exports.BRIDGE_CLI_INSTALL_DIRECTORY_NOT_EXISTS = exports.BRIDGE_CLI_EXTRACT_DIRECTORY_NOT_FOUND = exports.WORKSPACE_DIR_NOT_FOUND = exports.BRIDGE_CLI_DOWNLOAD_FAILED_RETRY = exports.BRIDGE_CLI_DOWNLOAD_FAILED = exports.BRIDGE_CLI_ZIP_NOT_FOUND_FOR_EXTRACT = exports.WORKFLOW_FAILED = exports.INVALID_BRIDGE_CLI_URL = exports.INVALID_BRIDGE_CLI_URL_SPECIFIED_OS = exports.EMPTY_BRIDGE_CLI_URL = exports.BRIDGE_CLI_EXECUTABLE_FILE_NOT_FOUND = exports.BRIDGE_CLI_VERSION_NOT_FOUND = exports.MISSING_AZURE_TOKEN_FOR_FIX_PR_AND_PR_COMMENT = exports.BLACKDUCKSCA_SECURITY_SCAN_AZURE_DEVOPS_DOCS_URL = exports.DEFAULT_AZURE_API_URL = exports.MIN_SUPPORTED_BRIDGE_CLI_MAC_ARM_VERSION = exports.DARWIN = exports.LINUX = exports.WIN32 = exports.MAC_INTEL_PLATFORM = exports.MAC_ARM_PLATFORM = exports.LINUX_PLATFORM = exports.WINDOWS_PLATFORM = exports.NON_RETRY_HTTP_CODES = exports.RETRY_COUNT = exports.RETRY_DELAY_IN_MILLISECONDS = exports.SARIF_UPLOAD_FOLDER_ARTIFACT_NAME = exports.DEFAULT_POLARIS_SARIF_GENERATOR_DIRECTORY = exports.DEFAULT_BLACKDUCK_SARIF_GENERATOR_DIRECTORY = exports.SARIF_DEFAULT_FILE_NAME = exports.BRIDGE_CLI_LOCAL_DIRECTORY = exports.UPLOAD_FOLDER_ARTIFACT_NAME = exports.BRIDGECLI_INSTALL_DIRECTORY_KEY_CLASSIC_EDITOR = exports.BRIDGECLI_INSTALL_DIRECTORY_KEY = exports.SYNOPSYS_BRIDGE_INSTALL_DIRECTORY_KEY = exports.SRM_MARK_BUILD_STATUS_KEY_CLASSIC_EDITOR = exports.COVERITY_MARK_BUILD_STATUS_KEY_CLASSIC_EDITOR = exports.BLACKDUCKSCA_MARK_BUILD_STATUS_KEY_CLASSIC_EDITOR = exports.POLARIS_MARK_BUILD_STATUS_KEY_CLASSIC_EDITOR = void 0;
+exports.EXIT_CODE_MAP = exports.SARIF_GAS_API_RATE_LIMIT_FOR_ERROR = exports.PROVIDED_BLACKDUCKSCA_FAILURE_SEVERITIES_ERROR = exports.MISSING_BOOLEAN_VALUE_ERROR = exports.INVALID_VALUE_ERROR = exports.BRIDGE_DOWNLOAD_RETRY_ERROR = exports.SCAN_TYPE_REQUIRED_ERROR = exports.BRIDGE_DEFAULT_DIRECTORY_NOT_FOUND_ERROR = exports.BRIDGE_INSTALL_DIRECTORY_NOT_FOUND_ERROR = exports.BRIDGE_EXECUTABLE_NOT_FOUND_ERROR = exports.MARK_THE_BUILD_STATUS = exports.MARK_THE_BUILD_ON_BRIDGE_BREAK = exports.AZURE_PULL_REQUEST_NUMBER_IS_EMPTY = exports.BLACKDUCKSCA_SECURITY_SCAN_COMPLETED = exports.POLARISSCA_SARIF_REPORT_ENABLED = exports.BLACKDUCKSCA_SARIF_REPOST_ENABLED = exports.TASK_RETURN_STATUS = exports.NETWORK_AIR_GAP_ENABLED_SKIP_DOWNLOAD_BRIDGE_CLI = exports.UNABLE_TO_FIND_PULL_REQUEST_INFO = exports.GETTING_ALL_BRIDGE_VERSIONS_RETRY = exports.UNABLE_TO_GET_RECENT_BRIDGE_VERSION = exports.GETTING_LATEST_BRIDGE_VERSIONS_RETRY = exports.ERROR_READING_VERSION_FILE = exports.VERSION_FILE_NOT_FOUND_AT = exports.VERSION_FILE_FOUND_AT = exports.LOOKING_FOR_BRIDGE_CLI_DEFAULT_PATH = exports.LOOKING_FOR_BRIDGE_CLI_INSTALL_DIR = exports.BRIDGE_CLI_FOUND_AT = exports.BRIDGE_CLI_DOWNLOAD_COMPLETED = exports.BRIDGECLI_VERSION = void 0;
 const ErrorCodes_1 = __nccwpck_require__(8936);
 exports.BRIDGE_CLI_DEFAULT_PATH_UNIX = "/bridge-cli-bundle"; //Path will be in home
 exports.BRIDGE_CLI_DEFAULT_PATH_WINDOWS = "\\bridge-cli-bundle";
@@ -342,6 +342,8 @@ exports.FAILED_TO_GET_PULL_REQUEST_INFO = "Failed to get pull request info for c
 exports.SKIP_DOWNLOAD_BRIDGE_CLI_WHEN_VERSION_NOT_FOUND = "Skipping download as same Bridge CLI version found";
 exports.CHECK_LATEST_BRIDGE_CLI_VERSION = "Checking for latest version of Bridge CLI to download and configure";
 exports.DOWNLOADING_BRIDGE_CLI = "Downloading and configuring Bridge CLI";
+exports.EXTRACTING_BRIDGE_CLI_ARCHIVE = "Extracting Bridge CLI archive";
+exports.BRIDGE_CLI_EXTRACTION_COMPLETED = "Extraction of Bridge CLI archive has been completed";
 exports.BRIDGE_CLI_URL_MESSAGE = "Bridge CLI URL is - ";
 exports.BRIDGECLI_VERSION = "Bridge CLI version is - ";
 exports.BRIDGE_CLI_DOWNLOAD_COMPLETED = "Download of Bridge CLI has been completed";
@@ -1323,7 +1325,6 @@ function downloadTool(url, fileName, handlers, additionalHeaders) {
                 tl.debug(fileName);
                 // make sure that the folder exists
                 tl.mkdirP(path.dirname(destPath));
-                tl.debug(tl.loc("TOOL_LIB_Downloading", url));
                 tl.debug("destination " + destPath);
                 if (fs.existsSync(destPath)) {
                     tl.debug("Destination file path already exists");
@@ -2706,15 +2707,16 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.getMappedTaskResult = exports.equalsIgnoreCase = exports.getStatusCode = exports.extractBranchName = exports.isPullRequestEvent = exports.IS_PR_EVENT = exports.filterEmptyData = exports.getDefaultSarifReportPath = exports.sleep = exports.getWorkSpaceDirectory = exports.isBoolean = exports.parseToBoolean = exports.getRemoteFile = exports.extractZipped = exports.getTempDir = exports.cleanUrl = void 0;
+exports.getMappedTaskResult = exports.equalsIgnoreCase = exports.getStatusCode = exports.extractBranchName = exports.isPullRequestEvent = exports.IS_PR_EVENT = exports.filterEmptyData = exports.getDefaultSarifReportPath = exports.sleep = exports.getWorkSpaceDirectory = exports.isBoolean = exports.parseToBoolean = exports.getRemoteFile = exports._getAgentTemp = exports._createExtractFolder = exports.extractZipWithQuiet = exports.extractZipped = exports.getTempDir = exports.cleanUrl = void 0;
 const path_1 = __importDefault(__nccwpck_require__(1017));
+const utility = __importStar(__nccwpck_require__(8383));
 const constants = __importStar(__nccwpck_require__(8673));
 const application_constant_1 = __nccwpck_require__(8673);
-const toolLib = __importStar(__nccwpck_require__(3681));
 const toolLibLocal = __importStar(__nccwpck_require__(240));
 const process = __importStar(__nccwpck_require__(7282));
 const taskLib = __importStar(__nccwpck_require__(347));
 const task_1 = __nccwpck_require__(347);
+const uuid_1 = __nccwpck_require__(5840);
 const azure_1 = __nccwpck_require__(5895);
 const ErrorCodes_1 = __nccwpck_require__(8936);
 const BuildStatus_1 = __nccwpck_require__(6724);
@@ -2739,7 +2741,9 @@ function extractZipped(file, destinationPath) {
             return Promise.reject(new Error(application_constant_1.BRIDGE_CLI_EXTRACT_DIRECTORY_NOT_FOUND.concat(constants.SPACE).concat(ErrorCodes_1.ErrorCode.NO_DESTINATION_DIRECTORY.toString())));
         }
         try {
-            yield toolLib.extractZip(file, destinationPath);
+            console.info(constants.EXTRACTING_BRIDGE_CLI_ARCHIVE);
+            yield utility.extractZipWithQuiet(file, destinationPath);
+            console.info(constants.BRIDGE_CLI_EXTRACTION_COMPLETED);
             return Promise.resolve(true);
         }
         catch (error) {
@@ -2748,6 +2752,50 @@ function extractZipped(file, destinationPath) {
     });
 }
 exports.extractZipped = extractZipped;
+function extractZipWithQuiet(file, destination) {
+    var _a;
+    return __awaiter(this, void 0, void 0, function* () {
+        if (!file) {
+            throw new Error("parameter 'file' is required");
+        }
+        const dest = _createExtractFolder(destination);
+        if (process.platform == "win32") {
+            const escapedFile = file.replace(/'/g, "''").replace(/"|\n|\r/g, "");
+            const escapedDest = dest.replace(/'/g, "''").replace(/"|\n|\r/g, "");
+            const command = `$ErrorActionPreference = 'Stop' ; try { Add-Type -AssemblyName System.IO.Compression.FileSystem } catch { } ; [System.IO.Compression.ZipFile]::ExtractToDirectory('${escapedFile}', '${escapedDest}')`;
+            const chcpPath = path_1.default.join((_a = process.env.windir) !== null && _a !== void 0 ? _a : "", "system32", "chcp.com");
+            yield taskLib.exec(chcpPath, "65001");
+            const powershell = taskLib
+                .tool("powershell")
+                .line("-NoLogo -Sta -NoProfile -NonInteractive -ExecutionPolicy Unrestricted -Command")
+                .arg(command);
+            yield powershell.exec();
+        }
+        else {
+            const unzip = taskLib.tool("unzip").arg("-q").arg(file);
+            yield unzip.exec({ cwd: dest });
+        }
+        return dest;
+    });
+}
+exports.extractZipWithQuiet = extractZipWithQuiet;
+function _createExtractFolder(dest) {
+    if (!dest) {
+        dest = path_1.default.join(_getAgentTemp(), (0, uuid_1.v4)());
+    }
+    taskLib.mkdirP(dest);
+    return dest;
+}
+exports._createExtractFolder = _createExtractFolder;
+function _getAgentTemp() {
+    taskLib.assertAgent("2.115.0");
+    const tempDirectory = taskLib.getVariable("Agent.TempDirectory");
+    if (!tempDirectory) {
+        throw new Error("Agent.TempDirectory is not set");
+    }
+    return tempDirectory;
+}
+exports._getAgentTemp = _getAgentTemp;
 function getRemoteFile(destFilePath, url) {
     return __awaiter(this, void 0, void 0, function* () {
         if (url == null || url.length === 0) {
@@ -3217,9 +3265,8 @@ run().catch((error) => {
 
 "use strict";
 
-var _a, _b;
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.isSigPipeError = exports._exposeCertSettings = exports._exposeProxySettings = exports._normalizeSeparators = exports._isRooted = exports._getDirectoryName = exports._ensureRooted = exports._isUncPath = exports._loadData = exports._ensurePatternRooted = exports._getFindInfoFromPattern = exports._cloneMatchOptions = exports._legacyFindFiles_convertPatternToRegExp = exports._which = exports._checkPath = exports._exist = exports._debug = exports._error = exports._warning = exports._command = exports._getVariableKey = exports._getVariable = exports._loc = exports._setResourcePath = exports._setErrStream = exports._setStdStream = exports._writeLine = exports._truncateBeforeSensitiveKeyword = exports._endsWith = exports._startsWith = exports.IssueAuditAction = exports.IssueSource = exports._vault = exports._knownVariableMap = void 0;
+exports._exposeCertSettings = exports._exposeProxySettings = exports._normalizeSeparators = exports._isRooted = exports._getDirectoryName = exports._ensureRooted = exports._isUncPath = exports._loadData = exports._ensurePatternRooted = exports._getFindInfoFromPattern = exports._cloneMatchOptions = exports._legacyFindFiles_convertPatternToRegExp = exports._which = exports._checkPath = exports._exist = exports._debug = exports._error = exports._warning = exports._command = exports._getVariableKey = exports._getVariable = exports._loc = exports._setResourcePath = exports._setErrStream = exports._setStdStream = exports._writeLine = exports._endsWith = exports._startsWith = exports._vault = exports._knownVariableMap = void 0;
 var fs = __nccwpck_require__(7147);
 var path = __nccwpck_require__(1017);
 var os = __nccwpck_require__(2037);
@@ -3239,26 +3286,12 @@ var crypto = __nccwpck_require__(6113);
  *  3) to know the real variable name and not just the formatted env var name.
  */
 exports._knownVariableMap = {};
-var _commandCorrelationId;
-//-----------------------------------------------------
-// Enums
-//-----------------------------------------------------
-var IssueSource;
-(function (IssueSource) {
-    IssueSource["CustomerScript"] = "CustomerScript";
-    IssueSource["TaskInternal"] = "TaskInternal";
-})(IssueSource = exports.IssueSource || (exports.IssueSource = {}));
-var IssueAuditAction;
-(function (IssueAuditAction) {
-    IssueAuditAction[IssueAuditAction["Unknown"] = 0] = "Unknown";
-    IssueAuditAction[IssueAuditAction["ShellTasksValidation"] = 1] = "ShellTasksValidation";
-})(IssueAuditAction = exports.IssueAuditAction || (exports.IssueAuditAction = {}));
 //-----------------------------------------------------
 // Validation Checks
 //-----------------------------------------------------
 // async await needs generators in node 4.x+
 if (semver.lt(process.versions.node, '4.2.0')) {
-    _warning('Tasks require a new agent.  Upgrade your agent or node to 4.2.0 or later', IssueSource.TaskInternal);
+    _warning('Tasks require a new agent.  Upgrade your agent or node to 4.2.0 or later');
 }
 //-----------------------------------------------------
 // String convenience
@@ -3271,17 +3304,6 @@ function _endsWith(str, end) {
     return str.slice(-end.length) == end;
 }
 exports._endsWith = _endsWith;
-function _truncateBeforeSensitiveKeyword(str, sensitiveKeywordsPattern) {
-    if (!str) {
-        return str;
-    }
-    var index = str.search(sensitiveKeywordsPattern);
-    if (index <= 0) {
-        return str;
-    }
-    return "".concat(str.substring(0, index), "...");
-}
-exports._truncateBeforeSensitiveKeyword = _truncateBeforeSensitiveKeyword;
 //-----------------------------------------------------
 // General Helpers
 //-----------------------------------------------------
@@ -3360,7 +3382,7 @@ function _loadLocStrings(resourceFile, culture) {
         }
     }
     else {
-        _warning('LIB_ResourceFile does not exist', IssueSource.TaskInternal);
+        _warning('LIB_ResourceFile does not exist');
     }
     return locStrings;
 }
@@ -3392,9 +3414,10 @@ function _setResourcePath(path, ignoreWarnings) {
     }
     else {
         if (ignoreWarnings) {
+            _debug(_loc('LIB_ResourceFileAlreadySet', path));
         }
         else {
-            _warning(_loc('LIB_ResourceFileAlreadySet', path), IssueSource.TaskInternal);
+            _warning(_loc('LIB_ResourceFileAlreadySet', path));
         }
     }
 }
@@ -3428,10 +3451,10 @@ function _loc(key) {
     }
     else {
         if (Object.keys(_resourceFiles).length <= 0) {
-            _warning("Resource file haven't been set, can't find loc string for key: ".concat(key), IssueSource.TaskInternal);
+            _warning("Resource file haven't been set, can't find loc string for key: " + key);
         }
         else {
-            _warning("Can't find loc string for key: ".concat(key));
+            _warning("Can't find loc string for key: " + key);
         }
         locString = key;
     }
@@ -3491,33 +3514,16 @@ function _command(command, properties, message) {
     _writeLine(taskCmd.toString());
 }
 exports._command = _command;
-function _warning(message, source, auditAction) {
-    if (source === void 0) { source = IssueSource.TaskInternal; }
-    _command('task.issue', {
-        'type': 'warning',
-        'source': source,
-        'correlationId': _commandCorrelationId,
-        'auditAction': auditAction
-    }, message);
+function _warning(message) {
+    _command('task.issue', { 'type': 'warning' }, message);
 }
 exports._warning = _warning;
-function _error(message, source, auditAction) {
-    if (source === void 0) { source = IssueSource.TaskInternal; }
-    _command('task.issue', {
-        'type': 'error',
-        'source': source,
-        'correlationId': _commandCorrelationId,
-        'auditAction': auditAction
-    }, message);
+function _error(message) {
+    _command('task.issue', { 'type': 'error' }, message);
 }
 exports._error = _error;
-var debugMode = ((_a = _getVariable('system.debug')) === null || _a === void 0 ? void 0 : _a.toLowerCase()) === 'true';
-var shouldCheckDebugMode = ((_b = _getVariable('DistributedTask.Tasks.Node.SkipDebugLogsWhenDebugModeOff')) === null || _b === void 0 ? void 0 : _b.toLowerCase()) === 'true';
 function _debug(message) {
-    if (!shouldCheckDebugMode
-        || (shouldCheckDebugMode && debugMode)) {
-        _command('task.debug', null, message);
-    }
+    _command('task.debug', null, message);
 }
 exports._debug = _debug;
 // //-----------------------------------------------------
@@ -3587,7 +3593,7 @@ function _which(tool, check) {
             }
         }
     }
-    _debug("which '".concat(tool, "'"));
+    _debug("which '" + tool + "'");
     try {
         // build the list of extensions to try
         var extensions = [];
@@ -3603,7 +3609,7 @@ function _which(tool, check) {
         if (_isRooted(tool)) {
             var filePath = _tryGetExecutablePath(tool, extensions);
             if (filePath) {
-                _debug("found: '".concat(filePath, "'"));
+                _debug("found: '" + filePath + "'");
                 return filePath;
             }
             _debug('not found');
@@ -3634,7 +3640,7 @@ function _which(tool, check) {
             var directory = directories_1[_d];
             var filePath = _tryGetExecutablePath(directory + path.sep + tool, extensions);
             if (filePath) {
-                _debug("found: '".concat(filePath, "'"));
+                _debug("found: '" + filePath + "'");
                 return filePath;
             }
         }
@@ -3678,7 +3684,7 @@ function _tryGetExecutablePath(filePath, extensions) {
     }
     catch (err) {
         if (err.code != 'ENOENT') {
-            _debug("Unexpected error attempting to determine if executable file exists '".concat(filePath, "': ").concat(err));
+            _debug("Unexpected error attempting to determine if executable file exists '" + filePath + "': " + err);
         }
     }
     // try each extension
@@ -3704,7 +3710,7 @@ function _tryGetExecutablePath(filePath, extensions) {
                         }
                     }
                     catch (err) {
-                        _debug("Unexpected error attempting to determine the actual case of the file '".concat(filePath_1, "': ").concat(err));
+                        _debug("Unexpected error attempting to determine the actual case of the file '" + filePath_1 + "': " + err);
                     }
                     return filePath_1;
                 }
@@ -3717,7 +3723,7 @@ function _tryGetExecutablePath(filePath, extensions) {
         }
         catch (err) {
             if (err.code != 'ENOENT') {
-                _debug("Unexpected error attempting to determine if executable file exists '".concat(filePath_1, "': ").concat(err));
+                _debug("Unexpected error attempting to determine if executable file exists '" + filePath_1 + "': " + err);
             }
         }
     }
@@ -3736,7 +3742,7 @@ function _legacyFindFiles_convertPatternToRegExp(pattern) {
         .replace(/\\\*\\\*/g, '.*') // replace remaining globstars with a wildcard that can span directory separators, e.g. /hello/**dll
         .replace(/\\\*/g, '[^\/]*') // replace asterisks with a wildcard that cannot span directory separators, e.g. /hello/*.dll
         .replace(/\\\?/g, '[^\/]'); // replace single character wildcards, e.g. /hello/log?.dll
-    pattern = "^".concat(pattern, "$");
+    pattern = "^" + pattern + "$";
     var flags = process.platform == 'win32' ? 'i' : '';
     return new RegExp(pattern, flags);
 }
@@ -3902,9 +3908,6 @@ function _loadData() {
         }
     }
     _debug('loaded ' + loaded);
-    var correlationId = process.env["COMMAND_CORRELATION_ID"];
-    delete process.env["COMMAND_CORRELATION_ID"];
-    _commandCorrelationId = correlationId ? String(correlationId) : "";
     // store public variable metadata
     var names;
     try {
@@ -4146,14 +4149,6 @@ function _exposeTaskLibSecret(keyFile, secret) {
         return new Buffer(storageFile).toString('base64') + ':' + new Buffer(encryptedContent).toString('base64');
     }
 }
-function isSigPipeError(e) {
-    var _a;
-    if (!e || typeof e !== 'object') {
-        return false;
-    }
-    return e.code === 'EPIPE' && ((_a = e.syscall) === null || _a === void 0 ? void 0 : _a.toUpperCase()) === 'WRITE';
-}
-exports.isSigPipeError = isSigPipeError;
 
 
 /***/ }),
@@ -5780,8 +5775,7 @@ module.exports = v4;
 "use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.getPlatform = exports.osType = exports.writeFile = exports.exist = exports.stats = exports.debug = exports.error = exports.warning = exports.command = exports.setTaskVariable = exports.getTaskVariable = exports.getSecureFileTicket = exports.getSecureFileName = exports.getEndpointAuthorization = exports.getEndpointAuthorizationParameterRequired = exports.getEndpointAuthorizationParameter = exports.getEndpointAuthorizationSchemeRequired = exports.getEndpointAuthorizationScheme = exports.getEndpointDataParameterRequired = exports.getEndpointDataParameter = exports.getEndpointUrlRequired = exports.getEndpointUrl = exports.getPathInputRequired = exports.getPathInput = exports.filePathSupplied = exports.getDelimitedInput = exports.getPipelineFeature = exports.getBoolFeatureFlag = exports.getBoolInput = exports.getInputRequired = exports.getInput = exports.setSecret = exports.setVariable = exports.getVariables = exports.assertAgent = exports.getVariable = exports.loc = exports.setResourcePath = exports.setSanitizedResult = exports.setResult = exports.setErrStream = exports.setStdStream = exports.AgentHostedMode = exports.Platform = exports.IssueSource = exports.FieldType = exports.ArtifactType = exports.IssueType = exports.TaskState = exports.TaskResult = void 0;
-exports.updateReleaseName = exports.addBuildTag = exports.updateBuildNumber = exports.uploadBuildLog = exports.associateArtifact = exports.uploadArtifact = exports.logIssue = exports.logDetail = exports.setProgress = exports.setEndpoint = exports.addAttachment = exports.uploadSummary = exports.prependPath = exports.uploadFile = exports.CodeCoverageEnabler = exports.CodeCoveragePublisher = exports.TestPublisher = exports.getHttpCertConfiguration = exports.getHttpProxyConfiguration = exports.findMatch = exports.filter = exports.match = exports.tool = exports.execSync = exports.exec = exports.execAsync = exports.rmRF = exports.legacyFindFiles = exports.find = exports.retry = exports.mv = exports.cp = exports.ls = exports.which = exports.resolve = exports.mkdirP = exports.popd = exports.pushd = exports.cd = exports.checkPath = exports.cwd = exports.getAgentMode = exports.getNodeMajorVersion = void 0;
+exports.updateReleaseName = exports.addBuildTag = exports.updateBuildNumber = exports.uploadBuildLog = exports.associateArtifact = exports.uploadArtifact = exports.logIssue = exports.logDetail = exports.setProgress = exports.setEndpoint = exports.addAttachment = exports.uploadSummary = exports.prependPath = exports.uploadFile = exports.CodeCoverageEnabler = exports.CodeCoveragePublisher = exports.TestPublisher = exports.getHttpCertConfiguration = exports.getHttpProxyConfiguration = exports.findMatch = exports.filter = exports.match = exports.tool = exports.execSync = exports.exec = exports.rmRF = exports.legacyFindFiles = exports.find = exports.retry = exports.mv = exports.cp = exports.ls = exports.which = exports.resolve = exports.mkdirP = exports.popd = exports.pushd = exports.cd = exports.checkPath = exports.cwd = exports.getAgentMode = exports.getPlatform = exports.osType = exports.writeFile = exports.exist = exports.stats = exports.debug = exports.error = exports.warning = exports.command = exports.setTaskVariable = exports.getTaskVariable = exports.getSecureFileTicket = exports.getSecureFileName = exports.getEndpointAuthorization = exports.getEndpointAuthorizationParameterRequired = exports.getEndpointAuthorizationParameter = exports.getEndpointAuthorizationSchemeRequired = exports.getEndpointAuthorizationScheme = exports.getEndpointDataParameterRequired = exports.getEndpointDataParameter = exports.getEndpointUrlRequired = exports.getEndpointUrl = exports.getPathInputRequired = exports.getPathInput = exports.filePathSupplied = exports.getDelimitedInput = exports.getBoolInput = exports.getInputRequired = exports.getInput = exports.setSecret = exports.setVariable = exports.getVariables = exports.assertAgent = exports.getVariable = exports.loc = exports.setResourcePath = exports.setResult = exports.setErrStream = exports.setStdStream = exports.AgentHostedMode = exports.Platform = exports.FieldType = exports.ArtifactType = exports.IssueType = exports.TaskState = exports.TaskResult = void 0;
 var shell = __nccwpck_require__(3516);
 var childProcess = __nccwpck_require__(2081);
 var fs = __nccwpck_require__(7147);
@@ -5826,7 +5820,6 @@ var FieldType;
     FieldType[FieldType["DataParameter"] = 1] = "DataParameter";
     FieldType[FieldType["Url"] = 2] = "Url";
 })(FieldType = exports.FieldType || (exports.FieldType = {}));
-exports.IssueSource = im.IssueSource;
 /** Platforms supported by our build agent */
 var Platform;
 (function (Platform) {
@@ -5845,48 +5838,45 @@ var AgentHostedMode;
 //-----------------------------------------------------
 exports.setStdStream = im._setStdStream;
 exports.setErrStream = im._setErrStream;
+//-----------------------------------------------------
+// Results
+//-----------------------------------------------------
+/**
+ * Sets the result of the task.
+ * Execution will continue.
+ * If not set, task will be Succeeded.
+ * If multiple calls are made to setResult the most pessimistic call wins (Failed) regardless of the order of calls.
+ *
+ * @param result    TaskResult enum of Succeeded, SucceededWithIssues, Failed, Cancelled or Skipped.
+ * @param message   A message which will be logged as an error issue if the result is Failed.
+ * @param done      Optional. Instructs the agent the task is done. This is helpful when child processes
+ *                  may still be running and prevent node from fully exiting. This argument is supported
+ *                  from agent version 2.142.0 or higher (otherwise will no-op).
+ * @returns         void
+ */
 function setResult(result, message, done) {
-    (0, exports.debug)('task result: ' + TaskResult[result]);
+    exports.debug('task result: ' + TaskResult[result]);
     // add an error issue
     if (result == TaskResult.Failed && message) {
-        (0, exports.error)(message, exports.IssueSource.TaskInternal);
+        exports.error(message);
     }
     else if (result == TaskResult.SucceededWithIssues && message) {
-        (0, exports.warning)(message, exports.IssueSource.TaskInternal);
+        exports.warning(message);
     }
     // task.complete
     var properties = { 'result': TaskResult[result] };
     if (done) {
         properties['done'] = 'true';
     }
-    (0, exports.command)('task.complete', properties, message);
+    exports.command('task.complete', properties, message);
 }
 exports.setResult = setResult;
-/**
- * Sets the result of the task with sanitized message.
- *
- * @param result    TaskResult enum of Succeeded, SucceededWithIssues, Failed, Cancelled or Skipped.
- * @param message   A message which will be logged as an error issue if the result is Failed. Message will be truncated
- *                  before first occurence of wellknown sensitive keyword.
- * @param done      Optional. Instructs the agent the task is done. This is helpful when child processes
- *                  may still be running and prevent node from fully exiting. This argument is supported
- *                  from agent version 2.142.0 or higher (otherwise will no-op).
- * @returns         void
- */
-function setSanitizedResult(result, message, done) {
-    var pattern = /password|key|secret|bearer|authorization|token|pat/i;
-    var sanitizedMessage = im._truncateBeforeSensitiveKeyword(message, pattern);
-    setResult(result, sanitizedMessage, done);
-}
-exports.setSanitizedResult = setSanitizedResult;
 //
 // Catching all exceptions
 //
 process.on('uncaughtException', function (err) {
-    if (!im.isSigPipeError(err)) {
-        setResult(TaskResult.Failed, (0, exports.loc)('LIB_UnhandledEx', err.message));
-        (0, exports.error)(String(err.stack), im.IssueSource.TaskInternal);
-    }
+    setResult(TaskResult.Failed, exports.loc('LIB_UnhandledEx', err.message));
+    exports.error(String(err.stack));
 });
 //
 // Catching unhandled rejections from promises and rethrowing them as exceptions
@@ -5920,9 +5910,9 @@ function assertAgent(minimum) {
     if (semver.lt(minimum, '2.104.1')) {
         throw new Error('assertAgent() requires the parameter to be 2.104.1 or higher');
     }
-    var agent = (0, exports.getVariable)('Agent.Version');
+    var agent = exports.getVariable('Agent.Version');
     if (agent && semver.lt(agent, minimum)) {
-        throw new Error("Agent version ".concat(minimum, " or higher is required"));
+        throw new Error("Agent version " + minimum + " or higher is required");
     }
 }
 exports.assertAgent = assertAgent;
@@ -5943,7 +5933,7 @@ function getVariables() {
     return Object.keys(im._knownVariableMap)
         .map(function (key) {
         var info = im._knownVariableMap[key];
-        return { name: info.name, value: (0, exports.getVariable)(info.name), secret: info.secret };
+        return { name: info.name, value: exports.getVariable(info.name), secret: info.secret };
     });
 }
 exports.getVariables = getVariables;
@@ -5966,10 +5956,10 @@ function setVariable(name, val, secret, isOutput) {
     }
     // store the value
     var varValue = val || '';
-    (0, exports.debug)('set ' + name + '=' + (secret && varValue ? '********' : varValue));
+    exports.debug('set ' + name + '=' + (secret && varValue ? '********' : varValue));
     if (secret) {
-        if (varValue && varValue.match(/\r|\n/) && "".concat(process.env['SYSTEM_UNSAFEALLOWMULTILINESECRET']).toUpperCase() != 'TRUE') {
-            throw new Error((0, exports.loc)('LIB_MultilineSecret'));
+        if (varValue && varValue.match(/\r|\n/) && ("" + process.env['SYSTEM_UNSAFEALLOWMULTILINESECRET']).toUpperCase() != 'TRUE') {
+            throw new Error(exports.loc('LIB_MultilineSecret'));
         }
         im._vault.storeSecret('SECRET_' + key, varValue);
         delete process.env[key];
@@ -5980,7 +5970,7 @@ function setVariable(name, val, secret, isOutput) {
     // store the metadata
     im._knownVariableMap[key] = { name: name, secret: secret };
     // write the setvariable command
-    (0, exports.command)('task.setvariable', { 'variable': name || '', isOutput: (isOutput || false).toString(), 'issecret': (secret || false).toString() }, varValue);
+    exports.command('task.setvariable', { 'variable': name || '', isOutput: (isOutput || false).toString(), 'issecret': (secret || false).toString() }, varValue);
 }
 exports.setVariable = setVariable;
 /**
@@ -5990,10 +5980,10 @@ exports.setVariable = setVariable;
  */
 function setSecret(val) {
     if (val) {
-        if (val.match(/\r|\n/) && "".concat(process.env['SYSTEM_UNSAFEALLOWMULTILINESECRET']).toUpperCase() !== 'TRUE') {
-            throw new Error((0, exports.loc)('LIB_MultilineSecret'));
+        if (val.match(/\r|\n/) && ("" + process.env['SYSTEM_UNSAFEALLOWMULTILINESECRET']).toUpperCase() !== 'TRUE') {
+            throw new Error(exports.loc('LIB_MultilineSecret'));
         }
-        (0, exports.command)('task.setsecret', {}, val);
+        exports.command('task.setsecret', {}, val);
     }
 }
 exports.setSecret = setSecret;
@@ -6008,9 +5998,9 @@ exports.setSecret = setSecret;
 function getInput(name, required) {
     var inval = im._vault.retrieveSecret('INPUT_' + im._getVariableKey(name));
     if (required && !inval) {
-        throw new Error((0, exports.loc)('LIB_InputRequired', name));
+        throw new Error(exports.loc('LIB_InputRequired', name));
     }
-    (0, exports.debug)(name + '=' + inval);
+    exports.debug(name + '=' + inval);
     return inval;
 }
 exports.getInput = getInput;
@@ -6038,43 +6028,6 @@ function getBoolInput(name, required) {
     return (getInput(name, required) || '').toUpperCase() == "TRUE";
 }
 exports.getBoolInput = getBoolInput;
-/**
- * Gets the value of an feature flag and converts to a bool.
- * @IMPORTANT This method is only for internal Microsoft development. Do not use it for external tasks.
- * @param     name     name of the feature flag to get.
- * @param     defaultValue default value of the feature flag in case it's not found in env. (optional. Default value = false)
- * @returns   boolean
- * @deprecated Don't use this for new development. Use getPipelineFeature instead.
- */
-function getBoolFeatureFlag(ffName, defaultValue) {
-    if (defaultValue === void 0) { defaultValue = false; }
-    var ffValue = process.env[ffName];
-    if (!ffValue) {
-        (0, exports.debug)("Feature flag ".concat(ffName, " not found. Returning ").concat(defaultValue, " as default."));
-        return defaultValue;
-    }
-    (0, exports.debug)("Feature flag ".concat(ffName, " = ").concat(ffValue));
-    return ffValue.toLowerCase() === "true";
-}
-exports.getBoolFeatureFlag = getBoolFeatureFlag;
-/**
- * Gets the value of an task feature and converts to a bool.
- * @IMPORTANT This method is only for internal Microsoft development. Do not use it for external tasks.
- * @param     name     name of the feature to get.
- * @returns   boolean
- */
-function getPipelineFeature(featureName) {
-    var variableName = im._getVariableKey("DistributedTask.Tasks.".concat(featureName));
-    var featureValue = process.env[variableName];
-    if (!featureValue) {
-        (0, exports.debug)("Feature '".concat(featureName, "' not found. Returning false as default."));
-        return false;
-    }
-    var boolValue = featureValue.toLowerCase() === "true";
-    (0, exports.debug)("Feature '".concat(featureName, "' = '").concat(featureValue, "'. Processed as '").concat(boolValue, "'."));
-    return boolValue;
-}
-exports.getPipelineFeature = getPipelineFeature;
 /**
  * Gets the value of an input and splits the value using a delimiter (space, comma, etc).
  * Empty values are removed.  This function is useful for splitting an input containing a simple
@@ -6113,9 +6066,9 @@ exports.getDelimitedInput = getDelimitedInput;
 function filePathSupplied(name) {
     // normalize paths
     var pathValue = this.resolve(this.getPathInput(name) || '');
-    var repoRoot = this.resolve((0, exports.getVariable)('build.sourcesDirectory') || (0, exports.getVariable)('system.defaultWorkingDirectory') || '');
+    var repoRoot = this.resolve(exports.getVariable('build.sourcesDirectory') || exports.getVariable('system.defaultWorkingDirectory') || '');
     var supplied = pathValue !== repoRoot;
-    (0, exports.debug)(name + 'path supplied :' + supplied);
+    exports.debug(name + 'path supplied :' + supplied);
     return supplied;
 }
 exports.filePathSupplied = filePathSupplied;
@@ -6134,7 +6087,7 @@ function getPathInput(name, required, check) {
     var inval = getInput(name, required);
     if (inval) {
         if (check) {
-            (0, exports.checkPath)(inval, name);
+            exports.checkPath(inval, name);
         }
     }
     return inval;
@@ -6168,9 +6121,9 @@ exports.getPathInputRequired = getPathInputRequired;
 function getEndpointUrl(id, optional) {
     var urlval = process.env['ENDPOINT_URL_' + id];
     if (!optional && !urlval) {
-        throw new Error((0, exports.loc)('LIB_EndpointNotExist', id));
+        throw new Error(exports.loc('LIB_EndpointNotExist', id));
     }
-    (0, exports.debug)(id + '=' + urlval);
+    exports.debug(id + '=' + urlval);
     return urlval;
 }
 exports.getEndpointUrl = getEndpointUrl;
@@ -6197,9 +6150,9 @@ exports.getEndpointUrlRequired = getEndpointUrlRequired;
 function getEndpointDataParameter(id, key, optional) {
     var dataParamVal = process.env['ENDPOINT_DATA_' + id + '_' + key.toUpperCase()];
     if (!optional && !dataParamVal) {
-        throw new Error((0, exports.loc)('LIB_EndpointDataNotExist', id, key));
+        throw new Error(exports.loc('LIB_EndpointDataNotExist', id, key));
     }
-    (0, exports.debug)(id + ' data ' + key + ' = ' + dataParamVal);
+    exports.debug(id + ' data ' + key + ' = ' + dataParamVal);
     return dataParamVal;
 }
 exports.getEndpointDataParameter = getEndpointDataParameter;
@@ -6226,9 +6179,9 @@ exports.getEndpointDataParameterRequired = getEndpointDataParameterRequired;
 function getEndpointAuthorizationScheme(id, optional) {
     var authScheme = im._vault.retrieveSecret('ENDPOINT_AUTH_SCHEME_' + id);
     if (!optional && !authScheme) {
-        throw new Error((0, exports.loc)('LIB_EndpointAuthNotExist', id));
+        throw new Error(exports.loc('LIB_EndpointAuthNotExist', id));
     }
-    (0, exports.debug)(id + ' auth scheme = ' + authScheme);
+    exports.debug(id + ' auth scheme = ' + authScheme);
     return authScheme;
 }
 exports.getEndpointAuthorizationScheme = getEndpointAuthorizationScheme;
@@ -6255,9 +6208,9 @@ exports.getEndpointAuthorizationSchemeRequired = getEndpointAuthorizationSchemeR
 function getEndpointAuthorizationParameter(id, key, optional) {
     var authParam = im._vault.retrieveSecret('ENDPOINT_AUTH_PARAMETER_' + id + '_' + key.toUpperCase());
     if (!optional && !authParam) {
-        throw new Error((0, exports.loc)('LIB_EndpointAuthNotExist', id));
+        throw new Error(exports.loc('LIB_EndpointAuthNotExist', id));
     }
-    (0, exports.debug)(id + ' auth param ' + key + ' = ' + authParam);
+    exports.debug(id + ' auth param ' + key + ' = ' + authParam);
     return authParam;
 }
 exports.getEndpointAuthorizationParameter = getEndpointAuthorizationParameter;
@@ -6284,9 +6237,9 @@ exports.getEndpointAuthorizationParameterRequired = getEndpointAuthorizationPara
 function getEndpointAuthorization(id, optional) {
     var aval = im._vault.retrieveSecret('ENDPOINT_AUTH_' + id);
     if (!optional && !aval) {
-        setResult(TaskResult.Failed, (0, exports.loc)('LIB_EndpointAuthNotExist', id));
+        setResult(TaskResult.Failed, exports.loc('LIB_EndpointAuthNotExist', id));
     }
-    (0, exports.debug)(id + ' exists ' + (!!aval));
+    exports.debug(id + ' exists ' + (!!aval));
     var auth;
     try {
         if (aval) {
@@ -6294,7 +6247,7 @@ function getEndpointAuthorization(id, optional) {
         }
     }
     catch (err) {
-        throw new Error((0, exports.loc)('LIB_InvalidEndpointAuth', aval));
+        throw new Error(exports.loc('LIB_InvalidEndpointAuth', aval));
     }
     return auth;
 }
@@ -6310,7 +6263,7 @@ exports.getEndpointAuthorization = getEndpointAuthorization;
  */
 function getSecureFileName(id) {
     var name = process.env['SECUREFILE_NAME_' + id];
-    (0, exports.debug)('secure file name for id ' + id + ' = ' + name);
+    exports.debug('secure file name for id ' + id + ' = ' + name);
     return name;
 }
 exports.getSecureFileName = getSecureFileName;
@@ -6322,7 +6275,7 @@ exports.getSecureFileName = getSecureFileName;
   */
 function getSecureFileTicket(id) {
     var ticket = im._vault.retrieveSecret('SECUREFILE_TICKET_' + id);
-    (0, exports.debug)('secure file ticket for id ' + id + ' = ' + ticket);
+    exports.debug('secure file ticket for id ' + id + ' = ' + ticket);
     return ticket;
 }
 exports.getSecureFileTicket = getSecureFileTicket;
@@ -6342,7 +6295,7 @@ function getTaskVariable(name) {
     if (inval) {
         inval = inval.trim();
     }
-    (0, exports.debug)('task variable: ' + name + '=' + inval);
+    exports.debug('task variable: ' + name + '=' + inval);
     return inval;
 }
 exports.getTaskVariable = getTaskVariable;
@@ -6361,11 +6314,11 @@ function setTaskVariable(name, val, secret) {
     var key = im._getVariableKey(name);
     // store the value
     var varValue = val || '';
-    (0, exports.debug)('set task variable: ' + name + '=' + (secret && varValue ? '********' : varValue));
+    exports.debug('set task variable: ' + name + '=' + (secret && varValue ? '********' : varValue));
     im._vault.storeSecret('VSTS_TASKVARIABLE_' + key, varValue);
     delete process.env[key];
     // write the command
-    (0, exports.command)('task.settaskvariable', { 'variable': name || '', 'issecret': (secret || false).toString() }, varValue);
+    exports.command('task.settaskvariable', { 'variable': name || '', 'issecret': (secret || false).toString() }, varValue);
 }
 exports.setTaskVariable = setTaskVariable;
 //-----------------------------------------------------
@@ -6381,9 +6334,9 @@ exports.debug = im._debug;
 function _checkShell(cmd, continueOnError) {
     var se = shell.error();
     if (se) {
-        (0, exports.debug)(cmd + ' failed');
-        var errMsg = (0, exports.loc)('LIB_OperationFailed', cmd, se);
-        (0, exports.debug)(errMsg);
+        exports.debug(cmd + ' failed');
+        var errMsg = exports.loc('LIB_OperationFailed', cmd, se);
+        exports.debug(errMsg);
         if (!continueOnError) {
             throw new Error(errMsg);
         }
@@ -6432,33 +6385,16 @@ function getPlatform() {
         case 'win32': return Platform.Windows;
         case 'darwin': return Platform.MacOS;
         case 'linux': return Platform.Linux;
-        default: throw Error((0, exports.loc)('LIB_PlatformNotSupported', process.platform));
+        default: throw Error(exports.loc('LIB_PlatformNotSupported', process.platform));
     }
 }
 exports.getPlatform = getPlatform;
-/**
- * Resolves major version of Node.js engine used by the agent.
- * @returns {Number} Node's major version.
- */
-function getNodeMajorVersion() {
-    var _a;
-    var version = (_a = process === null || process === void 0 ? void 0 : process.versions) === null || _a === void 0 ? void 0 : _a.node;
-    if (!version) {
-        throw new Error((0, exports.loc)('LIB_UndefinedNodeVersion'));
-    }
-    var parts = version.split('.').map(Number);
-    if (parts.length < 1) {
-        return NaN;
-    }
-    return parts[0];
-}
-exports.getNodeMajorVersion = getNodeMajorVersion;
 /**
  * Return hosted type of Agent
  * @returns {AgentHostedMode}
  */
 function getAgentMode() {
-    var agentCloudId = (0, exports.getVariable)('Agent.CloudId');
+    var agentCloudId = exports.getVariable('Agent.CloudId');
     if (agentCloudId === undefined)
         return AgentHostedMode.Unknown;
     if (agentCloudId)
@@ -6520,20 +6456,20 @@ exports.popd = popd;
  */
 function mkdirP(p) {
     if (!p) {
-        throw new Error((0, exports.loc)('LIB_ParameterIsRequired', 'p'));
+        throw new Error(exports.loc('LIB_ParameterIsRequired', 'p'));
     }
     // build a stack of directories to create
     var stack = [];
     var testDir = p;
     while (true) {
         // validate the loop is not out of control
-        if (stack.length >= Number(process.env['TASKLIB_TEST_MKDIRP_FAILSAFE'] || 1000)) {
+        if (stack.length >= (process.env['TASKLIB_TEST_MKDIRP_FAILSAFE'] || 1000)) {
             // let the framework throw
-            (0, exports.debug)('loop is out of control');
+            exports.debug('loop is out of control');
             fs.mkdirSync(p);
             return;
         }
-        (0, exports.debug)("testing directory '".concat(testDir, "'"));
+        exports.debug("testing directory '" + testDir + "'");
         var stats_1 = void 0;
         try {
             stats_1 = fs.statSync(testDir);
@@ -6543,7 +6479,7 @@ function mkdirP(p) {
                 // validate the directory is not the drive root
                 var parentDir = path.dirname(testDir);
                 if (testDir == parentDir) {
-                    throw new Error((0, exports.loc)('LIB_MkdirFailedInvalidDriveRoot', p, testDir)); // Unable to create directory '{p}'. Root directory does not exist: '{testDir}'
+                    throw new Error(exports.loc('LIB_MkdirFailedInvalidDriveRoot', p, testDir)); // Unable to create directory '{p}'. Root directory does not exist: '{testDir}'
                 }
                 // push the dir and test the parent
                 stack.push(testDir);
@@ -6551,14 +6487,14 @@ function mkdirP(p) {
                 continue;
             }
             else if (err.code == 'UNKNOWN') {
-                throw new Error((0, exports.loc)('LIB_MkdirFailedInvalidShare', p, testDir)); // Unable to create directory '{p}'. Unable to verify the directory exists: '{testDir}'. If directory is a file share, please verify the share name is correct, the share is online, and the current process has permission to access the share.
+                throw new Error(exports.loc('LIB_MkdirFailedInvalidShare', p, testDir)); // Unable to create directory '{p}'. Unable to verify the directory exists: '{testDir}'. If directory is a file share, please verify the share name is correct, the share is online, and the current process has permission to access the share.
             }
             else {
                 throw err;
             }
         }
         if (!stats_1.isDirectory()) {
-            throw new Error((0, exports.loc)('LIB_MkdirFailedFileExists', p, testDir)); // Unable to create directory '{p}'. Conflicting file exists: '{testDir}'
+            throw new Error(exports.loc('LIB_MkdirFailedFileExists', p, testDir)); // Unable to create directory '{p}'. Conflicting file exists: '{testDir}'
         }
         // testDir exists
         break;
@@ -6566,12 +6502,12 @@ function mkdirP(p) {
     // create each directory
     while (stack.length) {
         var dir = stack.pop(); // non-null because `stack.length` was truthy
-        (0, exports.debug)("mkdir '".concat(dir, "'"));
+        exports.debug("mkdir '" + dir + "'");
         try {
             fs.mkdirSync(dir);
         }
         catch (err) {
-            throw new Error((0, exports.loc)('LIB_MkdirFailed', p, err.message)); // Unable to create directory '{p}'. {err.message}
+            throw new Error(exports.loc('LIB_MkdirFailed', p, err.message)); // Unable to create directory '{p}'. {err.message}
         }
     }
 }
@@ -6589,7 +6525,7 @@ function resolve() {
         pathSegments[_i] = arguments[_i];
     }
     var absolutePath = path.resolve.apply(this, pathSegments);
-    (0, exports.debug)('Absolute path for pathSegments: ' + pathSegments + ' = ' + absolutePath);
+    exports.debug('Absolute path for pathSegments: ' + pathSegments + ' = ' + absolutePath);
     return absolutePath;
 }
 exports.resolve = resolve;
@@ -6634,7 +6570,7 @@ function cp(source, dest, options, continueOnError, retryCount) {
         catch (e) {
             if (retryCount <= 0) {
                 if (continueOnError) {
-                    (0, exports.warning)(e, exports.IssueSource.TaskInternal);
+                    exports.warning(e);
                     break;
                 }
                 else {
@@ -6642,7 +6578,7 @@ function cp(source, dest, options, continueOnError, retryCount) {
                 }
             }
             else {
-                console.log((0, exports.loc)('LIB_CopyFileFailed', retryCount));
+                console.log(exports.loc('LIB_CopyFileFailed', retryCount));
                 retryCount--;
             }
         }
@@ -6684,7 +6620,7 @@ function retry(func, args, retryOptions) {
         catch (e) {
             if (retryOptions.retryCount <= 0) {
                 if (retryOptions.continueOnError) {
-                    (0, exports.warning)(e, exports.IssueSource.TaskInternal);
+                    exports.warning(e);
                     break;
                 }
                 else {
@@ -6692,7 +6628,7 @@ function retry(func, args, retryOptions) {
                 }
             }
             else {
-                (0, exports.debug)("Attempt to execute function \"".concat(func === null || func === void 0 ? void 0 : func.name, "\" failed, retries left: ").concat(retryOptions.retryCount));
+                exports.debug("Attempt to execute function \"" + (func === null || func === void 0 ? void 0 : func.name) + "\" failed, retries left: " + retryOptions.retryCount);
                 retryOptions.retryCount--;
             }
         }
@@ -6720,7 +6656,7 @@ function _getStats(path, followSymbolicLink, allowBrokenSymbolicLinks) {
             if (err.code == 'ENOENT' && allowBrokenSymbolicLinks) {
                 // fallback to lstat (broken symlinks allowed)
                 stats = fs.lstatSync(path);
-                (0, exports.debug)("  ".concat(path, " (broken symlink)"));
+                exports.debug("  " + path + " (broken symlink)");
             }
             else {
                 throw err;
@@ -6742,14 +6678,14 @@ function _getStats(path, followSymbolicLink, allowBrokenSymbolicLinks) {
  */
 function find(findPath, options) {
     if (!findPath) {
-        (0, exports.debug)('no path specified');
+        exports.debug('no path specified');
         return [];
     }
     // normalize the path, otherwise the first result is inconsistently formatted from the rest of the results
     // because path.join() performs normalization.
     findPath = path.normalize(findPath);
     // debug trace the parameters
-    (0, exports.debug)("findPath: '".concat(findPath, "'"));
+    exports.debug("findPath: '" + findPath + "'");
     options = options || _getDefaultFindOptions();
     _debugFindOptions(options);
     // return empty if not exists
@@ -6758,7 +6694,7 @@ function find(findPath, options) {
     }
     catch (err) {
         if (err.code == 'ENOENT') {
-            (0, exports.debug)('0 results');
+            exports.debug('0 results');
             return [];
         }
         throw err;
@@ -6784,7 +6720,7 @@ function find(findPath, options) {
             }
             catch (err) {
                 if (err.code == 'ENOENT' && options.skipMissingFiles) {
-                    (0, exports.warning)("No such file or directory: \"".concat(item.path, "\" - skipping."), exports.IssueSource.TaskInternal);
+                    exports.warning("No such file or directory: \"" + item.path + "\" - skipping.");
                     return "continue";
                 }
                 throw err;
@@ -6792,7 +6728,7 @@ function find(findPath, options) {
             result.push(item.path);
             // note, isDirectory() returns false for the lstat of a symlink
             if (stats_2.isDirectory()) {
-                (0, exports.debug)("  ".concat(item.path, " (directory)"));
+                exports.debug("  " + item.path + " (directory)");
                 if (options.followSymbolicLinks) {
                     // get the realpath
                     var realPath_1;
@@ -6809,7 +6745,7 @@ function find(findPath, options) {
                     }
                     // test for a cycle
                     if (traversalChain.some(function (x) { return x == realPath_1; })) {
-                        (0, exports.debug)('    cycle detected');
+                        exports.debug('    cycle detected');
                         return "continue";
                     }
                     // update the traversal chain
@@ -6824,17 +6760,17 @@ function find(findPath, options) {
                 }
             }
             else {
-                (0, exports.debug)("  ".concat(item.path, " (file)"));
+                exports.debug("  " + item.path + " (file)");
             }
         };
         while (stack.length) {
             _loop_1();
         }
-        (0, exports.debug)("".concat(result.length, " results"));
+        exports.debug(result.length + " results");
         return result;
     }
     catch (err) {
-        throw new Error((0, exports.loc)('LIB_OperationFailed', 'find', err.message));
+        throw new Error(exports.loc('LIB_OperationFailed', 'find', err.message));
     }
 }
 exports.find = find;
@@ -6846,10 +6782,10 @@ var _FindItem = /** @class */ (function () {
     return _FindItem;
 }());
 function _debugFindOptions(options) {
-    (0, exports.debug)("findOptions.allowBrokenSymbolicLinks: '".concat(options.allowBrokenSymbolicLinks, "'"));
-    (0, exports.debug)("findOptions.followSpecifiedSymbolicLink: '".concat(options.followSpecifiedSymbolicLink, "'"));
-    (0, exports.debug)("findOptions.followSymbolicLinks: '".concat(options.followSymbolicLinks, "'"));
-    (0, exports.debug)("findOptions.skipMissingFiles: '".concat(options.skipMissingFiles, "'"));
+    exports.debug("findOptions.allowBrokenSymbolicLinks: '" + options.allowBrokenSymbolicLinks + "'");
+    exports.debug("findOptions.followSpecifiedSymbolicLink: '" + options.followSpecifiedSymbolicLink + "'");
+    exports.debug("findOptions.followSymbolicLinks: '" + options.followSymbolicLinks + "'");
+    exports.debug("findOptions.skipMissingFiles: '" + options.skipMissingFiles + "'");
 }
 function _getDefaultFindOptions() {
     return {
@@ -6873,10 +6809,10 @@ function legacyFindFiles(rootDirectory, pattern, includeFiles, includeDirectorie
     if (!pattern) {
         throw new Error('pattern parameter cannot be empty');
     }
-    (0, exports.debug)("legacyFindFiles rootDirectory: '".concat(rootDirectory, "'"));
-    (0, exports.debug)("pattern: '".concat(pattern, "'"));
-    (0, exports.debug)("includeFiles: '".concat(includeFiles, "'"));
-    (0, exports.debug)("includeDirectories: '".concat(includeDirectories, "'"));
+    exports.debug("legacyFindFiles rootDirectory: '" + rootDirectory + "'");
+    exports.debug("pattern: '" + pattern + "'");
+    exports.debug("includeFiles: '" + includeFiles + "'");
+    exports.debug("includeDirectories: '" + includeDirectories + "'");
     if (!includeFiles && !includeDirectories) {
         includeFiles = true;
     }
@@ -6907,7 +6843,7 @@ function legacyFindFiles(rootDirectory, pattern, includeFiles, includeDirectorie
         }
         // validate pattern does not end with a slash
         if (im._endsWith(pat, '/') || (process.platform == 'win32' && im._endsWith(pat, '\\'))) {
-            throw new Error((0, exports.loc)('LIB_InvalidPattern', pat));
+            throw new Error(exports.loc('LIB_InvalidPattern', pat));
         }
         // root the pattern
         if (rootDirectory && !path.isAbsolute(pat)) {
@@ -6929,27 +6865,27 @@ function legacyFindFiles(rootDirectory, pattern, includeFiles, includeDirectorie
     // find and apply patterns
     var count = 0;
     var result = _legacyFindFiles_getMatchingItems(includePatterns, excludePatterns, !!includeFiles, !!includeDirectories);
-    (0, exports.debug)('all matches:');
+    exports.debug('all matches:');
     for (var _b = 0, result_1 = result; _b < result_1.length; _b++) {
         var resultItem = result_1[_b];
-        (0, exports.debug)(' ' + resultItem);
+        exports.debug(' ' + resultItem);
     }
-    (0, exports.debug)('total matched: ' + result.length);
+    exports.debug('total matched: ' + result.length);
     return result;
 }
 exports.legacyFindFiles = legacyFindFiles;
 function _legacyFindFiles_getMatchingItems(includePatterns, excludePatterns, includeFiles, includeDirectories) {
-    (0, exports.debug)('getMatchingItems()');
+    exports.debug('getMatchingItems()');
     for (var _i = 0, includePatterns_1 = includePatterns; _i < includePatterns_1.length; _i++) {
         var pattern = includePatterns_1[_i];
-        (0, exports.debug)("includePattern: '".concat(pattern, "'"));
+        exports.debug("includePattern: '" + pattern + "'");
     }
     for (var _a = 0, excludePatterns_1 = excludePatterns; _a < excludePatterns_1.length; _a++) {
         var pattern = excludePatterns_1[_a];
-        (0, exports.debug)("excludePattern: ".concat(pattern));
+        exports.debug("excludePattern: " + pattern);
     }
-    (0, exports.debug)('includeFiles: ' + includeFiles);
-    (0, exports.debug)('includeDirectories: ' + includeDirectories);
+    exports.debug('includeFiles: ' + includeFiles);
+    exports.debug('includeDirectories: ' + includeDirectories);
     var allFiles = {};
     var _loop_2 = function (pattern) {
         // determine the directory to search
@@ -6992,7 +6928,7 @@ function _legacyFindFiles_getMatchingItems(includePatterns, excludePatterns, inc
             var normalizedPath = process.platform == 'win32' ? item.replace(/\\/g, '/') : item; // normalize separators
             // **/times/** will not match C:/fun/times because there isn't a trailing slash
             // so try both if including directories
-            var alternatePath = "".concat(normalizedPath, "/"); // potential bug: it looks like this will result in a false
+            var alternatePath = normalizedPath + "/"; // potential bug: it looks like this will result in a false
             // positive if the item is a regular file and not a directory
             var isMatch = false;
             if (patternRegex.test(normalizedPath) || (includeDirectories && patternRegex.test(alternatePath))) {
@@ -7024,25 +6960,25 @@ function _legacyFindFiles_getMatchingItems(includePatterns, excludePatterns, inc
  * @throws    when the file or directory exists but could not be deleted.
  */
 function rmRF(inputPath) {
-    (0, exports.debug)('rm -rf ' + inputPath);
+    exports.debug('rm -rf ' + inputPath);
     if (getPlatform() == Platform.Windows) {
         // Node doesn't provide a delete operation, only an unlink function. This means that if the file is being used by another
         // program (e.g. antivirus), it won't be deleted. To address this, we shell out the work to rd/del.
         try {
             if (fs.statSync(inputPath).isDirectory()) {
-                (0, exports.debug)('removing directory ' + inputPath);
-                childProcess.execSync("rd /s /q \"".concat(inputPath, "\""));
+                exports.debug('removing directory ' + inputPath);
+                childProcess.execSync("rd /s /q \"" + inputPath + "\"");
             }
             else {
-                (0, exports.debug)('removing file ' + inputPath);
-                childProcess.execSync("del /f /a \"".concat(inputPath, "\""));
+                exports.debug('removing file ' + inputPath);
+                childProcess.execSync("del /f /a \"" + inputPath + "\"");
             }
         }
         catch (err) {
             // if you try to delete a file that doesn't exist, desired result is achieved
             // other errors are valid
             if (err.code != 'ENOENT') {
-                throw new Error((0, exports.loc)('LIB_OperationFailed', 'rmRF', err.message));
+                throw new Error(exports.loc('LIB_OperationFailed', 'rmRF', err.message));
             }
         }
         // Shelling out fails to remove a symlink folder with missing source, this unlink catches that
@@ -7053,7 +6989,7 @@ function rmRF(inputPath) {
             // if you try to delete a file that doesn't exist, desired result is achieved
             // other errors are valid
             if (err.code != 'ENOENT') {
-                throw new Error((0, exports.loc)('LIB_OperationFailed', 'rmRF', err.message));
+                throw new Error(exports.loc('LIB_OperationFailed', 'rmRF', err.message));
             }
         }
     }
@@ -7070,23 +7006,23 @@ function rmRF(inputPath) {
             if (err.code == 'ENOENT') {
                 return;
             }
-            throw new Error((0, exports.loc)('LIB_OperationFailed', 'rmRF', err.message));
+            throw new Error(exports.loc('LIB_OperationFailed', 'rmRF', err.message));
         }
         if (lstats.isDirectory()) {
-            (0, exports.debug)('removing directory');
+            exports.debug('removing directory');
             shell.rm('-rf', inputPath);
             var errMsg = shell.error();
             if (errMsg) {
-                throw new Error((0, exports.loc)('LIB_OperationFailed', 'rmRF', errMsg));
+                throw new Error(exports.loc('LIB_OperationFailed', 'rmRF', errMsg));
             }
             return;
         }
-        (0, exports.debug)('removing file');
+        exports.debug('removing file');
         try {
             fs.unlinkSync(inputPath);
         }
         catch (err) {
-            throw new Error((0, exports.loc)('LIB_OperationFailed', 'rmRF', err.message));
+            throw new Error(exports.loc('LIB_OperationFailed', 'rmRF', err.message));
         }
     }
 }
@@ -7101,32 +7037,11 @@ exports.rmRF = rmRF;
  * @param     options  optional exec options.  See IExecOptions
  * @returns   number
  */
-function execAsync(tool, args, options) {
-    var tr = this.tool(tool);
-    if (args) {
-        if (args instanceof Array) {
-            tr.arg(args);
-        }
-        else if (typeof (args) === 'string') {
-            tr.line(args);
-        }
-    }
-    return tr.execAsync(options);
-}
-exports.execAsync = execAsync;
-/**
- * Exec a tool.  Convenience wrapper over ToolRunner to exec with args in one call.
- * Output will be streamed to the live console.
- * Returns promise with return code
- *
- * @deprecated Use the {@link execAsync} method that returns a native Javascript Promise instead
- * @param     tool     path to tool to exec
- * @param     args     an arg string or array of args
- * @param     options  optional exec options.  See IExecOptions
- * @returns   number
- */
 function exec(tool, args, options) {
     var tr = this.tool(tool);
+    tr.on('debug', function (data) {
+        exports.debug(data);
+    });
     if (args) {
         if (args instanceof Array) {
             tr.arg(args);
@@ -7151,6 +7066,9 @@ exports.exec = exec;
  */
 function execSync(tool, args, options) {
     var tr = this.tool(tool);
+    tr.on('debug', function (data) {
+        exports.debug(data);
+    });
     if (args) {
         if (args instanceof Array) {
             tr.arg(args);
@@ -7171,7 +7089,7 @@ exports.execSync = execSync;
 function tool(tool) {
     var tr = new trm.ToolRunner(tool);
     tr.on('debug', function (message) {
-        (0, exports.debug)(message);
+        exports.debug(message);
     });
     return tr;
 }
@@ -7186,7 +7104,7 @@ exports.tool = tool;
  */
 function match(list, patterns, patternRoot, options) {
     // trace parameters
-    (0, exports.debug)("patternRoot: '".concat(patternRoot, "'"));
+    exports.debug("patternRoot: '" + patternRoot + "'");
     options = options || _getDefaultMatchOptions(); // default match options
     _debugMatchOptions(options);
     // convert pattern to an array
@@ -7198,18 +7116,18 @@ function match(list, patterns, patternRoot, options) {
     var originalOptions = options;
     for (var _i = 0, patterns_1 = patterns; _i < patterns_1.length; _i++) {
         var pattern = patterns_1[_i];
-        (0, exports.debug)("pattern: '".concat(pattern, "'"));
+        exports.debug("pattern: '" + pattern + "'");
         // trim and skip empty
         pattern = (pattern || '').trim();
         if (!pattern) {
-            (0, exports.debug)('skipping empty pattern');
+            exports.debug('skipping empty pattern');
             continue;
         }
         // clone match options
         var options_1 = im._cloneMatchOptions(originalOptions);
         // skip comments
         if (!options_1.nocomment && im._startsWith(pattern, '#')) {
-            (0, exports.debug)('skipping comment');
+            exports.debug('skipping comment');
             continue;
         }
         // set nocomment - brace expansion could result in a leading '#'
@@ -7222,7 +7140,7 @@ function match(list, patterns, patternRoot, options) {
             }
             pattern = pattern.substring(negateCount); // trim leading '!'
             if (negateCount) {
-                (0, exports.debug)("trimmed leading '!'. pattern: '".concat(pattern, "'"));
+                exports.debug("trimmed leading '!'. pattern: '" + pattern + "'");
             }
         }
         var isIncludePattern = negateCount == 0 ||
@@ -7240,7 +7158,7 @@ function match(list, patterns, patternRoot, options) {
         else {
             // convert slashes on Windows before calling braceExpand(). unfortunately this means braces cannot
             // be escaped on Windows, this limitation is consistent with current limitations of minimatch (3.0.3).
-            (0, exports.debug)('expanding braces');
+            exports.debug('expanding braces');
             var convertedPattern = process.platform == 'win32' ? pattern.replace(/\\/g, '/') : pattern;
             expanded = minimatch.braceExpand(convertedPattern);
         }
@@ -7249,12 +7167,12 @@ function match(list, patterns, patternRoot, options) {
         for (var _a = 0, expanded_1 = expanded; _a < expanded_1.length; _a++) {
             var pattern_1 = expanded_1[_a];
             if (expanded.length != 1 || pattern_1 != preExpanded) {
-                (0, exports.debug)("pattern: '".concat(pattern_1, "'"));
+                exports.debug("pattern: '" + pattern_1 + "'");
             }
             // trim and skip empty
             pattern_1 = (pattern_1 || '').trim();
             if (!pattern_1) {
-                (0, exports.debug)('skipping empty pattern');
+                exports.debug('skipping empty pattern');
                 continue;
             }
             // root the pattern when all of the following conditions are true:
@@ -7263,13 +7181,13 @@ function match(list, patterns, patternRoot, options) {
                 // AND matchBase:false or not basename only
                 (!options_1.matchBase || (process.platform == 'win32' ? pattern_1.replace(/\\/g, '/') : pattern_1).indexOf('/') >= 0)) {
                 pattern_1 = im._ensureRooted(patternRoot, pattern_1);
-                (0, exports.debug)("rooted pattern: '".concat(pattern_1, "'"));
+                exports.debug("rooted pattern: '" + pattern_1 + "'");
             }
             if (isIncludePattern) {
                 // apply the pattern
-                (0, exports.debug)('applying include pattern against original list');
+                exports.debug('applying include pattern against original list');
                 var matchResults = minimatch.match(list, pattern_1, options_1);
-                (0, exports.debug)(matchResults.length + ' matches');
+                exports.debug(matchResults.length + ' matches');
                 // union the results
                 for (var _b = 0, matchResults_1 = matchResults; _b < matchResults_1.length; _b++) {
                     var matchResult = matchResults_1[_b];
@@ -7278,9 +7196,9 @@ function match(list, patterns, patternRoot, options) {
             }
             else {
                 // apply the pattern
-                (0, exports.debug)('applying exclude pattern against original list');
+                exports.debug('applying exclude pattern against original list');
                 var matchResults = minimatch.match(list, pattern_1, options_1);
-                (0, exports.debug)(matchResults.length + ' matches');
+                exports.debug(matchResults.length + ' matches');
                 // substract the results
                 for (var _c = 0, matchResults_2 = matchResults; _c < matchResults_2.length; _c++) {
                     var matchResult = matchResults_2[_c];
@@ -7291,7 +7209,7 @@ function match(list, patterns, patternRoot, options) {
     }
     // return a filtered version of the original list (preserves order and prevents duplication)
     var result = list.filter(function (item) { return map.hasOwnProperty(item); });
-    (0, exports.debug)(result.length + ' final results');
+    exports.debug(result.length + ' final results');
     return result;
 }
 exports.match = match;
@@ -7307,17 +7225,17 @@ function filter(pattern, options) {
 }
 exports.filter = filter;
 function _debugMatchOptions(options) {
-    (0, exports.debug)("matchOptions.debug: '".concat(options.debug, "'"));
-    (0, exports.debug)("matchOptions.nobrace: '".concat(options.nobrace, "'"));
-    (0, exports.debug)("matchOptions.noglobstar: '".concat(options.noglobstar, "'"));
-    (0, exports.debug)("matchOptions.dot: '".concat(options.dot, "'"));
-    (0, exports.debug)("matchOptions.noext: '".concat(options.noext, "'"));
-    (0, exports.debug)("matchOptions.nocase: '".concat(options.nocase, "'"));
-    (0, exports.debug)("matchOptions.nonull: '".concat(options.nonull, "'"));
-    (0, exports.debug)("matchOptions.matchBase: '".concat(options.matchBase, "'"));
-    (0, exports.debug)("matchOptions.nocomment: '".concat(options.nocomment, "'"));
-    (0, exports.debug)("matchOptions.nonegate: '".concat(options.nonegate, "'"));
-    (0, exports.debug)("matchOptions.flipNegate: '".concat(options.flipNegate, "'"));
+    exports.debug("matchOptions.debug: '" + options.debug + "'");
+    exports.debug("matchOptions.nobrace: '" + options.nobrace + "'");
+    exports.debug("matchOptions.noglobstar: '" + options.noglobstar + "'");
+    exports.debug("matchOptions.dot: '" + options.dot + "'");
+    exports.debug("matchOptions.noext: '" + options.noext + "'");
+    exports.debug("matchOptions.nocase: '" + options.nocase + "'");
+    exports.debug("matchOptions.nonull: '" + options.nonull + "'");
+    exports.debug("matchOptions.matchBase: '" + options.matchBase + "'");
+    exports.debug("matchOptions.nocomment: '" + options.nocomment + "'");
+    exports.debug("matchOptions.nonegate: '" + options.nonegate + "'");
+    exports.debug("matchOptions.flipNegate: '" + options.flipNegate + "'");
 }
 function _getDefaultMatchOptions() {
     return {
@@ -7348,7 +7266,7 @@ function _getDefaultMatchOptions() {
 function findMatch(defaultRoot, patterns, findOptions, matchOptions) {
     // apply defaults for parameters and trace
     defaultRoot = defaultRoot || this.getVariable('system.defaultWorkingDirectory') || process.cwd();
-    (0, exports.debug)("defaultRoot: '".concat(defaultRoot, "'"));
+    exports.debug("defaultRoot: '" + defaultRoot + "'");
     patterns = patterns || [];
     patterns = typeof patterns == 'string' ? [patterns] : patterns;
     findOptions = findOptions || _getDefaultFindOptions();
@@ -7361,18 +7279,18 @@ function findMatch(defaultRoot, patterns, findOptions, matchOptions) {
     var originalMatchOptions = matchOptions;
     for (var _i = 0, _a = (patterns || []); _i < _a.length; _i++) {
         var pattern = _a[_i];
-        (0, exports.debug)("pattern: '".concat(pattern, "'"));
+        exports.debug("pattern: '" + pattern + "'");
         // trim and skip empty
         pattern = (pattern || '').trim();
         if (!pattern) {
-            (0, exports.debug)('skipping empty pattern');
+            exports.debug('skipping empty pattern');
             continue;
         }
         // clone match options
         var matchOptions_1 = im._cloneMatchOptions(originalMatchOptions);
         // skip comments
         if (!matchOptions_1.nocomment && im._startsWith(pattern, '#')) {
-            (0, exports.debug)('skipping comment');
+            exports.debug('skipping comment');
             continue;
         }
         // set nocomment - brace expansion could result in a leading '#'
@@ -7385,7 +7303,7 @@ function findMatch(defaultRoot, patterns, findOptions, matchOptions) {
             }
             pattern = pattern.substring(negateCount); // trim leading '!'
             if (negateCount) {
-                (0, exports.debug)("trimmed leading '!'. pattern: '".concat(pattern, "'"));
+                exports.debug("trimmed leading '!'. pattern: '" + pattern + "'");
             }
         }
         var isIncludePattern = negateCount == 0 ||
@@ -7403,7 +7321,7 @@ function findMatch(defaultRoot, patterns, findOptions, matchOptions) {
         else {
             // convert slashes on Windows before calling braceExpand(). unfortunately this means braces cannot
             // be escaped on Windows, this limitation is consistent with current limitations of minimatch (3.0.3).
-            (0, exports.debug)('expanding braces');
+            exports.debug('expanding braces');
             var convertedPattern = process.platform == 'win32' ? pattern.replace(/\\/g, '/') : pattern;
             expanded = minimatch.braceExpand(convertedPattern);
         }
@@ -7412,25 +7330,25 @@ function findMatch(defaultRoot, patterns, findOptions, matchOptions) {
         for (var _b = 0, expanded_2 = expanded; _b < expanded_2.length; _b++) {
             var pattern_2 = expanded_2[_b];
             if (expanded.length != 1 || pattern_2 != preExpanded) {
-                (0, exports.debug)("pattern: '".concat(pattern_2, "'"));
+                exports.debug("pattern: '" + pattern_2 + "'");
             }
             // trim and skip empty
             pattern_2 = (pattern_2 || '').trim();
             if (!pattern_2) {
-                (0, exports.debug)('skipping empty pattern');
+                exports.debug('skipping empty pattern');
                 continue;
             }
             if (isIncludePattern) {
                 // determine the findPath
                 var findInfo = im._getFindInfoFromPattern(defaultRoot, pattern_2, matchOptions_1);
                 var findPath = findInfo.findPath;
-                (0, exports.debug)("findPath: '".concat(findPath, "'"));
+                exports.debug("findPath: '" + findPath + "'");
                 if (!findPath) {
-                    (0, exports.debug)('skipping empty path');
+                    exports.debug('skipping empty path');
                     continue;
                 }
                 // perform the find
-                (0, exports.debug)("statOnly: '".concat(findInfo.statOnly, "'"));
+                exports.debug("statOnly: '" + findInfo.statOnly + "'");
                 var findResults = [];
                 if (findInfo.statOnly) {
                     // simply stat the path - all path segments were used to build the path
@@ -7442,21 +7360,21 @@ function findMatch(defaultRoot, patterns, findOptions, matchOptions) {
                         if (err.code != 'ENOENT') {
                             throw err;
                         }
-                        (0, exports.debug)('ENOENT');
+                        exports.debug('ENOENT');
                     }
                 }
                 else {
                     findResults = find(findPath, findOptions);
                 }
-                (0, exports.debug)("found ".concat(findResults.length, " paths"));
+                exports.debug("found " + findResults.length + " paths");
                 // apply the pattern
-                (0, exports.debug)('applying include pattern');
+                exports.debug('applying include pattern');
                 if (findInfo.adjustedPattern != pattern_2) {
-                    (0, exports.debug)("adjustedPattern: '".concat(findInfo.adjustedPattern, "'"));
+                    exports.debug("adjustedPattern: '" + findInfo.adjustedPattern + "'");
                     pattern_2 = findInfo.adjustedPattern;
                 }
                 var matchResults = minimatch.match(findResults, pattern_2, matchOptions_1);
-                (0, exports.debug)(matchResults.length + ' matches');
+                exports.debug(matchResults.length + ' matches');
                 // union the results
                 for (var _c = 0, matchResults_3 = matchResults; _c < matchResults_3.length; _c++) {
                     var matchResult = matchResults_3[_c];
@@ -7470,17 +7388,17 @@ function findMatch(defaultRoot, patterns, findOptions, matchOptions) {
                     !im._isRooted(pattern_2) &&
                     (process.platform == 'win32' ? pattern_2.replace(/\\/g, '/') : pattern_2).indexOf('/') < 0) {
                     // do not root the pattern
-                    (0, exports.debug)('matchBase and basename only');
+                    exports.debug('matchBase and basename only');
                 }
                 else {
                     // root the exclude pattern
                     pattern_2 = im._ensurePatternRooted(defaultRoot, pattern_2);
-                    (0, exports.debug)("after ensurePatternRooted, pattern: '".concat(pattern_2, "'"));
+                    exports.debug("after ensurePatternRooted, pattern: '" + pattern_2 + "'");
                 }
                 // apply the pattern
-                (0, exports.debug)('applying exclude pattern');
+                exports.debug('applying exclude pattern');
                 var matchResults = minimatch.match(Object.keys(results).map(function (key) { return results[key]; }), pattern_2, matchOptions_1);
-                (0, exports.debug)(matchResults.length + ' matches');
+                exports.debug(matchResults.length + ' matches');
                 // substract the results
                 for (var _d = 0, matchResults_4 = matchResults; _d < matchResults_4.length; _d++) {
                     var matchResult = matchResults_4[_d];
@@ -7493,7 +7411,7 @@ function findMatch(defaultRoot, patterns, findOptions, matchOptions) {
     var finalResult = Object.keys(results)
         .map(function (key) { return results[key]; })
         .sort();
-    (0, exports.debug)(finalResult.length + ' final results');
+    exports.debug(finalResult.length + ' final results');
     return finalResult;
 }
 exports.findMatch = findMatch;
@@ -7506,9 +7424,9 @@ exports.findMatch = findMatch;
  */
 function getProxyFormattedUrl(proxyUrl, proxyUsername, proxyPassword) {
     var parsedUrl = new URL(proxyUrl);
-    var proxyAddress = "".concat(parsedUrl.protocol, "//").concat(parsedUrl.host);
+    var proxyAddress = parsedUrl.protocol + "//" + parsedUrl.host;
     if (proxyUsername) {
-        proxyAddress = "".concat(parsedUrl.protocol, "//").concat(proxyUsername, ":").concat(proxyPassword, "@").concat(parsedUrl.host);
+        proxyAddress = parsedUrl.protocol + "//" + proxyUsername + ":" + proxyPassword + "@" + parsedUrl.host;
     }
     return proxyAddress;
 }
@@ -7518,11 +7436,11 @@ function getProxyFormattedUrl(proxyUrl, proxyUsername, proxyPassword) {
  * @return  ProxyConfiguration
  */
 function getHttpProxyConfiguration(requestUrl) {
-    var proxyUrl = (0, exports.getVariable)('Agent.ProxyUrl');
+    var proxyUrl = exports.getVariable('Agent.ProxyUrl');
     if (proxyUrl && proxyUrl.length > 0) {
-        var proxyUsername = (0, exports.getVariable)('Agent.ProxyUsername');
-        var proxyPassword = (0, exports.getVariable)('Agent.ProxyPassword');
-        var proxyBypassHosts = JSON.parse((0, exports.getVariable)('Agent.ProxyBypassList') || '[]');
+        var proxyUsername = exports.getVariable('Agent.ProxyUsername');
+        var proxyPassword = exports.getVariable('Agent.ProxyPassword');
+        var proxyBypassHosts = JSON.parse(exports.getVariable('Agent.ProxyBypassList') || '[]');
         var bypass_1 = false;
         if (requestUrl) {
             proxyBypassHosts.forEach(function (bypassHost) {
@@ -7556,16 +7474,16 @@ exports.getHttpProxyConfiguration = getHttpProxyConfiguration;
  * @return  CertConfiguration
  */
 function getHttpCertConfiguration() {
-    var ca = (0, exports.getVariable)('Agent.CAInfo');
-    var clientCert = (0, exports.getVariable)('Agent.ClientCert');
+    var ca = exports.getVariable('Agent.CAInfo');
+    var clientCert = exports.getVariable('Agent.ClientCert');
     if (ca || clientCert) {
         var certConfig = {};
         certConfig.caFile = ca;
         certConfig.certFile = clientCert;
         if (clientCert) {
-            var clientCertKey = (0, exports.getVariable)('Agent.ClientCertKey');
-            var clientCertArchive = (0, exports.getVariable)('Agent.ClientCertArchive');
-            var clientCertPassword = (0, exports.getVariable)('Agent.ClientCertPassword');
+            var clientCertKey = exports.getVariable('Agent.ClientCertKey');
+            var clientCertArchive = exports.getVariable('Agent.ClientCertArchive');
+            var clientCertPassword = exports.getVariable('Agent.ClientCertPassword');
             certConfig.keyFile = clientCertKey;
             certConfig.certArchiveFile = clientCertArchive;
             certConfig.passphrase = clientCertPassword;
@@ -7609,7 +7527,7 @@ var TestPublisher = /** @class */ (function () {
             properties['resultFiles'] = Array.isArray(resultFiles) ? resultFiles.join() : resultFiles;
         }
         properties['testRunSystem'] = testRunSystem;
-        (0, exports.command)('results.publish', properties, '');
+        exports.command('results.publish', properties, '');
     };
     return TestPublisher;
 }());
@@ -7634,7 +7552,7 @@ var CodeCoveragePublisher = /** @class */ (function () {
         if (additionalCodeCoverageFiles) {
             properties['additionalcodecoveragefiles'] = Array.isArray(additionalCodeCoverageFiles) ? additionalCodeCoverageFiles.join() : additionalCodeCoverageFiles;
         }
-        (0, exports.command)('codecoverage.publish', properties, "");
+        exports.command('codecoverage.publish', properties, "");
     };
     return CodeCoveragePublisher;
 }());
@@ -7650,7 +7568,7 @@ var CodeCoverageEnabler = /** @class */ (function () {
     CodeCoverageEnabler.prototype.enableCodeCoverage = function (buildProps) {
         buildProps['buildtool'] = this.buildTool;
         buildProps['codecoveragetool'] = this.ccTool;
-        (0, exports.command)('codecoverage.enable', buildProps, "");
+        exports.command('codecoverage.enable', buildProps, "");
     };
     return CodeCoverageEnabler;
 }());
@@ -7668,7 +7586,7 @@ exports.CodeCoverageEnabler = CodeCoverageEnabler;
  * @returns         void
  */
 function uploadFile(path) {
-    (0, exports.command)("task.uploadfile", null, path);
+    exports.command("task.uploadfile", null, path);
 }
 exports.uploadFile = uploadFile;
 /**
@@ -7681,7 +7599,7 @@ exports.uploadFile = uploadFile;
  */
 function prependPath(path) {
     assertAgent("2.115.0");
-    (0, exports.command)("task.prependpath", null, path);
+    exports.command("task.prependpath", null, path);
 }
 exports.prependPath = prependPath;
 /**
@@ -7693,7 +7611,7 @@ exports.prependPath = prependPath;
  * @returns         void
  */
 function uploadSummary(path) {
-    (0, exports.command)("task.uploadsummary", null, path);
+    exports.command("task.uploadsummary", null, path);
 }
 exports.uploadSummary = uploadSummary;
 /**
@@ -7707,7 +7625,7 @@ exports.uploadSummary = uploadSummary;
  * @returns         void
  */
 function addAttachment(type, name, path) {
-    (0, exports.command)("task.addattachment", { "type": type, "name": name }, path);
+    exports.command("task.addattachment", { "type": type, "name": name }, path);
 }
 exports.addAttachment = addAttachment;
 /**
@@ -7722,7 +7640,7 @@ exports.addAttachment = addAttachment;
  * @returns       void
  */
 function setEndpoint(id, field, key, value) {
-    (0, exports.command)("task.setendpoint", { "id": id, "field": FieldType[field].toLowerCase(), "key": key }, value);
+    exports.command("task.setendpoint", { "id": id, "field": FieldType[field].toLowerCase(), "key": key }, value);
 }
 exports.setEndpoint = setEndpoint;
 /**
@@ -7733,7 +7651,7 @@ exports.setEndpoint = setEndpoint;
  * @returns                 void
  */
 function setProgress(percent, currentOperation) {
-    (0, exports.command)("task.setprogress", { "value": "".concat(percent) }, currentOperation);
+    exports.command("task.setprogress", { "value": "" + percent }, currentOperation);
 }
 exports.setProgress = setProgress;
 /**
@@ -7765,7 +7683,7 @@ function logDetail(id, message, parentId, recordType, recordName, order, startTi
         "state": state ? TaskState[state] : undefined,
         "result": result ? TaskResult[result] : undefined
     };
-    (0, exports.command)("task.logdetail", properties, message);
+    exports.command("task.logdetail", properties, message);
 }
 exports.logDetail = logDetail;
 /**
@@ -7787,7 +7705,7 @@ function logIssue(type, message, sourcePath, lineNumber, columnNumber, errorCode
         "linenumber": lineNumber ? lineNumber.toString() : undefined,
         "columnnumber": columnNumber ? columnNumber.toString() : undefined,
     };
-    (0, exports.command)("task.logissue", properties, message);
+    exports.command("task.logissue", properties, message);
 }
 exports.logIssue = logIssue;
 //-----------------------------------------------------
@@ -7805,7 +7723,7 @@ exports.logIssue = logIssue;
  * @returns                 void
  */
 function uploadArtifact(containerFolder, path, name) {
-    (0, exports.command)("artifact.upload", { "containerfolder": containerFolder, "artifactname": name }, path);
+    exports.command("artifact.upload", { "containerfolder": containerFolder, "artifactname": name }, path);
 }
 exports.uploadArtifact = uploadArtifact;
 /**
@@ -7820,7 +7738,7 @@ exports.uploadArtifact = uploadArtifact;
  * @returns                 void
  */
 function associateArtifact(name, path, artifactType) {
-    (0, exports.command)("artifact.associate", { "type": ArtifactType[artifactType].toLowerCase(), "artifactname": name }, path);
+    exports.command("artifact.associate", { "type": ArtifactType[artifactType].toLowerCase(), "artifactname": name }, path);
 }
 exports.associateArtifact = associateArtifact;
 //-----------------------------------------------------
@@ -7833,7 +7751,7 @@ exports.associateArtifact = associateArtifact;
  * @returns         void
  */
 function uploadBuildLog(path) {
-    (0, exports.command)("build.uploadlog", null, path);
+    exports.command("build.uploadlog", null, path);
 }
 exports.uploadBuildLog = uploadBuildLog;
 /**
@@ -7843,7 +7761,7 @@ exports.uploadBuildLog = uploadBuildLog;
  * @returns         void
  */
 function updateBuildNumber(value) {
-    (0, exports.command)("build.updatebuildnumber", null, value);
+    exports.command("build.updatebuildnumber", null, value);
 }
 exports.updateBuildNumber = updateBuildNumber;
 /**
@@ -7853,7 +7771,7 @@ exports.updateBuildNumber = updateBuildNumber;
  * @returns         void
  */
 function addBuildTag(value) {
-    (0, exports.command)("build.addbuildtag", null, value);
+    exports.command("build.addbuildtag", null, value);
 }
 exports.addBuildTag = addBuildTag;
 //-----------------------------------------------------
@@ -7867,7 +7785,7 @@ exports.addBuildTag = addBuildTag;
  */
 function updateReleaseName(name) {
     assertAgent("2.132.0");
-    (0, exports.command)("release.updatereleasename", null, name);
+    exports.command("release.updatereleasename", null, name);
 }
 exports.updateReleaseName = updateReleaseName;
 //-----------------------------------------------------
@@ -7881,7 +7799,7 @@ exports.ToolRunner = trm.ToolRunner;
 //-----------------------------------------------------
 // async await needs generators in node 4.x+
 if (semver.lt(process.versions.node, '4.2.0')) {
-    (0, exports.warning)('Tasks require a new agent.  Upgrade your agent or node to 4.2.0 or later', exports.IssueSource.TaskInternal);
+    exports.warning('Tasks require a new agent.  Upgrade your agent or node to 4.2.0 or later');
 }
 //-------------------------------------------------------------------
 // Populate the vault with sensitive data.  Inputs and Endpoints
@@ -8020,8 +7938,6 @@ var __extends = (this && this.__extends) || (function () {
         return extendStatics(d, b);
     };
     return function (d, b) {
-        if (typeof b !== "function" && b !== null)
-            throw new TypeError("Class extends value " + String(b) + " is not a constructor or null");
         extendStatics(d, b);
         function __() { this.constructor = d; }
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
@@ -8122,7 +8038,7 @@ var ToolRunner = /** @class */ (function (_super) {
             }
             // Windows + verbatim
             else if (options.windowsVerbatimArguments) {
-                commandParts.push("\"".concat(toolPath, "\""));
+                commandParts.push("\"" + toolPath + "\"");
                 commandParts = commandParts.concat(args);
             }
             else if (options.shell) {
@@ -8149,23 +8065,23 @@ var ToolRunner = /** @class */ (function (_super) {
         }
         return cmd;
     };
-    ToolRunner.prototype._processLineBuffer = function (data, buffer, onLine) {
-        var newBuffer = buffer + data.toString();
+    ToolRunner.prototype._processLineBuffer = function (data, strBuffer, onLine) {
         try {
-            var eolIndex = newBuffer.indexOf(os.EOL);
-            while (eolIndex > -1) {
-                var line = newBuffer.substring(0, eolIndex);
+            var s = strBuffer + data.toString();
+            var n = s.indexOf(os.EOL);
+            while (n > -1) {
+                var line = s.substring(0, n);
                 onLine(line);
                 // the rest of the string ...
-                newBuffer = newBuffer.substring(eolIndex + os.EOL.length);
-                eolIndex = newBuffer.indexOf(os.EOL);
+                s = s.substring(n + os.EOL.length);
+                n = s.indexOf(os.EOL);
             }
+            strBuffer = s;
         }
         catch (err) {
             // streaming lines to console is best effort.  Don't fail a build.
             this._debug('error processing line');
         }
-        return newBuffer;
     };
     /**
      * Wraps an arg string with specified char if it's not already wrapped
@@ -8175,7 +8091,7 @@ var ToolRunner = /** @class */ (function (_super) {
      */
     ToolRunner.prototype._wrapArg = function (arg, wrapChar) {
         if (!this._isWrapped(arg, wrapChar)) {
-            return "".concat(wrapChar).concat(arg).concat(wrapChar);
+            return "" + wrapChar + arg + wrapChar;
         }
         return arg;
     };
@@ -8186,7 +8102,7 @@ var ToolRunner = /** @class */ (function (_super) {
      */
     ToolRunner.prototype._unwrapArg = function (arg, wrapChar) {
         if (this._isWrapped(arg, wrapChar)) {
-            var pattern = new RegExp("(^\\\\?".concat(wrapChar, ")|(\\\\?").concat(wrapChar, "$)"), 'g');
+            var pattern = new RegExp("(^\\\\?" + wrapChar + ")|(\\\\?" + wrapChar + "$)", 'g');
             return arg.trim().replace(pattern, '');
         }
         return arg;
@@ -8196,7 +8112,7 @@ var ToolRunner = /** @class */ (function (_super) {
      * @param arg Input arg string
      */
     ToolRunner.prototype._isWrapped = function (arg, wrapChar) {
-        var pattern = new RegExp("^\\\\?".concat(wrapChar, ".+\\\\?").concat(wrapChar, "$"));
+        var pattern = new RegExp("^\\\\?" + wrapChar + ".+\\\\?" + wrapChar + "$");
         return pattern.test(arg.trim());
     };
     ToolRunner.prototype._getSpawnFileName = function (options) {
@@ -8214,7 +8130,7 @@ var ToolRunner = /** @class */ (function (_super) {
         var _this = this;
         if (process.platform == 'win32') {
             if (this._isCmdFile()) {
-                var argline = "/D /S /C \"".concat(this._windowsQuoteCmdArg(this.toolPath));
+                var argline = "/D /S /C \"" + this._windowsQuoteCmdArg(this.toolPath);
                 for (var i = 0; i < this.args.length; i++) {
                     argline += ' ';
                     argline += options.windowsVerbatimArguments ? this.args[i] : this._windowsQuoteCmdArg(this.args[i]);
@@ -8258,7 +8174,7 @@ var ToolRunner = /** @class */ (function (_super) {
                     if (arguments.length != 1) {
                         throw new Error('Unexpected arguments passed to args.unshift when windowsVerbatimArguments flag is set.');
                     }
-                    return Array.prototype.unshift.call(args_1, "\"".concat(arguments[0], "\"")); // quote the file name
+                    return Array.prototype.unshift.call(args_1, "\"" + arguments[0] + "\""); // quote the file name
                 };
                 return args_1;
             }
@@ -8462,7 +8378,7 @@ var ToolRunner = /** @class */ (function (_super) {
         if (arg.indexOf('"') < 0 && arg.indexOf('\\') < 0) {
             // No embedded double quotes or backslashes, so I can just wrap
             // quote marks around the whole thing.
-            return "\"".concat(arg, "\"");
+            return "\"" + arg + "\"";
         }
         // Expected input/output:
         //   input : hello"world
@@ -8531,186 +8447,6 @@ var ToolRunner = /** @class */ (function (_super) {
         result['windowsVerbatimArguments'] = options.windowsVerbatimArguments || this._isCmdFile();
         return result;
     };
-    ToolRunner.prototype.execWithPipingAsync = function (pipeOutputToTool, options) {
-        var _this = this;
-        this._debug('exec tool: ' + this.toolPath);
-        this._debug('arguments:');
-        this.args.forEach(function (arg) {
-            _this._debug('   ' + arg);
-        });
-        var success = true;
-        var optionsNonNull = this._cloneExecOptions(options);
-        if (!optionsNonNull.silent) {
-            optionsNonNull.outStream.write(this._getCommandString(optionsNonNull) + os.EOL);
-        }
-        var cp;
-        var toolPath = pipeOutputToTool.toolPath;
-        var toolPathFirst;
-        var successFirst = true;
-        var returnCodeFirst;
-        var fileStream;
-        var waitingEvents = 0; // number of process or stream events we are waiting on to complete
-        var returnCode = 0;
-        var error;
-        toolPathFirst = this.toolPath;
-        // Following node documentation example from this link on how to pipe output of one process to another
-        // https://nodejs.org/api/child_process.html#child_process_child_process_spawn_command_args_options
-        //start the child process for both tools
-        waitingEvents++;
-        var cpFirst = child.spawn(this._getSpawnFileName(optionsNonNull), this._getSpawnArgs(optionsNonNull), this._getSpawnOptions(optionsNonNull));
-        waitingEvents++;
-        cp = child.spawn(pipeOutputToTool._getSpawnFileName(optionsNonNull), pipeOutputToTool._getSpawnArgs(optionsNonNull), pipeOutputToTool._getSpawnOptions(optionsNonNull));
-        fileStream = this.pipeOutputToFile ? fs.createWriteStream(this.pipeOutputToFile) : null;
-        return new Promise(function (resolve, reject) {
-            var _a, _b, _c, _d;
-            if (fileStream) {
-                waitingEvents++;
-                fileStream.on('finish', function () {
-                    waitingEvents--; //file write is complete
-                    fileStream = null;
-                    if (waitingEvents == 0) {
-                        if (error) {
-                            reject(error);
-                        }
-                        else {
-                            resolve(returnCode);
-                        }
-                    }
-                });
-                fileStream.on('error', function (err) {
-                    waitingEvents--; //there were errors writing to the file, write is done
-                    _this._debug("Failed to pipe output of ".concat(toolPathFirst, " to file ").concat(_this.pipeOutputToFile, ". Error = ").concat(err));
-                    fileStream = null;
-                    if (waitingEvents == 0) {
-                        if (error) {
-                            reject(error);
-                        }
-                        else {
-                            resolve(returnCode);
-                        }
-                    }
-                });
-            }
-            //pipe stdout of first tool to stdin of second tool
-            (_a = cpFirst.stdout) === null || _a === void 0 ? void 0 : _a.on('data', function (data) {
-                var _a, _b;
-                try {
-                    if (fileStream) {
-                        fileStream.write(data);
-                    }
-                    if (!((_a = cp.stdin) === null || _a === void 0 ? void 0 : _a.destroyed)) {
-                        (_b = cp.stdin) === null || _b === void 0 ? void 0 : _b.write(data);
-                    }
-                }
-                catch (err) {
-                    _this._debug('Failed to pipe output of ' + toolPathFirst + ' to ' + toolPath);
-                    _this._debug(toolPath + ' might have exited due to errors prematurely. Verify the arguments passed are valid.');
-                }
-            });
-            (_b = cpFirst.stderr) === null || _b === void 0 ? void 0 : _b.on('data', function (data) {
-                if (fileStream) {
-                    fileStream.write(data);
-                }
-                successFirst = !optionsNonNull.failOnStdErr;
-                if (!optionsNonNull.silent) {
-                    var s = optionsNonNull.failOnStdErr ? optionsNonNull.errStream : optionsNonNull.outStream;
-                    s.write(data);
-                }
-            });
-            cpFirst.on('error', function (err) {
-                var _a;
-                waitingEvents--; //first process is complete with errors
-                if (fileStream) {
-                    fileStream.end();
-                }
-                (_a = cp.stdin) === null || _a === void 0 ? void 0 : _a.end();
-                error = new Error(toolPathFirst + ' failed. ' + err.message);
-                if (waitingEvents == 0) {
-                    reject(error);
-                }
-            });
-            cpFirst.on('close', function (code, signal) {
-                var _a;
-                waitingEvents--; //first process is complete
-                if (code != 0 && !optionsNonNull.ignoreReturnCode) {
-                    successFirst = false;
-                    returnCodeFirst = code;
-                    returnCode = returnCodeFirst;
-                }
-                _this._debug('success of first tool:' + successFirst);
-                if (fileStream) {
-                    fileStream.end();
-                }
-                (_a = cp.stdin) === null || _a === void 0 ? void 0 : _a.end();
-                if (waitingEvents == 0) {
-                    if (error) {
-                        reject(error);
-                    }
-                    else {
-                        resolve(returnCode);
-                    }
-                }
-            });
-            var stdLineBuffer = '';
-            (_c = cp.stdout) === null || _c === void 0 ? void 0 : _c.on('data', function (data) {
-                _this.emit('stdout', data);
-                if (!optionsNonNull.silent) {
-                    optionsNonNull.outStream.write(data);
-                }
-                stdLineBuffer = _this._processLineBuffer(data, stdLineBuffer, function (line) {
-                    _this.emit('stdline', line);
-                });
-            });
-            var errLineBuffer = '';
-            (_d = cp.stderr) === null || _d === void 0 ? void 0 : _d.on('data', function (data) {
-                _this.emit('stderr', data);
-                success = !optionsNonNull.failOnStdErr;
-                if (!optionsNonNull.silent) {
-                    var s = optionsNonNull.failOnStdErr ? optionsNonNull.errStream : optionsNonNull.outStream;
-                    s.write(data);
-                }
-                errLineBuffer = _this._processLineBuffer(data, errLineBuffer, function (line) {
-                    _this.emit('errline', line);
-                });
-            });
-            cp.on('error', function (err) {
-                waitingEvents--; //process is done with errors
-                error = new Error(toolPath + ' failed. ' + err.message);
-                if (waitingEvents == 0) {
-                    reject(error);
-                }
-            });
-            cp.on('close', function (code, signal) {
-                waitingEvents--; //process is complete
-                _this._debug('rc:' + code);
-                returnCode = code;
-                if (stdLineBuffer.length > 0) {
-                    _this.emit('stdline', stdLineBuffer);
-                }
-                if (errLineBuffer.length > 0) {
-                    _this.emit('errline', errLineBuffer);
-                }
-                if (code != 0 && !optionsNonNull.ignoreReturnCode) {
-                    success = false;
-                }
-                _this._debug('success:' + success);
-                if (!successFirst) { //in the case output is piped to another tool, check exit code of both tools
-                    error = new Error(toolPathFirst + ' failed with return code: ' + returnCodeFirst);
-                }
-                else if (!success) {
-                    error = new Error(toolPath + ' failed with return code: ' + code);
-                }
-                if (waitingEvents == 0) {
-                    if (error) {
-                        reject(error);
-                    }
-                    else {
-                        resolve(returnCode);
-                    }
-                }
-            });
-        });
-    };
     ToolRunner.prototype.execWithPiping = function (pipeOutputToTool, options) {
         var _this = this;
         var _a, _b, _c, _d;
@@ -8759,7 +8495,7 @@ var ToolRunner = /** @class */ (function (_super) {
             });
             fileStream.on('error', function (err) {
                 waitingEvents--; //there were errors writing to the file, write is done
-                _this._debug("Failed to pipe output of ".concat(toolPathFirst, " to file ").concat(_this.pipeOutputToFile, ". Error = ").concat(err));
+                _this._debug("Failed to pipe output of " + toolPathFirst + " to file " + _this.pipeOutputToFile + ". Error = " + err);
                 fileStream = null;
                 if (waitingEvents == 0) {
                     if (error) {
@@ -8829,17 +8565,17 @@ var ToolRunner = /** @class */ (function (_super) {
                 }
             }
         });
-        var stdLineBuffer = '';
+        var stdbuffer = '';
         (_c = cp.stdout) === null || _c === void 0 ? void 0 : _c.on('data', function (data) {
             _this.emit('stdout', data);
             if (!optionsNonNull.silent) {
                 optionsNonNull.outStream.write(data);
             }
-            stdLineBuffer = _this._processLineBuffer(data, stdLineBuffer, function (line) {
+            _this._processLineBuffer(data, stdbuffer, function (line) {
                 _this.emit('stdline', line);
             });
         });
-        var errLineBuffer = '';
+        var errbuffer = '';
         (_d = cp.stderr) === null || _d === void 0 ? void 0 : _d.on('data', function (data) {
             _this.emit('stderr', data);
             success = !optionsNonNull.failOnStdErr;
@@ -8847,7 +8583,7 @@ var ToolRunner = /** @class */ (function (_super) {
                 var s = optionsNonNull.failOnStdErr ? optionsNonNull.errStream : optionsNonNull.outStream;
                 s.write(data);
             }
-            errLineBuffer = _this._processLineBuffer(data, errLineBuffer, function (line) {
+            _this._processLineBuffer(data, errbuffer, function (line) {
                 _this.emit('errline', line);
             });
         });
@@ -8862,11 +8598,11 @@ var ToolRunner = /** @class */ (function (_super) {
             waitingEvents--; //process is complete
             _this._debug('rc:' + code);
             returnCode = code;
-            if (stdLineBuffer.length > 0) {
-                _this.emit('stdline', stdLineBuffer);
+            if (stdbuffer.length > 0) {
+                _this.emit('stdline', stdbuffer);
             }
-            if (errLineBuffer.length > 0) {
-                _this.emit('errline', errLineBuffer);
+            if (errbuffer.length > 0) {
+                _this.emit('errline', errbuffer);
             }
             if (code != 0 && !optionsNonNull.ignoreReturnCode) {
                 success = false;
@@ -8962,121 +8698,6 @@ var ToolRunner = /** @class */ (function (_super) {
      * @param     options  optional exec options.  See IExecOptions
      * @returns   number
      */
-    ToolRunner.prototype.execAsync = function (options) {
-        var _this = this;
-        var _a, _b, _c;
-        if (this.pipeOutputToTool) {
-            return this.execWithPipingAsync(this.pipeOutputToTool, options);
-        }
-        this._debug('exec tool: ' + this.toolPath);
-        this._debug('arguments:');
-        this.args.forEach(function (arg) {
-            _this._debug('   ' + arg);
-        });
-        var optionsNonNull = this._cloneExecOptions(options);
-        if (!optionsNonNull.silent) {
-            optionsNonNull.outStream.write(this._getCommandString(optionsNonNull) + os.EOL);
-        }
-        var state = new ExecState(optionsNonNull, this.toolPath);
-        state.on('debug', function (message) {
-            _this._debug(message);
-        });
-        var stdLineBuffer = '';
-        var errLineBuffer = '';
-        var emitDoneEvent = function (resolve, reject) {
-            state.on('done', function (error, exitCode) {
-                if (stdLineBuffer.length > 0) {
-                    _this.emit('stdline', stdLineBuffer);
-                }
-                if (errLineBuffer.length > 0) {
-                    _this.emit('errline', errLineBuffer);
-                }
-                if (cp) {
-                    cp.removeAllListeners();
-                }
-                if (error) {
-                    reject(error);
-                }
-                else {
-                    resolve(exitCode);
-                }
-            });
-        };
-        // Edge case when the node itself cant's spawn and emit event
-        var cp;
-        try {
-            cp = child.spawn(this._getSpawnFileName(options), this._getSpawnArgs(optionsNonNull), this._getSpawnOptions(options));
-        }
-        catch (error) {
-            return new Promise(function (resolve, reject) {
-                emitDoneEvent(resolve, reject);
-                state.processError = error.message;
-                state.processExited = true;
-                state.processClosed = true;
-                state.CheckComplete();
-            });
-        }
-        this.childProcess = cp;
-        // it is possible for the child process to end its last line without a new line.
-        // because stdout is buffered, this causes the last line to not get sent to the parent
-        // stream. Adding this event forces a flush before the child streams are closed.
-        (_a = cp.stdout) === null || _a === void 0 ? void 0 : _a.on('finish', function () {
-            if (!optionsNonNull.silent) {
-                optionsNonNull.outStream.write(os.EOL);
-            }
-        });
-        (_b = cp.stdout) === null || _b === void 0 ? void 0 : _b.on('data', function (data) {
-            _this.emit('stdout', data);
-            if (!optionsNonNull.silent) {
-                optionsNonNull.outStream.write(data);
-            }
-            stdLineBuffer = _this._processLineBuffer(data, stdLineBuffer, function (line) {
-                _this.emit('stdline', line);
-            });
-        });
-        (_c = cp.stderr) === null || _c === void 0 ? void 0 : _c.on('data', function (data) {
-            state.processStderr = true;
-            _this.emit('stderr', data);
-            if (!optionsNonNull.silent) {
-                var s = optionsNonNull.failOnStdErr ? optionsNonNull.errStream : optionsNonNull.outStream;
-                s.write(data);
-            }
-            errLineBuffer = _this._processLineBuffer(data, errLineBuffer, function (line) {
-                _this.emit('errline', line);
-            });
-        });
-        cp.on('error', function (err) {
-            state.processError = err.message;
-            state.processExited = true;
-            state.processClosed = true;
-            state.CheckComplete();
-        });
-        // Do not write debug logs here. Sometimes stdio not closed yet and you can damage user output commands.
-        cp.on('exit', function (code, signal) {
-            state.processExitCode = code;
-            state.processExitSignal = signal;
-            state.processExited = true;
-            state.CheckComplete();
-        });
-        cp.on('close', function (code, signal) {
-            state.processCloseCode = code;
-            state.processCloseSignal = signal;
-            state.processClosed = true;
-            state.processExited = true;
-            state.CheckComplete();
-        });
-        return new Promise(emitDoneEvent);
-    };
-    /**
-     * Exec a tool.
-     * Output will be streamed to the live console.
-     * Returns promise with return code
-     *
-     * @deprecated Use the `execAsync` method that returns a native Javascript promise instead
-     * @param     tool     path to tool to exec
-     * @param     options  optional exec options.  See IExecOptions
-     * @returns   number
-     */
     ToolRunner.prototype.exec = function (options) {
         var _this = this;
         var _a, _b, _c;
@@ -9097,37 +8718,7 @@ var ToolRunner = /** @class */ (function (_super) {
         state.on('debug', function (message) {
             _this._debug(message);
         });
-        var stdLineBuffer = '';
-        var errLineBuffer = '';
-        state.on('done', function (error, exitCode) {
-            if (stdLineBuffer.length > 0) {
-                _this.emit('stdline', stdLineBuffer);
-            }
-            if (errLineBuffer.length > 0) {
-                _this.emit('errline', errLineBuffer);
-            }
-            if (cp) {
-                cp.removeAllListeners();
-            }
-            if (error) {
-                defer.reject(error);
-            }
-            else {
-                defer.resolve(exitCode);
-            }
-        });
-        // Edge case when the node itself cant's spawn and emit event
-        var cp;
-        try {
-            cp = child.spawn(this._getSpawnFileName(options), this._getSpawnArgs(optionsNonNull), this._getSpawnOptions(options));
-        }
-        catch (error) {
-            state.processError = error.message;
-            state.processExited = true;
-            state.processClosed = true;
-            state.CheckComplete();
-            return defer.promise;
-        }
+        var cp = child.spawn(this._getSpawnFileName(options), this._getSpawnArgs(optionsNonNull), this._getSpawnOptions(options));
         this.childProcess = cp;
         // it is possible for the child process to end its last line without a new line.
         // because stdout is buffered, this causes the last line to not get sent to the parent
@@ -9137,15 +8728,17 @@ var ToolRunner = /** @class */ (function (_super) {
                 optionsNonNull.outStream.write(os.EOL);
             }
         });
+        var stdbuffer = '';
         (_b = cp.stdout) === null || _b === void 0 ? void 0 : _b.on('data', function (data) {
             _this.emit('stdout', data);
             if (!optionsNonNull.silent) {
                 optionsNonNull.outStream.write(data);
             }
-            stdLineBuffer = _this._processLineBuffer(data, stdLineBuffer, function (line) {
+            _this._processLineBuffer(data, stdbuffer, function (line) {
                 _this.emit('stdline', line);
             });
         });
+        var errbuffer = '';
         (_c = cp.stderr) === null || _c === void 0 ? void 0 : _c.on('data', function (data) {
             state.processStderr = true;
             _this.emit('stderr', data);
@@ -9153,7 +8746,7 @@ var ToolRunner = /** @class */ (function (_super) {
                 var s = optionsNonNull.failOnStdErr ? optionsNonNull.errStream : optionsNonNull.outStream;
                 s.write(data);
             }
-            errLineBuffer = _this._processLineBuffer(data, errLineBuffer, function (line) {
+            _this._processLineBuffer(data, errbuffer, function (line) {
                 _this.emit('errline', line);
             });
         });
@@ -9163,19 +8756,33 @@ var ToolRunner = /** @class */ (function (_super) {
             state.processClosed = true;
             state.CheckComplete();
         });
-        // Do not write debug logs here. Sometimes stdio not closed yet and you can damage user output commands.
         cp.on('exit', function (code, signal) {
             state.processExitCode = code;
-            state.processExitSignal = signal;
             state.processExited = true;
+            _this._debug("Exit code " + code + " received from tool '" + _this.toolPath + "'");
             state.CheckComplete();
         });
         cp.on('close', function (code, signal) {
-            state.processCloseCode = code;
-            state.processCloseSignal = signal;
-            state.processClosed = true;
+            state.processExitCode = code;
             state.processExited = true;
+            state.processClosed = true;
+            _this._debug("STDIO streams have closed for tool '" + _this.toolPath + "'");
             state.CheckComplete();
+        });
+        state.on('done', function (error, exitCode) {
+            if (stdbuffer.length > 0) {
+                _this.emit('stdline', stdbuffer);
+            }
+            if (errbuffer.length > 0) {
+                _this.emit('errline', errbuffer);
+            }
+            cp.removeAllListeners();
+            if (error) {
+                defer.reject(error);
+            }
+            else {
+                defer.resolve(exitCode);
+            }
         });
         return defer.promise;
     };
@@ -9217,11 +8824,9 @@ var ToolRunner = /** @class */ (function (_super) {
      * Used to close child process by sending SIGNINT signal.
      * It allows executed script to have some additional logic on SIGINT, before exiting.
      */
-    ToolRunner.prototype.killChildProcess = function (signal) {
-        if (signal === void 0) { signal = "SIGTERM"; }
+    ToolRunner.prototype.killChildProcess = function () {
         if (this.childProcess) {
-            this._debug("[killChildProcess] Signal ".concat(signal, " received"));
-            this.childProcess.kill(signal);
+            this.childProcess.kill();
         }
     };
     return ToolRunner;
@@ -9262,7 +8867,6 @@ var ExecState = /** @class */ (function (_super) {
         // determine whether there is an error
         var error;
         if (this.processExited) {
-            this._debug("Process exited with code ".concat(this.processExitCode, " and signal ").concat(this.processExitSignal, " for tool '").concat(this.toolPath, "'"));
             if (this.processError) {
                 error = new Error(im._loc('LIB_ProcessError', this.toolPath, this.processError));
             }
@@ -9272,9 +8876,6 @@ var ExecState = /** @class */ (function (_super) {
             else if (this.processStderr && this.options.failOnStdErr) {
                 error = new Error(im._loc('LIB_ProcessStderr', this.toolPath));
             }
-        }
-        if (this.processClosed) {
-            this._debug("STDIO streams have closed and received exit code ".concat(this.processCloseCode, " and signal ").concat(this.processCloseSignal, " for tool '").concat(this.toolPath, "'"));
         }
         // clear the timeout
         if (this.timeout) {
@@ -9375,2224 +8976,6 @@ var Vault = /** @class */ (function () {
     return Vault;
 }());
 exports.Vault = Vault;
-
-
-/***/ }),
-
-/***/ 9184:
-/***/ ((module, exports) => {
-
-exports = module.exports = SemVer
-
-var debug
-/* istanbul ignore next */
-if (typeof process === 'object' &&
-    process.env &&
-    process.env.NODE_DEBUG &&
-    /\bsemver\b/i.test(process.env.NODE_DEBUG)) {
-  debug = function () {
-    var args = Array.prototype.slice.call(arguments, 0)
-    args.unshift('SEMVER')
-    console.log.apply(console, args)
-  }
-} else {
-  debug = function () {}
-}
-
-// Note: this is the semver.org version of the spec that it implements
-// Not necessarily the package version of this code.
-exports.SEMVER_SPEC_VERSION = '2.0.0'
-
-var MAX_LENGTH = 256
-var MAX_SAFE_INTEGER = Number.MAX_SAFE_INTEGER ||
-  /* istanbul ignore next */ 9007199254740991
-
-// Max safe segment length for coercion.
-var MAX_SAFE_COMPONENT_LENGTH = 16
-
-var MAX_SAFE_BUILD_LENGTH = MAX_LENGTH - 6
-
-// The actual regexps go on exports.re
-var re = exports.re = []
-var safeRe = exports.safeRe = []
-var src = exports.src = []
-var R = 0
-
-var LETTERDASHNUMBER = '[a-zA-Z0-9-]'
-
-// Replace some greedy regex tokens to prevent regex dos issues. These regex are
-// used internally via the safeRe object since all inputs in this library get
-// normalized first to trim and collapse all extra whitespace. The original
-// regexes are exported for userland consumption and lower level usage. A
-// future breaking change could export the safer regex only with a note that
-// all input should have extra whitespace removed.
-var safeRegexReplacements = [
-  ['\\s', 1],
-  ['\\d', MAX_LENGTH],
-  [LETTERDASHNUMBER, MAX_SAFE_BUILD_LENGTH],
-]
-
-function makeSafeRe (value) {
-  for (var i = 0; i < safeRegexReplacements.length; i++) {
-    var token = safeRegexReplacements[i][0]
-    var max = safeRegexReplacements[i][1]
-    value = value
-      .split(token + '*').join(token + '{0,' + max + '}')
-      .split(token + '+').join(token + '{1,' + max + '}')
-  }
-  return value
-}
-
-// The following Regular Expressions can be used for tokenizing,
-// validating, and parsing SemVer version strings.
-
-// ## Numeric Identifier
-// A single `0`, or a non-zero digit followed by zero or more digits.
-
-var NUMERICIDENTIFIER = R++
-src[NUMERICIDENTIFIER] = '0|[1-9]\\d*'
-var NUMERICIDENTIFIERLOOSE = R++
-src[NUMERICIDENTIFIERLOOSE] = '\\d+'
-
-// ## Non-numeric Identifier
-// Zero or more digits, followed by a letter or hyphen, and then zero or
-// more letters, digits, or hyphens.
-
-var NONNUMERICIDENTIFIER = R++
-src[NONNUMERICIDENTIFIER] = '\\d*[a-zA-Z-]' + LETTERDASHNUMBER + '*'
-
-// ## Main Version
-// Three dot-separated numeric identifiers.
-
-var MAINVERSION = R++
-src[MAINVERSION] = '(' + src[NUMERICIDENTIFIER] + ')\\.' +
-                   '(' + src[NUMERICIDENTIFIER] + ')\\.' +
-                   '(' + src[NUMERICIDENTIFIER] + ')'
-
-var MAINVERSIONLOOSE = R++
-src[MAINVERSIONLOOSE] = '(' + src[NUMERICIDENTIFIERLOOSE] + ')\\.' +
-                        '(' + src[NUMERICIDENTIFIERLOOSE] + ')\\.' +
-                        '(' + src[NUMERICIDENTIFIERLOOSE] + ')'
-
-// ## Pre-release Version Identifier
-// A numeric identifier, or a non-numeric identifier.
-
-var PRERELEASEIDENTIFIER = R++
-src[PRERELEASEIDENTIFIER] = '(?:' + src[NUMERICIDENTIFIER] +
-                            '|' + src[NONNUMERICIDENTIFIER] + ')'
-
-var PRERELEASEIDENTIFIERLOOSE = R++
-src[PRERELEASEIDENTIFIERLOOSE] = '(?:' + src[NUMERICIDENTIFIERLOOSE] +
-                                 '|' + src[NONNUMERICIDENTIFIER] + ')'
-
-// ## Pre-release Version
-// Hyphen, followed by one or more dot-separated pre-release version
-// identifiers.
-
-var PRERELEASE = R++
-src[PRERELEASE] = '(?:-(' + src[PRERELEASEIDENTIFIER] +
-                  '(?:\\.' + src[PRERELEASEIDENTIFIER] + ')*))'
-
-var PRERELEASELOOSE = R++
-src[PRERELEASELOOSE] = '(?:-?(' + src[PRERELEASEIDENTIFIERLOOSE] +
-                       '(?:\\.' + src[PRERELEASEIDENTIFIERLOOSE] + ')*))'
-
-// ## Build Metadata Identifier
-// Any combination of digits, letters, or hyphens.
-
-var BUILDIDENTIFIER = R++
-src[BUILDIDENTIFIER] = LETTERDASHNUMBER + '+'
-
-// ## Build Metadata
-// Plus sign, followed by one or more period-separated build metadata
-// identifiers.
-
-var BUILD = R++
-src[BUILD] = '(?:\\+(' + src[BUILDIDENTIFIER] +
-             '(?:\\.' + src[BUILDIDENTIFIER] + ')*))'
-
-// ## Full Version String
-// A main version, followed optionally by a pre-release version and
-// build metadata.
-
-// Note that the only major, minor, patch, and pre-release sections of
-// the version string are capturing groups.  The build metadata is not a
-// capturing group, because it should not ever be used in version
-// comparison.
-
-var FULL = R++
-var FULLPLAIN = 'v?' + src[MAINVERSION] +
-                src[PRERELEASE] + '?' +
-                src[BUILD] + '?'
-
-src[FULL] = '^' + FULLPLAIN + '$'
-
-// like full, but allows v1.2.3 and =1.2.3, which people do sometimes.
-// also, 1.0.0alpha1 (prerelease without the hyphen) which is pretty
-// common in the npm registry.
-var LOOSEPLAIN = '[v=\\s]*' + src[MAINVERSIONLOOSE] +
-                 src[PRERELEASELOOSE] + '?' +
-                 src[BUILD] + '?'
-
-var LOOSE = R++
-src[LOOSE] = '^' + LOOSEPLAIN + '$'
-
-var GTLT = R++
-src[GTLT] = '((?:<|>)?=?)'
-
-// Something like "2.*" or "1.2.x".
-// Note that "x.x" is a valid xRange identifer, meaning "any version"
-// Only the first item is strictly required.
-var XRANGEIDENTIFIERLOOSE = R++
-src[XRANGEIDENTIFIERLOOSE] = src[NUMERICIDENTIFIERLOOSE] + '|x|X|\\*'
-var XRANGEIDENTIFIER = R++
-src[XRANGEIDENTIFIER] = src[NUMERICIDENTIFIER] + '|x|X|\\*'
-
-var XRANGEPLAIN = R++
-src[XRANGEPLAIN] = '[v=\\s]*(' + src[XRANGEIDENTIFIER] + ')' +
-                   '(?:\\.(' + src[XRANGEIDENTIFIER] + ')' +
-                   '(?:\\.(' + src[XRANGEIDENTIFIER] + ')' +
-                   '(?:' + src[PRERELEASE] + ')?' +
-                   src[BUILD] + '?' +
-                   ')?)?'
-
-var XRANGEPLAINLOOSE = R++
-src[XRANGEPLAINLOOSE] = '[v=\\s]*(' + src[XRANGEIDENTIFIERLOOSE] + ')' +
-                        '(?:\\.(' + src[XRANGEIDENTIFIERLOOSE] + ')' +
-                        '(?:\\.(' + src[XRANGEIDENTIFIERLOOSE] + ')' +
-                        '(?:' + src[PRERELEASELOOSE] + ')?' +
-                        src[BUILD] + '?' +
-                        ')?)?'
-
-var XRANGE = R++
-src[XRANGE] = '^' + src[GTLT] + '\\s*' + src[XRANGEPLAIN] + '$'
-var XRANGELOOSE = R++
-src[XRANGELOOSE] = '^' + src[GTLT] + '\\s*' + src[XRANGEPLAINLOOSE] + '$'
-
-// Coercion.
-// Extract anything that could conceivably be a part of a valid semver
-var COERCE = R++
-src[COERCE] = '(?:^|[^\\d])' +
-              '(\\d{1,' + MAX_SAFE_COMPONENT_LENGTH + '})' +
-              '(?:\\.(\\d{1,' + MAX_SAFE_COMPONENT_LENGTH + '}))?' +
-              '(?:\\.(\\d{1,' + MAX_SAFE_COMPONENT_LENGTH + '}))?' +
-              '(?:$|[^\\d])'
-
-// Tilde ranges.
-// Meaning is "reasonably at or greater than"
-var LONETILDE = R++
-src[LONETILDE] = '(?:~>?)'
-
-var TILDETRIM = R++
-src[TILDETRIM] = '(\\s*)' + src[LONETILDE] + '\\s+'
-re[TILDETRIM] = new RegExp(src[TILDETRIM], 'g')
-safeRe[TILDETRIM] = new RegExp(makeSafeRe(src[TILDETRIM]), 'g')
-var tildeTrimReplace = '$1~'
-
-var TILDE = R++
-src[TILDE] = '^' + src[LONETILDE] + src[XRANGEPLAIN] + '$'
-var TILDELOOSE = R++
-src[TILDELOOSE] = '^' + src[LONETILDE] + src[XRANGEPLAINLOOSE] + '$'
-
-// Caret ranges.
-// Meaning is "at least and backwards compatible with"
-var LONECARET = R++
-src[LONECARET] = '(?:\\^)'
-
-var CARETTRIM = R++
-src[CARETTRIM] = '(\\s*)' + src[LONECARET] + '\\s+'
-re[CARETTRIM] = new RegExp(src[CARETTRIM], 'g')
-safeRe[CARETTRIM] = new RegExp(makeSafeRe(src[CARETTRIM]), 'g')
-var caretTrimReplace = '$1^'
-
-var CARET = R++
-src[CARET] = '^' + src[LONECARET] + src[XRANGEPLAIN] + '$'
-var CARETLOOSE = R++
-src[CARETLOOSE] = '^' + src[LONECARET] + src[XRANGEPLAINLOOSE] + '$'
-
-// A simple gt/lt/eq thing, or just "" to indicate "any version"
-var COMPARATORLOOSE = R++
-src[COMPARATORLOOSE] = '^' + src[GTLT] + '\\s*(' + LOOSEPLAIN + ')$|^$'
-var COMPARATOR = R++
-src[COMPARATOR] = '^' + src[GTLT] + '\\s*(' + FULLPLAIN + ')$|^$'
-
-// An expression to strip any whitespace between the gtlt and the thing
-// it modifies, so that `> 1.2.3` ==> `>1.2.3`
-var COMPARATORTRIM = R++
-src[COMPARATORTRIM] = '(\\s*)' + src[GTLT] +
-                      '\\s*(' + LOOSEPLAIN + '|' + src[XRANGEPLAIN] + ')'
-
-// this one has to use the /g flag
-re[COMPARATORTRIM] = new RegExp(src[COMPARATORTRIM], 'g')
-safeRe[COMPARATORTRIM] = new RegExp(makeSafeRe(src[COMPARATORTRIM]), 'g')
-var comparatorTrimReplace = '$1$2$3'
-
-// Something like `1.2.3 - 1.2.4`
-// Note that these all use the loose form, because they'll be
-// checked against either the strict or loose comparator form
-// later.
-var HYPHENRANGE = R++
-src[HYPHENRANGE] = '^\\s*(' + src[XRANGEPLAIN] + ')' +
-                   '\\s+-\\s+' +
-                   '(' + src[XRANGEPLAIN] + ')' +
-                   '\\s*$'
-
-var HYPHENRANGELOOSE = R++
-src[HYPHENRANGELOOSE] = '^\\s*(' + src[XRANGEPLAINLOOSE] + ')' +
-                        '\\s+-\\s+' +
-                        '(' + src[XRANGEPLAINLOOSE] + ')' +
-                        '\\s*$'
-
-// Star ranges basically just allow anything at all.
-var STAR = R++
-src[STAR] = '(<|>)?=?\\s*\\*'
-
-// Compile to actual regexp objects.
-// All are flag-free, unless they were created above with a flag.
-for (var i = 0; i < R; i++) {
-  debug(i, src[i])
-  if (!re[i]) {
-    re[i] = new RegExp(src[i])
-
-    // Replace all greedy whitespace to prevent regex dos issues. These regex are
-    // used internally via the safeRe object since all inputs in this library get
-    // normalized first to trim and collapse all extra whitespace. The original
-    // regexes are exported for userland consumption and lower level usage. A
-    // future breaking change could export the safer regex only with a note that
-    // all input should have extra whitespace removed.
-    safeRe[i] = new RegExp(makeSafeRe(src[i]))
-  }
-}
-
-exports.parse = parse
-function parse (version, options) {
-  if (!options || typeof options !== 'object') {
-    options = {
-      loose: !!options,
-      includePrerelease: false
-    }
-  }
-
-  if (version instanceof SemVer) {
-    return version
-  }
-
-  if (typeof version !== 'string') {
-    return null
-  }
-
-  if (version.length > MAX_LENGTH) {
-    return null
-  }
-
-  var r = options.loose ? safeRe[LOOSE] : safeRe[FULL]
-  if (!r.test(version)) {
-    return null
-  }
-
-  try {
-    return new SemVer(version, options)
-  } catch (er) {
-    return null
-  }
-}
-
-exports.valid = valid
-function valid (version, options) {
-  var v = parse(version, options)
-  return v ? v.version : null
-}
-
-exports.clean = clean
-function clean (version, options) {
-  var s = parse(version.trim().replace(/^[=v]+/, ''), options)
-  return s ? s.version : null
-}
-
-exports.SemVer = SemVer
-
-function SemVer (version, options) {
-  if (!options || typeof options !== 'object') {
-    options = {
-      loose: !!options,
-      includePrerelease: false
-    }
-  }
-  if (version instanceof SemVer) {
-    if (version.loose === options.loose) {
-      return version
-    } else {
-      version = version.version
-    }
-  } else if (typeof version !== 'string') {
-    throw new TypeError('Invalid Version: ' + version)
-  }
-
-  if (version.length > MAX_LENGTH) {
-    throw new TypeError('version is longer than ' + MAX_LENGTH + ' characters')
-  }
-
-  if (!(this instanceof SemVer)) {
-    return new SemVer(version, options)
-  }
-
-  debug('SemVer', version, options)
-  this.options = options
-  this.loose = !!options.loose
-
-  var m = version.trim().match(options.loose ? safeRe[LOOSE] : safeRe[FULL])
-
-  if (!m) {
-    throw new TypeError('Invalid Version: ' + version)
-  }
-
-  this.raw = version
-
-  // these are actually numbers
-  this.major = +m[1]
-  this.minor = +m[2]
-  this.patch = +m[3]
-
-  if (this.major > MAX_SAFE_INTEGER || this.major < 0) {
-    throw new TypeError('Invalid major version')
-  }
-
-  if (this.minor > MAX_SAFE_INTEGER || this.minor < 0) {
-    throw new TypeError('Invalid minor version')
-  }
-
-  if (this.patch > MAX_SAFE_INTEGER || this.patch < 0) {
-    throw new TypeError('Invalid patch version')
-  }
-
-  // numberify any prerelease numeric ids
-  if (!m[4]) {
-    this.prerelease = []
-  } else {
-    this.prerelease = m[4].split('.').map(function (id) {
-      if (/^[0-9]+$/.test(id)) {
-        var num = +id
-        if (num >= 0 && num < MAX_SAFE_INTEGER) {
-          return num
-        }
-      }
-      return id
-    })
-  }
-
-  this.build = m[5] ? m[5].split('.') : []
-  this.format()
-}
-
-SemVer.prototype.format = function () {
-  this.version = this.major + '.' + this.minor + '.' + this.patch
-  if (this.prerelease.length) {
-    this.version += '-' + this.prerelease.join('.')
-  }
-  return this.version
-}
-
-SemVer.prototype.toString = function () {
-  return this.version
-}
-
-SemVer.prototype.compare = function (other) {
-  debug('SemVer.compare', this.version, this.options, other)
-  if (!(other instanceof SemVer)) {
-    other = new SemVer(other, this.options)
-  }
-
-  return this.compareMain(other) || this.comparePre(other)
-}
-
-SemVer.prototype.compareMain = function (other) {
-  if (!(other instanceof SemVer)) {
-    other = new SemVer(other, this.options)
-  }
-
-  return compareIdentifiers(this.major, other.major) ||
-         compareIdentifiers(this.minor, other.minor) ||
-         compareIdentifiers(this.patch, other.patch)
-}
-
-SemVer.prototype.comparePre = function (other) {
-  if (!(other instanceof SemVer)) {
-    other = new SemVer(other, this.options)
-  }
-
-  // NOT having a prerelease is > having one
-  if (this.prerelease.length && !other.prerelease.length) {
-    return -1
-  } else if (!this.prerelease.length && other.prerelease.length) {
-    return 1
-  } else if (!this.prerelease.length && !other.prerelease.length) {
-    return 0
-  }
-
-  var i = 0
-  do {
-    var a = this.prerelease[i]
-    var b = other.prerelease[i]
-    debug('prerelease compare', i, a, b)
-    if (a === undefined && b === undefined) {
-      return 0
-    } else if (b === undefined) {
-      return 1
-    } else if (a === undefined) {
-      return -1
-    } else if (a === b) {
-      continue
-    } else {
-      return compareIdentifiers(a, b)
-    }
-  } while (++i)
-}
-
-// preminor will bump the version up to the next minor release, and immediately
-// down to pre-release. premajor and prepatch work the same way.
-SemVer.prototype.inc = function (release, identifier) {
-  switch (release) {
-    case 'premajor':
-      this.prerelease.length = 0
-      this.patch = 0
-      this.minor = 0
-      this.major++
-      this.inc('pre', identifier)
-      break
-    case 'preminor':
-      this.prerelease.length = 0
-      this.patch = 0
-      this.minor++
-      this.inc('pre', identifier)
-      break
-    case 'prepatch':
-      // If this is already a prerelease, it will bump to the next version
-      // drop any prereleases that might already exist, since they are not
-      // relevant at this point.
-      this.prerelease.length = 0
-      this.inc('patch', identifier)
-      this.inc('pre', identifier)
-      break
-    // If the input is a non-prerelease version, this acts the same as
-    // prepatch.
-    case 'prerelease':
-      if (this.prerelease.length === 0) {
-        this.inc('patch', identifier)
-      }
-      this.inc('pre', identifier)
-      break
-
-    case 'major':
-      // If this is a pre-major version, bump up to the same major version.
-      // Otherwise increment major.
-      // 1.0.0-5 bumps to 1.0.0
-      // 1.1.0 bumps to 2.0.0
-      if (this.minor !== 0 ||
-          this.patch !== 0 ||
-          this.prerelease.length === 0) {
-        this.major++
-      }
-      this.minor = 0
-      this.patch = 0
-      this.prerelease = []
-      break
-    case 'minor':
-      // If this is a pre-minor version, bump up to the same minor version.
-      // Otherwise increment minor.
-      // 1.2.0-5 bumps to 1.2.0
-      // 1.2.1 bumps to 1.3.0
-      if (this.patch !== 0 || this.prerelease.length === 0) {
-        this.minor++
-      }
-      this.patch = 0
-      this.prerelease = []
-      break
-    case 'patch':
-      // If this is not a pre-release version, it will increment the patch.
-      // If it is a pre-release it will bump up to the same patch version.
-      // 1.2.0-5 patches to 1.2.0
-      // 1.2.0 patches to 1.2.1
-      if (this.prerelease.length === 0) {
-        this.patch++
-      }
-      this.prerelease = []
-      break
-    // This probably shouldn't be used publicly.
-    // 1.0.0 "pre" would become 1.0.0-0 which is the wrong direction.
-    case 'pre':
-      if (this.prerelease.length === 0) {
-        this.prerelease = [0]
-      } else {
-        var i = this.prerelease.length
-        while (--i >= 0) {
-          if (typeof this.prerelease[i] === 'number') {
-            this.prerelease[i]++
-            i = -2
-          }
-        }
-        if (i === -1) {
-          // didn't increment anything
-          this.prerelease.push(0)
-        }
-      }
-      if (identifier) {
-        // 1.2.0-beta.1 bumps to 1.2.0-beta.2,
-        // 1.2.0-beta.fooblz or 1.2.0-beta bumps to 1.2.0-beta.0
-        if (this.prerelease[0] === identifier) {
-          if (isNaN(this.prerelease[1])) {
-            this.prerelease = [identifier, 0]
-          }
-        } else {
-          this.prerelease = [identifier, 0]
-        }
-      }
-      break
-
-    default:
-      throw new Error('invalid increment argument: ' + release)
-  }
-  this.format()
-  this.raw = this.version
-  return this
-}
-
-exports.inc = inc
-function inc (version, release, loose, identifier) {
-  if (typeof (loose) === 'string') {
-    identifier = loose
-    loose = undefined
-  }
-
-  try {
-    return new SemVer(version, loose).inc(release, identifier).version
-  } catch (er) {
-    return null
-  }
-}
-
-exports.diff = diff
-function diff (version1, version2) {
-  if (eq(version1, version2)) {
-    return null
-  } else {
-    var v1 = parse(version1)
-    var v2 = parse(version2)
-    var prefix = ''
-    if (v1.prerelease.length || v2.prerelease.length) {
-      prefix = 'pre'
-      var defaultResult = 'prerelease'
-    }
-    for (var key in v1) {
-      if (key === 'major' || key === 'minor' || key === 'patch') {
-        if (v1[key] !== v2[key]) {
-          return prefix + key
-        }
-      }
-    }
-    return defaultResult // may be undefined
-  }
-}
-
-exports.compareIdentifiers = compareIdentifiers
-
-var numeric = /^[0-9]+$/
-function compareIdentifiers (a, b) {
-  var anum = numeric.test(a)
-  var bnum = numeric.test(b)
-
-  if (anum && bnum) {
-    a = +a
-    b = +b
-  }
-
-  return a === b ? 0
-    : (anum && !bnum) ? -1
-    : (bnum && !anum) ? 1
-    : a < b ? -1
-    : 1
-}
-
-exports.rcompareIdentifiers = rcompareIdentifiers
-function rcompareIdentifiers (a, b) {
-  return compareIdentifiers(b, a)
-}
-
-exports.major = major
-function major (a, loose) {
-  return new SemVer(a, loose).major
-}
-
-exports.minor = minor
-function minor (a, loose) {
-  return new SemVer(a, loose).minor
-}
-
-exports.patch = patch
-function patch (a, loose) {
-  return new SemVer(a, loose).patch
-}
-
-exports.compare = compare
-function compare (a, b, loose) {
-  return new SemVer(a, loose).compare(new SemVer(b, loose))
-}
-
-exports.compareLoose = compareLoose
-function compareLoose (a, b) {
-  return compare(a, b, true)
-}
-
-exports.rcompare = rcompare
-function rcompare (a, b, loose) {
-  return compare(b, a, loose)
-}
-
-exports.sort = sort
-function sort (list, loose) {
-  return list.sort(function (a, b) {
-    return exports.compare(a, b, loose)
-  })
-}
-
-exports.rsort = rsort
-function rsort (list, loose) {
-  return list.sort(function (a, b) {
-    return exports.rcompare(a, b, loose)
-  })
-}
-
-exports.gt = gt
-function gt (a, b, loose) {
-  return compare(a, b, loose) > 0
-}
-
-exports.lt = lt
-function lt (a, b, loose) {
-  return compare(a, b, loose) < 0
-}
-
-exports.eq = eq
-function eq (a, b, loose) {
-  return compare(a, b, loose) === 0
-}
-
-exports.neq = neq
-function neq (a, b, loose) {
-  return compare(a, b, loose) !== 0
-}
-
-exports.gte = gte
-function gte (a, b, loose) {
-  return compare(a, b, loose) >= 0
-}
-
-exports.lte = lte
-function lte (a, b, loose) {
-  return compare(a, b, loose) <= 0
-}
-
-exports.cmp = cmp
-function cmp (a, op, b, loose) {
-  switch (op) {
-    case '===':
-      if (typeof a === 'object')
-        a = a.version
-      if (typeof b === 'object')
-        b = b.version
-      return a === b
-
-    case '!==':
-      if (typeof a === 'object')
-        a = a.version
-      if (typeof b === 'object')
-        b = b.version
-      return a !== b
-
-    case '':
-    case '=':
-    case '==':
-      return eq(a, b, loose)
-
-    case '!=':
-      return neq(a, b, loose)
-
-    case '>':
-      return gt(a, b, loose)
-
-    case '>=':
-      return gte(a, b, loose)
-
-    case '<':
-      return lt(a, b, loose)
-
-    case '<=':
-      return lte(a, b, loose)
-
-    default:
-      throw new TypeError('Invalid operator: ' + op)
-  }
-}
-
-exports.Comparator = Comparator
-function Comparator (comp, options) {
-  if (!options || typeof options !== 'object') {
-    options = {
-      loose: !!options,
-      includePrerelease: false
-    }
-  }
-
-  if (comp instanceof Comparator) {
-    if (comp.loose === !!options.loose) {
-      return comp
-    } else {
-      comp = comp.value
-    }
-  }
-
-  if (!(this instanceof Comparator)) {
-    return new Comparator(comp, options)
-  }
-
-  comp = comp.trim().split(/\s+/).join(' ')
-  debug('comparator', comp, options)
-  this.options = options
-  this.loose = !!options.loose
-  this.parse(comp)
-
-  if (this.semver === ANY) {
-    this.value = ''
-  } else {
-    this.value = this.operator + this.semver.version
-  }
-
-  debug('comp', this)
-}
-
-var ANY = {}
-Comparator.prototype.parse = function (comp) {
-  var r = this.options.loose ? safeRe[COMPARATORLOOSE] : safeRe[COMPARATOR]
-  var m = comp.match(r)
-
-  if (!m) {
-    throw new TypeError('Invalid comparator: ' + comp)
-  }
-
-  this.operator = m[1]
-  if (this.operator === '=') {
-    this.operator = ''
-  }
-
-  // if it literally is just '>' or '' then allow anything.
-  if (!m[2]) {
-    this.semver = ANY
-  } else {
-    this.semver = new SemVer(m[2], this.options.loose)
-  }
-}
-
-Comparator.prototype.toString = function () {
-  return this.value
-}
-
-Comparator.prototype.test = function (version) {
-  debug('Comparator.test', version, this.options.loose)
-
-  if (this.semver === ANY) {
-    return true
-  }
-
-  if (typeof version === 'string') {
-    version = new SemVer(version, this.options)
-  }
-
-  return cmp(version, this.operator, this.semver, this.options)
-}
-
-Comparator.prototype.intersects = function (comp, options) {
-  if (!(comp instanceof Comparator)) {
-    throw new TypeError('a Comparator is required')
-  }
-
-  if (!options || typeof options !== 'object') {
-    options = {
-      loose: !!options,
-      includePrerelease: false
-    }
-  }
-
-  var rangeTmp
-
-  if (this.operator === '') {
-    rangeTmp = new Range(comp.value, options)
-    return satisfies(this.value, rangeTmp, options)
-  } else if (comp.operator === '') {
-    rangeTmp = new Range(this.value, options)
-    return satisfies(comp.semver, rangeTmp, options)
-  }
-
-  var sameDirectionIncreasing =
-    (this.operator === '>=' || this.operator === '>') &&
-    (comp.operator === '>=' || comp.operator === '>')
-  var sameDirectionDecreasing =
-    (this.operator === '<=' || this.operator === '<') &&
-    (comp.operator === '<=' || comp.operator === '<')
-  var sameSemVer = this.semver.version === comp.semver.version
-  var differentDirectionsInclusive =
-    (this.operator === '>=' || this.operator === '<=') &&
-    (comp.operator === '>=' || comp.operator === '<=')
-  var oppositeDirectionsLessThan =
-    cmp(this.semver, '<', comp.semver, options) &&
-    ((this.operator === '>=' || this.operator === '>') &&
-    (comp.operator === '<=' || comp.operator === '<'))
-  var oppositeDirectionsGreaterThan =
-    cmp(this.semver, '>', comp.semver, options) &&
-    ((this.operator === '<=' || this.operator === '<') &&
-    (comp.operator === '>=' || comp.operator === '>'))
-
-  return sameDirectionIncreasing || sameDirectionDecreasing ||
-    (sameSemVer && differentDirectionsInclusive) ||
-    oppositeDirectionsLessThan || oppositeDirectionsGreaterThan
-}
-
-exports.Range = Range
-function Range (range, options) {
-  if (!options || typeof options !== 'object') {
-    options = {
-      loose: !!options,
-      includePrerelease: false
-    }
-  }
-
-  if (range instanceof Range) {
-    if (range.loose === !!options.loose &&
-        range.includePrerelease === !!options.includePrerelease) {
-      return range
-    } else {
-      return new Range(range.raw, options)
-    }
-  }
-
-  if (range instanceof Comparator) {
-    return new Range(range.value, options)
-  }
-
-  if (!(this instanceof Range)) {
-    return new Range(range, options)
-  }
-
-  this.options = options
-  this.loose = !!options.loose
-  this.includePrerelease = !!options.includePrerelease
-
-  // First reduce all whitespace as much as possible so we do not have to rely
-  // on potentially slow regexes like \s*. This is then stored and used for
-  // future error messages as well.
-  this.raw = range
-    .trim()
-    .split(/\s+/)
-    .join(' ')
-
-  // First, split based on boolean or ||
-  this.set = this.raw.split('||').map(function (range) {
-    return this.parseRange(range.trim())
-  }, this).filter(function (c) {
-    // throw out any that are not relevant for whatever reason
-    return c.length
-  })
-
-  if (!this.set.length) {
-    throw new TypeError('Invalid SemVer Range: ' + this.raw)
-  }
-
-  this.format()
-}
-
-Range.prototype.format = function () {
-  this.range = this.set.map(function (comps) {
-    return comps.join(' ').trim()
-  }).join('||').trim()
-  return this.range
-}
-
-Range.prototype.toString = function () {
-  return this.range
-}
-
-Range.prototype.parseRange = function (range) {
-  var loose = this.options.loose
-  // `1.2.3 - 1.2.4` => `>=1.2.3 <=1.2.4`
-  var hr = loose ? safeRe[HYPHENRANGELOOSE] : safeRe[HYPHENRANGE]
-  range = range.replace(hr, hyphenReplace)
-  debug('hyphen replace', range)
-  // `> 1.2.3 < 1.2.5` => `>1.2.3 <1.2.5`
-  range = range.replace(safeRe[COMPARATORTRIM], comparatorTrimReplace)
-  debug('comparator trim', range, safeRe[COMPARATORTRIM])
-
-  // `~ 1.2.3` => `~1.2.3`
-  range = range.replace(safeRe[TILDETRIM], tildeTrimReplace)
-
-  // `^ 1.2.3` => `^1.2.3`
-  range = range.replace(safeRe[CARETTRIM], caretTrimReplace)
-
-  // At this point, the range is completely trimmed and
-  // ready to be split into comparators.
-  var compRe = loose ? safeRe[COMPARATORLOOSE] : safeRe[COMPARATOR]
-  var set = range.split(' ').map(function (comp) {
-    return parseComparator(comp, this.options)
-  }, this).join(' ').split(/\s+/)
-  if (this.options.loose) {
-    // in loose mode, throw out any that are not valid comparators
-    set = set.filter(function (comp) {
-      return !!comp.match(compRe)
-    })
-  }
-  set = set.map(function (comp) {
-    return new Comparator(comp, this.options)
-  }, this)
-
-  return set
-}
-
-Range.prototype.intersects = function (range, options) {
-  if (!(range instanceof Range)) {
-    throw new TypeError('a Range is required')
-  }
-
-  return this.set.some(function (thisComparators) {
-    return thisComparators.every(function (thisComparator) {
-      return range.set.some(function (rangeComparators) {
-        return rangeComparators.every(function (rangeComparator) {
-          return thisComparator.intersects(rangeComparator, options)
-        })
-      })
-    })
-  })
-}
-
-// Mostly just for testing and legacy API reasons
-exports.toComparators = toComparators
-function toComparators (range, options) {
-  return new Range(range, options).set.map(function (comp) {
-    return comp.map(function (c) {
-      return c.value
-    }).join(' ').trim().split(' ')
-  })
-}
-
-// comprised of xranges, tildes, stars, and gtlt's at this point.
-// already replaced the hyphen ranges
-// turn into a set of JUST comparators.
-function parseComparator (comp, options) {
-  debug('comp', comp, options)
-  comp = replaceCarets(comp, options)
-  debug('caret', comp)
-  comp = replaceTildes(comp, options)
-  debug('tildes', comp)
-  comp = replaceXRanges(comp, options)
-  debug('xrange', comp)
-  comp = replaceStars(comp, options)
-  debug('stars', comp)
-  return comp
-}
-
-function isX (id) {
-  return !id || id.toLowerCase() === 'x' || id === '*'
-}
-
-// ~, ~> --> * (any, kinda silly)
-// ~2, ~2.x, ~2.x.x, ~>2, ~>2.x ~>2.x.x --> >=2.0.0 <3.0.0
-// ~2.0, ~2.0.x, ~>2.0, ~>2.0.x --> >=2.0.0 <2.1.0
-// ~1.2, ~1.2.x, ~>1.2, ~>1.2.x --> >=1.2.0 <1.3.0
-// ~1.2.3, ~>1.2.3 --> >=1.2.3 <1.3.0
-// ~1.2.0, ~>1.2.0 --> >=1.2.0 <1.3.0
-function replaceTildes (comp, options) {
-  return comp.trim().split(/\s+/).map(function (comp) {
-    return replaceTilde(comp, options)
-  }).join(' ')
-}
-
-function replaceTilde (comp, options) {
-  var r = options.loose ? safeRe[TILDELOOSE] : safeRe[TILDE]
-  return comp.replace(r, function (_, M, m, p, pr) {
-    debug('tilde', comp, _, M, m, p, pr)
-    var ret
-
-    if (isX(M)) {
-      ret = ''
-    } else if (isX(m)) {
-      ret = '>=' + M + '.0.0 <' + (+M + 1) + '.0.0'
-    } else if (isX(p)) {
-      // ~1.2 == >=1.2.0 <1.3.0
-      ret = '>=' + M + '.' + m + '.0 <' + M + '.' + (+m + 1) + '.0'
-    } else if (pr) {
-      debug('replaceTilde pr', pr)
-      ret = '>=' + M + '.' + m + '.' + p + '-' + pr +
-            ' <' + M + '.' + (+m + 1) + '.0'
-    } else {
-      // ~1.2.3 == >=1.2.3 <1.3.0
-      ret = '>=' + M + '.' + m + '.' + p +
-            ' <' + M + '.' + (+m + 1) + '.0'
-    }
-
-    debug('tilde return', ret)
-    return ret
-  })
-}
-
-// ^ --> * (any, kinda silly)
-// ^2, ^2.x, ^2.x.x --> >=2.0.0 <3.0.0
-// ^2.0, ^2.0.x --> >=2.0.0 <3.0.0
-// ^1.2, ^1.2.x --> >=1.2.0 <2.0.0
-// ^1.2.3 --> >=1.2.3 <2.0.0
-// ^1.2.0 --> >=1.2.0 <2.0.0
-function replaceCarets (comp, options) {
-  return comp.trim().split(/\s+/).map(function (comp) {
-    return replaceCaret(comp, options)
-  }).join(' ')
-}
-
-function replaceCaret (comp, options) {
-  debug('caret', comp, options)
-  var r = options.loose ? safeRe[CARETLOOSE] : safeRe[CARET]
-  return comp.replace(r, function (_, M, m, p, pr) {
-    debug('caret', comp, _, M, m, p, pr)
-    var ret
-
-    if (isX(M)) {
-      ret = ''
-    } else if (isX(m)) {
-      ret = '>=' + M + '.0.0 <' + (+M + 1) + '.0.0'
-    } else if (isX(p)) {
-      if (M === '0') {
-        ret = '>=' + M + '.' + m + '.0 <' + M + '.' + (+m + 1) + '.0'
-      } else {
-        ret = '>=' + M + '.' + m + '.0 <' + (+M + 1) + '.0.0'
-      }
-    } else if (pr) {
-      debug('replaceCaret pr', pr)
-      if (M === '0') {
-        if (m === '0') {
-          ret = '>=' + M + '.' + m + '.' + p + '-' + pr +
-                ' <' + M + '.' + m + '.' + (+p + 1)
-        } else {
-          ret = '>=' + M + '.' + m + '.' + p + '-' + pr +
-                ' <' + M + '.' + (+m + 1) + '.0'
-        }
-      } else {
-        ret = '>=' + M + '.' + m + '.' + p + '-' + pr +
-              ' <' + (+M + 1) + '.0.0'
-      }
-    } else {
-      debug('no pr')
-      if (M === '0') {
-        if (m === '0') {
-          ret = '>=' + M + '.' + m + '.' + p +
-                ' <' + M + '.' + m + '.' + (+p + 1)
-        } else {
-          ret = '>=' + M + '.' + m + '.' + p +
-                ' <' + M + '.' + (+m + 1) + '.0'
-        }
-      } else {
-        ret = '>=' + M + '.' + m + '.' + p +
-              ' <' + (+M + 1) + '.0.0'
-      }
-    }
-
-    debug('caret return', ret)
-    return ret
-  })
-}
-
-function replaceXRanges (comp, options) {
-  debug('replaceXRanges', comp, options)
-  return comp.split(/\s+/).map(function (comp) {
-    return replaceXRange(comp, options)
-  }).join(' ')
-}
-
-function replaceXRange (comp, options) {
-  comp = comp.trim()
-  var r = options.loose ? safeRe[XRANGELOOSE] : safeRe[XRANGE]
-  return comp.replace(r, function (ret, gtlt, M, m, p, pr) {
-    debug('xRange', comp, ret, gtlt, M, m, p, pr)
-    var xM = isX(M)
-    var xm = xM || isX(m)
-    var xp = xm || isX(p)
-    var anyX = xp
-
-    if (gtlt === '=' && anyX) {
-      gtlt = ''
-    }
-
-    if (xM) {
-      if (gtlt === '>' || gtlt === '<') {
-        // nothing is allowed
-        ret = '<0.0.0'
-      } else {
-        // nothing is forbidden
-        ret = '*'
-      }
-    } else if (gtlt && anyX) {
-      // we know patch is an x, because we have any x at all.
-      // replace X with 0
-      if (xm) {
-        m = 0
-      }
-      p = 0
-
-      if (gtlt === '>') {
-        // >1 => >=2.0.0
-        // >1.2 => >=1.3.0
-        // >1.2.3 => >= 1.2.4
-        gtlt = '>='
-        if (xm) {
-          M = +M + 1
-          m = 0
-          p = 0
-        } else {
-          m = +m + 1
-          p = 0
-        }
-      } else if (gtlt === '<=') {
-        // <=0.7.x is actually <0.8.0, since any 0.7.x should
-        // pass.  Similarly, <=7.x is actually <8.0.0, etc.
-        gtlt = '<'
-        if (xm) {
-          M = +M + 1
-        } else {
-          m = +m + 1
-        }
-      }
-
-      ret = gtlt + M + '.' + m + '.' + p
-    } else if (xm) {
-      ret = '>=' + M + '.0.0 <' + (+M + 1) + '.0.0'
-    } else if (xp) {
-      ret = '>=' + M + '.' + m + '.0 <' + M + '.' + (+m + 1) + '.0'
-    }
-
-    debug('xRange return', ret)
-
-    return ret
-  })
-}
-
-// Because * is AND-ed with everything else in the comparator,
-// and '' means "any version", just remove the *s entirely.
-function replaceStars (comp, options) {
-  debug('replaceStars', comp, options)
-  // Looseness is ignored here.  star is always as loose as it gets!
-  return comp.trim().replace(safeRe[STAR], '')
-}
-
-// This function is passed to string.replace(safeRe[HYPHENRANGE])
-// M, m, patch, prerelease, build
-// 1.2 - 3.4.5 => >=1.2.0 <=3.4.5
-// 1.2.3 - 3.4 => >=1.2.0 <3.5.0 Any 3.4.x will do
-// 1.2 - 3.4 => >=1.2.0 <3.5.0
-function hyphenReplace ($0,
-  from, fM, fm, fp, fpr, fb,
-  to, tM, tm, tp, tpr, tb) {
-  if (isX(fM)) {
-    from = ''
-  } else if (isX(fm)) {
-    from = '>=' + fM + '.0.0'
-  } else if (isX(fp)) {
-    from = '>=' + fM + '.' + fm + '.0'
-  } else {
-    from = '>=' + from
-  }
-
-  if (isX(tM)) {
-    to = ''
-  } else if (isX(tm)) {
-    to = '<' + (+tM + 1) + '.0.0'
-  } else if (isX(tp)) {
-    to = '<' + tM + '.' + (+tm + 1) + '.0'
-  } else if (tpr) {
-    to = '<=' + tM + '.' + tm + '.' + tp + '-' + tpr
-  } else {
-    to = '<=' + to
-  }
-
-  return (from + ' ' + to).trim()
-}
-
-// if ANY of the sets match ALL of its comparators, then pass
-Range.prototype.test = function (version) {
-  if (!version) {
-    return false
-  }
-
-  if (typeof version === 'string') {
-    version = new SemVer(version, this.options)
-  }
-
-  for (var i = 0; i < this.set.length; i++) {
-    if (testSet(this.set[i], version, this.options)) {
-      return true
-    }
-  }
-  return false
-}
-
-function testSet (set, version, options) {
-  for (var i = 0; i < set.length; i++) {
-    if (!set[i].test(version)) {
-      return false
-    }
-  }
-
-  if (version.prerelease.length && !options.includePrerelease) {
-    // Find the set of versions that are allowed to have prereleases
-    // For example, ^1.2.3-pr.1 desugars to >=1.2.3-pr.1 <2.0.0
-    // That should allow `1.2.3-pr.2` to pass.
-    // However, `1.2.4-alpha.notready` should NOT be allowed,
-    // even though it's within the range set by the comparators.
-    for (i = 0; i < set.length; i++) {
-      debug(set[i].semver)
-      if (set[i].semver === ANY) {
-        continue
-      }
-
-      if (set[i].semver.prerelease.length > 0) {
-        var allowed = set[i].semver
-        if (allowed.major === version.major &&
-            allowed.minor === version.minor &&
-            allowed.patch === version.patch) {
-          return true
-        }
-      }
-    }
-
-    // Version has a -pre, but it's not one of the ones we like.
-    return false
-  }
-
-  return true
-}
-
-exports.satisfies = satisfies
-function satisfies (version, range, options) {
-  try {
-    range = new Range(range, options)
-  } catch (er) {
-    return false
-  }
-  return range.test(version)
-}
-
-exports.maxSatisfying = maxSatisfying
-function maxSatisfying (versions, range, options) {
-  var max = null
-  var maxSV = null
-  try {
-    var rangeObj = new Range(range, options)
-  } catch (er) {
-    return null
-  }
-  versions.forEach(function (v) {
-    if (rangeObj.test(v)) {
-      // satisfies(v, range, options)
-      if (!max || maxSV.compare(v) === -1) {
-        // compare(max, v, true)
-        max = v
-        maxSV = new SemVer(max, options)
-      }
-    }
-  })
-  return max
-}
-
-exports.minSatisfying = minSatisfying
-function minSatisfying (versions, range, options) {
-  var min = null
-  var minSV = null
-  try {
-    var rangeObj = new Range(range, options)
-  } catch (er) {
-    return null
-  }
-  versions.forEach(function (v) {
-    if (rangeObj.test(v)) {
-      // satisfies(v, range, options)
-      if (!min || minSV.compare(v) === 1) {
-        // compare(min, v, true)
-        min = v
-        minSV = new SemVer(min, options)
-      }
-    }
-  })
-  return min
-}
-
-exports.minVersion = minVersion
-function minVersion (range, loose) {
-  range = new Range(range, loose)
-
-  var minver = new SemVer('0.0.0')
-  if (range.test(minver)) {
-    return minver
-  }
-
-  minver = new SemVer('0.0.0-0')
-  if (range.test(minver)) {
-    return minver
-  }
-
-  minver = null
-  for (var i = 0; i < range.set.length; ++i) {
-    var comparators = range.set[i]
-
-    comparators.forEach(function (comparator) {
-      // Clone to avoid manipulating the comparator's semver object.
-      var compver = new SemVer(comparator.semver.version)
-      switch (comparator.operator) {
-        case '>':
-          if (compver.prerelease.length === 0) {
-            compver.patch++
-          } else {
-            compver.prerelease.push(0)
-          }
-          compver.raw = compver.format()
-          /* fallthrough */
-        case '':
-        case '>=':
-          if (!minver || gt(minver, compver)) {
-            minver = compver
-          }
-          break
-        case '<':
-        case '<=':
-          /* Ignore maximum versions */
-          break
-        /* istanbul ignore next */
-        default:
-          throw new Error('Unexpected operation: ' + comparator.operator)
-      }
-    })
-  }
-
-  if (minver && range.test(minver)) {
-    return minver
-  }
-
-  return null
-}
-
-exports.validRange = validRange
-function validRange (range, options) {
-  try {
-    // Return '*' instead of '' so that truthiness works.
-    // This will throw if it's invalid anyway
-    return new Range(range, options).range || '*'
-  } catch (er) {
-    return null
-  }
-}
-
-// Determine if version is less than all the versions possible in the range
-exports.ltr = ltr
-function ltr (version, range, options) {
-  return outside(version, range, '<', options)
-}
-
-// Determine if version is greater than all the versions possible in the range.
-exports.gtr = gtr
-function gtr (version, range, options) {
-  return outside(version, range, '>', options)
-}
-
-exports.outside = outside
-function outside (version, range, hilo, options) {
-  version = new SemVer(version, options)
-  range = new Range(range, options)
-
-  var gtfn, ltefn, ltfn, comp, ecomp
-  switch (hilo) {
-    case '>':
-      gtfn = gt
-      ltefn = lte
-      ltfn = lt
-      comp = '>'
-      ecomp = '>='
-      break
-    case '<':
-      gtfn = lt
-      ltefn = gte
-      ltfn = gt
-      comp = '<'
-      ecomp = '<='
-      break
-    default:
-      throw new TypeError('Must provide a hilo val of "<" or ">"')
-  }
-
-  // If it satisifes the range it is not outside
-  if (satisfies(version, range, options)) {
-    return false
-  }
-
-  // From now on, variable terms are as if we're in "gtr" mode.
-  // but note that everything is flipped for the "ltr" function.
-
-  for (var i = 0; i < range.set.length; ++i) {
-    var comparators = range.set[i]
-
-    var high = null
-    var low = null
-
-    comparators.forEach(function (comparator) {
-      if (comparator.semver === ANY) {
-        comparator = new Comparator('>=0.0.0')
-      }
-      high = high || comparator
-      low = low || comparator
-      if (gtfn(comparator.semver, high.semver, options)) {
-        high = comparator
-      } else if (ltfn(comparator.semver, low.semver, options)) {
-        low = comparator
-      }
-    })
-
-    // If the edge version comparator has a operator then our version
-    // isn't outside it
-    if (high.operator === comp || high.operator === ecomp) {
-      return false
-    }
-
-    // If the lowest version comparator has an operator and our version
-    // is less than it then it isn't higher than the range
-    if ((!low.operator || low.operator === comp) &&
-        ltefn(version, low.semver)) {
-      return false
-    } else if (low.operator === ecomp && ltfn(version, low.semver)) {
-      return false
-    }
-  }
-  return true
-}
-
-exports.prerelease = prerelease
-function prerelease (version, options) {
-  var parsed = parse(version, options)
-  return (parsed && parsed.prerelease.length) ? parsed.prerelease : null
-}
-
-exports.intersects = intersects
-function intersects (r1, r2, options) {
-  r1 = new Range(r1, options)
-  r2 = new Range(r2, options)
-  return r1.intersects(r2)
-}
-
-exports.coerce = coerce
-function coerce (version) {
-  if (version instanceof SemVer) {
-    return version
-  }
-
-  if (typeof version !== 'string') {
-    return null
-  }
-
-  var match = version.match(safeRe[COERCE])
-
-  if (match == null) {
-    return null
-  }
-
-  return parse(match[1] +
-    '.' + (match[2] || '0') +
-    '.' + (match[3] || '0'))
-}
-
-
-/***/ }),
-
-/***/ 1513:
-/***/ ((module) => {
-
-/**
- * Convert array of 16 byte values to UUID string format of the form:
- * XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX
- */
-var byteToHex = [];
-for (var i = 0; i < 256; ++i) {
-  byteToHex[i] = (i + 0x100).toString(16).substr(1);
-}
-
-function bytesToUuid(buf, offset) {
-  var i = offset || 0;
-  var bth = byteToHex;
-  // join used to fix memory issue caused by concatenation: https://bugs.chromium.org/p/v8/issues/detail?id=3175#c4
-  return ([
-    bth[buf[i++]], bth[buf[i++]],
-    bth[buf[i++]], bth[buf[i++]], '-',
-    bth[buf[i++]], bth[buf[i++]], '-',
-    bth[buf[i++]], bth[buf[i++]], '-',
-    bth[buf[i++]], bth[buf[i++]], '-',
-    bth[buf[i++]], bth[buf[i++]],
-    bth[buf[i++]], bth[buf[i++]],
-    bth[buf[i++]], bth[buf[i++]]
-  ]).join('');
-}
-
-module.exports = bytesToUuid;
-
-
-/***/ }),
-
-/***/ 9984:
-/***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
-
-// Unique ID creation requires a high quality random # generator.  In node.js
-// this is pretty straight-forward - we use the crypto API.
-
-var crypto = __nccwpck_require__(6113);
-
-module.exports = function nodeRNG() {
-  return crypto.randomBytes(16);
-};
-
-
-/***/ }),
-
-/***/ 4758:
-/***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
-
-var rng = __nccwpck_require__(9984);
-var bytesToUuid = __nccwpck_require__(1513);
-
-function v4(options, buf, offset) {
-  var i = buf && offset || 0;
-
-  if (typeof(options) == 'string') {
-    buf = options === 'binary' ? new Array(16) : null;
-    options = null;
-  }
-  options = options || {};
-
-  var rnds = options.random || (options.rng || rng)();
-
-  // Per 4.4, set bits for version and `clock_seq_hi_and_reserved`
-  rnds[6] = (rnds[6] & 0x0f) | 0x40;
-  rnds[8] = (rnds[8] & 0x3f) | 0x80;
-
-  // Copy bytes to buffer, if provided
-  if (buf) {
-    for (var ii = 0; ii < 16; ++ii) {
-      buf[i + ii] = rnds[ii];
-    }
-  }
-
-  return buf || bytesToUuid(rnds);
-}
-
-module.exports = v4;
-
-
-/***/ }),
-
-/***/ 3681:
-/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
-
-"use strict";
-
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.scrape = exports.extractZip = exports.extractTar = exports.extract7z = exports.cacheFile = exports.cacheDir = exports.downloadToolWithRetries = exports.downloadTool = exports.findLocalToolVersions = exports.findLocalTool = exports.evaluateVersions = exports.cleanVersion = exports.isExplicitVersion = exports.prependPath = exports.debug = void 0;
-const httpm = __nccwpck_require__(5538);
-const path = __nccwpck_require__(1017);
-const os = __nccwpck_require__(2037);
-const process = __nccwpck_require__(7282);
-const fs = __nccwpck_require__(7147);
-const semver = __nccwpck_require__(9184);
-const tl = __nccwpck_require__(347);
-const cmp = __nccwpck_require__(2568);
-const uuidV4 = __nccwpck_require__(4758);
-let pkg = __nccwpck_require__(9099);
-let userAgent = 'vsts-task-installer/' + pkg.version;
-let requestOptions = {
-    // ignoreSslError: true,
-    proxy: tl.getHttpProxyConfiguration(),
-    cert: tl.getHttpCertConfiguration(),
-    allowRedirects: true,
-    allowRetries: true,
-    maxRetries: 2
-};
-tl.setResourcePath(__nccwpck_require__.ab + "lib1.json");
-function debug(message) {
-    tl.debug(message);
-}
-exports.debug = debug;
-function prependPath(toolPath) {
-    tl.assertAgent('2.115.0');
-    if (!toolPath) {
-        throw new Error('Parameter toolPath must not be null or empty');
-    }
-    else if (!tl.exist(toolPath) || !tl.stats(toolPath).isDirectory()) {
-        throw new Error('Directory does not exist: ' + toolPath);
-    }
-    // todo: add a test for path
-    console.log(tl.loc('TOOL_LIB_PrependPath', toolPath));
-    let newPath = toolPath + path.delimiter + process.env['PATH'];
-    tl.debug('new Path: ' + newPath);
-    process.env['PATH'] = newPath;
-    // instruct the agent to set this path on future tasks
-    console.log('##vso[task.prependpath]' + toolPath);
-}
-exports.prependPath = prependPath;
-function delay(ms) {
-    return new Promise(resolve => setTimeout(resolve, ms));
-}
-//-----------------------------
-// Version Functions
-//-----------------------------
-/**
- * Checks if a version spec is an explicit version (e.g. 1.0.1 or v1.0.1)
- * As opposed to a version spec like 1.x
- *
- * @param versionSpec
- */
-function isExplicitVersion(versionSpec) {
-    let c = semver.clean(versionSpec);
-    tl.debug('isExplicit: ' + c);
-    let valid = semver.valid(c) != null;
-    tl.debug('explicit? ' + valid);
-    return valid;
-}
-exports.isExplicitVersion = isExplicitVersion;
-/**
- * Returns cleaned (removed leading/trailing whitespace, remove '=v' prefix)
- * and parsed version, or null if version is invalid.
- */
-function cleanVersion(version) {
-    tl.debug('cleaning: ' + version);
-    return semver.clean(version);
-}
-exports.cleanVersion = cleanVersion;
-/**
- * evaluates a list of versions and returns the latest version matching the version spec
- *
- * @param versions      an array of versions to evaluate
- * @param versionSpec   a version spec (e.g. 1.x)
- */
-function evaluateVersions(versions, versionSpec) {
-    let version;
-    tl.debug('evaluating ' + versions.length + ' versions');
-    versions = versions.sort(cmp);
-    for (let i = versions.length - 1; i >= 0; i--) {
-        let potential = versions[i];
-        let satisfied = semver.satisfies(potential, versionSpec);
-        if (satisfied) {
-            version = potential;
-            break;
-        }
-    }
-    if (version) {
-        tl.debug('matched: ' + version);
-    }
-    else {
-        tl.debug('match not found');
-    }
-    return version;
-}
-exports.evaluateVersions = evaluateVersions;
-//-----------------------------
-// Local Tool Cache Functions
-//-----------------------------
-/**
- * finds the path to a tool in the local installed tool cache
- *
- * @param toolName      name of the tool
- * @param versionSpec   version of the tool
- * @param arch          optional arch.  defaults to arch of computer
- */
-function findLocalTool(toolName, versionSpec, arch) {
-    if (!toolName) {
-        throw new Error('toolName parameter is required');
-    }
-    if (!versionSpec) {
-        throw new Error('versionSpec parameter is required');
-    }
-    arch = arch || os.arch();
-    // attempt to resolve an explicit version
-    if (!isExplicitVersion(versionSpec)) {
-        let localVersions = findLocalToolVersions(toolName, arch);
-        let match = evaluateVersions(localVersions, versionSpec);
-        versionSpec = match;
-    }
-    // check for the explicit version in the cache
-    let toolPath;
-    if (versionSpec) {
-        versionSpec = semver.clean(versionSpec);
-        let cacheRoot = _getCacheRoot();
-        let cachePath = path.join(cacheRoot, toolName, versionSpec, arch);
-        tl.debug('checking cache: ' + cachePath);
-        if (tl.exist(cachePath) && tl.exist(`${cachePath}.complete`)) {
-            console.log(tl.loc('TOOL_LIB_FoundInCache', toolName, versionSpec, arch));
-            toolPath = cachePath;
-        }
-        else {
-            tl.debug('not found');
-        }
-    }
-    return toolPath;
-}
-exports.findLocalTool = findLocalTool;
-/**
- * Retrieves the versions of a tool that is intalled in the local tool cache
- *
- * @param toolName  name of the tool
- * @param arch      optional arch.  defaults to arch of computer
- */
-function findLocalToolVersions(toolName, arch) {
-    let versions = [];
-    arch = arch || os.arch();
-    let toolPath = path.join(_getCacheRoot(), toolName);
-    if (tl.exist(toolPath)) {
-        let children = tl.ls('', [toolPath]);
-        children.forEach((child) => {
-            if (isExplicitVersion(child)) {
-                let fullPath = path.join(toolPath, child, arch);
-                if (tl.exist(fullPath) && tl.exist(`${fullPath}.complete`)) {
-                    versions.push(child);
-                }
-            }
-        });
-    }
-    return versions;
-}
-exports.findLocalToolVersions = findLocalToolVersions;
-//---------------------
-// Download Functions
-//---------------------
-//
-// TODO: keep extension intact
-//
-/**
- * Download a tool from an url and stream it into a file
- *
- * @param url                url of tool to download
- * @param fileName           optional fileName.  Should typically not use (will be a guid for reliability). Can pass fileName with an absolute path.
- * @param handlers           optional handlers array.  Auth handlers to pass to the HttpClient for the tool download.
- * @param additionalHeaders  optional custom HTTP headers.  This is passed to the REST client that downloads the tool.
- */
-function downloadTool(url, fileName, handlers, additionalHeaders) {
-    return __awaiter(this, void 0, void 0, function* () {
-        return new Promise((resolve, reject) => __awaiter(this, void 0, void 0, function* () {
-            try {
-                handlers = handlers || null;
-                let http = new httpm.HttpClient(userAgent, handlers, requestOptions);
-                tl.debug(fileName);
-                fileName = fileName || uuidV4();
-                // check if it's an absolute path already
-                var destPath;
-                if (path.isAbsolute(fileName)) {
-                    destPath = fileName;
-                }
-                else {
-                    destPath = path.join(_getAgentTemp(), fileName);
-                }
-                // make sure that the folder exists
-                tl.mkdirP(path.dirname(destPath));
-                console.log(tl.loc('TOOL_LIB_Downloading', url.replace(/sig=[^&]*/, "sig=-REDACTED-")));
-                tl.debug('destination ' + destPath);
-                if (fs.existsSync(destPath)) {
-                    throw new Error("Destination file path already exists");
-                }
-                tl.debug('downloading');
-                let response = yield http.get(url, additionalHeaders);
-                if (response.message.statusCode != 200) {
-                    let err = new Error('Unexpected HTTP response: ' + response.message.statusCode);
-                    err['httpStatusCode'] = response.message.statusCode;
-                    tl.debug(`Failed to download "${fileName}" from "${url}". Code(${response.message.statusCode}) Message(${response.message.statusMessage})`);
-                    throw err;
-                }
-                let downloadedContentLength = _getContentLengthOfDownloadedFile(response);
-                if (!isNaN(downloadedContentLength)) {
-                    tl.debug(`Content-Length of downloaded file: ${downloadedContentLength}`);
-                }
-                else {
-                    tl.debug(`Content-Length header missing`);
-                }
-                tl.debug('creating stream');
-                const file = fs.createWriteStream(destPath);
-                file
-                    .on('open', (fd) => __awaiter(this, void 0, void 0, function* () {
-                    try {
-                        response.message
-                            .on('error', (err) => {
-                            file.end();
-                            reject(err);
-                        })
-                            .on('aborted', () => {
-                            // this block is for Node10 compatibility since it doesn't emit 'error' event after 'aborted' one
-                            file.end();
-                            reject(new Error('Aborted'));
-                        })
-                            .pipe(file);
-                    }
-                    catch (err) {
-                        reject(err);
-                    }
-                }))
-                    .on('close', () => {
-                    tl.debug('download complete');
-                    let fileSizeInBytes;
-                    try {
-                        fileSizeInBytes = _getFileSizeOnDisk(destPath);
-                    }
-                    catch (err) {
-                        fileSizeInBytes = NaN;
-                        tl.warning(`Unable to check file size of ${destPath} due to error: ${err.Message}`);
-                    }
-                    if (!isNaN(fileSizeInBytes)) {
-                        tl.debug(`Downloaded file size: ${fileSizeInBytes} bytes`);
-                    }
-                    else {
-                        tl.debug(`File size on disk was not found`);
-                    }
-                    if (!isNaN(downloadedContentLength) &&
-                        !isNaN(fileSizeInBytes) &&
-                        fileSizeInBytes !== downloadedContentLength) {
-                        tl.warning(`Content-Length (${downloadedContentLength} bytes) did not match downloaded file size (${fileSizeInBytes} bytes).`);
-                    }
-                    resolve(destPath);
-                })
-                    .on('error', (err) => {
-                    file.end();
-                    reject(err);
-                });
-            }
-            catch (error) {
-                reject(error);
-            }
-        }));
-    });
-}
-exports.downloadTool = downloadTool;
-function downloadToolWithRetries(url, fileName, handlers, additionalHeaders, maxAttempts = 3, retryInterval = 500) {
-    return __awaiter(this, void 0, void 0, function* () {
-        let attempt = 1;
-        let destinationPath = '';
-        while (attempt <= maxAttempts && destinationPath == '') {
-            try {
-                destinationPath = yield downloadTool(url, fileName, handlers, additionalHeaders);
-            }
-            catch (err) {
-                if (attempt === maxAttempts)
-                    throw err;
-                const attemptInterval = attempt * retryInterval;
-                // Error will be shown in downloadTool.
-                tl.debug(`Attempt ${attempt} failed. Retrying after ${attemptInterval} ms`);
-                yield delay(attemptInterval);
-                attempt++;
-            }
-        }
-        return destinationPath;
-    });
-}
-exports.downloadToolWithRetries = downloadToolWithRetries;
-//---------------------
-// Size functions
-//---------------------
-/**
- * Gets size of downloaded file from "Content-Length" header
- *
- * @param response    response for request to get the file
- * @returns number if the 'content-length' is not empty, otherwise NaN
- */
-function _getContentLengthOfDownloadedFile(response) {
-    let contentLengthHeader = response.message.headers['content-length'];
-    let parsedContentLength = parseInt(contentLengthHeader);
-    return parsedContentLength;
-}
-/**
- * Gets size of file saved to disk
- *
- * @param filePath    the path to the file, saved to the disk
- * @returns size of file saved to disk
- */
-function _getFileSizeOnDisk(filePath) {
-    let fileStats = fs.statSync(filePath);
-    let fileSizeInBytes = fileStats.size;
-    return fileSizeInBytes;
-}
-//---------------------
-// Install Functions
-//---------------------
-function _createToolPath(tool, version, arch) {
-    // todo: add test for clean
-    let folderPath = path.join(_getCacheRoot(), tool, semver.clean(version), arch);
-    tl.debug('destination ' + folderPath);
-    let markerPath = `${folderPath}.complete`;
-    tl.rmRF(folderPath);
-    tl.rmRF(markerPath);
-    tl.mkdirP(folderPath);
-    return folderPath;
-}
-function _completeToolPath(tool, version, arch) {
-    let folderPath = path.join(_getCacheRoot(), tool, semver.clean(version), arch);
-    let markerPath = `${folderPath}.complete`;
-    tl.writeFile(markerPath, '');
-    tl.debug('finished caching tool');
-}
-/**
- * Caches a directory and installs it into the tool cacheDir
- *
- * @param sourceDir    the directory to cache into tools
- * @param tool          tool name
- * @param version       version of the tool.  semver format
- * @param arch          architecture of the tool.  Optional.  Defaults to machine architecture
- */
-function cacheDir(sourceDir, tool, version, arch) {
-    return __awaiter(this, void 0, void 0, function* () {
-        version = semver.clean(version);
-        arch = arch || os.arch();
-        console.log(tl.loc('TOOL_LIB_CachingTool', tool, version, arch));
-        tl.debug('source dir: ' + sourceDir);
-        if (!tl.stats(sourceDir).isDirectory()) {
-            throw new Error('sourceDir is not a directory');
-        }
-        // create the tool dir
-        let destPath = _createToolPath(tool, version, arch);
-        // copy each child item. do not move. move can fail on Windows
-        // due to anti-virus software having an open handle on a file.
-        for (let itemName of fs.readdirSync(sourceDir)) {
-            let s = path.join(sourceDir, itemName);
-            tl.cp(s, destPath + '/', '-r');
-        }
-        // write .complete
-        _completeToolPath(tool, version, arch);
-        return destPath;
-    });
-}
-exports.cacheDir = cacheDir;
-/**
- * Caches a downloaded file (GUID) and installs it
- * into the tool cache with a given targetName
- *
- * @param sourceFile    the file to cache into tools.  Typically a result of downloadTool which is a guid.
- * @param targetFile    the name of the file name in the tools directory
- * @param tool          tool name
- * @param version       version of the tool.  semver format
- * @param arch          architecture of the tool.  Optional.  Defaults to machine architecture
- */
-function cacheFile(sourceFile, targetFile, tool, version, arch) {
-    return __awaiter(this, void 0, void 0, function* () {
-        version = semver.clean(version);
-        arch = arch || os.arch();
-        console.log(tl.loc('TOOL_LIB_CachingTool', tool, version, arch));
-        tl.debug('source file:' + sourceFile);
-        if (!tl.stats(sourceFile).isFile()) {
-            throw new Error('sourceFile is not a file');
-        }
-        // create the tool dir
-        let destFolder = _createToolPath(tool, version, arch);
-        // copy instead of move. move can fail on Windows due to
-        // anti-virus software having an open handle on a file.
-        let destPath = path.join(destFolder, targetFile);
-        tl.debug('destination file' + destPath);
-        tl.cp(sourceFile, destPath);
-        // write .complete
-        _completeToolPath(tool, version, arch);
-        return destFolder;
-    });
-}
-exports.cacheFile = cacheFile;
-//---------------------
-// Extract Functions
-//---------------------
-/**
- * Extract a .7z file
- *
- * @param file     path to the .7z file
- * @param dest     destination directory. Optional.
- * @param _7zPath  path to 7zr.exe. Optional, for long path support. Most .7z archives do not have this
- * problem. If your .7z archive contains very long paths, you can pass the path to 7zr.exe which will
- * gracefully handle long paths. By default 7z.exe is used because it is a very small program and is
- * bundled with the tool lib. However it does not support long paths. 7z.exe is the reduced command line
- * interface, it is smaller than the full command line interface, and it does support long paths. At the
- * time of this writing, it is freely available from the LZMA SDK that is available on the 7zip website.
- * Be sure to check the current license agreement. If 7z.exe is bundled with your task, then the path
- * to 7z.exe can be pass to this function.
- * @param overwriteDest Overwrite files in destination catalog. Optional.
- * @returns        path to the destination directory
- */
-function extract7z(file, dest, _7zPath, overwriteDest) {
-    return __awaiter(this, void 0, void 0, function* () {
-        if (process.platform != 'win32') {
-            throw new Error('extract7z() not supported on current OS');
-        }
-        if (!file) {
-            throw new Error("parameter 'file' is required");
-        }
-        console.log(tl.loc('TOOL_LIB_ExtractingArchive'));
-        dest = _createExtractFolder(dest);
-        let originalCwd = process.cwd();
-        try {
-            process.chdir(dest);
-            if (_7zPath) {
-                // extract
-                const _7z = tl.tool(_7zPath);
-                if (overwriteDest) {
-                    _7z.arg('-aoa');
-                }
-                _7z.arg('x') // eXtract files with full paths
-                    .arg('-bb1') // -bb[0-3] : set output log level
-                    .arg('-bd') // disable progress indicator
-                    .arg('-sccUTF-8') // set charset for for console input/output
-                    .arg(file);
-                yield _7z.exec();
-            }
-            else {
-                // extract
-                let escapedScript = path.join(__dirname, 'Invoke-7zdec.ps1').replace(/'/g, "''").replace(/"|\n|\r/g, ''); // double-up single quotes, remove double quotes and newlines
-                let escapedFile = file.replace(/'/g, "''").replace(/"|\n|\r/g, '');
-                let escapedTarget = dest.replace(/'/g, "''").replace(/"|\n|\r/g, '');
-                const overrideDestDirectory = overwriteDest ? 1 : 0;
-                const command = `& '${escapedScript}' -Source '${escapedFile}' -Target '${escapedTarget}' -OverrideDestDirectory ${overrideDestDirectory}`;
-                let powershellPath = tl.which('powershell', true);
-                let powershell = tl.tool(powershellPath)
-                    .line('-NoLogo -Sta -NoProfile -NonInteractive -ExecutionPolicy Unrestricted -Command')
-                    .arg(command);
-                powershell.on('stdout', (buffer) => {
-                    process.stdout.write(buffer);
-                });
-                powershell.on('stderr', (buffer) => {
-                    process.stderr.write(buffer);
-                });
-                yield powershell.exec({ silent: true });
-            }
-        }
-        finally {
-            process.chdir(originalCwd);
-        }
-        return dest;
-    });
-}
-exports.extract7z = extract7z;
-/**
- * installs a tool from a tar by extracting the tar and installing it into the tool cache
- *
- * @param file      file path of the tar
- * @param tool      name of tool in the tool cache
- * @param version   version of the tool
- * @param arch      arch of the tool.  optional.  defaults to the arch of the machine
- * @param options   IExtractOptions
- * @param destination   destination directory. optional.
- */
-function extractTar(file, destination) {
-    return __awaiter(this, void 0, void 0, function* () {
-        // mkdir -p node/4.7.0/x64
-        // tar xzC ./node/4.7.0/x64 -f node-v4.7.0-darwin-x64.tar.gz --strip-components 1
-        console.log(tl.loc('TOOL_LIB_ExtractingArchive'));
-        let dest = _createExtractFolder(destination);
-        let tr = tl.tool('tar');
-        tr.arg(['xC', dest, '-f', file]);
-        yield tr.exec();
-        return dest;
-    });
-}
-exports.extractTar = extractTar;
-function extractZip(file, destination) {
-    return __awaiter(this, void 0, void 0, function* () {
-        if (!file) {
-            throw new Error("parameter 'file' is required");
-        }
-        console.log(tl.loc('TOOL_LIB_ExtractingArchive'));
-        let dest = _createExtractFolder(destination);
-        if (process.platform == 'win32') {
-            // build the powershell command
-            let escapedFile = file.replace(/'/g, "''").replace(/"|\n|\r/g, ''); // double-up single quotes, remove double quotes and newlines
-            let escapedDest = dest.replace(/'/g, "''").replace(/"|\n|\r/g, '');
-            let command = `$ErrorActionPreference = 'Stop' ; try { Add-Type -AssemblyName System.IO.Compression.FileSystem } catch { } ; [System.IO.Compression.ZipFile]::ExtractToDirectory('${escapedFile}', '${escapedDest}')`;
-            // change the console output code page to UTF-8.
-            // TODO: FIX WHICH: let chcpPath = tl.which('chcp.com', true);
-            let chcpPath = path.join(process.env.windir, "system32", "chcp.com");
-            yield tl.exec(chcpPath, '65001');
-            // run powershell
-            let powershell = tl.tool('powershell')
-                .line('-NoLogo -Sta -NoProfile -NonInteractive -ExecutionPolicy Unrestricted -Command')
-                .arg(command);
-            yield powershell.exec();
-        }
-        else {
-            let unzip = tl.tool('unzip')
-                .arg(file);
-            yield unzip.exec({ cwd: dest });
-        }
-        return dest;
-    });
-}
-exports.extractZip = extractZip;
-function _createExtractFolder(dest) {
-    if (!dest) {
-        // create a temp dir
-        dest = path.join(_getAgentTemp(), uuidV4());
-    }
-    tl.mkdirP(dest);
-    return dest;
-}
-//---------------------
-// Query Functions
-//---------------------
-//       default input will be >= LTS version.  drop label different than value.
-//       v4 (LTS) would have a value of 4.x
-//       option to always download?  (not cache), TTL?
-/**
- * Scrape a web page for versions by regex
- *
- * @param url       url to scrape
- * @param regex     regex to use for version matches
- * @param handlers  optional handlers array.  Auth handlers to pass to the HttpClient for the tool download.
- */
-function scrape(url, regex, handlers) {
-    return __awaiter(this, void 0, void 0, function* () {
-        handlers = handlers || null;
-        let http = new httpm.HttpClient(userAgent, handlers, requestOptions);
-        let output = yield (yield http.get(url)).readBody();
-        let matches = output.match(regex);
-        let seen = {};
-        let versions = [];
-        for (let i = 0; i < matches.length; i++) {
-            let ver = semver.clean(matches[i]);
-            if (!seen.hasOwnProperty(ver)) {
-                seen[ver] = true;
-                versions.push(ver);
-            }
-        }
-        return versions;
-    });
-}
-exports.scrape = scrape;
-function _getCacheRoot() {
-    tl.assertAgent('2.115.0');
-    let cacheRoot = tl.getVariable('Agent.ToolsDirectory');
-    if (!cacheRoot) {
-        throw new Error('Agent.ToolsDirectory is not set');
-    }
-    return cacheRoot;
-}
-function _getAgentTemp() {
-    tl.assertAgent('2.115.0');
-    let tempDirectory = tl.getVariable('Agent.TempDirectory');
-    if (!tempDirectory) {
-        throw new Error('Agent.TempDirectory is not set');
-    }
-    return tempDirectory;
-}
 
 
 /***/ }),
@@ -20660,26 +18043,6 @@ module.exports = {
 
 /***/ }),
 
-/***/ 2568:
-/***/ ((module) => {
-
-module.exports = function cmp (a, b) {
-    var pa = a.split('.');
-    var pb = b.split('.');
-    for (var i = 0; i < 3; i++) {
-        var na = Number(pa[i]);
-        var nb = Number(pb[i]);
-        if (na > nb) return 1;
-        if (nb > na) return -1;
-        if (!isNaN(na) && isNaN(nb)) return 1;
-        if (isNaN(na) && !isNaN(nb)) return -1;
-    }
-    return 0;
-};
-
-
-/***/ }),
-
 /***/ 1532:
 /***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
 
@@ -28110,6 +25473,652 @@ exports.obtainContentCharset = obtainContentCharset;
 
 /***/ }),
 
+/***/ 5840:
+/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", ({
+  value: true
+}));
+Object.defineProperty(exports, "v1", ({
+  enumerable: true,
+  get: function () {
+    return _v.default;
+  }
+}));
+Object.defineProperty(exports, "v3", ({
+  enumerable: true,
+  get: function () {
+    return _v2.default;
+  }
+}));
+Object.defineProperty(exports, "v4", ({
+  enumerable: true,
+  get: function () {
+    return _v3.default;
+  }
+}));
+Object.defineProperty(exports, "v5", ({
+  enumerable: true,
+  get: function () {
+    return _v4.default;
+  }
+}));
+Object.defineProperty(exports, "NIL", ({
+  enumerable: true,
+  get: function () {
+    return _nil.default;
+  }
+}));
+Object.defineProperty(exports, "version", ({
+  enumerable: true,
+  get: function () {
+    return _version.default;
+  }
+}));
+Object.defineProperty(exports, "validate", ({
+  enumerable: true,
+  get: function () {
+    return _validate.default;
+  }
+}));
+Object.defineProperty(exports, "stringify", ({
+  enumerable: true,
+  get: function () {
+    return _stringify.default;
+  }
+}));
+Object.defineProperty(exports, "parse", ({
+  enumerable: true,
+  get: function () {
+    return _parse.default;
+  }
+}));
+
+var _v = _interopRequireDefault(__nccwpck_require__(8628));
+
+var _v2 = _interopRequireDefault(__nccwpck_require__(6409));
+
+var _v3 = _interopRequireDefault(__nccwpck_require__(5122));
+
+var _v4 = _interopRequireDefault(__nccwpck_require__(9120));
+
+var _nil = _interopRequireDefault(__nccwpck_require__(5332));
+
+var _version = _interopRequireDefault(__nccwpck_require__(1595));
+
+var _validate = _interopRequireDefault(__nccwpck_require__(6900));
+
+var _stringify = _interopRequireDefault(__nccwpck_require__(8950));
+
+var _parse = _interopRequireDefault(__nccwpck_require__(2746));
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+/***/ }),
+
+/***/ 4569:
+/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", ({
+  value: true
+}));
+exports["default"] = void 0;
+
+var _crypto = _interopRequireDefault(__nccwpck_require__(6113));
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function md5(bytes) {
+  if (Array.isArray(bytes)) {
+    bytes = Buffer.from(bytes);
+  } else if (typeof bytes === 'string') {
+    bytes = Buffer.from(bytes, 'utf8');
+  }
+
+  return _crypto.default.createHash('md5').update(bytes).digest();
+}
+
+var _default = md5;
+exports["default"] = _default;
+
+/***/ }),
+
+/***/ 5332:
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", ({
+  value: true
+}));
+exports["default"] = void 0;
+var _default = '00000000-0000-0000-0000-000000000000';
+exports["default"] = _default;
+
+/***/ }),
+
+/***/ 2746:
+/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", ({
+  value: true
+}));
+exports["default"] = void 0;
+
+var _validate = _interopRequireDefault(__nccwpck_require__(6900));
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function parse(uuid) {
+  if (!(0, _validate.default)(uuid)) {
+    throw TypeError('Invalid UUID');
+  }
+
+  let v;
+  const arr = new Uint8Array(16); // Parse ########-....-....-....-............
+
+  arr[0] = (v = parseInt(uuid.slice(0, 8), 16)) >>> 24;
+  arr[1] = v >>> 16 & 0xff;
+  arr[2] = v >>> 8 & 0xff;
+  arr[3] = v & 0xff; // Parse ........-####-....-....-............
+
+  arr[4] = (v = parseInt(uuid.slice(9, 13), 16)) >>> 8;
+  arr[5] = v & 0xff; // Parse ........-....-####-....-............
+
+  arr[6] = (v = parseInt(uuid.slice(14, 18), 16)) >>> 8;
+  arr[7] = v & 0xff; // Parse ........-....-....-####-............
+
+  arr[8] = (v = parseInt(uuid.slice(19, 23), 16)) >>> 8;
+  arr[9] = v & 0xff; // Parse ........-....-....-....-############
+  // (Use "/" to avoid 32-bit truncation when bit-shifting high-order bytes)
+
+  arr[10] = (v = parseInt(uuid.slice(24, 36), 16)) / 0x10000000000 & 0xff;
+  arr[11] = v / 0x100000000 & 0xff;
+  arr[12] = v >>> 24 & 0xff;
+  arr[13] = v >>> 16 & 0xff;
+  arr[14] = v >>> 8 & 0xff;
+  arr[15] = v & 0xff;
+  return arr;
+}
+
+var _default = parse;
+exports["default"] = _default;
+
+/***/ }),
+
+/***/ 814:
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", ({
+  value: true
+}));
+exports["default"] = void 0;
+var _default = /^(?:[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}|00000000-0000-0000-0000-000000000000)$/i;
+exports["default"] = _default;
+
+/***/ }),
+
+/***/ 807:
+/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", ({
+  value: true
+}));
+exports["default"] = rng;
+
+var _crypto = _interopRequireDefault(__nccwpck_require__(6113));
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+const rnds8Pool = new Uint8Array(256); // # of random values to pre-allocate
+
+let poolPtr = rnds8Pool.length;
+
+function rng() {
+  if (poolPtr > rnds8Pool.length - 16) {
+    _crypto.default.randomFillSync(rnds8Pool);
+
+    poolPtr = 0;
+  }
+
+  return rnds8Pool.slice(poolPtr, poolPtr += 16);
+}
+
+/***/ }),
+
+/***/ 5274:
+/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", ({
+  value: true
+}));
+exports["default"] = void 0;
+
+var _crypto = _interopRequireDefault(__nccwpck_require__(6113));
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function sha1(bytes) {
+  if (Array.isArray(bytes)) {
+    bytes = Buffer.from(bytes);
+  } else if (typeof bytes === 'string') {
+    bytes = Buffer.from(bytes, 'utf8');
+  }
+
+  return _crypto.default.createHash('sha1').update(bytes).digest();
+}
+
+var _default = sha1;
+exports["default"] = _default;
+
+/***/ }),
+
+/***/ 8950:
+/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", ({
+  value: true
+}));
+exports["default"] = void 0;
+
+var _validate = _interopRequireDefault(__nccwpck_require__(6900));
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+/**
+ * Convert array of 16 byte values to UUID string format of the form:
+ * XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX
+ */
+const byteToHex = [];
+
+for (let i = 0; i < 256; ++i) {
+  byteToHex.push((i + 0x100).toString(16).substr(1));
+}
+
+function stringify(arr, offset = 0) {
+  // Note: Be careful editing this code!  It's been tuned for performance
+  // and works in ways you may not expect. See https://github.com/uuidjs/uuid/pull/434
+  const uuid = (byteToHex[arr[offset + 0]] + byteToHex[arr[offset + 1]] + byteToHex[arr[offset + 2]] + byteToHex[arr[offset + 3]] + '-' + byteToHex[arr[offset + 4]] + byteToHex[arr[offset + 5]] + '-' + byteToHex[arr[offset + 6]] + byteToHex[arr[offset + 7]] + '-' + byteToHex[arr[offset + 8]] + byteToHex[arr[offset + 9]] + '-' + byteToHex[arr[offset + 10]] + byteToHex[arr[offset + 11]] + byteToHex[arr[offset + 12]] + byteToHex[arr[offset + 13]] + byteToHex[arr[offset + 14]] + byteToHex[arr[offset + 15]]).toLowerCase(); // Consistency check for valid UUID.  If this throws, it's likely due to one
+  // of the following:
+  // - One or more input array values don't map to a hex octet (leading to
+  // "undefined" in the uuid)
+  // - Invalid input values for the RFC `version` or `variant` fields
+
+  if (!(0, _validate.default)(uuid)) {
+    throw TypeError('Stringified UUID is invalid');
+  }
+
+  return uuid;
+}
+
+var _default = stringify;
+exports["default"] = _default;
+
+/***/ }),
+
+/***/ 8628:
+/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", ({
+  value: true
+}));
+exports["default"] = void 0;
+
+var _rng = _interopRequireDefault(__nccwpck_require__(807));
+
+var _stringify = _interopRequireDefault(__nccwpck_require__(8950));
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+// **`v1()` - Generate time-based UUID**
+//
+// Inspired by https://github.com/LiosK/UUID.js
+// and http://docs.python.org/library/uuid.html
+let _nodeId;
+
+let _clockseq; // Previous uuid creation time
+
+
+let _lastMSecs = 0;
+let _lastNSecs = 0; // See https://github.com/uuidjs/uuid for API details
+
+function v1(options, buf, offset) {
+  let i = buf && offset || 0;
+  const b = buf || new Array(16);
+  options = options || {};
+  let node = options.node || _nodeId;
+  let clockseq = options.clockseq !== undefined ? options.clockseq : _clockseq; // node and clockseq need to be initialized to random values if they're not
+  // specified.  We do this lazily to minimize issues related to insufficient
+  // system entropy.  See #189
+
+  if (node == null || clockseq == null) {
+    const seedBytes = options.random || (options.rng || _rng.default)();
+
+    if (node == null) {
+      // Per 4.5, create and 48-bit node id, (47 random bits + multicast bit = 1)
+      node = _nodeId = [seedBytes[0] | 0x01, seedBytes[1], seedBytes[2], seedBytes[3], seedBytes[4], seedBytes[5]];
+    }
+
+    if (clockseq == null) {
+      // Per 4.2.2, randomize (14 bit) clockseq
+      clockseq = _clockseq = (seedBytes[6] << 8 | seedBytes[7]) & 0x3fff;
+    }
+  } // UUID timestamps are 100 nano-second units since the Gregorian epoch,
+  // (1582-10-15 00:00).  JSNumbers aren't precise enough for this, so
+  // time is handled internally as 'msecs' (integer milliseconds) and 'nsecs'
+  // (100-nanoseconds offset from msecs) since unix epoch, 1970-01-01 00:00.
+
+
+  let msecs = options.msecs !== undefined ? options.msecs : Date.now(); // Per 4.2.1.2, use count of uuid's generated during the current clock
+  // cycle to simulate higher resolution clock
+
+  let nsecs = options.nsecs !== undefined ? options.nsecs : _lastNSecs + 1; // Time since last uuid creation (in msecs)
+
+  const dt = msecs - _lastMSecs + (nsecs - _lastNSecs) / 10000; // Per 4.2.1.2, Bump clockseq on clock regression
+
+  if (dt < 0 && options.clockseq === undefined) {
+    clockseq = clockseq + 1 & 0x3fff;
+  } // Reset nsecs if clock regresses (new clockseq) or we've moved onto a new
+  // time interval
+
+
+  if ((dt < 0 || msecs > _lastMSecs) && options.nsecs === undefined) {
+    nsecs = 0;
+  } // Per 4.2.1.2 Throw error if too many uuids are requested
+
+
+  if (nsecs >= 10000) {
+    throw new Error("uuid.v1(): Can't create more than 10M uuids/sec");
+  }
+
+  _lastMSecs = msecs;
+  _lastNSecs = nsecs;
+  _clockseq = clockseq; // Per 4.1.4 - Convert from unix epoch to Gregorian epoch
+
+  msecs += 12219292800000; // `time_low`
+
+  const tl = ((msecs & 0xfffffff) * 10000 + nsecs) % 0x100000000;
+  b[i++] = tl >>> 24 & 0xff;
+  b[i++] = tl >>> 16 & 0xff;
+  b[i++] = tl >>> 8 & 0xff;
+  b[i++] = tl & 0xff; // `time_mid`
+
+  const tmh = msecs / 0x100000000 * 10000 & 0xfffffff;
+  b[i++] = tmh >>> 8 & 0xff;
+  b[i++] = tmh & 0xff; // `time_high_and_version`
+
+  b[i++] = tmh >>> 24 & 0xf | 0x10; // include version
+
+  b[i++] = tmh >>> 16 & 0xff; // `clock_seq_hi_and_reserved` (Per 4.2.2 - include variant)
+
+  b[i++] = clockseq >>> 8 | 0x80; // `clock_seq_low`
+
+  b[i++] = clockseq & 0xff; // `node`
+
+  for (let n = 0; n < 6; ++n) {
+    b[i + n] = node[n];
+  }
+
+  return buf || (0, _stringify.default)(b);
+}
+
+var _default = v1;
+exports["default"] = _default;
+
+/***/ }),
+
+/***/ 6409:
+/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", ({
+  value: true
+}));
+exports["default"] = void 0;
+
+var _v = _interopRequireDefault(__nccwpck_require__(5998));
+
+var _md = _interopRequireDefault(__nccwpck_require__(4569));
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+const v3 = (0, _v.default)('v3', 0x30, _md.default);
+var _default = v3;
+exports["default"] = _default;
+
+/***/ }),
+
+/***/ 5998:
+/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", ({
+  value: true
+}));
+exports["default"] = _default;
+exports.URL = exports.DNS = void 0;
+
+var _stringify = _interopRequireDefault(__nccwpck_require__(8950));
+
+var _parse = _interopRequireDefault(__nccwpck_require__(2746));
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function stringToBytes(str) {
+  str = unescape(encodeURIComponent(str)); // UTF8 escape
+
+  const bytes = [];
+
+  for (let i = 0; i < str.length; ++i) {
+    bytes.push(str.charCodeAt(i));
+  }
+
+  return bytes;
+}
+
+const DNS = '6ba7b810-9dad-11d1-80b4-00c04fd430c8';
+exports.DNS = DNS;
+const URL = '6ba7b811-9dad-11d1-80b4-00c04fd430c8';
+exports.URL = URL;
+
+function _default(name, version, hashfunc) {
+  function generateUUID(value, namespace, buf, offset) {
+    if (typeof value === 'string') {
+      value = stringToBytes(value);
+    }
+
+    if (typeof namespace === 'string') {
+      namespace = (0, _parse.default)(namespace);
+    }
+
+    if (namespace.length !== 16) {
+      throw TypeError('Namespace must be array-like (16 iterable integer values, 0-255)');
+    } // Compute hash of namespace and value, Per 4.3
+    // Future: Use spread syntax when supported on all platforms, e.g. `bytes =
+    // hashfunc([...namespace, ... value])`
+
+
+    let bytes = new Uint8Array(16 + value.length);
+    bytes.set(namespace);
+    bytes.set(value, namespace.length);
+    bytes = hashfunc(bytes);
+    bytes[6] = bytes[6] & 0x0f | version;
+    bytes[8] = bytes[8] & 0x3f | 0x80;
+
+    if (buf) {
+      offset = offset || 0;
+
+      for (let i = 0; i < 16; ++i) {
+        buf[offset + i] = bytes[i];
+      }
+
+      return buf;
+    }
+
+    return (0, _stringify.default)(bytes);
+  } // Function#name is not settable on some platforms (#270)
+
+
+  try {
+    generateUUID.name = name; // eslint-disable-next-line no-empty
+  } catch (err) {} // For CommonJS default export support
+
+
+  generateUUID.DNS = DNS;
+  generateUUID.URL = URL;
+  return generateUUID;
+}
+
+/***/ }),
+
+/***/ 5122:
+/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", ({
+  value: true
+}));
+exports["default"] = void 0;
+
+var _rng = _interopRequireDefault(__nccwpck_require__(807));
+
+var _stringify = _interopRequireDefault(__nccwpck_require__(8950));
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function v4(options, buf, offset) {
+  options = options || {};
+
+  const rnds = options.random || (options.rng || _rng.default)(); // Per 4.4, set bits for version and `clock_seq_hi_and_reserved`
+
+
+  rnds[6] = rnds[6] & 0x0f | 0x40;
+  rnds[8] = rnds[8] & 0x3f | 0x80; // Copy bytes to buffer, if provided
+
+  if (buf) {
+    offset = offset || 0;
+
+    for (let i = 0; i < 16; ++i) {
+      buf[offset + i] = rnds[i];
+    }
+
+    return buf;
+  }
+
+  return (0, _stringify.default)(rnds);
+}
+
+var _default = v4;
+exports["default"] = _default;
+
+/***/ }),
+
+/***/ 9120:
+/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", ({
+  value: true
+}));
+exports["default"] = void 0;
+
+var _v = _interopRequireDefault(__nccwpck_require__(5998));
+
+var _sha = _interopRequireDefault(__nccwpck_require__(5274));
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+const v5 = (0, _v.default)('v5', 0x50, _sha.default);
+var _default = v5;
+exports["default"] = _default;
+
+/***/ }),
+
+/***/ 6900:
+/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", ({
+  value: true
+}));
+exports["default"] = void 0;
+
+var _regex = _interopRequireDefault(__nccwpck_require__(814));
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function validate(uuid) {
+  return typeof uuid === 'string' && _regex.default.test(uuid);
+}
+
+var _default = validate;
+exports["default"] = _default;
+
+/***/ }),
+
+/***/ 1595:
+/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", ({
+  value: true
+}));
+exports["default"] = void 0;
+
+var _validate = _interopRequireDefault(__nccwpck_require__(6900));
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function version(uuid) {
+  if (!(0, _validate.default)(uuid)) {
+    throw TypeError('Invalid UUID');
+  }
+
+  return parseInt(uuid.substr(14, 1), 16);
+}
+
+var _default = version;
+exports["default"] = _default;
+
+/***/ }),
+
 /***/ 2940:
 /***/ ((module) => {
 
@@ -28717,14 +26726,6 @@ module.exports = require("util");
 
 "use strict";
 module.exports = require("zlib");
-
-/***/ }),
-
-/***/ 9099:
-/***/ ((module) => {
-
-"use strict";
-module.exports = JSON.parse('{"name":"azure-pipelines-tool-lib","version":"2.0.7","description":"Azure Pipelines Tool Installer Lib for CI/CD Tasks","main":"tool.js","scripts":{"build":"node make.js build","test":"node make.js test","sample":"node make.js sample","units":"node make.js units"},"repository":{"type":"git","url":"git+https://github.com/microsoft/azure-pipelines-tool-lib.git"},"keywords":["VSTS"],"author":"Microsoft","license":"MIT","bugs":{"url":"https://github.com/microsoft/azure-pipelines-tool-lib/issues"},"homepage":"https://github.com/microsoft/azure-pipelines-tool-lib#readme","dependencies":{"@types/semver":"^5.3.0","@types/uuid":"^3.4.5","azure-pipelines-task-lib":"^4.1.0","semver":"^5.7.0","semver-compare":"^1.0.0","typed-rest-client":"^1.8.6","uuid":"^3.3.2"},"devDependencies":{"@types/mocha":"^5.2.7","@types/node":"^16.11.39","@types/shelljs":"^0.8.4","@types/xml2js":"^0.4.5","mocha":"^6.2.3","nock":"13.0.4","shelljs":"^0.8.5","typescript":"^4.0.5","xml2js":"^0.4.23"}}');
 
 /***/ })
 

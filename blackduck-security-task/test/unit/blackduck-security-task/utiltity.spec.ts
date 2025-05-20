@@ -18,6 +18,8 @@ import {AZURE_BUILD_REASON, AZURE_ENVIRONMENT_VARIABLES} from "../../../src/blac
 import { ErrorCode } from "../../../src/blackduck-security-task/enum/ErrorCodes";
 import {BuildStatus} from "../../../src/blackduck-security-task/enum/BuildStatus";
 import {TaskResult} from "azure-pipelines-task-lib/task";
+import * as trm from "azure-pipelines-task-lib/toolrunner";
+
 
 describe("Utilities", () => {
 
@@ -34,6 +36,137 @@ describe("Utilities", () => {
     afterEach(() => {
         sandbox.restore();
     });
+
+    context("_getAgentTemp", () => {
+
+        it("should return Agent.TempDirectory when set", () => {
+            sandbox.stub(taskLib, "getVariable").withArgs("Agent.TempDirectory").returns("/tmp");
+            const result = utility._getAgentTemp()
+            expect(result).to.equal("/tmp");
+        });
+      
+        it("should throw error if Agent.TempDirectory is not set", () => {
+            sandbox.stub(taskLib, "getVariable").withArgs("Agent.TempDirectory").returns(undefined);
+            expect(() => utility._getAgentTemp()).to.throw("Agent.TempDirectory is not set");
+        });
+
+    });
+
+    context("_createExtractFolder", () => {
+
+        it("should use provided destination path", () => {
+            const destination = "/custom/path"
+            const mkdirStub = sandbox.stub(taskLib, "mkdirP");
+            const result = (utility as any)._createExtractFolder(destination);
+            expect(result).to.equal(destination);
+            expect(mkdirStub.calledWith(destination)).to.be.true;
+        });
+      
+        it("should use _getAgentTemp when destination is not provided", () => {
+            const tempPath = "/tmp";
+            sandbox.stub(taskLib, "getVariable").withArgs("Agent.TempDirectory").returns(tempPath);
+        
+            const result = (utility as any)._createExtractFolder();
+            expect(result.startsWith(tempPath)).to.be.true;
+            expect(result.length).to.be.greaterThan(tempPath.length);
+        });
+
+    });
+
+    context("extractZipWithQuiet", () => {
+      
+        it("should throw error if file is not provided", async () => {
+          try {
+            await utility.extractZipWithQuiet("");
+          } catch (err: any) {
+            expect(err.message).to.equal("parameter 'file' is required");
+          }
+        });
+      
+        it("should extract zip on Windows", async () => {
+          sandbox.stub(process, "platform").value("win32");
+      
+          const execStub = sandbox.stub().resolves(0);
+          const toolStub = sandbox.stub(taskLib, "tool").returns({
+            line: () => ({
+              arg: () => ({
+                exec: execStub,
+              }),
+            }),
+          } as unknown as trm.ToolRunner);
+      
+          const chcpStub = sandbox.stub(taskLib, "exec").resolves(0);
+
+          const file = "C:\\temp\\archive.zip"
+          const destination = "C:\\temp\\dest"
+      
+          const result = await utility.extractZipWithQuiet(file, destination);
+          expect(result).to.include(destination);
+          expect(chcpStub.calledOnce).to.be.true;
+          expect(toolStub.calledOnce).to.be.true;
+          expect(execStub.calledOnce).to.be.true;
+        });
+      
+        it("should extract zip on non-Windows platform", async () => {
+          sandbox.stub(process, "platform").value("linux");
+      
+          const execStub = sandbox.stub().resolves(0);
+          sandbox.stub(taskLib, "tool").returns({
+            arg: function () {
+              return this;
+            },
+            exec: execStub,
+          } as unknown as trm.ToolRunner);
+
+          const file = "/tmp/archive.zip"
+          const destination = "/tmp/dest"
+      
+          const result = await utility.extractZipWithQuiet(file, destination);
+          expect(result).to.equal(destination);
+          expect(execStub.calledOnce).to.be.true;
+        });
+
+        it("should call _createExtractFolder if no destination is given", async () => {
+            sandbox.stub(process, "platform").value("linux");
+            sandbox.stub(taskLib, "getVariable").withArgs("Agent.TempDirectory").returns("/tmp");
+        
+            const execStub = sandbox.stub().resolves(0);
+            sandbox.stub(taskLib, "tool").returns({
+              arg: function () {
+                return this;
+              },
+              exec: execStub,
+            } as unknown as trm.ToolRunner);
+
+            const file = "/tmp/archive.zip"
+        
+            const result = await utility.extractZipWithQuiet(file);
+            expect(result).to.match(/^\/tmp\/[a-f0-9\-]+$/); 
+            expect(execStub.calledOnce).to.be.true;
+        });
+      
+        it("should propagate error from tool exec", async () => {
+          sandbox.stub(process, "platform").value("linux");
+      
+          const execStub = sandbox.stub().rejects(new Error("exec error"));
+          sandbox.stub(taskLib, "tool").returns({
+            arg: function () {
+              return this;
+            },
+            exec: execStub,
+          } as unknown as trm.ToolRunner);
+
+          const file = "/tmp/archive.zip"
+          const destination = "/tmp/dest"
+      
+          try {
+            await utility.extractZipWithQuiet(file, destination);
+          } catch (err: any) {
+            expect(err.message).to.equal("exec error");
+          }
+        });
+
+      });
 
     context('Clean Url', () => {
         it('Clean Url', async function () {
@@ -60,19 +193,19 @@ describe("Utilities", () => {
     context('extractZipped', () => {
 
         it('extractZipped - success', async function () {
-            sandbox.stub(toolLib, "extractZip").returns(Promise.resolve("/"));
+            sandbox.stub(utility, "extractZipWithQuiet").returns(Promise.resolve("/"));
             const result = await utility.extractZipped("bridge.zip", "/dest_path");
             expect(result).equals(true)
         });
 
         it('extractZipped - failure', async function () {
-            sandbox.stub(toolLib, "extractZip").throws(new Error("invalid path"));
+            sandbox.stub(utility, "extractZipWithQuiet").throws(new Error("invalid path"));
             await utility.extractZipped("bridge.zip", "/dest_path").catch(error => {
                 expect(error.message).includes("invalid path")})
         });
 
         it('extractZipped - failure- file name empty', async function () {
-            sandbox.stub(toolLib, "extractZip").returns(Promise.resolve("/"));
+            sandbox.stub(utility, "extractZipWithQuiet").returns(Promise.resolve("/"));
             await utility.extractZipped("", "/dest_path").catch(errorObj => {
                 expect(errorObj.message).includes("File does not exist");
                 expect(errorObj.message).includes(ErrorCode.FILE_DOES_NOT_EXIST.toString());
@@ -80,13 +213,15 @@ describe("Utilities", () => {
         });
 
         it('extractZipped - failure- destination path empty', async function () {
-            sandbox.stub(toolLib, "extractZip").returns(Promise.resolve("/"));
+            sandbox.stub(utility, "extractZipWithQuiet").returns(Promise.resolve("/"));
             await utility.extractZipped("bridge.zip", "").catch(errorObj => {
                 expect(errorObj.message).includes("No destination directory found");
                 expect(errorObj.message).includes(ErrorCode.NO_DESTINATION_DIRECTORY.toString());
             })
         });
     });
+
+
 
     context('getWorkSpaceDirectory', () => {
 
