@@ -216,6 +216,16 @@
       "groupName": "scanConfiguration"
     },
     {
+      "name": "polarisTestSastType",
+      "type": "string",
+      "label": "SAST Test Type",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Polaris test type to trigger sigma rapid scan or full scan. Supported values: SAST_RAPID or SAST_FULL",
+      "visibleRule": "scanType = polaris",
+      "groupName": "scanConfiguration"
+    },
+    {
       "name": "polarisProjectDirectory",
       "type": "string",
       "label": "Project Directory",
@@ -495,10 +505,10 @@
     {
       "name": "coverityLocal",
       "type": "boolean",
-      "label": "Using Coverity Connect?",
+      "label": "Run Coverity Analysis Locally",
       "defaultValue": "",
       "required": false,
-      "helpMarkDown": "Check this box if you are using Coverity Connect. Defaults to Cloud Native Coverity.",
+      "helpMarkDown": "Check to run analysis locally. If unchecked, scan will be performed on scan farm.",
       "visibleRule": "scanType = coverity",
       "groupName": "scanConfiguration"
     },

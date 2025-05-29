@@ -88,6 +88,9 @@ export const POLARIS_ASSESSMENT_MODE_KEY_CLASSIC_EDITOR =
 export const POLARIS_TEST_SCA_TYPE_KEY = "polaris_test_sca_type";
 export const POLARIS_TEST_SCA_TYPE_KEY_CLASSIC_EDITOR = "polarisTestScaType";
 
+export const POLARIS_TEST_SAST_TYPE_KEY = "polaris_test_sast_type";
+export const POLARIS_TEST_SAST_TYPE_KEY_CLASSIC_EDITOR = "polarisTestSastType";
+
 export const PROJECT_DIRECTORY_KEY = "project_directory";
 export const POLARIS_PROJECT_DIRECTORY_KEY_CLASSIC_EDITOR =
   "polarisProjectDirectory";
@@ -490,6 +493,9 @@ export const SKIP_DOWNLOAD_BRIDGE_CLI_WHEN_VERSION_NOT_FOUND =
 export const CHECK_LATEST_BRIDGE_CLI_VERSION =
   "Checking for latest version of Bridge CLI to download and configure";
 export const DOWNLOADING_BRIDGE_CLI = "Downloading and configuring Bridge CLI";
+export const EXTRACTING_BRIDGE_CLI_ARCHIVE = "Extracting Bridge CLI archive";
+export const BRIDGE_CLI_EXTRACTION_COMPLETED =
+  "Extraction of Bridge CLI archive has been completed";
 export const BRIDGE_CLI_URL_MESSAGE = "Bridge CLI URL is - ";
 export const BRIDGECLI_VERSION = "Bridge CLI version is - ";
 export const BRIDGE_CLI_DOWNLOAD_COMPLETED =

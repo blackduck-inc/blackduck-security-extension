@@ -68,8 +68,14 @@ generate_sbom:
       - main
 
 polaris_bridge:
-  stage: analysis
+  image: releng/base-gitlab-runner:jdk17-python3.11-git
   extends: .polaris_bridge
+  stage: analysis
+  before_script:
+    - |
+      apt-get update -y
+      apt-get install -y make
+      export DETECT_ACCURACY_REQUIRED=NONE
 
 pop_blackduck:
   image: us-docker.pkg.dev/cloudops-artifacts-prd/polaris/ember_cli:3.28.5-node_16.14

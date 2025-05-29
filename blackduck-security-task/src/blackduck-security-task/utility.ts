@@ -1,6 +1,7 @@
 // Copyright (c) 2024 Black Duck Software Inc. All rights reserved worldwide.
 
 import path from "path";
+import * as utility from "./utility";
 import * as constants from "./application-constant";
 import {
   MARK_BUILD_STATUS_KEY,
@@ -22,6 +23,8 @@ import * as process from "process";
 import { DownloadFileResponse } from "./model/download-file-response";
 import * as taskLib from "azure-pipelines-task-lib/task";
 import { TaskResult } from "azure-pipelines-task-lib/task";
+import { v4 as uuidv4 } from "uuid";
+import * as trm from "azure-pipelines-task-lib/toolrunner";
 import {
   AZURE_BUILD_REASON,
   AZURE_ENVIRONMENT_VARIABLES,
@@ -67,11 +70,63 @@ export async function extractZipped(
   }
 
   try {
-    await toolLib.extractZip(file, destinationPath);
+    console.info(constants.EXTRACTING_BRIDGE_CLI_ARCHIVE);
+    await utility.extractZipWithQuiet(file, destinationPath);
+    console.info(constants.BRIDGE_CLI_EXTRACTION_COMPLETED);
     return Promise.resolve(true);
   } catch (error) {
     return Promise.reject(error);
   }
+}
+
+export async function extractZipWithQuiet(
+  file: string,
+  destination?: string
+): Promise<string> {
+  if (!file) {
+    throw new Error("parameter 'file' is required");
+  }
+
+  const dest = _createExtractFolder(destination);
+  if (process.platform == "win32") {
+    const escapedFile = file.replace(/'/g, "''").replace(/"|\n|\r/g, "");
+    const escapedDest = dest.replace(/'/g, "''").replace(/"|\n|\r/g, "");
+    const command = `$ErrorActionPreference = 'Stop' ; try { Add-Type -AssemblyName System.IO.Compression.FileSystem } catch { } ; [System.IO.Compression.ZipFile]::ExtractToDirectory('${escapedFile}', '${escapedDest}')`;
+    const chcpPath = path.join(
+      process.env.windir ?? "",
+      "system32",
+      "chcp.com"
+    );
+    await taskLib.exec(chcpPath, "65001");
+    const powershell: trm.ToolRunner = taskLib
+      .tool("powershell")
+      .line(
+        "-NoLogo -Sta -NoProfile -NonInteractive -ExecutionPolicy Unrestricted -Command"
+      )
+      .arg(command);
+    await powershell.exec();
+  } else {
+    const unzip: trm.ToolRunner = taskLib.tool("unzip").arg("-q").arg(file);
+    await unzip.exec(<trm.IExecOptions>{ cwd: dest });
+  }
+  return dest;
+}
+
+export function _createExtractFolder(dest?: string): string {
+  if (!dest) {
+    dest = path.join(_getAgentTemp(), uuidv4());
+  }
+  taskLib.mkdirP(dest);
+  return dest;
+}
+
+export function _getAgentTemp(): string {
+  taskLib.assertAgent("2.115.0");
+  const tempDirectory = taskLib.getVariable("Agent.TempDirectory");
+  if (!tempDirectory) {
+    throw new Error("Agent.TempDirectory is not set");
+  }
+  return tempDirectory;
 }
 
 export async function getRemoteFile(
