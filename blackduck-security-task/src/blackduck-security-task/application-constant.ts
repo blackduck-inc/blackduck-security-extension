@@ -88,6 +88,9 @@ export const POLARIS_ASSESSMENT_MODE_KEY_CLASSIC_EDITOR =
 export const POLARIS_TEST_SCA_TYPE_KEY = "polaris_test_sca_type";
 export const POLARIS_TEST_SCA_TYPE_KEY_CLASSIC_EDITOR = "polarisTestScaType";
 
+export const POLARIS_TEST_SAST_TYPE_KEY = "polaris_test_sast_type";
+export const POLARIS_TEST_SAST_TYPE_KEY_CLASSIC_EDITOR = "polarisTestSastType";
+
 export const PROJECT_DIRECTORY_KEY = "project_directory";
 export const POLARIS_PROJECT_DIRECTORY_KEY_CLASSIC_EDITOR =
   "polarisProjectDirectory";
