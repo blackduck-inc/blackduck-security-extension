@@ -451,7 +451,7 @@ export const WIN32 = "win32";
 export const LINUX = "linux";
 export const DARWIN = "darwin";
 export const MIN_SUPPORTED_BRIDGE_CLI_MAC_ARM_VERSION = "2.1.0";
-export const MIN_SUPPORTED_BRIDGE_CLI_LINUX_ARM_VERSION = "3.4.7";
+export const MIN_SUPPORTED_BRIDGE_CLI_LINUX_ARM_VERSION = "3.5.1";
 export const DEFAULT_AZURE_API_URL = "https://dev.azure.com";
 export const BLACKDUCKSCA_SECURITY_SCAN_AZURE_DEVOPS_DOCS_URL =
   "https://documentation.blackduck.com/bundle/bridge/page/documentation/c_additional-azure-parameters.html";
@@ -688,3 +688,6 @@ export const EXIT_CODE_MAP = new Map<string, string>([
     "Undefined error from extension",
   ],
 ]);
+
+export const BRIDGE_CLI_ARM_VERSION_FALLBACK_MESSAGE =
+  "Detected Bridge CLI version ({version}) below the minimum ARM support requirement ({minVersion}). Defaulting to {intelSuffix} platform.";

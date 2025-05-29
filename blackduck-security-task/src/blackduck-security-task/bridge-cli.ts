@@ -51,6 +51,7 @@ import {
   VERSION_FILE_FOUND_AT,
   VERSION_FILE_NOT_FOUND_AT,
   BRIDGECLI_VERSION,
+  BRIDGE_CLI_ARM_VERSION_FALLBACK_MESSAGE,
 } from "./application-constant";
 import os from "os";
 import semver from "semver";
@@ -643,10 +644,18 @@ export class BridgeCli {
     // Helper function to determine the appropriate platform suffix based on CPU architecture.
     const getOsSuffix = (
       isValidVersion: boolean,
+      minVersion: string,
       intelSuffix: string,
       armSuffix: string
     ): string => {
-      if (!isValidVersion) return intelSuffix;
+      if (!isValidVersion) {
+        console.log(
+          BRIDGE_CLI_ARM_VERSION_FALLBACK_MESSAGE.replace("{version}", version)
+            .replace("{minVersion}", minVersion)
+            .replace("{intelSuffix}", intelSuffix)
+        );
+        return intelSuffix;
+      }
       const cpuInfo = os.cpus();
       taskLib.debug(`cpuInfo :: ${JSON.stringify(cpuInfo)}`);
       const isIntel = cpuInfo[0].model.includes("Intel");
@@ -660,6 +669,7 @@ export class BridgeCli {
       );
       const osSuffix = getOsSuffix(
         isValidVersionForARM,
+        constants.MIN_SUPPORTED_BRIDGE_CLI_MAC_ARM_VERSION,
         constants.MAC_INTEL_PLATFORM,
         constants.MAC_ARM_PLATFORM
       );
@@ -671,6 +681,7 @@ export class BridgeCli {
       );
       const osSuffix = getOsSuffix(
         isValidVersionForARM,
+        constants.MIN_SUPPORTED_BRIDGE_CLI_LINUX_ARM_VERSION,
         constants.LINUX_PLATFORM,
         constants.LINUX_ARM_PLATFORM
       );
