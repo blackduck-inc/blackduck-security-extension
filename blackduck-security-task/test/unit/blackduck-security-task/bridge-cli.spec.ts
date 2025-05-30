@@ -264,10 +264,17 @@ describe("Download Bridge", () => {
     let bridgeCliExecutablePath = "";
     let bridgeCliSubDir = "";
     if (osName === constants.LINUX) {
-        bridgeCliDefaultPath = path.join(process.env["HOME"] as string, constants.BRIDGE_CLI_DEFAULT_PATH_UNIX);
-        bridgeCliExecutablePath = bridgeCliDefaultPath.concat("/bridge-cli-bundle-linux64")
-        bridgeCliSubDir = "/bridge-cli-bundle-linux64";
-        bridgeCliUrl = "https://repo.blackduck.com/bds-integrations-release/com/blackduck/integration/bridge/binaries/bridge-cli-bundle/2.9.2/bridge-cli-bundle-2.9.2-linux64.zip"
+        bridgeCliDefaultPath = path.join(
+            process.env["HOME"] as string, constants.BRIDGE_CLI_DEFAULT_PATH_UNIX)
+            if (isIntel) {
+                bridgeCliExecutablePath = bridgeCliDefaultPath.concat("/bridge-cli-bundle-linux64")
+                bridgeCliSubDir = "/bridge-cli-bundle-linux64";
+                bridgeCliUrl = "https://repo.blackduck.com/bds-integrations-release/com/blackduck/integration/bridge/binaries/bridge-cli-bundle/2.9.2/bridge-cli-bundle-2.9.2-linux64.zip"
+            } else {
+                bridgeCliExecutablePath = bridgeCliDefaultPath.concat("/bridge-cli-bundle-linux_arm")
+                bridgeCliSubDir = "/bridge-cli-bundle-linux_arm";
+                bridgeCliUrl = "https://repo.blackduck.com/bds-integrations-release/com/blackduck/integration/bridge/binaries/bridge-cli-bundle/2.9.2/bridge-cli-bundle-2.9.2-linux_arm.zip"
+            }
     } else if (osName === constants.WIN32) {
         bridgeCliDefaultPath = path.join(
             process.env["USERPROFILE"] as string, constants.BRIDGE_CLI_DEFAULT_PATH_WINDOWS)
@@ -282,7 +289,7 @@ describe("Download Bridge", () => {
                 bridgeCliSubDir = "/bridge-cli-bundle-macosx";
                 bridgeCliUrl = "https://repo.blackduck.com/bds-integrations-release/com/blackduck/integration/bridge/binaries/bridge-cli-bundle/2.9.2/bridge-cli-bundle-2.9.2-macosx.zip"
             } else {
-                bridgeCliExecutablePath = bridgeCliDefaultPath.concat("/bridge-cli-bundle-mac_arm")
+                bridgeCliExecutablePath = bridgeCliDefaultPath.concat("/bridge-cli-bundle-macos_arm")
                 bridgeCliSubDir = "/bridge-cli-bundle-macos_arm";
                 bridgeCliUrl = "https://repo.blackduck.com/bds-integrations-release/com/blackduck/integration/bridge/binaries/bridge-cli-bundle/2.9.2/bridge-cli-bundle-2.9.2-macos_arm.zip"
             }
@@ -395,6 +402,7 @@ describe("Download Bridge", () => {
             sandbox.stub(fs, "existsSync").returns(true);
             sandbox.stub(taskLib, "rmRF");
             sandbox.stub(utility, "extractZipped").returns(Promise.resolve(true));
+            sandbox.stub(bridgeCli, "getDefaultBridgeCliSubDirectory").returns(bridgeCliSubDir);
             const downloadFileResponse = {} as DownloadFileResponse
             downloadFileResponse.filePath = bridgeCliDefaultPath
             const result = await bridgeCli.extractBridgeCli(downloadFileResponse);
@@ -465,6 +473,7 @@ describe("Download Bridge", () => {
                 value: '/Users/test/bridgePath',
             });
             sandbox.stub(taskLib, "exist").returns(true)
+            sandbox.stub(bridgeCli, "getDefaultBridgeCliSubDirectory").returns(bridgeCliSubDir);
             const result = await bridgeCli.getBridgeCliPath();
             assert.equal(result, "/Users/test/bridgePath".concat(bridgeCliSubDir));
             Object.defineProperty(inputs, "BRIDGECLI_DOWNLOAD_URL", {
