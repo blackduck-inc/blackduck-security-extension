@@ -1088,26 +1088,32 @@ class BridgeCli {
         let bridgeDownloadUrl = this.bridgeCliUrlPattern.replace("$version", version);
         bridgeDownloadUrl = bridgeDownloadUrl.replace("$version", version);
         // Helper function to determine the appropriate platform suffix based on CPU architecture.
-        const getOsSuffix = (isValidVersion, minVersion, intelSuffix, armSuffix) => {
+        const getOsSuffix = (osName, isValidVersion, minVersion, intelSuffix, armSuffix) => {
             if (!isValidVersion) {
                 console.log(application_constant_1.BRIDGE_CLI_ARM_VERSION_FALLBACK_MESSAGE.replace("{version}", version)
                     .replace("{minVersion}", minVersion)
                     .replace("{intelSuffix}", intelSuffix));
                 return intelSuffix;
             }
+            let isIntel = true;
             const cpuInfo = os_1.default.cpus();
             taskLib.debug(`cpuInfo :: ${JSON.stringify(cpuInfo)}`);
-            const isIntel = cpuInfo[0].model.includes("Intel");
+            if (osName === constants.DARWIN) {
+                isIntel = cpuInfo[0].model.includes("Intel");
+            }
+            else if (osName === constants.LINUX) {
+                isIntel = !/^(arm.*|aarch.*)$/.test(process.arch);
+            }
             return isIntel ? intelSuffix : armSuffix;
         };
         if (osName === constants.DARWIN) {
             const isValidVersionForARM = semver_1.default.gte(version, constants.MIN_SUPPORTED_BRIDGE_CLI_MAC_ARM_VERSION);
-            const osSuffix = getOsSuffix(isValidVersionForARM, constants.MIN_SUPPORTED_BRIDGE_CLI_MAC_ARM_VERSION, constants.MAC_INTEL_PLATFORM, constants.MAC_ARM_PLATFORM);
+            const osSuffix = getOsSuffix(osName, isValidVersionForARM, constants.MIN_SUPPORTED_BRIDGE_CLI_MAC_ARM_VERSION, constants.MAC_INTEL_PLATFORM, constants.MAC_ARM_PLATFORM);
             bridgeDownloadUrl = bridgeDownloadUrl.replace("$platform", osSuffix);
         }
         else if (osName === constants.LINUX) {
             const isValidVersionForARM = semver_1.default.gte(version, constants.MIN_SUPPORTED_BRIDGE_CLI_LINUX_ARM_VERSION);
-            const osSuffix = getOsSuffix(isValidVersionForARM, constants.MIN_SUPPORTED_BRIDGE_CLI_LINUX_ARM_VERSION, constants.LINUX_PLATFORM, constants.LINUX_ARM_PLATFORM);
+            const osSuffix = getOsSuffix(osName, isValidVersionForARM, constants.MIN_SUPPORTED_BRIDGE_CLI_LINUX_ARM_VERSION, constants.LINUX_PLATFORM, constants.LINUX_ARM_PLATFORM);
             bridgeDownloadUrl = bridgeDownloadUrl.replace("$platform", osSuffix);
         }
         else if (osName === constants.WIN32) {
@@ -1141,7 +1147,7 @@ class BridgeCli {
     getLinuxOsSuffix() {
         const cpuInfo = os_1.default.cpus();
         taskLib.debug(`cpuInfo :: ${JSON.stringify(cpuInfo)}`);
-        const isIntel = cpuInfo[0].model.includes("Intel");
+        const isIntel = !/^(arm.*|aarch.*)$/.test(process.arch);
         return isIntel ? constants.LINUX_PLATFORM : constants.LINUX_ARM_PLATFORM;
     }
     setBridgeCliExecutablePath(filePath) {

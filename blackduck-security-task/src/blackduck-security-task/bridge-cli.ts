@@ -643,6 +643,7 @@ export class BridgeCli {
 
     // Helper function to determine the appropriate platform suffix based on CPU architecture.
     const getOsSuffix = (
+      osName: string,
       isValidVersion: boolean,
       minVersion: string,
       intelSuffix: string,
@@ -656,9 +657,14 @@ export class BridgeCli {
         );
         return intelSuffix;
       }
+      let isIntel = true;
       const cpuInfo = os.cpus();
       taskLib.debug(`cpuInfo :: ${JSON.stringify(cpuInfo)}`);
-      const isIntel = cpuInfo[0].model.includes("Intel");
+      if (osName === constants.DARWIN) {
+        isIntel = cpuInfo[0].model.includes("Intel");
+      } else if (osName === constants.LINUX) {
+        isIntel = !/^(arm.*|aarch.*)$/.test(process.arch);
+      }
       return isIntel ? intelSuffix : armSuffix;
     };
 
@@ -668,6 +674,7 @@ export class BridgeCli {
         constants.MIN_SUPPORTED_BRIDGE_CLI_MAC_ARM_VERSION
       );
       const osSuffix = getOsSuffix(
+        osName,
         isValidVersionForARM,
         constants.MIN_SUPPORTED_BRIDGE_CLI_MAC_ARM_VERSION,
         constants.MAC_INTEL_PLATFORM,
@@ -680,6 +687,7 @@ export class BridgeCli {
         constants.MIN_SUPPORTED_BRIDGE_CLI_LINUX_ARM_VERSION
       );
       const osSuffix = getOsSuffix(
+        osName,
         isValidVersionForARM,
         constants.MIN_SUPPORTED_BRIDGE_CLI_LINUX_ARM_VERSION,
         constants.LINUX_PLATFORM,
@@ -725,7 +733,7 @@ export class BridgeCli {
   getLinuxOsSuffix(): string {
     const cpuInfo = os.cpus();
     taskLib.debug(`cpuInfo :: ${JSON.stringify(cpuInfo)}`);
-    const isIntel = cpuInfo[0].model.includes("Intel");
+    const isIntel = !/^(arm.*|aarch.*)$/.test(process.arch);
     return isIntel ? constants.LINUX_PLATFORM : constants.LINUX_ARM_PLATFORM;
   }
 
