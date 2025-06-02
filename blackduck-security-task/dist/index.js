@@ -3297,8 +3297,9 @@ run().catch((error) => {
 
 "use strict";
 
+var _a, _b;
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports._exposeCertSettings = exports._exposeProxySettings = exports._normalizeSeparators = exports._isRooted = exports._getDirectoryName = exports._ensureRooted = exports._isUncPath = exports._loadData = exports._ensurePatternRooted = exports._getFindInfoFromPattern = exports._cloneMatchOptions = exports._legacyFindFiles_convertPatternToRegExp = exports._which = exports._checkPath = exports._exist = exports._debug = exports._error = exports._warning = exports._command = exports._getVariableKey = exports._getVariable = exports._loc = exports._setResourcePath = exports._setErrStream = exports._setStdStream = exports._writeLine = exports._endsWith = exports._startsWith = exports._vault = exports._knownVariableMap = void 0;
+exports.isSigPipeError = exports._exposeCertSettings = exports._exposeProxySettings = exports._normalizeSeparators = exports._isRooted = exports._getDirectoryName = exports._ensureRooted = exports._isUncPath = exports._loadData = exports._ensurePatternRooted = exports._getFindInfoFromPattern = exports._cloneMatchOptions = exports._legacyFindFiles_convertPatternToRegExp = exports._which = exports._checkPath = exports._exist = exports._debug = exports._error = exports._warning = exports._command = exports._getVariableKey = exports._getVariable = exports._loc = exports._setResourcePath = exports._setErrStream = exports._setStdStream = exports._writeLine = exports._truncateBeforeSensitiveKeyword = exports._endsWith = exports._startsWith = exports.IssueAuditAction = exports.IssueSource = exports._vault = exports._knownVariableMap = void 0;
 var fs = __nccwpck_require__(7147);
 var path = __nccwpck_require__(1017);
 var os = __nccwpck_require__(2037);
@@ -3318,12 +3319,26 @@ var crypto = __nccwpck_require__(6113);
  *  3) to know the real variable name and not just the formatted env var name.
  */
 exports._knownVariableMap = {};
+var _commandCorrelationId;
+//-----------------------------------------------------
+// Enums
+//-----------------------------------------------------
+var IssueSource;
+(function (IssueSource) {
+    IssueSource["CustomerScript"] = "CustomerScript";
+    IssueSource["TaskInternal"] = "TaskInternal";
+})(IssueSource = exports.IssueSource || (exports.IssueSource = {}));
+var IssueAuditAction;
+(function (IssueAuditAction) {
+    IssueAuditAction[IssueAuditAction["Unknown"] = 0] = "Unknown";
+    IssueAuditAction[IssueAuditAction["ShellTasksValidation"] = 1] = "ShellTasksValidation";
+})(IssueAuditAction = exports.IssueAuditAction || (exports.IssueAuditAction = {}));
 //-----------------------------------------------------
 // Validation Checks
 //-----------------------------------------------------
 // async await needs generators in node 4.x+
 if (semver.lt(process.versions.node, '4.2.0')) {
-    _warning('Tasks require a new agent.  Upgrade your agent or node to 4.2.0 or later');
+    _warning('Tasks require a new agent.  Upgrade your agent or node to 4.2.0 or later', IssueSource.TaskInternal);
 }
 //-----------------------------------------------------
 // String convenience
@@ -3336,6 +3351,17 @@ function _endsWith(str, end) {
     return str.slice(-end.length) == end;
 }
 exports._endsWith = _endsWith;
+function _truncateBeforeSensitiveKeyword(str, sensitiveKeywordsPattern) {
+    if (!str) {
+        return str;
+    }
+    var index = str.search(sensitiveKeywordsPattern);
+    if (index <= 0) {
+        return str;
+    }
+    return "".concat(str.substring(0, index), "...");
+}
+exports._truncateBeforeSensitiveKeyword = _truncateBeforeSensitiveKeyword;
 //-----------------------------------------------------
 // General Helpers
 //-----------------------------------------------------
@@ -3414,7 +3440,7 @@ function _loadLocStrings(resourceFile, culture) {
         }
     }
     else {
-        _warning('LIB_ResourceFile does not exist');
+        _warning('LIB_ResourceFile does not exist', IssueSource.TaskInternal);
     }
     return locStrings;
 }
@@ -3446,10 +3472,9 @@ function _setResourcePath(path, ignoreWarnings) {
     }
     else {
         if (ignoreWarnings) {
-            _debug(_loc('LIB_ResourceFileAlreadySet', path));
         }
         else {
-            _warning(_loc('LIB_ResourceFileAlreadySet', path));
+            _warning(_loc('LIB_ResourceFileAlreadySet', path), IssueSource.TaskInternal);
         }
     }
 }
@@ -3483,10 +3508,10 @@ function _loc(key) {
     }
     else {
         if (Object.keys(_resourceFiles).length <= 0) {
-            _warning("Resource file haven't been set, can't find loc string for key: " + key);
+            _warning("Resource file haven't been set, can't find loc string for key: ".concat(key), IssueSource.TaskInternal);
         }
         else {
-            _warning("Can't find loc string for key: " + key);
+            _warning("Can't find loc string for key: ".concat(key));
         }
         locString = key;
     }
@@ -3546,16 +3571,33 @@ function _command(command, properties, message) {
     _writeLine(taskCmd.toString());
 }
 exports._command = _command;
-function _warning(message) {
-    _command('task.issue', { 'type': 'warning' }, message);
+function _warning(message, source, auditAction) {
+    if (source === void 0) { source = IssueSource.TaskInternal; }
+    _command('task.issue', {
+        'type': 'warning',
+        'source': source,
+        'correlationId': _commandCorrelationId,
+        'auditAction': auditAction
+    }, message);
 }
 exports._warning = _warning;
-function _error(message) {
-    _command('task.issue', { 'type': 'error' }, message);
+function _error(message, source, auditAction) {
+    if (source === void 0) { source = IssueSource.TaskInternal; }
+    _command('task.issue', {
+        'type': 'error',
+        'source': source,
+        'correlationId': _commandCorrelationId,
+        'auditAction': auditAction
+    }, message);
 }
 exports._error = _error;
+var debugMode = ((_a = _getVariable('system.debug')) === null || _a === void 0 ? void 0 : _a.toLowerCase()) === 'true';
+var shouldCheckDebugMode = ((_b = _getVariable('DistributedTask.Tasks.Node.SkipDebugLogsWhenDebugModeOff')) === null || _b === void 0 ? void 0 : _b.toLowerCase()) === 'true';
 function _debug(message) {
-    _command('task.debug', null, message);
+    if (!shouldCheckDebugMode
+        || (shouldCheckDebugMode && debugMode)) {
+        _command('task.debug', null, message);
+    }
 }
 exports._debug = _debug;
 // //-----------------------------------------------------
@@ -3625,7 +3667,7 @@ function _which(tool, check) {
             }
         }
     }
-    _debug("which '" + tool + "'");
+    _debug("which '".concat(tool, "'"));
     try {
         // build the list of extensions to try
         var extensions = [];
@@ -3641,7 +3683,7 @@ function _which(tool, check) {
         if (_isRooted(tool)) {
             var filePath = _tryGetExecutablePath(tool, extensions);
             if (filePath) {
-                _debug("found: '" + filePath + "'");
+                _debug("found: '".concat(filePath, "'"));
                 return filePath;
             }
             _debug('not found');
@@ -3672,7 +3714,7 @@ function _which(tool, check) {
             var directory = directories_1[_d];
             var filePath = _tryGetExecutablePath(directory + path.sep + tool, extensions);
             if (filePath) {
-                _debug("found: '" + filePath + "'");
+                _debug("found: '".concat(filePath, "'"));
                 return filePath;
             }
         }
@@ -3716,7 +3758,7 @@ function _tryGetExecutablePath(filePath, extensions) {
     }
     catch (err) {
         if (err.code != 'ENOENT') {
-            _debug("Unexpected error attempting to determine if executable file exists '" + filePath + "': " + err);
+            _debug("Unexpected error attempting to determine if executable file exists '".concat(filePath, "': ").concat(err));
         }
     }
     // try each extension
@@ -3742,7 +3784,7 @@ function _tryGetExecutablePath(filePath, extensions) {
                         }
                     }
                     catch (err) {
-                        _debug("Unexpected error attempting to determine the actual case of the file '" + filePath_1 + "': " + err);
+                        _debug("Unexpected error attempting to determine the actual case of the file '".concat(filePath_1, "': ").concat(err));
                     }
                     return filePath_1;
                 }
@@ -3755,7 +3797,7 @@ function _tryGetExecutablePath(filePath, extensions) {
         }
         catch (err) {
             if (err.code != 'ENOENT') {
-                _debug("Unexpected error attempting to determine if executable file exists '" + filePath_1 + "': " + err);
+                _debug("Unexpected error attempting to determine if executable file exists '".concat(filePath_1, "': ").concat(err));
             }
         }
     }
@@ -3774,7 +3816,7 @@ function _legacyFindFiles_convertPatternToRegExp(pattern) {
         .replace(/\\\*\\\*/g, '.*') // replace remaining globstars with a wildcard that can span directory separators, e.g. /hello/**dll
         .replace(/\\\*/g, '[^\/]*') // replace asterisks with a wildcard that cannot span directory separators, e.g. /hello/*.dll
         .replace(/\\\?/g, '[^\/]'); // replace single character wildcards, e.g. /hello/log?.dll
-    pattern = "^" + pattern + "$";
+    pattern = "^".concat(pattern, "$");
     var flags = process.platform == 'win32' ? 'i' : '';
     return new RegExp(pattern, flags);
 }
@@ -3940,6 +3982,9 @@ function _loadData() {
         }
     }
     _debug('loaded ' + loaded);
+    var correlationId = process.env["COMMAND_CORRELATION_ID"];
+    delete process.env["COMMAND_CORRELATION_ID"];
+    _commandCorrelationId = correlationId ? String(correlationId) : "";
     // store public variable metadata
     var names;
     try {
@@ -4181,6 +4226,14 @@ function _exposeTaskLibSecret(keyFile, secret) {
         return new Buffer(storageFile).toString('base64') + ':' + new Buffer(encryptedContent).toString('base64');
     }
 }
+function isSigPipeError(e) {
+    var _a;
+    if (!e || typeof e !== 'object') {
+        return false;
+    }
+    return e.code === 'EPIPE' && ((_a = e.syscall) === null || _a === void 0 ? void 0 : _a.toUpperCase()) === 'WRITE';
+}
+exports.isSigPipeError = isSigPipeError;
 
 
 /***/ }),
@@ -5807,7 +5860,8 @@ module.exports = v4;
 "use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.updateReleaseName = exports.addBuildTag = exports.updateBuildNumber = exports.uploadBuildLog = exports.associateArtifact = exports.uploadArtifact = exports.logIssue = exports.logDetail = exports.setProgress = exports.setEndpoint = exports.addAttachment = exports.uploadSummary = exports.prependPath = exports.uploadFile = exports.CodeCoverageEnabler = exports.CodeCoveragePublisher = exports.TestPublisher = exports.getHttpCertConfiguration = exports.getHttpProxyConfiguration = exports.findMatch = exports.filter = exports.match = exports.tool = exports.execSync = exports.exec = exports.rmRF = exports.legacyFindFiles = exports.find = exports.retry = exports.mv = exports.cp = exports.ls = exports.which = exports.resolve = exports.mkdirP = exports.popd = exports.pushd = exports.cd = exports.checkPath = exports.cwd = exports.getAgentMode = exports.getPlatform = exports.osType = exports.writeFile = exports.exist = exports.stats = exports.debug = exports.error = exports.warning = exports.command = exports.setTaskVariable = exports.getTaskVariable = exports.getSecureFileTicket = exports.getSecureFileName = exports.getEndpointAuthorization = exports.getEndpointAuthorizationParameterRequired = exports.getEndpointAuthorizationParameter = exports.getEndpointAuthorizationSchemeRequired = exports.getEndpointAuthorizationScheme = exports.getEndpointDataParameterRequired = exports.getEndpointDataParameter = exports.getEndpointUrlRequired = exports.getEndpointUrl = exports.getPathInputRequired = exports.getPathInput = exports.filePathSupplied = exports.getDelimitedInput = exports.getBoolInput = exports.getInputRequired = exports.getInput = exports.setSecret = exports.setVariable = exports.getVariables = exports.assertAgent = exports.getVariable = exports.loc = exports.setResourcePath = exports.setResult = exports.setErrStream = exports.setStdStream = exports.AgentHostedMode = exports.Platform = exports.FieldType = exports.ArtifactType = exports.IssueType = exports.TaskState = exports.TaskResult = void 0;
+exports.getPlatform = exports.osType = exports.writeFile = exports.exist = exports.stats = exports.debug = exports.error = exports.warning = exports.command = exports.setTaskVariable = exports.getTaskVariable = exports.getSecureFileTicket = exports.getSecureFileName = exports.getEndpointAuthorization = exports.getEndpointAuthorizationParameterRequired = exports.getEndpointAuthorizationParameter = exports.getEndpointAuthorizationSchemeRequired = exports.getEndpointAuthorizationScheme = exports.getEndpointDataParameterRequired = exports.getEndpointDataParameter = exports.getEndpointUrlRequired = exports.getEndpointUrl = exports.getPathInputRequired = exports.getPathInput = exports.filePathSupplied = exports.getDelimitedInput = exports.getPipelineFeature = exports.getBoolFeatureFlag = exports.getBoolInput = exports.getInputRequired = exports.getInput = exports.setSecret = exports.setVariable = exports.getVariables = exports.assertAgent = exports.getVariable = exports.loc = exports.setResourcePath = exports.setSanitizedResult = exports.setResult = exports.setErrStream = exports.setStdStream = exports.AgentHostedMode = exports.Platform = exports.IssueSource = exports.FieldType = exports.ArtifactType = exports.IssueType = exports.TaskState = exports.TaskResult = void 0;
+exports.updateReleaseName = exports.addBuildTag = exports.updateBuildNumber = exports.uploadBuildLog = exports.associateArtifact = exports.uploadArtifact = exports.logIssue = exports.logDetail = exports.setProgress = exports.setEndpoint = exports.addAttachment = exports.uploadSummary = exports.prependPath = exports.uploadFile = exports.CodeCoverageEnabler = exports.CodeCoveragePublisher = exports.TestPublisher = exports.getHttpCertConfiguration = exports.getHttpProxyConfiguration = exports.findMatch = exports.filter = exports.match = exports.tool = exports.execSync = exports.exec = exports.execAsync = exports.rmRF = exports.legacyFindFiles = exports.find = exports.retry = exports.mv = exports.cp = exports.ls = exports.which = exports.resolve = exports.mkdirP = exports.popd = exports.pushd = exports.cd = exports.checkPath = exports.cwd = exports.getAgentMode = exports.getNodeMajorVersion = void 0;
 var shell = __nccwpck_require__(3516);
 var childProcess = __nccwpck_require__(2081);
 var fs = __nccwpck_require__(7147);
@@ -5852,6 +5906,7 @@ var FieldType;
     FieldType[FieldType["DataParameter"] = 1] = "DataParameter";
     FieldType[FieldType["Url"] = 2] = "Url";
 })(FieldType = exports.FieldType || (exports.FieldType = {}));
+exports.IssueSource = im.IssueSource;
 /** Platforms supported by our build agent */
 var Platform;
 (function (Platform) {
@@ -5870,45 +5925,48 @@ var AgentHostedMode;
 //-----------------------------------------------------
 exports.setStdStream = im._setStdStream;
 exports.setErrStream = im._setErrStream;
-//-----------------------------------------------------
-// Results
-//-----------------------------------------------------
-/**
- * Sets the result of the task.
- * Execution will continue.
- * If not set, task will be Succeeded.
- * If multiple calls are made to setResult the most pessimistic call wins (Failed) regardless of the order of calls.
- *
- * @param result    TaskResult enum of Succeeded, SucceededWithIssues, Failed, Cancelled or Skipped.
- * @param message   A message which will be logged as an error issue if the result is Failed.
- * @param done      Optional. Instructs the agent the task is done. This is helpful when child processes
- *                  may still be running and prevent node from fully exiting. This argument is supported
- *                  from agent version 2.142.0 or higher (otherwise will no-op).
- * @returns         void
- */
 function setResult(result, message, done) {
-    exports.debug('task result: ' + TaskResult[result]);
+    (0, exports.debug)('task result: ' + TaskResult[result]);
     // add an error issue
     if (result == TaskResult.Failed && message) {
-        exports.error(message);
+        (0, exports.error)(message, exports.IssueSource.TaskInternal);
     }
     else if (result == TaskResult.SucceededWithIssues && message) {
-        exports.warning(message);
+        (0, exports.warning)(message, exports.IssueSource.TaskInternal);
     }
     // task.complete
     var properties = { 'result': TaskResult[result] };
     if (done) {
         properties['done'] = 'true';
     }
-    exports.command('task.complete', properties, message);
+    (0, exports.command)('task.complete', properties, message);
 }
 exports.setResult = setResult;
+/**
+ * Sets the result of the task with sanitized message.
+ *
+ * @param result    TaskResult enum of Succeeded, SucceededWithIssues, Failed, Cancelled or Skipped.
+ * @param message   A message which will be logged as an error issue if the result is Failed. Message will be truncated
+ *                  before first occurence of wellknown sensitive keyword.
+ * @param done      Optional. Instructs the agent the task is done. This is helpful when child processes
+ *                  may still be running and prevent node from fully exiting. This argument is supported
+ *                  from agent version 2.142.0 or higher (otherwise will no-op).
+ * @returns         void
+ */
+function setSanitizedResult(result, message, done) {
+    var pattern = /password|key|secret|bearer|authorization|token|pat/i;
+    var sanitizedMessage = im._truncateBeforeSensitiveKeyword(message, pattern);
+    setResult(result, sanitizedMessage, done);
+}
+exports.setSanitizedResult = setSanitizedResult;
 //
 // Catching all exceptions
 //
 process.on('uncaughtException', function (err) {
-    setResult(TaskResult.Failed, exports.loc('LIB_UnhandledEx', err.message));
-    exports.error(String(err.stack));
+    if (!im.isSigPipeError(err)) {
+        setResult(TaskResult.Failed, (0, exports.loc)('LIB_UnhandledEx', err.message));
+        (0, exports.error)(String(err.stack), im.IssueSource.TaskInternal);
+    }
 });
 //
 // Catching unhandled rejections from promises and rethrowing them as exceptions
@@ -5942,9 +6000,9 @@ function assertAgent(minimum) {
     if (semver.lt(minimum, '2.104.1')) {
         throw new Error('assertAgent() requires the parameter to be 2.104.1 or higher');
     }
-    var agent = exports.getVariable('Agent.Version');
+    var agent = (0, exports.getVariable)('Agent.Version');
     if (agent && semver.lt(agent, minimum)) {
-        throw new Error("Agent version " + minimum + " or higher is required");
+        throw new Error("Agent version ".concat(minimum, " or higher is required"));
     }
 }
 exports.assertAgent = assertAgent;
@@ -5965,7 +6023,7 @@ function getVariables() {
     return Object.keys(im._knownVariableMap)
         .map(function (key) {
         var info = im._knownVariableMap[key];
-        return { name: info.name, value: exports.getVariable(info.name), secret: info.secret };
+        return { name: info.name, value: (0, exports.getVariable)(info.name), secret: info.secret };
     });
 }
 exports.getVariables = getVariables;
@@ -5988,10 +6046,10 @@ function setVariable(name, val, secret, isOutput) {
     }
     // store the value
     var varValue = val || '';
-    exports.debug('set ' + name + '=' + (secret && varValue ? '********' : varValue));
+    (0, exports.debug)('set ' + name + '=' + (secret && varValue ? '********' : varValue));
     if (secret) {
-        if (varValue && varValue.match(/\r|\n/) && ("" + process.env['SYSTEM_UNSAFEALLOWMULTILINESECRET']).toUpperCase() != 'TRUE') {
-            throw new Error(exports.loc('LIB_MultilineSecret'));
+        if (varValue && varValue.match(/\r|\n/) && "".concat(process.env['SYSTEM_UNSAFEALLOWMULTILINESECRET']).toUpperCase() != 'TRUE') {
+            throw new Error((0, exports.loc)('LIB_MultilineSecret'));
         }
         im._vault.storeSecret('SECRET_' + key, varValue);
         delete process.env[key];
@@ -6002,7 +6060,7 @@ function setVariable(name, val, secret, isOutput) {
     // store the metadata
     im._knownVariableMap[key] = { name: name, secret: secret };
     // write the setvariable command
-    exports.command('task.setvariable', { 'variable': name || '', isOutput: (isOutput || false).toString(), 'issecret': (secret || false).toString() }, varValue);
+    (0, exports.command)('task.setvariable', { 'variable': name || '', isOutput: (isOutput || false).toString(), 'issecret': (secret || false).toString() }, varValue);
 }
 exports.setVariable = setVariable;
 /**
@@ -6012,10 +6070,10 @@ exports.setVariable = setVariable;
  */
 function setSecret(val) {
     if (val) {
-        if (val.match(/\r|\n/) && ("" + process.env['SYSTEM_UNSAFEALLOWMULTILINESECRET']).toUpperCase() !== 'TRUE') {
-            throw new Error(exports.loc('LIB_MultilineSecret'));
+        if (val.match(/\r|\n/) && "".concat(process.env['SYSTEM_UNSAFEALLOWMULTILINESECRET']).toUpperCase() !== 'TRUE') {
+            throw new Error((0, exports.loc)('LIB_MultilineSecret'));
         }
-        exports.command('task.setsecret', {}, val);
+        (0, exports.command)('task.setsecret', {}, val);
     }
 }
 exports.setSecret = setSecret;
@@ -6030,9 +6088,9 @@ exports.setSecret = setSecret;
 function getInput(name, required) {
     var inval = im._vault.retrieveSecret('INPUT_' + im._getVariableKey(name));
     if (required && !inval) {
-        throw new Error(exports.loc('LIB_InputRequired', name));
+        throw new Error((0, exports.loc)('LIB_InputRequired', name));
     }
-    exports.debug(name + '=' + inval);
+    (0, exports.debug)(name + '=' + inval);
     return inval;
 }
 exports.getInput = getInput;
@@ -6060,6 +6118,43 @@ function getBoolInput(name, required) {
     return (getInput(name, required) || '').toUpperCase() == "TRUE";
 }
 exports.getBoolInput = getBoolInput;
+/**
+ * Gets the value of an feature flag and converts to a bool.
+ * @IMPORTANT This method is only for internal Microsoft development. Do not use it for external tasks.
+ * @param     name     name of the feature flag to get.
+ * @param     defaultValue default value of the feature flag in case it's not found in env. (optional. Default value = false)
+ * @returns   boolean
+ * @deprecated Don't use this for new development. Use getPipelineFeature instead.
+ */
+function getBoolFeatureFlag(ffName, defaultValue) {
+    if (defaultValue === void 0) { defaultValue = false; }
+    var ffValue = process.env[ffName];
+    if (!ffValue) {
+        (0, exports.debug)("Feature flag ".concat(ffName, " not found. Returning ").concat(defaultValue, " as default."));
+        return defaultValue;
+    }
+    (0, exports.debug)("Feature flag ".concat(ffName, " = ").concat(ffValue));
+    return ffValue.toLowerCase() === "true";
+}
+exports.getBoolFeatureFlag = getBoolFeatureFlag;
+/**
+ * Gets the value of an task feature and converts to a bool.
+ * @IMPORTANT This method is only for internal Microsoft development. Do not use it for external tasks.
+ * @param     name     name of the feature to get.
+ * @returns   boolean
+ */
+function getPipelineFeature(featureName) {
+    var variableName = im._getVariableKey("DistributedTask.Tasks.".concat(featureName));
+    var featureValue = process.env[variableName];
+    if (!featureValue) {
+        (0, exports.debug)("Feature '".concat(featureName, "' not found. Returning false as default."));
+        return false;
+    }
+    var boolValue = featureValue.toLowerCase() === "true";
+    (0, exports.debug)("Feature '".concat(featureName, "' = '").concat(featureValue, "'. Processed as '").concat(boolValue, "'."));
+    return boolValue;
+}
+exports.getPipelineFeature = getPipelineFeature;
 /**
  * Gets the value of an input and splits the value using a delimiter (space, comma, etc).
  * Empty values are removed.  This function is useful for splitting an input containing a simple
@@ -6098,9 +6193,9 @@ exports.getDelimitedInput = getDelimitedInput;
 function filePathSupplied(name) {
     // normalize paths
     var pathValue = this.resolve(this.getPathInput(name) || '');
-    var repoRoot = this.resolve(exports.getVariable('build.sourcesDirectory') || exports.getVariable('system.defaultWorkingDirectory') || '');
+    var repoRoot = this.resolve((0, exports.getVariable)('build.sourcesDirectory') || (0, exports.getVariable)('system.defaultWorkingDirectory') || '');
     var supplied = pathValue !== repoRoot;
-    exports.debug(name + 'path supplied :' + supplied);
+    (0, exports.debug)(name + 'path supplied :' + supplied);
     return supplied;
 }
 exports.filePathSupplied = filePathSupplied;
@@ -6119,7 +6214,7 @@ function getPathInput(name, required, check) {
     var inval = getInput(name, required);
     if (inval) {
         if (check) {
-            exports.checkPath(inval, name);
+            (0, exports.checkPath)(inval, name);
         }
     }
     return inval;
@@ -6153,9 +6248,9 @@ exports.getPathInputRequired = getPathInputRequired;
 function getEndpointUrl(id, optional) {
     var urlval = process.env['ENDPOINT_URL_' + id];
     if (!optional && !urlval) {
-        throw new Error(exports.loc('LIB_EndpointNotExist', id));
+        throw new Error((0, exports.loc)('LIB_EndpointNotExist', id));
     }
-    exports.debug(id + '=' + urlval);
+    (0, exports.debug)(id + '=' + urlval);
     return urlval;
 }
 exports.getEndpointUrl = getEndpointUrl;
@@ -6182,9 +6277,9 @@ exports.getEndpointUrlRequired = getEndpointUrlRequired;
 function getEndpointDataParameter(id, key, optional) {
     var dataParamVal = process.env['ENDPOINT_DATA_' + id + '_' + key.toUpperCase()];
     if (!optional && !dataParamVal) {
-        throw new Error(exports.loc('LIB_EndpointDataNotExist', id, key));
+        throw new Error((0, exports.loc)('LIB_EndpointDataNotExist', id, key));
     }
-    exports.debug(id + ' data ' + key + ' = ' + dataParamVal);
+    (0, exports.debug)(id + ' data ' + key + ' = ' + dataParamVal);
     return dataParamVal;
 }
 exports.getEndpointDataParameter = getEndpointDataParameter;
@@ -6211,9 +6306,9 @@ exports.getEndpointDataParameterRequired = getEndpointDataParameterRequired;
 function getEndpointAuthorizationScheme(id, optional) {
     var authScheme = im._vault.retrieveSecret('ENDPOINT_AUTH_SCHEME_' + id);
     if (!optional && !authScheme) {
-        throw new Error(exports.loc('LIB_EndpointAuthNotExist', id));
+        throw new Error((0, exports.loc)('LIB_EndpointAuthNotExist', id));
     }
-    exports.debug(id + ' auth scheme = ' + authScheme);
+    (0, exports.debug)(id + ' auth scheme = ' + authScheme);
     return authScheme;
 }
 exports.getEndpointAuthorizationScheme = getEndpointAuthorizationScheme;
@@ -6240,9 +6335,9 @@ exports.getEndpointAuthorizationSchemeRequired = getEndpointAuthorizationSchemeR
 function getEndpointAuthorizationParameter(id, key, optional) {
     var authParam = im._vault.retrieveSecret('ENDPOINT_AUTH_PARAMETER_' + id + '_' + key.toUpperCase());
     if (!optional && !authParam) {
-        throw new Error(exports.loc('LIB_EndpointAuthNotExist', id));
+        throw new Error((0, exports.loc)('LIB_EndpointAuthNotExist', id));
     }
-    exports.debug(id + ' auth param ' + key + ' = ' + authParam);
+    (0, exports.debug)(id + ' auth param ' + key + ' = ' + authParam);
     return authParam;
 }
 exports.getEndpointAuthorizationParameter = getEndpointAuthorizationParameter;
@@ -6269,9 +6364,9 @@ exports.getEndpointAuthorizationParameterRequired = getEndpointAuthorizationPara
 function getEndpointAuthorization(id, optional) {
     var aval = im._vault.retrieveSecret('ENDPOINT_AUTH_' + id);
     if (!optional && !aval) {
-        setResult(TaskResult.Failed, exports.loc('LIB_EndpointAuthNotExist', id));
+        setResult(TaskResult.Failed, (0, exports.loc)('LIB_EndpointAuthNotExist', id));
     }
-    exports.debug(id + ' exists ' + (!!aval));
+    (0, exports.debug)(id + ' exists ' + (!!aval));
     var auth;
     try {
         if (aval) {
@@ -6279,7 +6374,7 @@ function getEndpointAuthorization(id, optional) {
         }
     }
     catch (err) {
-        throw new Error(exports.loc('LIB_InvalidEndpointAuth', aval));
+        throw new Error((0, exports.loc)('LIB_InvalidEndpointAuth', aval));
     }
     return auth;
 }
@@ -6295,7 +6390,7 @@ exports.getEndpointAuthorization = getEndpointAuthorization;
  */
 function getSecureFileName(id) {
     var name = process.env['SECUREFILE_NAME_' + id];
-    exports.debug('secure file name for id ' + id + ' = ' + name);
+    (0, exports.debug)('secure file name for id ' + id + ' = ' + name);
     return name;
 }
 exports.getSecureFileName = getSecureFileName;
@@ -6307,7 +6402,7 @@ exports.getSecureFileName = getSecureFileName;
   */
 function getSecureFileTicket(id) {
     var ticket = im._vault.retrieveSecret('SECUREFILE_TICKET_' + id);
-    exports.debug('secure file ticket for id ' + id + ' = ' + ticket);
+    (0, exports.debug)('secure file ticket for id ' + id + ' = ' + ticket);
     return ticket;
 }
 exports.getSecureFileTicket = getSecureFileTicket;
@@ -6327,7 +6422,7 @@ function getTaskVariable(name) {
     if (inval) {
         inval = inval.trim();
     }
-    exports.debug('task variable: ' + name + '=' + inval);
+    (0, exports.debug)('task variable: ' + name + '=' + inval);
     return inval;
 }
 exports.getTaskVariable = getTaskVariable;
@@ -6346,11 +6441,11 @@ function setTaskVariable(name, val, secret) {
     var key = im._getVariableKey(name);
     // store the value
     var varValue = val || '';
-    exports.debug('set task variable: ' + name + '=' + (secret && varValue ? '********' : varValue));
+    (0, exports.debug)('set task variable: ' + name + '=' + (secret && varValue ? '********' : varValue));
     im._vault.storeSecret('VSTS_TASKVARIABLE_' + key, varValue);
     delete process.env[key];
     // write the command
-    exports.command('task.settaskvariable', { 'variable': name || '', 'issecret': (secret || false).toString() }, varValue);
+    (0, exports.command)('task.settaskvariable', { 'variable': name || '', 'issecret': (secret || false).toString() }, varValue);
 }
 exports.setTaskVariable = setTaskVariable;
 //-----------------------------------------------------
@@ -6366,9 +6461,9 @@ exports.debug = im._debug;
 function _checkShell(cmd, continueOnError) {
     var se = shell.error();
     if (se) {
-        exports.debug(cmd + ' failed');
-        var errMsg = exports.loc('LIB_OperationFailed', cmd, se);
-        exports.debug(errMsg);
+        (0, exports.debug)(cmd + ' failed');
+        var errMsg = (0, exports.loc)('LIB_OperationFailed', cmd, se);
+        (0, exports.debug)(errMsg);
         if (!continueOnError) {
             throw new Error(errMsg);
         }
@@ -6417,16 +6512,33 @@ function getPlatform() {
         case 'win32': return Platform.Windows;
         case 'darwin': return Platform.MacOS;
         case 'linux': return Platform.Linux;
-        default: throw Error(exports.loc('LIB_PlatformNotSupported', process.platform));
+        default: throw Error((0, exports.loc)('LIB_PlatformNotSupported', process.platform));
     }
 }
 exports.getPlatform = getPlatform;
+/**
+ * Resolves major version of Node.js engine used by the agent.
+ * @returns {Number} Node's major version.
+ */
+function getNodeMajorVersion() {
+    var _a;
+    var version = (_a = process === null || process === void 0 ? void 0 : process.versions) === null || _a === void 0 ? void 0 : _a.node;
+    if (!version) {
+        throw new Error((0, exports.loc)('LIB_UndefinedNodeVersion'));
+    }
+    var parts = version.split('.').map(Number);
+    if (parts.length < 1) {
+        return NaN;
+    }
+    return parts[0];
+}
+exports.getNodeMajorVersion = getNodeMajorVersion;
 /**
  * Return hosted type of Agent
  * @returns {AgentHostedMode}
  */
 function getAgentMode() {
-    var agentCloudId = exports.getVariable('Agent.CloudId');
+    var agentCloudId = (0, exports.getVariable)('Agent.CloudId');
     if (agentCloudId === undefined)
         return AgentHostedMode.Unknown;
     if (agentCloudId)
@@ -6488,20 +6600,20 @@ exports.popd = popd;
  */
 function mkdirP(p) {
     if (!p) {
-        throw new Error(exports.loc('LIB_ParameterIsRequired', 'p'));
+        throw new Error((0, exports.loc)('LIB_ParameterIsRequired', 'p'));
     }
     // build a stack of directories to create
     var stack = [];
     var testDir = p;
     while (true) {
         // validate the loop is not out of control
-        if (stack.length >= (process.env['TASKLIB_TEST_MKDIRP_FAILSAFE'] || 1000)) {
+        if (stack.length >= Number(process.env['TASKLIB_TEST_MKDIRP_FAILSAFE'] || 1000)) {
             // let the framework throw
-            exports.debug('loop is out of control');
+            (0, exports.debug)('loop is out of control');
             fs.mkdirSync(p);
             return;
         }
-        exports.debug("testing directory '" + testDir + "'");
+        (0, exports.debug)("testing directory '".concat(testDir, "'"));
         var stats_1 = void 0;
         try {
             stats_1 = fs.statSync(testDir);
@@ -6511,7 +6623,7 @@ function mkdirP(p) {
                 // validate the directory is not the drive root
                 var parentDir = path.dirname(testDir);
                 if (testDir == parentDir) {
-                    throw new Error(exports.loc('LIB_MkdirFailedInvalidDriveRoot', p, testDir)); // Unable to create directory '{p}'. Root directory does not exist: '{testDir}'
+                    throw new Error((0, exports.loc)('LIB_MkdirFailedInvalidDriveRoot', p, testDir)); // Unable to create directory '{p}'. Root directory does not exist: '{testDir}'
                 }
                 // push the dir and test the parent
                 stack.push(testDir);
@@ -6519,14 +6631,14 @@ function mkdirP(p) {
                 continue;
             }
             else if (err.code == 'UNKNOWN') {
-                throw new Error(exports.loc('LIB_MkdirFailedInvalidShare', p, testDir)); // Unable to create directory '{p}'. Unable to verify the directory exists: '{testDir}'. If directory is a file share, please verify the share name is correct, the share is online, and the current process has permission to access the share.
+                throw new Error((0, exports.loc)('LIB_MkdirFailedInvalidShare', p, testDir)); // Unable to create directory '{p}'. Unable to verify the directory exists: '{testDir}'. If directory is a file share, please verify the share name is correct, the share is online, and the current process has permission to access the share.
             }
             else {
                 throw err;
             }
         }
         if (!stats_1.isDirectory()) {
-            throw new Error(exports.loc('LIB_MkdirFailedFileExists', p, testDir)); // Unable to create directory '{p}'. Conflicting file exists: '{testDir}'
+            throw new Error((0, exports.loc)('LIB_MkdirFailedFileExists', p, testDir)); // Unable to create directory '{p}'. Conflicting file exists: '{testDir}'
         }
         // testDir exists
         break;
@@ -6534,12 +6646,12 @@ function mkdirP(p) {
     // create each directory
     while (stack.length) {
         var dir = stack.pop(); // non-null because `stack.length` was truthy
-        exports.debug("mkdir '" + dir + "'");
+        (0, exports.debug)("mkdir '".concat(dir, "'"));
         try {
             fs.mkdirSync(dir);
         }
         catch (err) {
-            throw new Error(exports.loc('LIB_MkdirFailed', p, err.message)); // Unable to create directory '{p}'. {err.message}
+            throw new Error((0, exports.loc)('LIB_MkdirFailed', p, err.message)); // Unable to create directory '{p}'. {err.message}
         }
     }
 }
@@ -6557,7 +6669,7 @@ function resolve() {
         pathSegments[_i] = arguments[_i];
     }
     var absolutePath = path.resolve.apply(this, pathSegments);
-    exports.debug('Absolute path for pathSegments: ' + pathSegments + ' = ' + absolutePath);
+    (0, exports.debug)('Absolute path for pathSegments: ' + pathSegments + ' = ' + absolutePath);
     return absolutePath;
 }
 exports.resolve = resolve;
@@ -6602,7 +6714,7 @@ function cp(source, dest, options, continueOnError, retryCount) {
         catch (e) {
             if (retryCount <= 0) {
                 if (continueOnError) {
-                    exports.warning(e);
+                    (0, exports.warning)(e, exports.IssueSource.TaskInternal);
                     break;
                 }
                 else {
@@ -6610,7 +6722,7 @@ function cp(source, dest, options, continueOnError, retryCount) {
                 }
             }
             else {
-                console.log(exports.loc('LIB_CopyFileFailed', retryCount));
+                console.log((0, exports.loc)('LIB_CopyFileFailed', retryCount));
                 retryCount--;
             }
         }
@@ -6652,7 +6764,7 @@ function retry(func, args, retryOptions) {
         catch (e) {
             if (retryOptions.retryCount <= 0) {
                 if (retryOptions.continueOnError) {
-                    exports.warning(e);
+                    (0, exports.warning)(e, exports.IssueSource.TaskInternal);
                     break;
                 }
                 else {
@@ -6660,7 +6772,7 @@ function retry(func, args, retryOptions) {
                 }
             }
             else {
-                exports.debug("Attempt to execute function \"" + (func === null || func === void 0 ? void 0 : func.name) + "\" failed, retries left: " + retryOptions.retryCount);
+                (0, exports.debug)("Attempt to execute function \"".concat(func === null || func === void 0 ? void 0 : func.name, "\" failed, retries left: ").concat(retryOptions.retryCount));
                 retryOptions.retryCount--;
             }
         }
@@ -6688,7 +6800,7 @@ function _getStats(path, followSymbolicLink, allowBrokenSymbolicLinks) {
             if (err.code == 'ENOENT' && allowBrokenSymbolicLinks) {
                 // fallback to lstat (broken symlinks allowed)
                 stats = fs.lstatSync(path);
-                exports.debug("  " + path + " (broken symlink)");
+                (0, exports.debug)("  ".concat(path, " (broken symlink)"));
             }
             else {
                 throw err;
@@ -6710,14 +6822,14 @@ function _getStats(path, followSymbolicLink, allowBrokenSymbolicLinks) {
  */
 function find(findPath, options) {
     if (!findPath) {
-        exports.debug('no path specified');
+        (0, exports.debug)('no path specified');
         return [];
     }
     // normalize the path, otherwise the first result is inconsistently formatted from the rest of the results
     // because path.join() performs normalization.
     findPath = path.normalize(findPath);
     // debug trace the parameters
-    exports.debug("findPath: '" + findPath + "'");
+    (0, exports.debug)("findPath: '".concat(findPath, "'"));
     options = options || _getDefaultFindOptions();
     _debugFindOptions(options);
     // return empty if not exists
@@ -6726,7 +6838,7 @@ function find(findPath, options) {
     }
     catch (err) {
         if (err.code == 'ENOENT') {
-            exports.debug('0 results');
+            (0, exports.debug)('0 results');
             return [];
         }
         throw err;
@@ -6752,7 +6864,7 @@ function find(findPath, options) {
             }
             catch (err) {
                 if (err.code == 'ENOENT' && options.skipMissingFiles) {
-                    exports.warning("No such file or directory: \"" + item.path + "\" - skipping.");
+                    (0, exports.warning)("No such file or directory: \"".concat(item.path, "\" - skipping."), exports.IssueSource.TaskInternal);
                     return "continue";
                 }
                 throw err;
@@ -6760,7 +6872,7 @@ function find(findPath, options) {
             result.push(item.path);
             // note, isDirectory() returns false for the lstat of a symlink
             if (stats_2.isDirectory()) {
-                exports.debug("  " + item.path + " (directory)");
+                (0, exports.debug)("  ".concat(item.path, " (directory)"));
                 if (options.followSymbolicLinks) {
                     // get the realpath
                     var realPath_1;
@@ -6777,7 +6889,7 @@ function find(findPath, options) {
                     }
                     // test for a cycle
                     if (traversalChain.some(function (x) { return x == realPath_1; })) {
-                        exports.debug('    cycle detected');
+                        (0, exports.debug)('    cycle detected');
                         return "continue";
                     }
                     // update the traversal chain
@@ -6792,17 +6904,17 @@ function find(findPath, options) {
                 }
             }
             else {
-                exports.debug("  " + item.path + " (file)");
+                (0, exports.debug)("  ".concat(item.path, " (file)"));
             }
         };
         while (stack.length) {
             _loop_1();
         }
-        exports.debug(result.length + " results");
+        (0, exports.debug)("".concat(result.length, " results"));
         return result;
     }
     catch (err) {
-        throw new Error(exports.loc('LIB_OperationFailed', 'find', err.message));
+        throw new Error((0, exports.loc)('LIB_OperationFailed', 'find', err.message));
     }
 }
 exports.find = find;
@@ -6814,10 +6926,10 @@ var _FindItem = /** @class */ (function () {
     return _FindItem;
 }());
 function _debugFindOptions(options) {
-    exports.debug("findOptions.allowBrokenSymbolicLinks: '" + options.allowBrokenSymbolicLinks + "'");
-    exports.debug("findOptions.followSpecifiedSymbolicLink: '" + options.followSpecifiedSymbolicLink + "'");
-    exports.debug("findOptions.followSymbolicLinks: '" + options.followSymbolicLinks + "'");
-    exports.debug("findOptions.skipMissingFiles: '" + options.skipMissingFiles + "'");
+    (0, exports.debug)("findOptions.allowBrokenSymbolicLinks: '".concat(options.allowBrokenSymbolicLinks, "'"));
+    (0, exports.debug)("findOptions.followSpecifiedSymbolicLink: '".concat(options.followSpecifiedSymbolicLink, "'"));
+    (0, exports.debug)("findOptions.followSymbolicLinks: '".concat(options.followSymbolicLinks, "'"));
+    (0, exports.debug)("findOptions.skipMissingFiles: '".concat(options.skipMissingFiles, "'"));
 }
 function _getDefaultFindOptions() {
     return {
@@ -6841,10 +6953,10 @@ function legacyFindFiles(rootDirectory, pattern, includeFiles, includeDirectorie
     if (!pattern) {
         throw new Error('pattern parameter cannot be empty');
     }
-    exports.debug("legacyFindFiles rootDirectory: '" + rootDirectory + "'");
-    exports.debug("pattern: '" + pattern + "'");
-    exports.debug("includeFiles: '" + includeFiles + "'");
-    exports.debug("includeDirectories: '" + includeDirectories + "'");
+    (0, exports.debug)("legacyFindFiles rootDirectory: '".concat(rootDirectory, "'"));
+    (0, exports.debug)("pattern: '".concat(pattern, "'"));
+    (0, exports.debug)("includeFiles: '".concat(includeFiles, "'"));
+    (0, exports.debug)("includeDirectories: '".concat(includeDirectories, "'"));
     if (!includeFiles && !includeDirectories) {
         includeFiles = true;
     }
@@ -6875,7 +6987,7 @@ function legacyFindFiles(rootDirectory, pattern, includeFiles, includeDirectorie
         }
         // validate pattern does not end with a slash
         if (im._endsWith(pat, '/') || (process.platform == 'win32' && im._endsWith(pat, '\\'))) {
-            throw new Error(exports.loc('LIB_InvalidPattern', pat));
+            throw new Error((0, exports.loc)('LIB_InvalidPattern', pat));
         }
         // root the pattern
         if (rootDirectory && !path.isAbsolute(pat)) {
@@ -6897,27 +7009,27 @@ function legacyFindFiles(rootDirectory, pattern, includeFiles, includeDirectorie
     // find and apply patterns
     var count = 0;
     var result = _legacyFindFiles_getMatchingItems(includePatterns, excludePatterns, !!includeFiles, !!includeDirectories);
-    exports.debug('all matches:');
+    (0, exports.debug)('all matches:');
     for (var _b = 0, result_1 = result; _b < result_1.length; _b++) {
         var resultItem = result_1[_b];
-        exports.debug(' ' + resultItem);
+        (0, exports.debug)(' ' + resultItem);
     }
-    exports.debug('total matched: ' + result.length);
+    (0, exports.debug)('total matched: ' + result.length);
     return result;
 }
 exports.legacyFindFiles = legacyFindFiles;
 function _legacyFindFiles_getMatchingItems(includePatterns, excludePatterns, includeFiles, includeDirectories) {
-    exports.debug('getMatchingItems()');
+    (0, exports.debug)('getMatchingItems()');
     for (var _i = 0, includePatterns_1 = includePatterns; _i < includePatterns_1.length; _i++) {
         var pattern = includePatterns_1[_i];
-        exports.debug("includePattern: '" + pattern + "'");
+        (0, exports.debug)("includePattern: '".concat(pattern, "'"));
     }
     for (var _a = 0, excludePatterns_1 = excludePatterns; _a < excludePatterns_1.length; _a++) {
         var pattern = excludePatterns_1[_a];
-        exports.debug("excludePattern: " + pattern);
+        (0, exports.debug)("excludePattern: ".concat(pattern));
     }
-    exports.debug('includeFiles: ' + includeFiles);
-    exports.debug('includeDirectories: ' + includeDirectories);
+    (0, exports.debug)('includeFiles: ' + includeFiles);
+    (0, exports.debug)('includeDirectories: ' + includeDirectories);
     var allFiles = {};
     var _loop_2 = function (pattern) {
         // determine the directory to search
@@ -6960,7 +7072,7 @@ function _legacyFindFiles_getMatchingItems(includePatterns, excludePatterns, inc
             var normalizedPath = process.platform == 'win32' ? item.replace(/\\/g, '/') : item; // normalize separators
             // **/times/** will not match C:/fun/times because there isn't a trailing slash
             // so try both if including directories
-            var alternatePath = normalizedPath + "/"; // potential bug: it looks like this will result in a false
+            var alternatePath = "".concat(normalizedPath, "/"); // potential bug: it looks like this will result in a false
             // positive if the item is a regular file and not a directory
             var isMatch = false;
             if (patternRegex.test(normalizedPath) || (includeDirectories && patternRegex.test(alternatePath))) {
@@ -6992,25 +7104,25 @@ function _legacyFindFiles_getMatchingItems(includePatterns, excludePatterns, inc
  * @throws    when the file or directory exists but could not be deleted.
  */
 function rmRF(inputPath) {
-    exports.debug('rm -rf ' + inputPath);
+    (0, exports.debug)('rm -rf ' + inputPath);
     if (getPlatform() == Platform.Windows) {
         // Node doesn't provide a delete operation, only an unlink function. This means that if the file is being used by another
         // program (e.g. antivirus), it won't be deleted. To address this, we shell out the work to rd/del.
         try {
             if (fs.statSync(inputPath).isDirectory()) {
-                exports.debug('removing directory ' + inputPath);
-                childProcess.execSync("rd /s /q \"" + inputPath + "\"");
+                (0, exports.debug)('removing directory ' + inputPath);
+                childProcess.execSync("rd /s /q \"".concat(inputPath, "\""));
             }
             else {
-                exports.debug('removing file ' + inputPath);
-                childProcess.execSync("del /f /a \"" + inputPath + "\"");
+                (0, exports.debug)('removing file ' + inputPath);
+                childProcess.execSync("del /f /a \"".concat(inputPath, "\""));
             }
         }
         catch (err) {
             // if you try to delete a file that doesn't exist, desired result is achieved
             // other errors are valid
             if (err.code != 'ENOENT') {
-                throw new Error(exports.loc('LIB_OperationFailed', 'rmRF', err.message));
+                throw new Error((0, exports.loc)('LIB_OperationFailed', 'rmRF', err.message));
             }
         }
         // Shelling out fails to remove a symlink folder with missing source, this unlink catches that
@@ -7021,7 +7133,7 @@ function rmRF(inputPath) {
             // if you try to delete a file that doesn't exist, desired result is achieved
             // other errors are valid
             if (err.code != 'ENOENT') {
-                throw new Error(exports.loc('LIB_OperationFailed', 'rmRF', err.message));
+                throw new Error((0, exports.loc)('LIB_OperationFailed', 'rmRF', err.message));
             }
         }
     }
@@ -7038,23 +7150,23 @@ function rmRF(inputPath) {
             if (err.code == 'ENOENT') {
                 return;
             }
-            throw new Error(exports.loc('LIB_OperationFailed', 'rmRF', err.message));
+            throw new Error((0, exports.loc)('LIB_OperationFailed', 'rmRF', err.message));
         }
         if (lstats.isDirectory()) {
-            exports.debug('removing directory');
+            (0, exports.debug)('removing directory');
             shell.rm('-rf', inputPath);
             var errMsg = shell.error();
             if (errMsg) {
-                throw new Error(exports.loc('LIB_OperationFailed', 'rmRF', errMsg));
+                throw new Error((0, exports.loc)('LIB_OperationFailed', 'rmRF', errMsg));
             }
             return;
         }
-        exports.debug('removing file');
+        (0, exports.debug)('removing file');
         try {
             fs.unlinkSync(inputPath);
         }
         catch (err) {
-            throw new Error(exports.loc('LIB_OperationFailed', 'rmRF', err.message));
+            throw new Error((0, exports.loc)('LIB_OperationFailed', 'rmRF', err.message));
         }
     }
 }
@@ -7069,11 +7181,32 @@ exports.rmRF = rmRF;
  * @param     options  optional exec options.  See IExecOptions
  * @returns   number
  */
+function execAsync(tool, args, options) {
+    var tr = this.tool(tool);
+    if (args) {
+        if (args instanceof Array) {
+            tr.arg(args);
+        }
+        else if (typeof (args) === 'string') {
+            tr.line(args);
+        }
+    }
+    return tr.execAsync(options);
+}
+exports.execAsync = execAsync;
+/**
+ * Exec a tool.  Convenience wrapper over ToolRunner to exec with args in one call.
+ * Output will be streamed to the live console.
+ * Returns promise with return code
+ *
+ * @deprecated Use the {@link execAsync} method that returns a native Javascript Promise instead
+ * @param     tool     path to tool to exec
+ * @param     args     an arg string or array of args
+ * @param     options  optional exec options.  See IExecOptions
+ * @returns   number
+ */
 function exec(tool, args, options) {
     var tr = this.tool(tool);
-    tr.on('debug', function (data) {
-        exports.debug(data);
-    });
     if (args) {
         if (args instanceof Array) {
             tr.arg(args);
@@ -7098,9 +7231,6 @@ exports.exec = exec;
  */
 function execSync(tool, args, options) {
     var tr = this.tool(tool);
-    tr.on('debug', function (data) {
-        exports.debug(data);
-    });
     if (args) {
         if (args instanceof Array) {
             tr.arg(args);
@@ -7121,7 +7251,7 @@ exports.execSync = execSync;
 function tool(tool) {
     var tr = new trm.ToolRunner(tool);
     tr.on('debug', function (message) {
-        exports.debug(message);
+        (0, exports.debug)(message);
     });
     return tr;
 }
@@ -7136,7 +7266,7 @@ exports.tool = tool;
  */
 function match(list, patterns, patternRoot, options) {
     // trace parameters
-    exports.debug("patternRoot: '" + patternRoot + "'");
+    (0, exports.debug)("patternRoot: '".concat(patternRoot, "'"));
     options = options || _getDefaultMatchOptions(); // default match options
     _debugMatchOptions(options);
     // convert pattern to an array
@@ -7148,18 +7278,18 @@ function match(list, patterns, patternRoot, options) {
     var originalOptions = options;
     for (var _i = 0, patterns_1 = patterns; _i < patterns_1.length; _i++) {
         var pattern = patterns_1[_i];
-        exports.debug("pattern: '" + pattern + "'");
+        (0, exports.debug)("pattern: '".concat(pattern, "'"));
         // trim and skip empty
         pattern = (pattern || '').trim();
         if (!pattern) {
-            exports.debug('skipping empty pattern');
+            (0, exports.debug)('skipping empty pattern');
             continue;
         }
         // clone match options
         var options_1 = im._cloneMatchOptions(originalOptions);
         // skip comments
         if (!options_1.nocomment && im._startsWith(pattern, '#')) {
-            exports.debug('skipping comment');
+            (0, exports.debug)('skipping comment');
             continue;
         }
         // set nocomment - brace expansion could result in a leading '#'
@@ -7172,7 +7302,7 @@ function match(list, patterns, patternRoot, options) {
             }
             pattern = pattern.substring(negateCount); // trim leading '!'
             if (negateCount) {
-                exports.debug("trimmed leading '!'. pattern: '" + pattern + "'");
+                (0, exports.debug)("trimmed leading '!'. pattern: '".concat(pattern, "'"));
             }
         }
         var isIncludePattern = negateCount == 0 ||
@@ -7190,7 +7320,7 @@ function match(list, patterns, patternRoot, options) {
         else {
             // convert slashes on Windows before calling braceExpand(). unfortunately this means braces cannot
             // be escaped on Windows, this limitation is consistent with current limitations of minimatch (3.0.3).
-            exports.debug('expanding braces');
+            (0, exports.debug)('expanding braces');
             var convertedPattern = process.platform == 'win32' ? pattern.replace(/\\/g, '/') : pattern;
             expanded = minimatch.braceExpand(convertedPattern);
         }
@@ -7199,12 +7329,12 @@ function match(list, patterns, patternRoot, options) {
         for (var _a = 0, expanded_1 = expanded; _a < expanded_1.length; _a++) {
             var pattern_1 = expanded_1[_a];
             if (expanded.length != 1 || pattern_1 != preExpanded) {
-                exports.debug("pattern: '" + pattern_1 + "'");
+                (0, exports.debug)("pattern: '".concat(pattern_1, "'"));
             }
             // trim and skip empty
             pattern_1 = (pattern_1 || '').trim();
             if (!pattern_1) {
-                exports.debug('skipping empty pattern');
+                (0, exports.debug)('skipping empty pattern');
                 continue;
             }
             // root the pattern when all of the following conditions are true:
@@ -7213,13 +7343,13 @@ function match(list, patterns, patternRoot, options) {
                 // AND matchBase:false or not basename only
                 (!options_1.matchBase || (process.platform == 'win32' ? pattern_1.replace(/\\/g, '/') : pattern_1).indexOf('/') >= 0)) {
                 pattern_1 = im._ensureRooted(patternRoot, pattern_1);
-                exports.debug("rooted pattern: '" + pattern_1 + "'");
+                (0, exports.debug)("rooted pattern: '".concat(pattern_1, "'"));
             }
             if (isIncludePattern) {
                 // apply the pattern
-                exports.debug('applying include pattern against original list');
+                (0, exports.debug)('applying include pattern against original list');
                 var matchResults = minimatch.match(list, pattern_1, options_1);
-                exports.debug(matchResults.length + ' matches');
+                (0, exports.debug)(matchResults.length + ' matches');
                 // union the results
                 for (var _b = 0, matchResults_1 = matchResults; _b < matchResults_1.length; _b++) {
                     var matchResult = matchResults_1[_b];
@@ -7228,9 +7358,9 @@ function match(list, patterns, patternRoot, options) {
             }
             else {
                 // apply the pattern
-                exports.debug('applying exclude pattern against original list');
+                (0, exports.debug)('applying exclude pattern against original list');
                 var matchResults = minimatch.match(list, pattern_1, options_1);
-                exports.debug(matchResults.length + ' matches');
+                (0, exports.debug)(matchResults.length + ' matches');
                 // substract the results
                 for (var _c = 0, matchResults_2 = matchResults; _c < matchResults_2.length; _c++) {
                     var matchResult = matchResults_2[_c];
@@ -7241,7 +7371,7 @@ function match(list, patterns, patternRoot, options) {
     }
     // return a filtered version of the original list (preserves order and prevents duplication)
     var result = list.filter(function (item) { return map.hasOwnProperty(item); });
-    exports.debug(result.length + ' final results');
+    (0, exports.debug)(result.length + ' final results');
     return result;
 }
 exports.match = match;
@@ -7257,17 +7387,17 @@ function filter(pattern, options) {
 }
 exports.filter = filter;
 function _debugMatchOptions(options) {
-    exports.debug("matchOptions.debug: '" + options.debug + "'");
-    exports.debug("matchOptions.nobrace: '" + options.nobrace + "'");
-    exports.debug("matchOptions.noglobstar: '" + options.noglobstar + "'");
-    exports.debug("matchOptions.dot: '" + options.dot + "'");
-    exports.debug("matchOptions.noext: '" + options.noext + "'");
-    exports.debug("matchOptions.nocase: '" + options.nocase + "'");
-    exports.debug("matchOptions.nonull: '" + options.nonull + "'");
-    exports.debug("matchOptions.matchBase: '" + options.matchBase + "'");
-    exports.debug("matchOptions.nocomment: '" + options.nocomment + "'");
-    exports.debug("matchOptions.nonegate: '" + options.nonegate + "'");
-    exports.debug("matchOptions.flipNegate: '" + options.flipNegate + "'");
+    (0, exports.debug)("matchOptions.debug: '".concat(options.debug, "'"));
+    (0, exports.debug)("matchOptions.nobrace: '".concat(options.nobrace, "'"));
+    (0, exports.debug)("matchOptions.noglobstar: '".concat(options.noglobstar, "'"));
+    (0, exports.debug)("matchOptions.dot: '".concat(options.dot, "'"));
+    (0, exports.debug)("matchOptions.noext: '".concat(options.noext, "'"));
+    (0, exports.debug)("matchOptions.nocase: '".concat(options.nocase, "'"));
+    (0, exports.debug)("matchOptions.nonull: '".concat(options.nonull, "'"));
+    (0, exports.debug)("matchOptions.matchBase: '".concat(options.matchBase, "'"));
+    (0, exports.debug)("matchOptions.nocomment: '".concat(options.nocomment, "'"));
+    (0, exports.debug)("matchOptions.nonegate: '".concat(options.nonegate, "'"));
+    (0, exports.debug)("matchOptions.flipNegate: '".concat(options.flipNegate, "'"));
 }
 function _getDefaultMatchOptions() {
     return {
@@ -7298,7 +7428,7 @@ function _getDefaultMatchOptions() {
 function findMatch(defaultRoot, patterns, findOptions, matchOptions) {
     // apply defaults for parameters and trace
     defaultRoot = defaultRoot || this.getVariable('system.defaultWorkingDirectory') || process.cwd();
-    exports.debug("defaultRoot: '" + defaultRoot + "'");
+    (0, exports.debug)("defaultRoot: '".concat(defaultRoot, "'"));
     patterns = patterns || [];
     patterns = typeof patterns == 'string' ? [patterns] : patterns;
     findOptions = findOptions || _getDefaultFindOptions();
@@ -7311,18 +7441,18 @@ function findMatch(defaultRoot, patterns, findOptions, matchOptions) {
     var originalMatchOptions = matchOptions;
     for (var _i = 0, _a = (patterns || []); _i < _a.length; _i++) {
         var pattern = _a[_i];
-        exports.debug("pattern: '" + pattern + "'");
+        (0, exports.debug)("pattern: '".concat(pattern, "'"));
         // trim and skip empty
         pattern = (pattern || '').trim();
         if (!pattern) {
-            exports.debug('skipping empty pattern');
+            (0, exports.debug)('skipping empty pattern');
             continue;
         }
         // clone match options
         var matchOptions_1 = im._cloneMatchOptions(originalMatchOptions);
         // skip comments
         if (!matchOptions_1.nocomment && im._startsWith(pattern, '#')) {
-            exports.debug('skipping comment');
+            (0, exports.debug)('skipping comment');
             continue;
         }
         // set nocomment - brace expansion could result in a leading '#'
@@ -7335,7 +7465,7 @@ function findMatch(defaultRoot, patterns, findOptions, matchOptions) {
             }
             pattern = pattern.substring(negateCount); // trim leading '!'
             if (negateCount) {
-                exports.debug("trimmed leading '!'. pattern: '" + pattern + "'");
+                (0, exports.debug)("trimmed leading '!'. pattern: '".concat(pattern, "'"));
             }
         }
         var isIncludePattern = negateCount == 0 ||
@@ -7353,7 +7483,7 @@ function findMatch(defaultRoot, patterns, findOptions, matchOptions) {
         else {
             // convert slashes on Windows before calling braceExpand(). unfortunately this means braces cannot
             // be escaped on Windows, this limitation is consistent with current limitations of minimatch (3.0.3).
-            exports.debug('expanding braces');
+            (0, exports.debug)('expanding braces');
             var convertedPattern = process.platform == 'win32' ? pattern.replace(/\\/g, '/') : pattern;
             expanded = minimatch.braceExpand(convertedPattern);
         }
@@ -7362,25 +7492,25 @@ function findMatch(defaultRoot, patterns, findOptions, matchOptions) {
         for (var _b = 0, expanded_2 = expanded; _b < expanded_2.length; _b++) {
             var pattern_2 = expanded_2[_b];
             if (expanded.length != 1 || pattern_2 != preExpanded) {
-                exports.debug("pattern: '" + pattern_2 + "'");
+                (0, exports.debug)("pattern: '".concat(pattern_2, "'"));
             }
             // trim and skip empty
             pattern_2 = (pattern_2 || '').trim();
             if (!pattern_2) {
-                exports.debug('skipping empty pattern');
+                (0, exports.debug)('skipping empty pattern');
                 continue;
             }
             if (isIncludePattern) {
                 // determine the findPath
                 var findInfo = im._getFindInfoFromPattern(defaultRoot, pattern_2, matchOptions_1);
                 var findPath = findInfo.findPath;
-                exports.debug("findPath: '" + findPath + "'");
+                (0, exports.debug)("findPath: '".concat(findPath, "'"));
                 if (!findPath) {
-                    exports.debug('skipping empty path');
+                    (0, exports.debug)('skipping empty path');
                     continue;
                 }
                 // perform the find
-                exports.debug("statOnly: '" + findInfo.statOnly + "'");
+                (0, exports.debug)("statOnly: '".concat(findInfo.statOnly, "'"));
                 var findResults = [];
                 if (findInfo.statOnly) {
                     // simply stat the path - all path segments were used to build the path
@@ -7392,21 +7522,21 @@ function findMatch(defaultRoot, patterns, findOptions, matchOptions) {
                         if (err.code != 'ENOENT') {
                             throw err;
                         }
-                        exports.debug('ENOENT');
+                        (0, exports.debug)('ENOENT');
                     }
                 }
                 else {
                     findResults = find(findPath, findOptions);
                 }
-                exports.debug("found " + findResults.length + " paths");
+                (0, exports.debug)("found ".concat(findResults.length, " paths"));
                 // apply the pattern
-                exports.debug('applying include pattern');
+                (0, exports.debug)('applying include pattern');
                 if (findInfo.adjustedPattern != pattern_2) {
-                    exports.debug("adjustedPattern: '" + findInfo.adjustedPattern + "'");
+                    (0, exports.debug)("adjustedPattern: '".concat(findInfo.adjustedPattern, "'"));
                     pattern_2 = findInfo.adjustedPattern;
                 }
                 var matchResults = minimatch.match(findResults, pattern_2, matchOptions_1);
-                exports.debug(matchResults.length + ' matches');
+                (0, exports.debug)(matchResults.length + ' matches');
                 // union the results
                 for (var _c = 0, matchResults_3 = matchResults; _c < matchResults_3.length; _c++) {
                     var matchResult = matchResults_3[_c];
@@ -7420,17 +7550,17 @@ function findMatch(defaultRoot, patterns, findOptions, matchOptions) {
                     !im._isRooted(pattern_2) &&
                     (process.platform == 'win32' ? pattern_2.replace(/\\/g, '/') : pattern_2).indexOf('/') < 0) {
                     // do not root the pattern
-                    exports.debug('matchBase and basename only');
+                    (0, exports.debug)('matchBase and basename only');
                 }
                 else {
                     // root the exclude pattern
                     pattern_2 = im._ensurePatternRooted(defaultRoot, pattern_2);
-                    exports.debug("after ensurePatternRooted, pattern: '" + pattern_2 + "'");
+                    (0, exports.debug)("after ensurePatternRooted, pattern: '".concat(pattern_2, "'"));
                 }
                 // apply the pattern
-                exports.debug('applying exclude pattern');
+                (0, exports.debug)('applying exclude pattern');
                 var matchResults = minimatch.match(Object.keys(results).map(function (key) { return results[key]; }), pattern_2, matchOptions_1);
-                exports.debug(matchResults.length + ' matches');
+                (0, exports.debug)(matchResults.length + ' matches');
                 // substract the results
                 for (var _d = 0, matchResults_4 = matchResults; _d < matchResults_4.length; _d++) {
                     var matchResult = matchResults_4[_d];
@@ -7443,7 +7573,7 @@ function findMatch(defaultRoot, patterns, findOptions, matchOptions) {
     var finalResult = Object.keys(results)
         .map(function (key) { return results[key]; })
         .sort();
-    exports.debug(finalResult.length + ' final results');
+    (0, exports.debug)(finalResult.length + ' final results');
     return finalResult;
 }
 exports.findMatch = findMatch;
@@ -7456,9 +7586,9 @@ exports.findMatch = findMatch;
  */
 function getProxyFormattedUrl(proxyUrl, proxyUsername, proxyPassword) {
     var parsedUrl = new URL(proxyUrl);
-    var proxyAddress = parsedUrl.protocol + "//" + parsedUrl.host;
+    var proxyAddress = "".concat(parsedUrl.protocol, "//").concat(parsedUrl.host);
     if (proxyUsername) {
-        proxyAddress = parsedUrl.protocol + "//" + proxyUsername + ":" + proxyPassword + "@" + parsedUrl.host;
+        proxyAddress = "".concat(parsedUrl.protocol, "//").concat(proxyUsername, ":").concat(proxyPassword, "@").concat(parsedUrl.host);
     }
     return proxyAddress;
 }
@@ -7468,11 +7598,11 @@ function getProxyFormattedUrl(proxyUrl, proxyUsername, proxyPassword) {
  * @return  ProxyConfiguration
  */
 function getHttpProxyConfiguration(requestUrl) {
-    var proxyUrl = exports.getVariable('Agent.ProxyUrl');
+    var proxyUrl = (0, exports.getVariable)('Agent.ProxyUrl');
     if (proxyUrl && proxyUrl.length > 0) {
-        var proxyUsername = exports.getVariable('Agent.ProxyUsername');
-        var proxyPassword = exports.getVariable('Agent.ProxyPassword');
-        var proxyBypassHosts = JSON.parse(exports.getVariable('Agent.ProxyBypassList') || '[]');
+        var proxyUsername = (0, exports.getVariable)('Agent.ProxyUsername');
+        var proxyPassword = (0, exports.getVariable)('Agent.ProxyPassword');
+        var proxyBypassHosts = JSON.parse((0, exports.getVariable)('Agent.ProxyBypassList') || '[]');
         var bypass_1 = false;
         if (requestUrl) {
             proxyBypassHosts.forEach(function (bypassHost) {
@@ -7506,16 +7636,16 @@ exports.getHttpProxyConfiguration = getHttpProxyConfiguration;
  * @return  CertConfiguration
  */
 function getHttpCertConfiguration() {
-    var ca = exports.getVariable('Agent.CAInfo');
-    var clientCert = exports.getVariable('Agent.ClientCert');
+    var ca = (0, exports.getVariable)('Agent.CAInfo');
+    var clientCert = (0, exports.getVariable)('Agent.ClientCert');
     if (ca || clientCert) {
         var certConfig = {};
         certConfig.caFile = ca;
         certConfig.certFile = clientCert;
         if (clientCert) {
-            var clientCertKey = exports.getVariable('Agent.ClientCertKey');
-            var clientCertArchive = exports.getVariable('Agent.ClientCertArchive');
-            var clientCertPassword = exports.getVariable('Agent.ClientCertPassword');
+            var clientCertKey = (0, exports.getVariable)('Agent.ClientCertKey');
+            var clientCertArchive = (0, exports.getVariable)('Agent.ClientCertArchive');
+            var clientCertPassword = (0, exports.getVariable)('Agent.ClientCertPassword');
             certConfig.keyFile = clientCertKey;
             certConfig.certArchiveFile = clientCertArchive;
             certConfig.passphrase = clientCertPassword;
@@ -7559,7 +7689,7 @@ var TestPublisher = /** @class */ (function () {
             properties['resultFiles'] = Array.isArray(resultFiles) ? resultFiles.join() : resultFiles;
         }
         properties['testRunSystem'] = testRunSystem;
-        exports.command('results.publish', properties, '');
+        (0, exports.command)('results.publish', properties, '');
     };
     return TestPublisher;
 }());
@@ -7584,7 +7714,7 @@ var CodeCoveragePublisher = /** @class */ (function () {
         if (additionalCodeCoverageFiles) {
             properties['additionalcodecoveragefiles'] = Array.isArray(additionalCodeCoverageFiles) ? additionalCodeCoverageFiles.join() : additionalCodeCoverageFiles;
         }
-        exports.command('codecoverage.publish', properties, "");
+        (0, exports.command)('codecoverage.publish', properties, "");
     };
     return CodeCoveragePublisher;
 }());
@@ -7600,7 +7730,7 @@ var CodeCoverageEnabler = /** @class */ (function () {
     CodeCoverageEnabler.prototype.enableCodeCoverage = function (buildProps) {
         buildProps['buildtool'] = this.buildTool;
         buildProps['codecoveragetool'] = this.ccTool;
-        exports.command('codecoverage.enable', buildProps, "");
+        (0, exports.command)('codecoverage.enable', buildProps, "");
     };
     return CodeCoverageEnabler;
 }());
@@ -7618,7 +7748,7 @@ exports.CodeCoverageEnabler = CodeCoverageEnabler;
  * @returns         void
  */
 function uploadFile(path) {
-    exports.command("task.uploadfile", null, path);
+    (0, exports.command)("task.uploadfile", null, path);
 }
 exports.uploadFile = uploadFile;
 /**
@@ -7631,7 +7761,7 @@ exports.uploadFile = uploadFile;
  */
 function prependPath(path) {
     assertAgent("2.115.0");
-    exports.command("task.prependpath", null, path);
+    (0, exports.command)("task.prependpath", null, path);
 }
 exports.prependPath = prependPath;
 /**
@@ -7643,7 +7773,7 @@ exports.prependPath = prependPath;
  * @returns         void
  */
 function uploadSummary(path) {
-    exports.command("task.uploadsummary", null, path);
+    (0, exports.command)("task.uploadsummary", null, path);
 }
 exports.uploadSummary = uploadSummary;
 /**
@@ -7657,7 +7787,7 @@ exports.uploadSummary = uploadSummary;
  * @returns         void
  */
 function addAttachment(type, name, path) {
-    exports.command("task.addattachment", { "type": type, "name": name }, path);
+    (0, exports.command)("task.addattachment", { "type": type, "name": name }, path);
 }
 exports.addAttachment = addAttachment;
 /**
@@ -7672,7 +7802,7 @@ exports.addAttachment = addAttachment;
  * @returns       void
  */
 function setEndpoint(id, field, key, value) {
-    exports.command("task.setendpoint", { "id": id, "field": FieldType[field].toLowerCase(), "key": key }, value);
+    (0, exports.command)("task.setendpoint", { "id": id, "field": FieldType[field].toLowerCase(), "key": key }, value);
 }
 exports.setEndpoint = setEndpoint;
 /**
@@ -7683,7 +7813,7 @@ exports.setEndpoint = setEndpoint;
  * @returns                 void
  */
 function setProgress(percent, currentOperation) {
-    exports.command("task.setprogress", { "value": "" + percent }, currentOperation);
+    (0, exports.command)("task.setprogress", { "value": "".concat(percent) }, currentOperation);
 }
 exports.setProgress = setProgress;
 /**
@@ -7715,7 +7845,7 @@ function logDetail(id, message, parentId, recordType, recordName, order, startTi
         "state": state ? TaskState[state] : undefined,
         "result": result ? TaskResult[result] : undefined
     };
-    exports.command("task.logdetail", properties, message);
+    (0, exports.command)("task.logdetail", properties, message);
 }
 exports.logDetail = logDetail;
 /**
@@ -7737,7 +7867,7 @@ function logIssue(type, message, sourcePath, lineNumber, columnNumber, errorCode
         "linenumber": lineNumber ? lineNumber.toString() : undefined,
         "columnnumber": columnNumber ? columnNumber.toString() : undefined,
     };
-    exports.command("task.logissue", properties, message);
+    (0, exports.command)("task.logissue", properties, message);
 }
 exports.logIssue = logIssue;
 //-----------------------------------------------------
@@ -7755,7 +7885,7 @@ exports.logIssue = logIssue;
  * @returns                 void
  */
 function uploadArtifact(containerFolder, path, name) {
-    exports.command("artifact.upload", { "containerfolder": containerFolder, "artifactname": name }, path);
+    (0, exports.command)("artifact.upload", { "containerfolder": containerFolder, "artifactname": name }, path);
 }
 exports.uploadArtifact = uploadArtifact;
 /**
@@ -7770,7 +7900,7 @@ exports.uploadArtifact = uploadArtifact;
  * @returns                 void
  */
 function associateArtifact(name, path, artifactType) {
-    exports.command("artifact.associate", { "type": ArtifactType[artifactType].toLowerCase(), "artifactname": name }, path);
+    (0, exports.command)("artifact.associate", { "type": ArtifactType[artifactType].toLowerCase(), "artifactname": name }, path);
 }
 exports.associateArtifact = associateArtifact;
 //-----------------------------------------------------
@@ -7783,7 +7913,7 @@ exports.associateArtifact = associateArtifact;
  * @returns         void
  */
 function uploadBuildLog(path) {
-    exports.command("build.uploadlog", null, path);
+    (0, exports.command)("build.uploadlog", null, path);
 }
 exports.uploadBuildLog = uploadBuildLog;
 /**
@@ -7793,7 +7923,7 @@ exports.uploadBuildLog = uploadBuildLog;
  * @returns         void
  */
 function updateBuildNumber(value) {
-    exports.command("build.updatebuildnumber", null, value);
+    (0, exports.command)("build.updatebuildnumber", null, value);
 }
 exports.updateBuildNumber = updateBuildNumber;
 /**
@@ -7803,7 +7933,7 @@ exports.updateBuildNumber = updateBuildNumber;
  * @returns         void
  */
 function addBuildTag(value) {
-    exports.command("build.addbuildtag", null, value);
+    (0, exports.command)("build.addbuildtag", null, value);
 }
 exports.addBuildTag = addBuildTag;
 //-----------------------------------------------------
@@ -7817,7 +7947,7 @@ exports.addBuildTag = addBuildTag;
  */
 function updateReleaseName(name) {
     assertAgent("2.132.0");
-    exports.command("release.updatereleasename", null, name);
+    (0, exports.command)("release.updatereleasename", null, name);
 }
 exports.updateReleaseName = updateReleaseName;
 //-----------------------------------------------------
@@ -7831,7 +7961,7 @@ exports.ToolRunner = trm.ToolRunner;
 //-----------------------------------------------------
 // async await needs generators in node 4.x+
 if (semver.lt(process.versions.node, '4.2.0')) {
-    exports.warning('Tasks require a new agent.  Upgrade your agent or node to 4.2.0 or later');
+    (0, exports.warning)('Tasks require a new agent.  Upgrade your agent or node to 4.2.0 or later', exports.IssueSource.TaskInternal);
 }
 //-------------------------------------------------------------------
 // Populate the vault with sensitive data.  Inputs and Endpoints
@@ -7970,6 +8100,8 @@ var __extends = (this && this.__extends) || (function () {
         return extendStatics(d, b);
     };
     return function (d, b) {
+        if (typeof b !== "function" && b !== null)
+            throw new TypeError("Class extends value " + String(b) + " is not a constructor or null");
         extendStatics(d, b);
         function __() { this.constructor = d; }
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
@@ -8070,7 +8202,7 @@ var ToolRunner = /** @class */ (function (_super) {
             }
             // Windows + verbatim
             else if (options.windowsVerbatimArguments) {
-                commandParts.push("\"" + toolPath + "\"");
+                commandParts.push("\"".concat(toolPath, "\""));
                 commandParts = commandParts.concat(args);
             }
             else if (options.shell) {
@@ -8097,23 +8229,23 @@ var ToolRunner = /** @class */ (function (_super) {
         }
         return cmd;
     };
-    ToolRunner.prototype._processLineBuffer = function (data, strBuffer, onLine) {
+    ToolRunner.prototype._processLineBuffer = function (data, buffer, onLine) {
+        var newBuffer = buffer + data.toString();
         try {
-            var s = strBuffer + data.toString();
-            var n = s.indexOf(os.EOL);
-            while (n > -1) {
-                var line = s.substring(0, n);
+            var eolIndex = newBuffer.indexOf(os.EOL);
+            while (eolIndex > -1) {
+                var line = newBuffer.substring(0, eolIndex);
                 onLine(line);
                 // the rest of the string ...
-                s = s.substring(n + os.EOL.length);
-                n = s.indexOf(os.EOL);
+                newBuffer = newBuffer.substring(eolIndex + os.EOL.length);
+                eolIndex = newBuffer.indexOf(os.EOL);
             }
-            strBuffer = s;
         }
         catch (err) {
             // streaming lines to console is best effort.  Don't fail a build.
             this._debug('error processing line');
         }
+        return newBuffer;
     };
     /**
      * Wraps an arg string with specified char if it's not already wrapped
@@ -8123,7 +8255,7 @@ var ToolRunner = /** @class */ (function (_super) {
      */
     ToolRunner.prototype._wrapArg = function (arg, wrapChar) {
         if (!this._isWrapped(arg, wrapChar)) {
-            return "" + wrapChar + arg + wrapChar;
+            return "".concat(wrapChar).concat(arg).concat(wrapChar);
         }
         return arg;
     };
@@ -8134,7 +8266,7 @@ var ToolRunner = /** @class */ (function (_super) {
      */
     ToolRunner.prototype._unwrapArg = function (arg, wrapChar) {
         if (this._isWrapped(arg, wrapChar)) {
-            var pattern = new RegExp("(^\\\\?" + wrapChar + ")|(\\\\?" + wrapChar + "$)", 'g');
+            var pattern = new RegExp("(^\\\\?".concat(wrapChar, ")|(\\\\?").concat(wrapChar, "$)"), 'g');
             return arg.trim().replace(pattern, '');
         }
         return arg;
@@ -8144,7 +8276,7 @@ var ToolRunner = /** @class */ (function (_super) {
      * @param arg Input arg string
      */
     ToolRunner.prototype._isWrapped = function (arg, wrapChar) {
-        var pattern = new RegExp("^\\\\?" + wrapChar + ".+\\\\?" + wrapChar + "$");
+        var pattern = new RegExp("^\\\\?".concat(wrapChar, ".+\\\\?").concat(wrapChar, "$"));
         return pattern.test(arg.trim());
     };
     ToolRunner.prototype._getSpawnFileName = function (options) {
@@ -8162,7 +8294,7 @@ var ToolRunner = /** @class */ (function (_super) {
         var _this = this;
         if (process.platform == 'win32') {
             if (this._isCmdFile()) {
-                var argline = "/D /S /C \"" + this._windowsQuoteCmdArg(this.toolPath);
+                var argline = "/D /S /C \"".concat(this._windowsQuoteCmdArg(this.toolPath));
                 for (var i = 0; i < this.args.length; i++) {
                     argline += ' ';
                     argline += options.windowsVerbatimArguments ? this.args[i] : this._windowsQuoteCmdArg(this.args[i]);
@@ -8206,7 +8338,7 @@ var ToolRunner = /** @class */ (function (_super) {
                     if (arguments.length != 1) {
                         throw new Error('Unexpected arguments passed to args.unshift when windowsVerbatimArguments flag is set.');
                     }
-                    return Array.prototype.unshift.call(args_1, "\"" + arguments[0] + "\""); // quote the file name
+                    return Array.prototype.unshift.call(args_1, "\"".concat(arguments[0], "\"")); // quote the file name
                 };
                 return args_1;
             }
@@ -8410,7 +8542,7 @@ var ToolRunner = /** @class */ (function (_super) {
         if (arg.indexOf('"') < 0 && arg.indexOf('\\') < 0) {
             // No embedded double quotes or backslashes, so I can just wrap
             // quote marks around the whole thing.
-            return "\"" + arg + "\"";
+            return "\"".concat(arg, "\"");
         }
         // Expected input/output:
         //   input : hello"world
@@ -8479,6 +8611,186 @@ var ToolRunner = /** @class */ (function (_super) {
         result['windowsVerbatimArguments'] = options.windowsVerbatimArguments || this._isCmdFile();
         return result;
     };
+    ToolRunner.prototype.execWithPipingAsync = function (pipeOutputToTool, options) {
+        var _this = this;
+        this._debug('exec tool: ' + this.toolPath);
+        this._debug('arguments:');
+        this.args.forEach(function (arg) {
+            _this._debug('   ' + arg);
+        });
+        var success = true;
+        var optionsNonNull = this._cloneExecOptions(options);
+        if (!optionsNonNull.silent) {
+            optionsNonNull.outStream.write(this._getCommandString(optionsNonNull) + os.EOL);
+        }
+        var cp;
+        var toolPath = pipeOutputToTool.toolPath;
+        var toolPathFirst;
+        var successFirst = true;
+        var returnCodeFirst;
+        var fileStream;
+        var waitingEvents = 0; // number of process or stream events we are waiting on to complete
+        var returnCode = 0;
+        var error;
+        toolPathFirst = this.toolPath;
+        // Following node documentation example from this link on how to pipe output of one process to another
+        // https://nodejs.org/api/child_process.html#child_process_child_process_spawn_command_args_options
+        //start the child process for both tools
+        waitingEvents++;
+        var cpFirst = child.spawn(this._getSpawnFileName(optionsNonNull), this._getSpawnArgs(optionsNonNull), this._getSpawnOptions(optionsNonNull));
+        waitingEvents++;
+        cp = child.spawn(pipeOutputToTool._getSpawnFileName(optionsNonNull), pipeOutputToTool._getSpawnArgs(optionsNonNull), pipeOutputToTool._getSpawnOptions(optionsNonNull));
+        fileStream = this.pipeOutputToFile ? fs.createWriteStream(this.pipeOutputToFile) : null;
+        return new Promise(function (resolve, reject) {
+            var _a, _b, _c, _d;
+            if (fileStream) {
+                waitingEvents++;
+                fileStream.on('finish', function () {
+                    waitingEvents--; //file write is complete
+                    fileStream = null;
+                    if (waitingEvents == 0) {
+                        if (error) {
+                            reject(error);
+                        }
+                        else {
+                            resolve(returnCode);
+                        }
+                    }
+                });
+                fileStream.on('error', function (err) {
+                    waitingEvents--; //there were errors writing to the file, write is done
+                    _this._debug("Failed to pipe output of ".concat(toolPathFirst, " to file ").concat(_this.pipeOutputToFile, ". Error = ").concat(err));
+                    fileStream = null;
+                    if (waitingEvents == 0) {
+                        if (error) {
+                            reject(error);
+                        }
+                        else {
+                            resolve(returnCode);
+                        }
+                    }
+                });
+            }
+            //pipe stdout of first tool to stdin of second tool
+            (_a = cpFirst.stdout) === null || _a === void 0 ? void 0 : _a.on('data', function (data) {
+                var _a, _b;
+                try {
+                    if (fileStream) {
+                        fileStream.write(data);
+                    }
+                    if (!((_a = cp.stdin) === null || _a === void 0 ? void 0 : _a.destroyed)) {
+                        (_b = cp.stdin) === null || _b === void 0 ? void 0 : _b.write(data);
+                    }
+                }
+                catch (err) {
+                    _this._debug('Failed to pipe output of ' + toolPathFirst + ' to ' + toolPath);
+                    _this._debug(toolPath + ' might have exited due to errors prematurely. Verify the arguments passed are valid.');
+                }
+            });
+            (_b = cpFirst.stderr) === null || _b === void 0 ? void 0 : _b.on('data', function (data) {
+                if (fileStream) {
+                    fileStream.write(data);
+                }
+                successFirst = !optionsNonNull.failOnStdErr;
+                if (!optionsNonNull.silent) {
+                    var s = optionsNonNull.failOnStdErr ? optionsNonNull.errStream : optionsNonNull.outStream;
+                    s.write(data);
+                }
+            });
+            cpFirst.on('error', function (err) {
+                var _a;
+                waitingEvents--; //first process is complete with errors
+                if (fileStream) {
+                    fileStream.end();
+                }
+                (_a = cp.stdin) === null || _a === void 0 ? void 0 : _a.end();
+                error = new Error(toolPathFirst + ' failed. ' + err.message);
+                if (waitingEvents == 0) {
+                    reject(error);
+                }
+            });
+            cpFirst.on('close', function (code, signal) {
+                var _a;
+                waitingEvents--; //first process is complete
+                if (code != 0 && !optionsNonNull.ignoreReturnCode) {
+                    successFirst = false;
+                    returnCodeFirst = code;
+                    returnCode = returnCodeFirst;
+                }
+                _this._debug('success of first tool:' + successFirst);
+                if (fileStream) {
+                    fileStream.end();
+                }
+                (_a = cp.stdin) === null || _a === void 0 ? void 0 : _a.end();
+                if (waitingEvents == 0) {
+                    if (error) {
+                        reject(error);
+                    }
+                    else {
+                        resolve(returnCode);
+                    }
+                }
+            });
+            var stdLineBuffer = '';
+            (_c = cp.stdout) === null || _c === void 0 ? void 0 : _c.on('data', function (data) {
+                _this.emit('stdout', data);
+                if (!optionsNonNull.silent) {
+                    optionsNonNull.outStream.write(data);
+                }
+                stdLineBuffer = _this._processLineBuffer(data, stdLineBuffer, function (line) {
+                    _this.emit('stdline', line);
+                });
+            });
+            var errLineBuffer = '';
+            (_d = cp.stderr) === null || _d === void 0 ? void 0 : _d.on('data', function (data) {
+                _this.emit('stderr', data);
+                success = !optionsNonNull.failOnStdErr;
+                if (!optionsNonNull.silent) {
+                    var s = optionsNonNull.failOnStdErr ? optionsNonNull.errStream : optionsNonNull.outStream;
+                    s.write(data);
+                }
+                errLineBuffer = _this._processLineBuffer(data, errLineBuffer, function (line) {
+                    _this.emit('errline', line);
+                });
+            });
+            cp.on('error', function (err) {
+                waitingEvents--; //process is done with errors
+                error = new Error(toolPath + ' failed. ' + err.message);
+                if (waitingEvents == 0) {
+                    reject(error);
+                }
+            });
+            cp.on('close', function (code, signal) {
+                waitingEvents--; //process is complete
+                _this._debug('rc:' + code);
+                returnCode = code;
+                if (stdLineBuffer.length > 0) {
+                    _this.emit('stdline', stdLineBuffer);
+                }
+                if (errLineBuffer.length > 0) {
+                    _this.emit('errline', errLineBuffer);
+                }
+                if (code != 0 && !optionsNonNull.ignoreReturnCode) {
+                    success = false;
+                }
+                _this._debug('success:' + success);
+                if (!successFirst) { //in the case output is piped to another tool, check exit code of both tools
+                    error = new Error(toolPathFirst + ' failed with return code: ' + returnCodeFirst);
+                }
+                else if (!success) {
+                    error = new Error(toolPath + ' failed with return code: ' + code);
+                }
+                if (waitingEvents == 0) {
+                    if (error) {
+                        reject(error);
+                    }
+                    else {
+                        resolve(returnCode);
+                    }
+                }
+            });
+        });
+    };
     ToolRunner.prototype.execWithPiping = function (pipeOutputToTool, options) {
         var _this = this;
         var _a, _b, _c, _d;
@@ -8527,7 +8839,7 @@ var ToolRunner = /** @class */ (function (_super) {
             });
             fileStream.on('error', function (err) {
                 waitingEvents--; //there were errors writing to the file, write is done
-                _this._debug("Failed to pipe output of " + toolPathFirst + " to file " + _this.pipeOutputToFile + ". Error = " + err);
+                _this._debug("Failed to pipe output of ".concat(toolPathFirst, " to file ").concat(_this.pipeOutputToFile, ". Error = ").concat(err));
                 fileStream = null;
                 if (waitingEvents == 0) {
                     if (error) {
@@ -8597,17 +8909,17 @@ var ToolRunner = /** @class */ (function (_super) {
                 }
             }
         });
-        var stdbuffer = '';
+        var stdLineBuffer = '';
         (_c = cp.stdout) === null || _c === void 0 ? void 0 : _c.on('data', function (data) {
             _this.emit('stdout', data);
             if (!optionsNonNull.silent) {
                 optionsNonNull.outStream.write(data);
             }
-            _this._processLineBuffer(data, stdbuffer, function (line) {
+            stdLineBuffer = _this._processLineBuffer(data, stdLineBuffer, function (line) {
                 _this.emit('stdline', line);
             });
         });
-        var errbuffer = '';
+        var errLineBuffer = '';
         (_d = cp.stderr) === null || _d === void 0 ? void 0 : _d.on('data', function (data) {
             _this.emit('stderr', data);
             success = !optionsNonNull.failOnStdErr;
@@ -8615,7 +8927,7 @@ var ToolRunner = /** @class */ (function (_super) {
                 var s = optionsNonNull.failOnStdErr ? optionsNonNull.errStream : optionsNonNull.outStream;
                 s.write(data);
             }
-            _this._processLineBuffer(data, errbuffer, function (line) {
+            errLineBuffer = _this._processLineBuffer(data, errLineBuffer, function (line) {
                 _this.emit('errline', line);
             });
         });
@@ -8630,11 +8942,11 @@ var ToolRunner = /** @class */ (function (_super) {
             waitingEvents--; //process is complete
             _this._debug('rc:' + code);
             returnCode = code;
-            if (stdbuffer.length > 0) {
-                _this.emit('stdline', stdbuffer);
+            if (stdLineBuffer.length > 0) {
+                _this.emit('stdline', stdLineBuffer);
             }
-            if (errbuffer.length > 0) {
-                _this.emit('errline', errbuffer);
+            if (errLineBuffer.length > 0) {
+                _this.emit('errline', errLineBuffer);
             }
             if (code != 0 && !optionsNonNull.ignoreReturnCode) {
                 success = false;
@@ -8730,6 +9042,121 @@ var ToolRunner = /** @class */ (function (_super) {
      * @param     options  optional exec options.  See IExecOptions
      * @returns   number
      */
+    ToolRunner.prototype.execAsync = function (options) {
+        var _this = this;
+        var _a, _b, _c;
+        if (this.pipeOutputToTool) {
+            return this.execWithPipingAsync(this.pipeOutputToTool, options);
+        }
+        this._debug('exec tool: ' + this.toolPath);
+        this._debug('arguments:');
+        this.args.forEach(function (arg) {
+            _this._debug('   ' + arg);
+        });
+        var optionsNonNull = this._cloneExecOptions(options);
+        if (!optionsNonNull.silent) {
+            optionsNonNull.outStream.write(this._getCommandString(optionsNonNull) + os.EOL);
+        }
+        var state = new ExecState(optionsNonNull, this.toolPath);
+        state.on('debug', function (message) {
+            _this._debug(message);
+        });
+        var stdLineBuffer = '';
+        var errLineBuffer = '';
+        var emitDoneEvent = function (resolve, reject) {
+            state.on('done', function (error, exitCode) {
+                if (stdLineBuffer.length > 0) {
+                    _this.emit('stdline', stdLineBuffer);
+                }
+                if (errLineBuffer.length > 0) {
+                    _this.emit('errline', errLineBuffer);
+                }
+                if (cp) {
+                    cp.removeAllListeners();
+                }
+                if (error) {
+                    reject(error);
+                }
+                else {
+                    resolve(exitCode);
+                }
+            });
+        };
+        // Edge case when the node itself cant's spawn and emit event
+        var cp;
+        try {
+            cp = child.spawn(this._getSpawnFileName(options), this._getSpawnArgs(optionsNonNull), this._getSpawnOptions(options));
+        }
+        catch (error) {
+            return new Promise(function (resolve, reject) {
+                emitDoneEvent(resolve, reject);
+                state.processError = error.message;
+                state.processExited = true;
+                state.processClosed = true;
+                state.CheckComplete();
+            });
+        }
+        this.childProcess = cp;
+        // it is possible for the child process to end its last line without a new line.
+        // because stdout is buffered, this causes the last line to not get sent to the parent
+        // stream. Adding this event forces a flush before the child streams are closed.
+        (_a = cp.stdout) === null || _a === void 0 ? void 0 : _a.on('finish', function () {
+            if (!optionsNonNull.silent) {
+                optionsNonNull.outStream.write(os.EOL);
+            }
+        });
+        (_b = cp.stdout) === null || _b === void 0 ? void 0 : _b.on('data', function (data) {
+            _this.emit('stdout', data);
+            if (!optionsNonNull.silent) {
+                optionsNonNull.outStream.write(data);
+            }
+            stdLineBuffer = _this._processLineBuffer(data, stdLineBuffer, function (line) {
+                _this.emit('stdline', line);
+            });
+        });
+        (_c = cp.stderr) === null || _c === void 0 ? void 0 : _c.on('data', function (data) {
+            state.processStderr = true;
+            _this.emit('stderr', data);
+            if (!optionsNonNull.silent) {
+                var s = optionsNonNull.failOnStdErr ? optionsNonNull.errStream : optionsNonNull.outStream;
+                s.write(data);
+            }
+            errLineBuffer = _this._processLineBuffer(data, errLineBuffer, function (line) {
+                _this.emit('errline', line);
+            });
+        });
+        cp.on('error', function (err) {
+            state.processError = err.message;
+            state.processExited = true;
+            state.processClosed = true;
+            state.CheckComplete();
+        });
+        // Do not write debug logs here. Sometimes stdio not closed yet and you can damage user output commands.
+        cp.on('exit', function (code, signal) {
+            state.processExitCode = code;
+            state.processExitSignal = signal;
+            state.processExited = true;
+            state.CheckComplete();
+        });
+        cp.on('close', function (code, signal) {
+            state.processCloseCode = code;
+            state.processCloseSignal = signal;
+            state.processClosed = true;
+            state.processExited = true;
+            state.CheckComplete();
+        });
+        return new Promise(emitDoneEvent);
+    };
+    /**
+     * Exec a tool.
+     * Output will be streamed to the live console.
+     * Returns promise with return code
+     *
+     * @deprecated Use the `execAsync` method that returns a native Javascript promise instead
+     * @param     tool     path to tool to exec
+     * @param     options  optional exec options.  See IExecOptions
+     * @returns   number
+     */
     ToolRunner.prototype.exec = function (options) {
         var _this = this;
         var _a, _b, _c;
@@ -8750,7 +9177,37 @@ var ToolRunner = /** @class */ (function (_super) {
         state.on('debug', function (message) {
             _this._debug(message);
         });
-        var cp = child.spawn(this._getSpawnFileName(options), this._getSpawnArgs(optionsNonNull), this._getSpawnOptions(options));
+        var stdLineBuffer = '';
+        var errLineBuffer = '';
+        state.on('done', function (error, exitCode) {
+            if (stdLineBuffer.length > 0) {
+                _this.emit('stdline', stdLineBuffer);
+            }
+            if (errLineBuffer.length > 0) {
+                _this.emit('errline', errLineBuffer);
+            }
+            if (cp) {
+                cp.removeAllListeners();
+            }
+            if (error) {
+                defer.reject(error);
+            }
+            else {
+                defer.resolve(exitCode);
+            }
+        });
+        // Edge case when the node itself cant's spawn and emit event
+        var cp;
+        try {
+            cp = child.spawn(this._getSpawnFileName(options), this._getSpawnArgs(optionsNonNull), this._getSpawnOptions(options));
+        }
+        catch (error) {
+            state.processError = error.message;
+            state.processExited = true;
+            state.processClosed = true;
+            state.CheckComplete();
+            return defer.promise;
+        }
         this.childProcess = cp;
         // it is possible for the child process to end its last line without a new line.
         // because stdout is buffered, this causes the last line to not get sent to the parent
@@ -8760,17 +9217,15 @@ var ToolRunner = /** @class */ (function (_super) {
                 optionsNonNull.outStream.write(os.EOL);
             }
         });
-        var stdbuffer = '';
         (_b = cp.stdout) === null || _b === void 0 ? void 0 : _b.on('data', function (data) {
             _this.emit('stdout', data);
             if (!optionsNonNull.silent) {
                 optionsNonNull.outStream.write(data);
             }
-            _this._processLineBuffer(data, stdbuffer, function (line) {
+            stdLineBuffer = _this._processLineBuffer(data, stdLineBuffer, function (line) {
                 _this.emit('stdline', line);
             });
         });
-        var errbuffer = '';
         (_c = cp.stderr) === null || _c === void 0 ? void 0 : _c.on('data', function (data) {
             state.processStderr = true;
             _this.emit('stderr', data);
@@ -8778,7 +9233,7 @@ var ToolRunner = /** @class */ (function (_super) {
                 var s = optionsNonNull.failOnStdErr ? optionsNonNull.errStream : optionsNonNull.outStream;
                 s.write(data);
             }
-            _this._processLineBuffer(data, errbuffer, function (line) {
+            errLineBuffer = _this._processLineBuffer(data, errLineBuffer, function (line) {
                 _this.emit('errline', line);
             });
         });
@@ -8788,33 +9243,19 @@ var ToolRunner = /** @class */ (function (_super) {
             state.processClosed = true;
             state.CheckComplete();
         });
+        // Do not write debug logs here. Sometimes stdio not closed yet and you can damage user output commands.
         cp.on('exit', function (code, signal) {
             state.processExitCode = code;
+            state.processExitSignal = signal;
             state.processExited = true;
-            _this._debug("Exit code " + code + " received from tool '" + _this.toolPath + "'");
             state.CheckComplete();
         });
         cp.on('close', function (code, signal) {
-            state.processExitCode = code;
-            state.processExited = true;
+            state.processCloseCode = code;
+            state.processCloseSignal = signal;
             state.processClosed = true;
-            _this._debug("STDIO streams have closed for tool '" + _this.toolPath + "'");
+            state.processExited = true;
             state.CheckComplete();
-        });
-        state.on('done', function (error, exitCode) {
-            if (stdbuffer.length > 0) {
-                _this.emit('stdline', stdbuffer);
-            }
-            if (errbuffer.length > 0) {
-                _this.emit('errline', errbuffer);
-            }
-            cp.removeAllListeners();
-            if (error) {
-                defer.reject(error);
-            }
-            else {
-                defer.resolve(exitCode);
-            }
         });
         return defer.promise;
     };
@@ -8856,9 +9297,11 @@ var ToolRunner = /** @class */ (function (_super) {
      * Used to close child process by sending SIGNINT signal.
      * It allows executed script to have some additional logic on SIGINT, before exiting.
      */
-    ToolRunner.prototype.killChildProcess = function () {
+    ToolRunner.prototype.killChildProcess = function (signal) {
+        if (signal === void 0) { signal = "SIGTERM"; }
         if (this.childProcess) {
-            this.childProcess.kill();
+            this._debug("[killChildProcess] Signal ".concat(signal, " received"));
+            this.childProcess.kill(signal);
         }
     };
     return ToolRunner;
@@ -8899,6 +9342,7 @@ var ExecState = /** @class */ (function (_super) {
         // determine whether there is an error
         var error;
         if (this.processExited) {
+            this._debug("Process exited with code ".concat(this.processExitCode, " and signal ").concat(this.processExitSignal, " for tool '").concat(this.toolPath, "'"));
             if (this.processError) {
                 error = new Error(im._loc('LIB_ProcessError', this.toolPath, this.processError));
             }
@@ -8908,6 +9352,9 @@ var ExecState = /** @class */ (function (_super) {
             else if (this.processStderr && this.options.failOnStdErr) {
                 error = new Error(im._loc('LIB_ProcessStderr', this.toolPath));
             }
+        }
+        if (this.processClosed) {
+            this._debug("STDIO streams have closed and received exit code ".concat(this.processCloseCode, " and signal ").concat(this.processCloseSignal, " for tool '").concat(this.toolPath, "'"));
         }
         // clear the timeout
         if (this.timeout) {
