@@ -28,8 +28,7 @@ export interface PolarisData extends AsyncMode {
 }
 
 export interface Test {
-  sca?: { type: string };
-  sast?: { type: string[] };
+  sca: { type: string };
 }
 
 export interface Branch {
