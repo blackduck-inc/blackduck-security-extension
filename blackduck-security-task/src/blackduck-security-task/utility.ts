@@ -15,6 +15,7 @@ import {
   BRIDGE_CLI_DOWNLOAD_FAILED,
   WORKSPACE_DIR_NOT_FOUND,
   BRIDGE_CLI_DOWNLOAD_FAILED_RETRY,
+  INTEGRATION_CLI_LOCAL_DIRECTORY,
 } from "./application-constant";
 
 import * as toolLib from "azure-pipelines-tool-lib";
@@ -245,10 +246,14 @@ export function getDefaultSarifReportPath(
 ): string {
   const pwd = getWorkSpaceDirectory();
   return !appendFilePath
-    ? path.join(pwd, constants.BRIDGE_CLI_LOCAL_DIRECTORY, sarifReportDirectory)
+    ? path.join(
+        pwd,
+        constants.INTEGRATION_CLI_LOCAL_DIRECTORY,
+        sarifReportDirectory
+      )
     : path.join(
         pwd,
-        constants.BRIDGE_CLI_LOCAL_DIRECTORY,
+        constants.INTEGRATION_CLI_LOCAL_DIRECTORY,
         sarifReportDirectory,
         constants.SARIF_DEFAULT_FILE_NAME
       );
