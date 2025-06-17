@@ -17,7 +17,6 @@ import {
   BRIDGE_CLI_DOWNLOAD_FAILED_RETRY,
 } from "./application-constant";
 
-import * as toolLib from "azure-pipelines-tool-lib";
 import * as toolLibLocal from ".//download-tool";
 import * as process from "process";
 import { DownloadFileResponse } from "./model/download-file-response";
@@ -245,10 +244,14 @@ export function getDefaultSarifReportPath(
 ): string {
   const pwd = getWorkSpaceDirectory();
   return !appendFilePath
-    ? path.join(pwd, constants.BRIDGE_CLI_LOCAL_DIRECTORY, sarifReportDirectory)
+    ? path.join(
+        pwd,
+        constants.INTEGRATIONS_CLI_LOCAL_DIRECTORY,
+        sarifReportDirectory
+      )
     : path.join(
         pwd,
-        constants.BRIDGE_CLI_LOCAL_DIRECTORY,
+        constants.INTEGRATIONS_CLI_LOCAL_DIRECTORY,
         sarifReportDirectory,
         constants.SARIF_DEFAULT_FILE_NAME
       );
