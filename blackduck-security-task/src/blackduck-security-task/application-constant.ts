@@ -689,13 +689,13 @@ export const EXIT_CODE_MAP = new Map<string, string>([
 export const BRIDGE_CLI_ARM_VERSION_FALLBACK_MESSAGE =
   "Detected Bridge CLI version ({version}) below the minimum ARM support requirement ({minVersion}). Defaulting to {intelSuffix} platform.";
 
-export const INTEGRATION_POLARIS_DEFAULT_SARIF_FILE_PATH =
+export const INTEGRATIONS_POLARIS_DEFAULT_SARIF_FILE_PATH =
   ".blackduck/integrations/polaris/sarif/report.sarif.json";
-export const INTEGRATION_BLACKDUCK_SCA_DEFAULT_SARIF_FILE_PATH =
+export const INTEGRATIONS_BLACKDUCK_SCA_DEFAULT_SARIF_FILE_PATH =
   ".blackduck/integrations/blackducksca/sarif/report.sarif.json";
-export const INTEGRATION_DEFAULT_BLACKDUCK_SARIF_GENERATOR_DIRECTORY =
+export const INTEGRATIONS_DEFAULT_BLACKDUCK_SARIF_GENERATOR_DIRECTORY =
   "/blackducksca/sarif";
-export const INTEGRATION_DEFAULT_POLARIS_SARIF_GENERATOR_DIRECTORY =
+export const INTEGRATIONS_DEFAULT_POLARIS_SARIF_GENERATOR_DIRECTORY =
   "/polaris/sarif";
 
-export const INTEGRATION_CLI_LOCAL_DIRECTORY = ".blackduck/integrations";
+export const INTEGRATIONS_CLI_LOCAL_DIRECTORY = ".blackduck/integrations";
