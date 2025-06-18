@@ -43,6 +43,13 @@ export async function run() {
     showLogForDeprecatedInputs();
     // Prepare tool commands
     const command: string = await bridge.prepareCommand(tempDir);
+    // To enable SSL certificate verification
+    if (
+      inputs.NETWORK_SSL_CERT_FILE &&
+      !parseToBoolean(inputs.NETWORK_SSL_TRUST_ALL)
+    ) {
+      process.env.NODE_EXTRA_CA_CERTS = inputs.NETWORK_SSL_CERT_FILE;
+    }
     let bridgePath = "";
     if (!inputs.ENABLE_NETWORK_AIRGAP) {
       bridgePath = await bridge.downloadAndExtractBridgeCli(tempDir);

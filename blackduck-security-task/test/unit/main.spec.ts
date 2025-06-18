@@ -21,8 +21,11 @@ describe("Main function test cases", () => {
     });
     afterEach(() => {
         Object.defineProperty(inputs, 'ENABLE_NETWORK_AIRGAP', {value: false});
+        Object.defineProperty(inputs, 'NETWORK_SSL_CERT_FILE', {value: ''});
+        Object.defineProperty(inputs, 'NETWORK_SSL_TRUST_ALL', {value: false});
         sandbox.restore();
-        process.env['BUILD_REPOSITORY_LOCALPATH']  = ''
+        process.env['BUILD_REPOSITORY_LOCALPATH']  = '';
+        delete process.env['NODE_EXTRA_CA_CERTS'];
     });
 
     context('uploadDiagnostics', () => {
@@ -190,6 +193,125 @@ describe("Main function test cases", () => {
 
             const errorMessageForUndefinedExitCodes = main.getExitMessage(undefinedErrorMessage, undefinedExitCode);
             expect("Exit Code: 999 - Undefined error from extension: Unknown error").to.equal(errorMessageForUndefinedExitCodes);
+        });
+    });
+
+    context('SSL Certificate Environment Variable Configuration', () => {
+        it('should set NODE_EXTRA_CA_CERTS when SSL certificate file is provided and trust all is false', async () => {
+            const sslCertFile = '/path/to/certificate.pem';
+            Object.defineProperty(inputs, 'NETWORK_SSL_CERT_FILE', {value: sslCertFile});
+            Object.defineProperty(inputs, 'NETWORK_SSL_TRUST_ALL', {value: false});
+            Object.defineProperty(inputs, 'POLARIS_SERVER_URL', {value: 'server_url'});
+            Object.defineProperty(inputs, 'POLARIS_ACCESS_TOKEN', {value: 'access_token'});
+            Object.defineProperty(inputs, 'POLARIS_ASSESSMENT_TYPES', {value: ['SCA']});
+
+            sandbox.stub(BridgeCli.prototype, 'prepareCommand').resolves("test command");
+            sandbox.stub(BridgeCli.prototype, 'downloadAndExtractBridgeCli').resolves("test-path");
+            sandbox.stub(BridgeCli.prototype, 'executeBridgeCliCommand').resolves(0);
+
+            await main.run();
+
+            expect(process.env.NODE_EXTRA_CA_CERTS).to.equal(sslCertFile);
+        });
+
+        it('should not set NODE_EXTRA_CA_CERTS when SSL certificate file is provided but trust all is true', async () => {
+            const sslCertFile = '/path/to/certificate.pem';
+            Object.defineProperty(inputs, 'NETWORK_SSL_CERT_FILE', {value: sslCertFile});
+            Object.defineProperty(inputs, 'NETWORK_SSL_TRUST_ALL', {value: true});
+            Object.defineProperty(inputs, 'POLARIS_SERVER_URL', {value: 'server_url'});
+            Object.defineProperty(inputs, 'POLARIS_ACCESS_TOKEN', {value: 'access_token'});
+            Object.defineProperty(inputs, 'POLARIS_ASSESSMENT_TYPES', {value: ['SCA']});
+
+            sandbox.stub(BridgeCli.prototype, 'prepareCommand').resolves("test command");
+            sandbox.stub(BridgeCli.prototype, 'downloadAndExtractBridgeCli').resolves("test-path");
+            sandbox.stub(BridgeCli.prototype, 'executeBridgeCliCommand').resolves(0);
+
+            await main.run();
+
+            expect(process.env.NODE_EXTRA_CA_CERTS).to.be.undefined;
+        });
+
+        it('should not set NODE_EXTRA_CA_CERTS when SSL certificate file is empty', async () => {
+            Object.defineProperty(inputs, 'NETWORK_SSL_CERT_FILE', {value: ''});
+            Object.defineProperty(inputs, 'NETWORK_SSL_TRUST_ALL', {value: false});
+            Object.defineProperty(inputs, 'POLARIS_SERVER_URL', {value: 'server_url'});
+            Object.defineProperty(inputs, 'POLARIS_ACCESS_TOKEN', {value: 'access_token'});
+            Object.defineProperty(inputs, 'POLARIS_ASSESSMENT_TYPES', {value: ['SCA']});
+
+            sandbox.stub(BridgeCli.prototype, 'prepareCommand').resolves("test command");
+            sandbox.stub(BridgeCli.prototype, 'downloadAndExtractBridgeCli').resolves("test-path");
+            sandbox.stub(BridgeCli.prototype, 'executeBridgeCliCommand').resolves(0);
+
+            await main.run();
+
+            expect(process.env.NODE_EXTRA_CA_CERTS).to.be.undefined;
+        });
+
+        it('should not set NODE_EXTRA_CA_CERTS when no SSL certificate file is provided', async () => {
+            Object.defineProperty(inputs, 'NETWORK_SSL_TRUST_ALL', {value: false});
+            Object.defineProperty(inputs, 'POLARIS_SERVER_URL', {value: 'server_url'});
+            Object.defineProperty(inputs, 'POLARIS_ACCESS_TOKEN', {value: 'access_token'});
+            Object.defineProperty(inputs, 'POLARIS_ASSESSMENT_TYPES', {value: ['SCA']});
+
+            sandbox.stub(BridgeCli.prototype, 'prepareCommand').resolves("test command");
+            sandbox.stub(BridgeCli.prototype, 'downloadAndExtractBridgeCli').resolves("test-path");
+            sandbox.stub(BridgeCli.prototype, 'executeBridgeCliCommand').resolves(0);
+
+            await main.run();
+
+            expect(process.env.NODE_EXTRA_CA_CERTS).to.be.undefined;
+        });
+
+        it('should handle SSL certificate configuration with BlackDuck scan', async () => {
+            const sslCertFile = '/path/to/certificate.pem';
+            Object.defineProperty(inputs, 'NETWORK_SSL_CERT_FILE', {value: sslCertFile});
+            Object.defineProperty(inputs, 'NETWORK_SSL_TRUST_ALL', {value: false});
+            Object.defineProperty(inputs, 'BLACKDUCKSCA_URL', {value: 'blackduck_url'});
+            Object.defineProperty(inputs, 'BLACKDUCKSCA_API_TOKEN', {value: 'api_token'});
+
+            sandbox.stub(BridgeCli.prototype, 'prepareCommand').resolves("test command");
+            sandbox.stub(BridgeCli.prototype, 'downloadAndExtractBridgeCli').resolves("test-path");
+            sandbox.stub(BridgeCli.prototype, 'executeBridgeCliCommand').resolves(0);
+
+            await main.run();
+
+            expect(process.env.NODE_EXTRA_CA_CERTS).to.equal(sslCertFile);
+        });
+
+        it('should handle SSL certificate configuration with Coverity scan', async () => {
+            const sslCertFile = '/path/to/certificate.pem';
+            Object.defineProperty(inputs, 'NETWORK_SSL_CERT_FILE', {value: sslCertFile});
+            Object.defineProperty(inputs, 'NETWORK_SSL_TRUST_ALL', {value: false});
+            Object.defineProperty(inputs, 'COVERITY_URL', {value: 'coverity_url'});
+            Object.defineProperty(inputs, 'COVERITY_USER', {value: 'coverity_user'});
+            Object.defineProperty(inputs, 'COVERITY_USER_PASSWORD', {value: 'coverity_password'});
+
+            sandbox.stub(BridgeCli.prototype, 'prepareCommand').resolves("test command");
+            sandbox.stub(BridgeCli.prototype, 'downloadAndExtractBridgeCli').resolves("test-path");
+            sandbox.stub(BridgeCli.prototype, 'executeBridgeCliCommand').resolves(0);
+
+            await main.run();
+
+            expect(process.env.NODE_EXTRA_CA_CERTS).to.equal(sslCertFile);
+        });
+
+        it('should handle SSL certificate configuration with multiple scan types', async () => {
+            const sslCertFile = '/path/to/certificate.pem';
+            Object.defineProperty(inputs, 'NETWORK_SSL_CERT_FILE', {value: sslCertFile});
+            Object.defineProperty(inputs, 'NETWORK_SSL_TRUST_ALL', {value: false});
+            Object.defineProperty(inputs, 'POLARIS_SERVER_URL', {value: 'server_url'});
+            Object.defineProperty(inputs, 'POLARIS_ACCESS_TOKEN', {value: 'access_token'});
+            Object.defineProperty(inputs, 'POLARIS_ASSESSMENT_TYPES', {value: ['SCA']});
+            Object.defineProperty(inputs, 'BLACKDUCKSCA_URL', {value: 'blackduck_url'});
+            Object.defineProperty(inputs, 'BLACKDUCKSCA_API_TOKEN', {value: 'api_token'});
+
+            sandbox.stub(BridgeCli.prototype, 'prepareCommand').resolves("test command");
+            sandbox.stub(BridgeCli.prototype, 'downloadAndExtractBridgeCli').resolves("test-path");
+            sandbox.stub(BridgeCli.prototype, 'executeBridgeCliCommand').resolves(0);
+
+            await main.run();
+
+            expect(process.env.NODE_EXTRA_CA_CERTS).to.equal(sslCertFile);
         });
     });
 });

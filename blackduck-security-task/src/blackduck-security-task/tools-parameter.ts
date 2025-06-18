@@ -38,6 +38,7 @@ import * as url from "url";
 import { AzureService } from "./azure-service-client";
 import { Reports } from "./model/reports";
 import { ErrorCode } from "./enum/ErrorCodes";
+import { Network } from "./model/common";
 import {
   AZURE_PULL_REQUEST_NUMBER_IS_EMPTY,
   INVALID_VALUE_ERROR,
@@ -235,6 +236,8 @@ export class BridgeCliToolsParameter {
       }
     }
 
+    polData.data.network = this.setNetworkObj();
+
     // Remove empty data from json object
     polData = filterEmptyData(polData);
 
@@ -388,9 +391,7 @@ export class BridgeCliToolsParameter {
       }
     }
 
-    if (parseToBoolean(inputs.ENABLE_NETWORK_AIRGAP)) {
-      blackduckData.data.network = { airGap: true };
-    }
+    blackduckData.data.network = this.setNetworkObj();
 
     if (parseToBoolean(inputs.BLACKDUCKSCA_REPORTS_SARIF_CREATE)) {
       if (!isPullRequest) {
@@ -563,9 +564,7 @@ export class BridgeCliToolsParameter {
       covData.data.coverity.version = inputs.COVERITY_VERSION;
     }
 
-    if (parseToBoolean(inputs.ENABLE_NETWORK_AIRGAP)) {
-      covData.data.coverity.network = { airGap: true };
-    }
+    covData.data.network = this.setNetworkObj();
 
     // Set arbitrary (To support both Coverity and Polaris)
     covData.data.coverity = Object.assign(
@@ -1115,5 +1114,25 @@ export class BridgeCliToolsParameter {
     }
 
     return blackDuckDetectInputData.data;
+  }
+
+  private setNetworkObj(): Network {
+    const network: Network = {};
+    if (isBoolean(inputs.ENABLE_NETWORK_AIRGAP)) {
+      network.airGap = parseToBoolean(inputs.ENABLE_NETWORK_AIRGAP);
+    }
+
+    if (!network.ssl) {
+      network.ssl = {};
+    }
+
+    if (inputs.NETWORK_SSL_CERT_FILE) {
+      network.ssl.cert = { file: inputs.NETWORK_SSL_CERT_FILE };
+    }
+
+    if (inputs.NETWORK_SSL_TRUST_ALL) {
+      network.ssl.trustAll = parseToBoolean(inputs.NETWORK_SSL_TRUST_ALL);
+    }
+    return network;
   }
 }
