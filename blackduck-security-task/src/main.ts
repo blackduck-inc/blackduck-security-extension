@@ -44,7 +44,9 @@ export async function run() {
     // Prepare tool commands
     const command: string = await bridge.prepareCommand(tempDir);
     // To enable SSL certificate verification
-    if (
+    if (parseToBoolean(inputs.NETWORK_SSL_TRUST_ALL)) {
+      process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
+    } else if (
       inputs.NETWORK_SSL_CERT_FILE &&
       !parseToBoolean(inputs.NETWORK_SSL_TRUST_ALL)
     ) {

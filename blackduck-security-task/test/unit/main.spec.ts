@@ -26,6 +26,7 @@ describe("Main function test cases", () => {
         sandbox.restore();
         process.env['BUILD_REPOSITORY_LOCALPATH']  = '';
         delete process.env['NODE_EXTRA_CA_CERTS'];
+        delete process.env['NODE_TLS_REJECT_UNAUTHORIZED'];
     });
 
     context('uploadDiagnostics', () => {
@@ -312,6 +313,21 @@ describe("Main function test cases", () => {
             await main.run();
 
             expect(process.env.NODE_EXTRA_CA_CERTS).to.equal(sslCertFile);
+        });
+
+        it('should set NODE_TLS_REJECT_UNAUTHORIZED to "0" when NETWORK_SSL_TRUST_ALL is true', async () => {
+            Object.defineProperty(inputs, 'NETWORK_SSL_TRUST_ALL', {value: true});
+            Object.defineProperty(inputs, 'POLARIS_SERVER_URL', {value: 'server_url'});
+            Object.defineProperty(inputs, 'POLARIS_ACCESS_TOKEN', {value: 'access_token'});
+            Object.defineProperty(inputs, 'POLARIS_ASSESSMENT_TYPES', {value: ['SCA']});
+
+            sandbox.stub(BridgeCli.prototype, 'prepareCommand').resolves("test command");
+            sandbox.stub(BridgeCli.prototype, 'downloadAndExtractBridgeCli').resolves("test-path");
+            sandbox.stub(BridgeCli.prototype, 'executeBridgeCliCommand').resolves(0);
+
+            await main.run();
+
+            expect(process.env.NODE_TLS_REJECT_UNAUTHORIZED).to.equal("0");
         });
     });
 });

@@ -3211,7 +3211,10 @@ function run() {
             // Prepare tool commands
             const command = yield bridge.prepareCommand(tempDir);
             // To enable SSL certificate verification
-            if (inputs.NETWORK_SSL_CERT_FILE &&
+            if ((0, utility_1.parseToBoolean)(inputs.NETWORK_SSL_TRUST_ALL)) {
+                process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
+            }
+            else if (inputs.NETWORK_SSL_CERT_FILE &&
                 !(0, utility_1.parseToBoolean)(inputs.NETWORK_SSL_TRUST_ALL)) {
                 process.env.NODE_EXTRA_CA_CERTS = inputs.NETWORK_SSL_CERT_FILE;
             }
