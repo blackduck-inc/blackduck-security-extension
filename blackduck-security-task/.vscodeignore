@@ -1,0 +1,5 @@
+**/node_modules/**
+blackduck-security-task/node_modules/**
+/blackduck-security-task/node_modules
+blackduck-security-extension/blackduck-security-task/node_modules
+/blackduck-security-extension/blackduck-security-task/node_modules

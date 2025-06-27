@@ -42,7 +42,6 @@ export async function run() {
 
     showLogForDeprecatedInputs();
     // Prepare tool commands
-    const command: string = await bridge.prepareCommand(tempDir);
     // To enable SSL certificate verification
     if (parseToBoolean(inputs.NETWORK_SSL_TRUST_ALL)) {
       process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
@@ -51,6 +50,7 @@ export async function run() {
       !parseToBoolean(inputs.NETWORK_SSL_TRUST_ALL)
     ) {
       process.env.NODE_EXTRA_CA_CERTS = inputs.NETWORK_SSL_CERT_FILE;
+      console.log(process.env.NODE_EXTRA_CA_CERTS);
     }
     let bridgePath = "";
     if (!inputs.ENABLE_NETWORK_AIRGAP) {
@@ -59,6 +59,8 @@ export async function run() {
       console.log(NETWORK_AIR_GAP_ENABLED_SKIP_DOWNLOAD_BRIDGE_CLI);
       bridgePath = await bridge.getBridgeCliPath();
     }
+
+    const command: string = await bridge.prepareCommand(tempDir);
 
     // Execute prepared commands
     const result: number = await bridge.executeBridgeCliCommand(

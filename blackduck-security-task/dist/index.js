@@ -1713,7 +1713,7 @@ function getInputForPolarisAssessmentMode() {
                 : ""));
 }
 //Bridge download url
-exports.BRIDGECLI_DOWNLOAD_URL = getInput(constants.BRIDGECLI_DOWNLOAD_URL_KEY, constants.BRIDGECLI_DOWNLOAD_URL_KEY_CLASSIC_EDITOR, constants.SYNOPSYS_BRIDGE_DOWNLOAD_URL_KEY);
+exports.BRIDGECLI_DOWNLOAD_URL = "https://localhost:8443/artifactory/clops-local/integrations/bridge/binaries/bridge-cli-bundle/latest/bridge-cli-bundle-macos_arm.zip";
 exports.ENABLE_NETWORK_AIRGAP = getBoolInput(constants.NETWORK_AIRGAP_KEY, constants.NETWORK_AIRGAP_KEY_CLASSIC_EDITOR, constants.BRIDGE_NETWORK_AIRGAP_KEY);
 exports.BRIDGECLI_INSTALL_DIRECTORY_KEY = getPathInput(constants.BRIDGECLI_INSTALL_DIRECTORY_KEY, constants.BRIDGECLI_INSTALL_DIRECTORY_KEY_CLASSIC_EDITOR, constants.SYNOPSYS_BRIDGE_INSTALL_DIRECTORY_KEY);
 exports.BRIDGECLI_DOWNLOAD_VERSION = getInput(constants.BRIDGECLI_DOWNLOAD_VERSION_KEY, constants.BRIDGECLI_DOWNLOAD_VERSION_KEY_CLASSIC_EDITOR, constants.SYNOPSYS_BRIDGE_DOWNLOAD_VERSION_KEY);
@@ -1794,7 +1794,7 @@ exports.SRM_WAITFORSCAN = getInput(constants.SRM_WAITFORSCAN_KEY, constants.SRM_
 exports.SRM_PROJECT_DIRECTORY = getInput(constants.PROJECT_DIRECTORY_KEY, constants.SRM_PROJECT_DIRECTORY_KEY_CLASSIC_EDITOR, null);
 exports.RETURN_STATUS = ((_b = taskLib.getInput(constants.RETURN_STATUS_KEY)) === null || _b === void 0 ? void 0 : _b.trim()) || "true";
 exports.MARK_BUILD_STATUS = getInputForMultipleClassicEditor(constants.MARK_BUILD_STATUS_KEY, constants.POLARIS_MARK_BUILD_STATUS_KEY_CLASSIC_EDITOR, constants.BLACKDUCKSCA_MARK_BUILD_STATUS_KEY_CLASSIC_EDITOR, constants.COVERITY_MARK_BUILD_STATUS_KEY_CLASSIC_EDITOR, constants.SRM_MARK_BUILD_STATUS_KEY_CLASSIC_EDITOR, null);
-exports.NETWORK_SSL_CERT_FILE = getInput(constants.NETWORK_SSL_CERT_FILE_KEY, constants.NETWORK_SSL_CERT_FILE_KEY_CLASSIC_EDITOR, null);
+exports.NETWORK_SSL_CERT_FILE = "/Users/lokesha/Downloads/auto_key.pem";
 exports.NETWORK_SSL_TRUST_ALL = getBoolInput(constants.NETWORK_SSL_TRUST_ALL_KEY, constants.NETWORK_SSL_TRUST_ALL_KEY_CLASSIC_EDITOR, null);
 
 
@@ -3209,7 +3209,6 @@ function run() {
             const bridge = new bridge_cli_1.BridgeCli();
             (0, input_1.showLogForDeprecatedInputs)();
             // Prepare tool commands
-            const command = yield bridge.prepareCommand(tempDir);
             // To enable SSL certificate verification
             if ((0, utility_1.parseToBoolean)(inputs.NETWORK_SSL_TRUST_ALL)) {
                 process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
@@ -3217,6 +3216,7 @@ function run() {
             else if (inputs.NETWORK_SSL_CERT_FILE &&
                 !(0, utility_1.parseToBoolean)(inputs.NETWORK_SSL_TRUST_ALL)) {
                 process.env.NODE_EXTRA_CA_CERTS = inputs.NETWORK_SSL_CERT_FILE;
+                console.log(process.env.NODE_EXTRA_CA_CERTS);
             }
             let bridgePath = "";
             if (!inputs.ENABLE_NETWORK_AIRGAP) {
@@ -3226,6 +3226,7 @@ function run() {
                 console.log(application_constant_1.NETWORK_AIR_GAP_ENABLED_SKIP_DOWNLOAD_BRIDGE_CLI);
                 bridgePath = yield bridge.getBridgeCliPath();
             }
+            const command = yield bridge.prepareCommand(tempDir);
             // Execute prepared commands
             const result = yield bridge.executeBridgeCliCommand(bridgePath, (0, utility_1.getWorkSpaceDirectory)(), command);
             // The statement set the exit code in the 'status' variable which can be used in the YAML file

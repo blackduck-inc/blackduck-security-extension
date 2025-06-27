@@ -3,6 +3,9 @@
 import path from "path";
 import * as utility from "./utility";
 import * as constants from "./application-constant";
+import { HttpClient } from "typed-rest-client/HttpClient";
+import * as fs from "fs";
+import * as inputs from "./input";
 import {
   MARK_BUILD_STATUS_KEY,
   NON_RETRY_HTTP_CODES,
@@ -17,7 +20,6 @@ import {
   BRIDGE_CLI_DOWNLOAD_FAILED_RETRY,
 } from "./application-constant";
 
-import * as toolLib from "azure-pipelines-tool-lib";
 import * as toolLibLocal from ".//download-tool";
 import * as process from "process";
 import { DownloadFileResponse } from "./model/download-file-response";
@@ -320,4 +322,101 @@ export function getMappedTaskResult(
     }
     return undefined;
   }
+}
+
+// Singleton HTTP client cache
+let _httpClientCache: HttpClient | null = null;
+let _httpClientConfigHash: string | null = null;
+
+/**
+ * Gets the current SSL configuration as a hash to detect changes
+ */
+function getSSLConfigHash(): string {
+  const trustAll = parseToBoolean(inputs.NETWORK_SSL_TRUST_ALL);
+  const certFile = inputs.NETWORK_SSL_CERT_FILE?.trim() || '';
+  return `trustAll:${trustAll}|certFile:${certFile}`;
+}
+
+/**
+ * Creates an HttpClient instance with SSL configuration based on task inputs.
+ * Uses singleton pattern to reuse the same client instance when configuration hasn't changed.
+ *
+ * @param userAgent The user agent string to use for the HTTP client (default: "BlackDuckSecurityTask")
+ * @returns HttpClient instance configured with appropriate SSL settings
+ */
+export function createSSLConfiguredHttpClient(userAgent = "BlackDuckSecurityTask"): HttpClient {
+  const currentConfigHash = getSSLConfigHash();
+  
+  // Return cached client if configuration hasn't changed
+  if (_httpClientCache && _httpClientConfigHash === currentConfigHash) {
+    taskLib.debug(`Reusing existing HttpClient instance with user agent: ${userAgent}`);
+    return _httpClientCache;
+  }
+
+  // Create new HTTP client with current configuration
+  const trustAllCerts = parseToBoolean(inputs.NETWORK_SSL_TRUST_ALL);
+
+  if (trustAllCerts) {
+    taskLib.debug(
+      "SSL certificate verification disabled for HttpClient (NETWORK_SSL_TRUST_ALL=true)"
+    );
+    _httpClientCache = new HttpClient(userAgent, [], { ignoreSslError: true });
+  } else if (
+    inputs.NETWORK_SSL_CERT_FILE &&
+    inputs.NETWORK_SSL_CERT_FILE.trim()
+  ) {
+    taskLib.debug(
+      `Using custom CA certificate for HttpClient: ${inputs.NETWORK_SSL_CERT_FILE}`
+    );
+    try {
+      // Verify the certificate file exists and is readable
+      fs.readFileSync(inputs.NETWORK_SSL_CERT_FILE, "utf8");
+      taskLib.debug("Successfully validated custom CA certificate file");
+
+      // Set NODE_EXTRA_CA_CERTS environment variable for Node.js to use the custom CA
+      // This is the proper way to add custom CA certificates in Node.js
+      process.env["NODE_EXTRA_CA_CERTS"] = inputs.NETWORK_SSL_CERT_FILE;
+      taskLib.debug(
+        `Set NODE_EXTRA_CA_CERTS environment variable: ${inputs.NETWORK_SSL_CERT_FILE}`
+      );
+
+      _httpClientCache = new HttpClient(userAgent, [], {
+        allowRetries: true,
+        maxRetries: 3,
+      });
+    } catch (err) {
+      taskLib.warning(
+        `Failed to read custom CA certificate file, using default HttpClient: ${err}`
+      );
+      _httpClientCache = new HttpClient(userAgent);
+    }
+  } else {
+    taskLib.debug("Using default HttpClient with system SSL certificates");
+    _httpClientCache = new HttpClient(userAgent);
+  }
+
+  // Cache the configuration hash
+  _httpClientConfigHash = currentConfigHash;
+  taskLib.debug(`Created new HttpClient instance with user agent: ${userAgent}`);
+  
+  return _httpClientCache;
+}
+
+/**
+ * Gets a shared HttpClient instance with SSL configuration.
+ * This is a convenience method that uses a default user agent.
+ * 
+ * @returns HttpClient instance configured with appropriate SSL settings
+ */
+export function getSharedHttpClient(): HttpClient {
+  return createSSLConfiguredHttpClient("BlackDuckSecurityTask");
+}
+
+/**
+ * Clears the HTTP client cache. Useful for testing or when you need to force recreation.
+ */
+export function clearHttpClientCache(): void {
+  _httpClientCache = null;
+  _httpClientConfigHash = null;
+  taskLib.debug("HTTP client cache cleared");
 }

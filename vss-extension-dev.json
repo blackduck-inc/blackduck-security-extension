@@ -2,8 +2,8 @@
   "manifestVersion": 1,
   "id": "blackduck-security-scan",
   "name": "Black Duck Security Scan",
-  "version": "2.1.0",
-  "publisher": "QATPublisher",
+  "version": "2.1.1",
+  "publisher": "testing-lokesh-bd",
   "targets": [
     {
       "id": "Microsoft.VisualStudio.Services"

@@ -7,15 +7,50 @@ import * as fs from "fs";
 import * as tl from "azure-pipelines-task-lib/task";
 import * as constants from "./application-constant";
 import { ErrorCode } from "./enum/ErrorCodes";
+import * as inputs from "./input";
+import { parseToBoolean } from "./utility";
 
 const userAgent = "BlackDuckSecurityScan";
-const requestOptions = {
-  // ignoreSslError: true,
-  proxy: tl.getHttpProxyConfiguration(),
-  cert: tl.getHttpCertConfiguration(),
-  allowRedirects: true,
-  allowRetries: true,
-} as ifm.IRequestOptions;
+
+function getRequestOptions(): ifm.IRequestOptions {
+  const options: ifm.IRequestOptions = {
+    proxy: tl.getHttpProxyConfiguration() || undefined,
+    cert: tl.getHttpCertConfiguration() || undefined,
+    allowRedirects: true,
+    allowRetries: true,
+  };
+
+  // Add SSL configuration based on task inputs
+  const trustAllCerts = parseToBoolean(inputs.NETWORK_SSL_TRUST_ALL);
+  if (trustAllCerts) {
+    tl.debug(
+      "SSL certificate verification disabled for download tool (NETWORK_SSL_TRUST_ALL=true)"
+    );
+    options.ignoreSslError = true;
+  } else if (
+    inputs.NETWORK_SSL_CERT_FILE &&
+    inputs.NETWORK_SSL_CERT_FILE.trim()
+  ) {
+    tl.debug(
+      `Custom CA certificate specified for download tool: ${inputs.NETWORK_SSL_CERT_FILE}`
+    );
+    try {
+      fs.readFileSync(inputs.NETWORK_SSL_CERT_FILE, "utf8");
+      tl.warning(
+        "typed-rest-client does not support custom CA certificates, disabling SSL verification"
+      );
+      options.ignoreSslError = true;
+    } catch (err) {
+      tl.warning(
+        `Failed to read custom CA certificate file, using default SSL settings: ${err}`
+      );
+    }
+  } else {
+    tl.debug("Using default SSL configuration for download tool");
+  }
+
+  return options;
+}
 
 export function debug(message: string): void {
   tl.debug(message);
@@ -48,7 +83,7 @@ export async function downloadTool(
       const http: httpm.HttpClient = new httpm.HttpClient(
         userAgent,
         handlers,
-        requestOptions
+        getRequestOptions()
       );
       tl.debug(fileName);
       // make sure that the folder exists

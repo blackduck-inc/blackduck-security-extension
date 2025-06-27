@@ -1,8 +1,7 @@
 import * as path from "path";
 import * as taskLib from "azure-pipelines-task-lib/task";
-import { HttpClient } from "typed-rest-client/HttpClient";
 import { BridgeCliToolsParameter } from "./tools-parameter";
-import { sleep } from "./utility";
+import { sleep, getSharedHttpClient } from "./utility";
 import {
   validateBlackDuckSCAInputs,
   validateBridgeUrl,
@@ -459,7 +458,7 @@ export class BridgeCli {
 
   async getAllAvailableBridgeCliVersions(): Promise<string[]> {
     let htmlResponse = "";
-    const httpClient = new HttpClient("blackduck-security-task");
+    const httpClient = getSharedHttpClient();
 
     let retryCountLocal = RETRY_COUNT;
     let httpResponse;
@@ -523,7 +522,7 @@ export class BridgeCli {
     latestVersionsUrl: string
   ): Promise<string> {
     try {
-      const httpClient = new HttpClient("");
+      const httpClient = getSharedHttpClient();
 
       let retryCountLocal = RETRY_COUNT;
       let retryDelay = RETRY_DELAY_IN_MILLISECONDS;
