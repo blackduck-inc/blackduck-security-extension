@@ -12,6 +12,7 @@ export interface Polaris {
   azure?: AzureData;
   coverity?: CoverityArbitrary;
   detect?: BlackDuckDetect;
+  bridge?: Bridge;
 }
 
 export interface PolarisData extends AsyncMode {
@@ -54,4 +55,11 @@ export enum POLARIS_ASSESSMENT_MODES {
   CI = "CI",
   SOURCE_UPLOAD = "SOURCE_UPLOAD",
   SOURCEUPLOAD = "SOURCEUPLOAD",
+}
+export interface Bridge {
+  invoked: Invoked
+}
+
+export interface Invoked {
+  from: string
 }
