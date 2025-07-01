@@ -13,7 +13,7 @@ exports.COVERITY_ARGS_KEY_CLASSIC_EDITOR_FOR_SRM = exports.COVERITY_ARGS_KEY_CLA
 exports.BLACKDUCK_REPORTS_SARIF_GROUP_SCA_ISSUES_KEY = exports.BLACKDUCKSCA_REPORTS_SARIF_SEVERITIES_KEY_CLASSIC_EDITOR = exports.BLACKDUCKSCA_REPORTS_SARIF_SEVERITIES_KEY = exports.BLACKDUCK_REPORTS_SARIF_SEVERITIES_KEY = exports.BLACKDUCKSCA_REPORTS_SARIF_FILE_PATH_KEY_CLASSIC_EDITOR = exports.BLACKDUCKSCA_REPORTS_SARIF_FILE_PATH_KEY = exports.BLACKDUCK_REPORTS_SARIF_FILE_PATH_KEY = exports.BLACKDUCKSCA_REPORTS_SARIF_CREATE_KEY_CLASSIC_EDITOR = exports.BLACKDUCKSCA_REPORTS_SARIF_CREATE_KEY = exports.BLACKDUCK_REPORTS_SARIF_CREATE_KEY = exports.BLACKDUCKSCA_PROJECT_DIRECTORY_KEY_CLASSIC_EDITOR = exports.BLACKDUCKSCA_WAITFORSCAN_KEY_CLASSIC_EDITOR = exports.BLACKDUCKSCA_WAITFORSCAN_KEY = exports.BLACKDUCK_WAITFORSCAN_KEY = exports.BLACKDUCKSCA_FIXPR_UPGRADE_GUIDANCE_KEY_CLASSIC_EDITOR = exports.BLACKDUCKSCA_FIXPR_UPGRADE_GUIDANCE_KEY = exports.BLACKDUCK_FIXPR_UPGRADE_GUIDANCE_KEY = exports.BLACKDUCKSCA_FIXPR_FILTER_SEVERITIES_KEY_CLASSIC_EDITOR = exports.BLACKDUCKSCA_FIXPR_FILTER_SEVERITIES_KEY = exports.BLACKDUCK_FIXPR_FILTER_SEVERITIES_KEY = exports.BLACKDUCKSCA_FIXPR_CREATE_SINGLE_PR_KEY_CLASSIC_EDITOR = exports.BLACKDUCKSCA_FIXPR_CREATE_SINGLE_PR_KEY = exports.BLACKDUCK_FIXPR_CREATE_SINGLE_PR_KEY = exports.BLACKDUCKSCA_FIXPR_MAXCOUNT_KEY_CLASSIC_EDITOR = exports.BLACKDUCKSCA_FIXPR_MAXCOUNT_KEY = exports.BLACKDUCK_FIXPR_MAXCOUNT_KEY = exports.BLACKDUCKSCA_FIXPR_ENABLED_KEY_CLASSIC_EDITOR = exports.BLACKDUCKSCA_FIXPR_ENABLED_KEY = exports.BLACKDUCK_FIXPR_ENABLED_KEY = exports.BLACKDUCKSCA_PRCOMMENT_ENABLED_KEY_CLASSIC_EDITOR = exports.BLACKDUCKSCA_PRCOMMENT_ENABLED_KEY = exports.BLACKDUCK_PRCOMMENT_ENABLED_KEY = exports.BLACKDUCKSCA_SCAN_FAILURE_SEVERITIES_KEY_CLASSIC_EDITOR = exports.BLACKDUCKSCA_SCAN_FAILURE_SEVERITIES_KEY = exports.BLACKDUCK_SCAN_FAILURE_SEVERITIES_KEY = exports.BLACKDUCKSCA_SCAN_FULL_KEY_CLASSIC_EDITOR = exports.BLACKDUCKSCA_SCAN_FULL_KEY = exports.BLACKDUCK_SCAN_FULL_KEY = exports.DETECT_EXECUTION_PATH_KEY_CLASSIC_EDITOR = exports.DETECT_EXECUTION_PATH_KEY = exports.BLACKDUCK_EXECUTION_PATH_KEY = exports.DETECT_INSTALL_DIRECTORY_KEY_CLASSIC_EDITOR = exports.DETECT_INSTALL_DIRECTORY_KEY = exports.BLACKDUCK_INSTALL_DIRECTORY_KEY = exports.BLACKDUCKSCA_TOKEN_KEY_CLASSIC_EDITOR = exports.BLACKDUCKSCA_TOKEN_KEY = exports.BLACKDUCK_TOKEN_KEY = exports.BLACKDUCKSCA_URL_KEY_CLASSIC_EDITOR = exports.BLACKDUCKSCA_URL_KEY = exports.BLACKDUCK_URL_KEY = void 0;
 exports.MARK_BUILD_STATUS_KEY = exports.RETURN_STATUS_KEY = exports.BRIDGECLI_DOWNLOAD_VERSION_KEY_CLASSIC_EDITOR = exports.BRIDGECLI_DOWNLOAD_VERSION_KEY = exports.SYNOPSYS_BRIDGE_DOWNLOAD_VERSION_KEY = exports.BRIDGECLI_DOWNLOAD_URL_KEY_CLASSIC_EDITOR = exports.BRIDGECLI_DOWNLOAD_URL_KEY = exports.SYNOPSYS_BRIDGE_DOWNLOAD_URL_KEY = exports.NETWORK_AIRGAP_KEY_CLASSIC_EDITOR = exports.NETWORK_AIRGAP_KEY = exports.BRIDGE_NETWORK_AIRGAP_KEY = exports.SRM_INCLUDE_DIAGNOSTICS_KEY_CLASSIC_EDITOR = exports.COVERITY_INCLUDE_DIAGNOSTICS_KEY_CLASSIC_EDITOR = exports.BLACKDUCKSCA_INCLUDE_DIAGNOSTICS_KEY_CLASSIC_EDITOR = exports.POLARIS_INCLUDE_DIAGNOSTICS_KEY_CLASSIC_EDITOR = exports.INCLUDE_DIAGNOSTICS_KEY = exports.SRM_PROJECT_DIRECTORY_KEY_CLASSIC_EDITOR = exports.SRM_WAITFORSCAN_KEY_CLASSIC_EDITOR = exports.SRM_WAITFORSCAN_KEY = exports.SRM_BRANCH_PARENT_KEY_CLASSIC_EDITOR = exports.SRM_BRANCH_PARENT_KEY = exports.SRM_BRANCH_NAME_KEY_CLASSIC_EDITOR = exports.SRM_BRANCH_NAME_KEY = exports.SRM_PROJECT_ID_KEY_CLASSIC_EDITOR = exports.SRM_PROJECT_ID_KEY = exports.SRM_PROJECT_NAME_KEY_CLASSIC_EDITOR = exports.SRM_PROJECT_NAME_KEY = exports.SRM_ASSESSMENT_TYPES_KEY_CLASSIC_EDITOR = exports.SRM_ASSESSMENT_TYPES_KEY = exports.SRM_APIKEY_KEY_CLASSIC_EDITOR = exports.SRM_APIKEY_KEY = exports.SRM_URL_KEY_CLASSIC_EDITOR = exports.SRM_URL_KEY = exports.DETECT_ARGS_KEY_CLASSIC_EDITOR_FOR_SRM = exports.DETECT_ARGS_KEY_CLASSIC_EDITOR_FOR_POLARIS = exports.DETECT_ARGS_KEY_CLASSIC_EDITOR = exports.DETECT_ARGS_KEY = exports.BLACKDUCK_ARGS_KEY = exports.DETECT_CONFIG_PATH_KEY_CLASSIC_EDITOR_FOR_SRM = exports.DETECT_CONFIG_PATH_KEY_CLASSIC_EDITOR_FOR_POLARIS = exports.DETECT_CONFIG_PATH_KEY_CLASSIC_EDITOR = exports.DETECT_CONFIG_PATH_KEY = exports.BLACKDUCK_CONFIG_PATH_KEY = exports.DETECT_DEPTH_KEY_CLASSIC_EDITOR_FOR_SRM = exports.DETECT_DEPTH_KEY_CLASSIC_EDITOR_FOR_POLARIS = exports.DETECT_DEPTH_KEY_CLASSIC_EDITOR = exports.DETECT_SEARCH_DEPTH_KEY = exports.BLACKDUCK_SEARCH_DEPTH_KEY = exports.BLACKDUCKSCA_REPORTS_SARIF_GROUP_SCA_ISSUES_KEY_CLASSIC_EDITOR = exports.BLACKDUCKSCA_REPORTS_SARIF_GROUP_SCA_ISSUES_KEY = void 0;
 exports.EXTRACTING_BRIDGE_CLI_ARCHIVE = exports.DOWNLOADING_BRIDGE_CLI = exports.CHECK_LATEST_BRIDGE_CLI_VERSION = exports.SKIP_DOWNLOAD_BRIDGE_CLI_WHEN_VERSION_NOT_FOUND = exports.FAILED_TO_GET_PULL_REQUEST_INFO = exports.MISSING_BOOL_VALUE = exports.REQUIRE_ONE_SCAN_TYPE = exports.INVALID_BLACKDUCKSCA_SCAN_FAILURE_SEVERITIES = exports.BRIDGE_CLI_DEFAULT_DIRECTORY_NOT_EXISTS = exports.BRIDGE_CLI_INSTALL_DIRECTORY_NOT_EXISTS = exports.BRIDGE_CLI_EXTRACT_DIRECTORY_NOT_FOUND = exports.WORKSPACE_DIR_NOT_FOUND = exports.BRIDGE_CLI_DOWNLOAD_FAILED_RETRY = exports.BRIDGE_CLI_DOWNLOAD_FAILED = exports.BRIDGE_CLI_ZIP_NOT_FOUND_FOR_EXTRACT = exports.WORKFLOW_FAILED = exports.INVALID_BRIDGE_CLI_URL = exports.INVALID_BRIDGE_CLI_URL_SPECIFIED_OS = exports.EMPTY_BRIDGE_CLI_URL = exports.BRIDGE_CLI_EXECUTABLE_FILE_NOT_FOUND = exports.BRIDGE_CLI_VERSION_NOT_FOUND = exports.MISSING_AZURE_TOKEN_FOR_FIX_PR_AND_PR_COMMENT = exports.BLACKDUCKSCA_SECURITY_SCAN_AZURE_DEVOPS_DOCS_URL = exports.DEFAULT_AZURE_API_URL = exports.MIN_SUPPORTED_BRIDGE_CLI_LINUX_ARM_VERSION = exports.MIN_SUPPORTED_BRIDGE_CLI_MAC_ARM_VERSION = exports.DARWIN = exports.LINUX = exports.WIN32 = exports.MAC_INTEL_PLATFORM = exports.MAC_ARM_PLATFORM = exports.LINUX_ARM_PLATFORM = exports.LINUX_PLATFORM = exports.WINDOWS_PLATFORM = exports.NON_RETRY_HTTP_CODES = exports.RETRY_COUNT = exports.RETRY_DELAY_IN_MILLISECONDS = exports.SARIF_UPLOAD_FOLDER_ARTIFACT_NAME = exports.DEFAULT_POLARIS_SARIF_GENERATOR_DIRECTORY = exports.DEFAULT_BLACKDUCK_SARIF_GENERATOR_DIRECTORY = exports.SARIF_DEFAULT_FILE_NAME = exports.BRIDGE_CLI_LOCAL_DIRECTORY = exports.UPLOAD_FOLDER_ARTIFACT_NAME = exports.BRIDGECLI_INSTALL_DIRECTORY_KEY_CLASSIC_EDITOR = exports.BRIDGECLI_INSTALL_DIRECTORY_KEY = exports.SYNOPSYS_BRIDGE_INSTALL_DIRECTORY_KEY = exports.SRM_MARK_BUILD_STATUS_KEY_CLASSIC_EDITOR = exports.COVERITY_MARK_BUILD_STATUS_KEY_CLASSIC_EDITOR = exports.BLACKDUCKSCA_MARK_BUILD_STATUS_KEY_CLASSIC_EDITOR = exports.POLARIS_MARK_BUILD_STATUS_KEY_CLASSIC_EDITOR = void 0;
-exports.BRIDGE_CLI_ARM_VERSION_FALLBACK_MESSAGE = exports.EXIT_CODE_MAP = exports.SARIF_GAS_API_RATE_LIMIT_FOR_ERROR = exports.PROVIDED_BLACKDUCKSCA_FAILURE_SEVERITIES_ERROR = exports.MISSING_BOOLEAN_VALUE_ERROR = exports.INVALID_VALUE_ERROR = exports.BRIDGE_DOWNLOAD_RETRY_ERROR = exports.SCAN_TYPE_REQUIRED_ERROR = exports.BRIDGE_DEFAULT_DIRECTORY_NOT_FOUND_ERROR = exports.BRIDGE_INSTALL_DIRECTORY_NOT_FOUND_ERROR = exports.BRIDGE_EXECUTABLE_NOT_FOUND_ERROR = exports.MARK_THE_BUILD_STATUS = exports.MARK_THE_BUILD_ON_BRIDGE_BREAK = exports.AZURE_PULL_REQUEST_NUMBER_IS_EMPTY = exports.BLACKDUCKSCA_SECURITY_SCAN_COMPLETED = exports.POLARISSCA_SARIF_REPORT_ENABLED = exports.BLACKDUCKSCA_SARIF_REPOST_ENABLED = exports.TASK_RETURN_STATUS = exports.NETWORK_AIR_GAP_ENABLED_SKIP_DOWNLOAD_BRIDGE_CLI = exports.UNABLE_TO_FIND_PULL_REQUEST_INFO = exports.GETTING_ALL_BRIDGE_VERSIONS_RETRY = exports.UNABLE_TO_GET_RECENT_BRIDGE_VERSION = exports.GETTING_LATEST_BRIDGE_VERSIONS_RETRY = exports.ERROR_READING_VERSION_FILE = exports.VERSION_FILE_NOT_FOUND_AT = exports.VERSION_FILE_FOUND_AT = exports.LOOKING_FOR_BRIDGE_CLI_DEFAULT_PATH = exports.LOOKING_FOR_BRIDGE_CLI_INSTALL_DIR = exports.BRIDGE_CLI_FOUND_AT = exports.BRIDGE_CLI_DOWNLOAD_COMPLETED = exports.BRIDGECLI_VERSION = exports.BRIDGE_CLI_URL_MESSAGE = exports.BRIDGE_CLI_EXTRACTION_COMPLETED = void 0;
+exports.VERSION = exports.INTEGRATIONS_ADO_EE = exports.INTEGRATIONS_ADO_CLOUD = exports.ADO_SERVER_URL = exports.INTEGRATIONS_CLI_LOCAL_DIRECTORY = exports.INTEGRATIONS_DEFAULT_POLARIS_SARIF_GENERATOR_DIRECTORY = exports.INTEGRATIONS_DEFAULT_BLACKDUCK_SARIF_GENERATOR_DIRECTORY = exports.INTEGRATIONS_BLACKDUCK_SCA_DEFAULT_SARIF_FILE_PATH = exports.INTEGRATIONS_POLARIS_DEFAULT_SARIF_FILE_PATH = exports.BRIDGE_CLI_ARM_VERSION_FALLBACK_MESSAGE = exports.EXIT_CODE_MAP = exports.SARIF_GAS_API_RATE_LIMIT_FOR_ERROR = exports.PROVIDED_BLACKDUCKSCA_FAILURE_SEVERITIES_ERROR = exports.MISSING_BOOLEAN_VALUE_ERROR = exports.INVALID_VALUE_ERROR = exports.BRIDGE_DOWNLOAD_RETRY_ERROR = exports.SCAN_TYPE_REQUIRED_ERROR = exports.BRIDGE_DEFAULT_DIRECTORY_NOT_FOUND_ERROR = exports.BRIDGE_INSTALL_DIRECTORY_NOT_FOUND_ERROR = exports.BRIDGE_EXECUTABLE_NOT_FOUND_ERROR = exports.MARK_THE_BUILD_STATUS = exports.MARK_THE_BUILD_ON_BRIDGE_BREAK = exports.AZURE_PULL_REQUEST_NUMBER_IS_EMPTY = exports.BLACKDUCKSCA_SECURITY_SCAN_COMPLETED = exports.POLARISSCA_SARIF_REPORT_ENABLED = exports.BLACKDUCKSCA_SARIF_REPOST_ENABLED = exports.TASK_RETURN_STATUS = exports.NETWORK_AIR_GAP_ENABLED_SKIP_DOWNLOAD_BRIDGE_CLI = exports.UNABLE_TO_FIND_PULL_REQUEST_INFO = exports.GETTING_ALL_BRIDGE_VERSIONS_RETRY = exports.UNABLE_TO_GET_RECENT_BRIDGE_VERSION = exports.GETTING_LATEST_BRIDGE_VERSIONS_RETRY = exports.ERROR_READING_VERSION_FILE = exports.VERSION_FILE_NOT_FOUND_AT = exports.VERSION_FILE_FOUND_AT = exports.LOOKING_FOR_BRIDGE_CLI_DEFAULT_PATH = exports.LOOKING_FOR_BRIDGE_CLI_INSTALL_DIR = exports.BRIDGE_CLI_FOUND_AT = exports.BRIDGE_CLI_DOWNLOAD_COMPLETED = exports.BRIDGECLI_VERSION = exports.BRIDGE_CLI_URL_MESSAGE = exports.BRIDGE_CLI_EXTRACTION_COMPLETED = void 0;
 const ErrorCodes_1 = __nccwpck_require__(8936);
 exports.BRIDGE_CLI_DEFAULT_PATH_UNIX = "/bridge-cli-bundle"; //Path will be in home
 exports.BRIDGE_CLI_DEFAULT_PATH_WINDOWS = "\\bridge-cli-bundle";
@@ -507,6 +507,15 @@ exports.EXIT_CODE_MAP = new Map([
     ],
 ]);
 exports.BRIDGE_CLI_ARM_VERSION_FALLBACK_MESSAGE = "Detected Bridge CLI version ({version}) below the minimum ARM support requirement ({minVersion}). Defaulting to {intelSuffix} platform.";
+exports.INTEGRATIONS_POLARIS_DEFAULT_SARIF_FILE_PATH = ".blackduck/integrations/polaris/sarif/report.sarif.json";
+exports.INTEGRATIONS_BLACKDUCK_SCA_DEFAULT_SARIF_FILE_PATH = ".blackduck/integrations/blackducksca/sarif/report.sarif.json";
+exports.INTEGRATIONS_DEFAULT_BLACKDUCK_SARIF_GENERATOR_DIRECTORY = "/blackducksca/sarif";
+exports.INTEGRATIONS_DEFAULT_POLARIS_SARIF_GENERATOR_DIRECTORY = "/polaris/sarif";
+exports.INTEGRATIONS_CLI_LOCAL_DIRECTORY = ".blackduck/integrations";
+exports.ADO_SERVER_URL = "https://dev.azure.com";
+exports.INTEGRATIONS_ADO_CLOUD = "Integrations-ado-cloud";
+exports.INTEGRATIONS_ADO_EE = "Integrations-ado-ee";
+exports.VERSION = "3.5.0";
 
 
 /***/ }),
@@ -1926,6 +1935,9 @@ class BridgeCliToolsParameter {
     getFormattedCommandForPolaris() {
         return __awaiter(this, void 0, void 0, function* () {
             let command = "";
+            const customHeader = this.getInstanceUrl() === constants.ADO_SERVER_URL
+                ? constants.INTEGRATIONS_ADO_CLOUD
+                : constants.INTEGRATIONS_ADO_EE;
             const assessmentTypeArray = [];
             const assessmentTypes = inputs.POLARIS_ASSESSMENT_TYPES;
             if (assessmentTypes != null && assessmentTypes.length > 0) {
@@ -1966,6 +1978,11 @@ class BridgeCliToolsParameter {
                             mode: inputs.POLARIS_ASSESSMENT_MODE,
                         })),
                         branch: { parent: {} },
+                    },
+                    bridge: {
+                        invoked: {
+                            from: customHeader,
+                        },
                     },
                 },
             };
@@ -2063,11 +2080,19 @@ class BridgeCliToolsParameter {
         return __awaiter(this, void 0, void 0, function* () {
             const failureSeverities = inputs.BLACKDUCKSCA_SCAN_FAILURE_SEVERITIES;
             let command = "";
+            const customHeader = this.getInstanceUrl() === constants.ADO_SERVER_URL
+                ? constants.INTEGRATIONS_ADO_CLOUD
+                : constants.INTEGRATIONS_ADO_EE;
             let blackduckData = {
                 data: {
                     blackducksca: {
                         url: inputs.BLACKDUCKSCA_URL,
                         token: inputs.BLACKDUCKSCA_API_TOKEN,
+                    },
+                    bridge: {
+                        invoked: {
+                            from: customHeader,
+                        },
                     },
                 },
             };
@@ -2182,6 +2207,9 @@ class BridgeCliToolsParameter {
     getFormattedCommandForCoverity() {
         return __awaiter(this, void 0, void 0, function* () {
             let command = "";
+            const customHeader = this.getInstanceUrl() === constants.ADO_SERVER_URL
+                ? constants.INTEGRATIONS_ADO_CLOUD
+                : constants.INTEGRATIONS_ADO_EE;
             const azureRepositoryName = this.getAzureRepositoryName();
             let coverityProjectName = inputs.COVERITY_PROJECT_NAME;
             if (!coverityProjectName) {
@@ -2234,6 +2262,11 @@ class BridgeCliToolsParameter {
                             url: inputs.COVERITY_URL,
                             project: { name: coverityProjectName },
                             stream: { name: coverityStreamName },
+                        },
+                    },
+                    bridge: {
+                        invoked: {
+                            from: customHeader,
                         },
                     },
                 },
@@ -2342,6 +2375,9 @@ class BridgeCliToolsParameter {
     getFormattedCommandForSrm() {
         return __awaiter(this, void 0, void 0, function* () {
             let command = "";
+            const customHeader = this.getInstanceUrl() === constants.ADO_SERVER_URL
+                ? constants.INTEGRATIONS_ADO_CLOUD
+                : constants.INTEGRATIONS_ADO_EE;
             const assessmentTypeArray = [];
             const assessmentTypes = inputs.SRM_ASSESSMENT_TYPES;
             if (assessmentTypes != null && assessmentTypes.length > 0) {
@@ -2365,6 +2401,11 @@ class BridgeCliToolsParameter {
                         apikey: inputs.SRM_APIKEY,
                         assessment: {
                             types: assessmentTypeArray,
+                        },
+                    },
+                    bridge: {
+                        invoked: {
+                            from: customHeader,
                         },
                     },
                 },
@@ -2668,6 +2709,26 @@ class BridgeCliToolsParameter {
             blackDuckDetectInputData.data.args = inputs.DETECT_ARGS;
         }
         return blackDuckDetectInputData.data;
+    }
+    getInstanceUrl() {
+        var _a;
+        let azureInstanceUrl = "";
+        let azureOrganization = "";
+        const collectionUri = taskLib.getVariable(azure_1.AZURE_ENVIRONMENT_VARIABLES.AZURE_ORGANIZATION) || "";
+        if (collectionUri !== "") {
+            const parsedUrl = url.parse(collectionUri);
+            azureInstanceUrl = `${parsedUrl.protocol}//${parsedUrl.host}`;
+            azureOrganization = ((_a = parsedUrl.pathname) === null || _a === void 0 ? void 0 : _a.split("/")[1]) || "";
+            if (parsedUrl.host &&
+                !azureOrganization &&
+                parsedUrl.host.indexOf(".visualstudio.com") !== -1) {
+                if (parsedUrl.host.split(".")[0]) {
+                    azureOrganization = parsedUrl.host.split(".")[0];
+                    azureInstanceUrl = constants.DEFAULT_AZURE_API_URL;
+                }
+            }
+        }
+        return azureInstanceUrl;
     }
 }
 BridgeCliToolsParameter.STAGE_OPTION = "--stage";
@@ -3000,7 +3061,7 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.validateSrmInputs = exports.validateBlackDuckSCAInputs = exports.validateBlackduckFailureSeverities = exports.validateCoverityInstallDirectoryParam = exports.validateCoverityInputs = exports.validateBridgeUrl = exports.isNullOrEmpty = exports.validateParameters = exports.validatePolarisInputs = exports.validateScanTypes = void 0;
+exports.isNullOrEmptyValue = exports.validateSrmInputs = exports.validateBlackDuckSCAInputs = exports.validateBlackduckFailureSeverities = exports.validateCoverityInstallDirectoryParam = exports.validateCoverityInputs = exports.validateBridgeUrl = exports.isNullOrEmpty = exports.validateParameters = exports.validatePolarisInputs = exports.validateScanTypes = void 0;
 const constants = __importStar(__nccwpck_require__(8673));
 const inputs = __importStar(__nccwpck_require__(264));
 const taskLib = __importStar(__nccwpck_require__(347));
@@ -3124,6 +3185,10 @@ function validateSrmInputs() {
     return errors;
 }
 exports.validateSrmInputs = validateSrmInputs;
+function isNullOrEmptyValue(param) {
+    return param == null || param.length === 0;
+}
+exports.isNullOrEmptyValue = isNullOrEmptyValue;
 
 
 /***/ }),

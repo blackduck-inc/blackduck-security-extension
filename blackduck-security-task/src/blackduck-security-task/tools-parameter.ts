@@ -23,6 +23,7 @@ import { InputData } from "./model/input-data";
 import * as constants from "./application-constant";
 import * as taskLib from "azure-pipelines-task-lib/task";
 import {
+  isNullOrEmptyValue,
   validateBlackduckFailureSeverities,
   validateCoverityInstallDirectoryParam,
 } from "./validator";
@@ -67,6 +68,10 @@ export class BridgeCliToolsParameter {
 
   async getFormattedCommandForPolaris(): Promise<string> {
     let command = "";
+    const customHeader =
+      this.getInstanceUrl() === constants.ADO_SERVER_URL
+        ? constants.INTEGRATIONS_ADO_CLOUD
+        : constants.INTEGRATIONS_ADO_EE;
     const assessmentTypeArray: string[] = [];
     const assessmentTypes = inputs.POLARIS_ASSESSMENT_TYPES;
     if (assessmentTypes != null && assessmentTypes.length > 0) {
@@ -117,6 +122,11 @@ export class BridgeCliToolsParameter {
             }),
           },
           branch: { parent: {} },
+        },
+        bridge: {
+          invoked: {
+            from: customHeader,
+          },
         },
       },
     };
@@ -267,11 +277,20 @@ export class BridgeCliToolsParameter {
     const failureSeverities: string[] =
       inputs.BLACKDUCKSCA_SCAN_FAILURE_SEVERITIES;
     let command = "";
+    const customHeader =
+      this.getInstanceUrl() === constants.ADO_SERVER_URL
+        ? constants.INTEGRATIONS_ADO_CLOUD
+        : constants.INTEGRATIONS_ADO_EE;
     let blackduckData: InputData<BlackduckSCA> = {
       data: {
         blackducksca: {
           url: inputs.BLACKDUCKSCA_URL,
           token: inputs.BLACKDUCKSCA_API_TOKEN,
+        },
+        bridge: {
+          invoked: {
+            from: customHeader,
+          },
         },
       },
     };
@@ -433,7 +452,10 @@ export class BridgeCliToolsParameter {
 
   async getFormattedCommandForCoverity(): Promise<string> {
     let command = "";
-
+    const customHeader =
+      this.getInstanceUrl() === constants.ADO_SERVER_URL
+        ? constants.INTEGRATIONS_ADO_CLOUD
+        : constants.INTEGRATIONS_ADO_EE;
     const azureRepositoryName = this.getAzureRepositoryName();
 
     let coverityProjectName = inputs.COVERITY_PROJECT_NAME;
@@ -509,6 +531,11 @@ export class BridgeCliToolsParameter {
             url: inputs.COVERITY_URL,
             project: { name: coverityProjectName },
             stream: { name: coverityStreamName },
+          },
+        },
+        bridge: {
+          invoked: {
+            from: customHeader,
           },
         },
       },
@@ -663,6 +690,10 @@ export class BridgeCliToolsParameter {
 
   async getFormattedCommandForSrm(): Promise<string> {
     let command = "";
+    const customHeader =
+      this.getInstanceUrl() === constants.ADO_SERVER_URL
+        ? constants.INTEGRATIONS_ADO_CLOUD
+        : constants.INTEGRATIONS_ADO_EE;
     const assessmentTypeArray: string[] = [];
     const assessmentTypes = inputs.SRM_ASSESSMENT_TYPES;
     if (assessmentTypes != null && assessmentTypes.length > 0) {
@@ -690,6 +721,11 @@ export class BridgeCliToolsParameter {
           apikey: inputs.SRM_APIKEY,
           assessment: {
             types: assessmentTypeArray,
+          },
+        },
+        bridge: {
+          invoked: {
+            from: customHeader,
           },
         },
       },
@@ -1115,5 +1151,31 @@ export class BridgeCliToolsParameter {
     }
 
     return blackDuckDetectInputData.data;
+  }
+
+  private getInstanceUrl(): string {
+    let azureInstanceUrl = "";
+    let azureOrganization = "";
+    const collectionUri =
+      taskLib.getVariable(AZURE_ENVIRONMENT_VARIABLES.AZURE_ORGANIZATION) || "";
+
+    if (collectionUri !== "") {
+      const parsedUrl = url.parse(collectionUri);
+      azureInstanceUrl = `${parsedUrl.protocol}//${parsedUrl.host}`;
+      azureOrganization = parsedUrl.pathname?.split("/")[1] || "";
+
+      if (
+        parsedUrl.host &&
+        !azureOrganization &&
+        parsedUrl.host.indexOf(".visualstudio.com") !== -1
+      ) {
+        if (parsedUrl.host.split(".")[0]) {
+          azureOrganization = parsedUrl.host.split(".")[0];
+          azureInstanceUrl = constants.DEFAULT_AZURE_API_URL;
+        }
+      }
+    }
+
+    return azureInstanceUrl;
   }
 }
