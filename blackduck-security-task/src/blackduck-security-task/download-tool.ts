@@ -1,14 +1,16 @@
 // Copyright (c) 2024 Black Duck Software Inc. All rights reserved worldwide.
 
-import * as httpm from "typed-rest-client/HttpClient";
+import * as httm from "typed-rest-client/HttpClient";
 import * as ifm from "typed-rest-client/Interfaces";
 import * as path from "path";
 import * as fs from "fs";
+import * as https from "https";
 import * as tl from "azure-pipelines-task-lib/task";
 import * as constants from "./application-constant";
 import { ErrorCode } from "./enum/ErrorCodes";
 import * as inputs from "./input";
 import { parseToBoolean } from "./utility";
+import { getSSLConfig, createHTTPSRequestOptions } from "./ssl-utils";
 
 const userAgent = "BlackDuckSecurityScan";
 
@@ -57,6 +59,149 @@ export function debug(message: string): void {
 }
 
 /**
+ * Download a file using direct HTTPS with enhanced SSL support.
+ * This properly combines system CAs with custom CAs, unlike typed-rest-client.
+ *
+ * @param downloadUrl URL to download from
+ * @param destPath Destination file path
+ * @param additionalHeaders Optional custom HTTP headers
+ * @returns Promise resolving to the destination path
+ */
+async function downloadWithCustomSSL(
+  downloadUrl: string,
+  destPath: string,
+  additionalHeaders?: ifm.IHeaders
+): Promise<string> {
+  return new Promise<string>((resolve, reject) => {
+    try {
+      const parsedUrl = new URL(downloadUrl);
+      const sslConfig = getSSLConfig();
+      const requestOptions = createHTTPSRequestOptions(
+        parsedUrl,
+        sslConfig,
+        additionalHeaders
+      );
+
+      tl.debug(`Starting direct HTTPS download from: ${downloadUrl}`);
+      tl.debug(`Destination: ${destPath}`);
+
+      // Ensure destination directory exists
+      tl.mkdirP(path.dirname(destPath));
+
+      // Remove existing file if it exists
+      if (fs.existsSync(destPath)) {
+        tl.debug("Destination file path already exists, removing");
+        _deleteFile(destPath);
+      }
+
+      const request = https.request(requestOptions, (response) => {
+        const statusCode = response.statusCode || 0;
+
+        if (statusCode !== 200) {
+          tl.debug(
+            `Failed to download file from "${downloadUrl}". Code(${statusCode}) Message(${response.statusMessage})`
+          );
+          reject(
+            new Error(
+              "Failed to download Bridge CLI zip from specified URL. HTTP status code: "
+                .concat(String(statusCode))
+                .concat(constants.SPACE)
+                .concat(
+                  ErrorCode.DOWNLOAD_FAILED_WITH_HTTP_STATUS_CODE.toString()
+                )
+            )
+          );
+          return;
+        }
+
+        const contentLength = response.headers["content-length"]
+          ? parseInt(response.headers["content-length"], 10)
+          : NaN;
+        if (!isNaN(contentLength)) {
+          tl.debug(`Content-Length of downloaded file: ${contentLength}`);
+        } else {
+          tl.debug(`Content-Length header missing`);
+        }
+
+        const fileStream = fs.createWriteStream(destPath);
+
+        fileStream.on("error", (err) => {
+          tl.debug(`File stream error: ${err}`);
+          fileStream.end();
+          _deleteFile(destPath);
+          reject(err);
+        });
+
+        response.on("error", (err) => {
+          tl.debug(`Response stream error: ${err}`);
+          fileStream.end();
+          _deleteFile(destPath);
+          reject(err);
+        });
+
+        fileStream.on("close", () => {
+          let fileSizeInBytes: number;
+          try {
+            fileSizeInBytes = _getFileSizeOnDisk(destPath);
+          } catch (err) {
+            const error = err as Error;
+            fileSizeInBytes = NaN;
+            tl.warning(
+              `Unable to check file size of ${destPath} due to error: ${error.message}`
+            );
+          }
+
+          if (!isNaN(fileSizeInBytes)) {
+            tl.debug(`Downloaded file size: ${fileSizeInBytes} bytes`);
+          } else {
+            tl.debug(`File size on disk was not found`);
+          }
+
+          if (
+            !isNaN(contentLength) &&
+            !isNaN(fileSizeInBytes) &&
+            fileSizeInBytes !== contentLength
+          ) {
+            const errMsg = `Content-Length (${contentLength} bytes) did not match downloaded file size (${fileSizeInBytes} bytes).`;
+            tl.warning(errMsg);
+            reject(
+              errMsg
+                .concat(constants.SPACE)
+                .concat(ErrorCode.CONTENT_LENGTH_MISMATCH.toString())
+            );
+            return;
+          }
+
+          tl.debug("Direct HTTPS download completed successfully");
+          resolve(destPath);
+        });
+
+        response.pipe(fileStream);
+      });
+
+      request.on("error", (err) => {
+        tl.debug(`Request error: ${err}`);
+        _deleteFile(destPath);
+        reject(err);
+      });
+
+      request.setTimeout(120000, () => {
+        tl.debug("Request timeout");
+        request.destroy();
+        _deleteFile(destPath);
+        reject(new Error("Download request timeout"));
+      });
+
+      request.end();
+    } catch (error) {
+      tl.debug(`Error in downloadWithCustomSSL: ${error}`);
+      _deleteFile(destPath);
+      reject(error);
+    }
+  });
+}
+
+/**
  * Download a tool from an url and stream it into a file
  *
  * @param url                url of tool to download
@@ -70,33 +215,54 @@ export async function downloadTool(
   handlers?: ifm.IRequestHandler[],
   additionalHeaders?: ifm.IHeaders
 ): Promise<string> {
-  return new Promise<string>(async (resolve, reject) => {
-    // check if it's an absolute path already
-    let destPath: string;
-    if (path.isAbsolute(fileName)) {
-      destPath = fileName;
-    } else {
-      destPath = path.join(_getAgentTemp(), fileName);
-    }
+  // Check if it's an absolute path already
+  let destPath: string;
+  if (path.isAbsolute(fileName)) {
+    destPath = fileName;
+  } else {
+    destPath = path.join(_getAgentTemp(), fileName);
+  }
 
+  tl.debug(`Download request: ${fileName}`);
+  tl.debug(`Destination: ${destPath}`);
+
+  // Hybrid approach: Use direct HTTPS for SSL-enhanced downloads (proper CA combination)
+  // Fall back to typed-rest-client for other scenarios
+  const sslConfig = getSSLConfig();
+  const shouldUseDirectHTTPS =
+    sslConfig.trustAllCerts || (sslConfig.customCA && sslConfig.combinedCAs);
+
+  if (shouldUseDirectHTTPS) {
+    tl.debug("Using direct HTTPS for download with enhanced SSL support");
     try {
-      const http: httpm.HttpClient = new httpm.HttpClient(
+      return await downloadWithCustomSSL(url, destPath, additionalHeaders);
+    } catch (error) {
+      tl.debug(
+        `Direct HTTPS download failed, falling back to typed-rest-client: ${error}`
+      );
+      // Fall through to typed-rest-client approach
+    }
+  }
+
+  // Fallback to typed-rest-client (original logic)
+  tl.debug("Using typed-rest-client for download");
+  return new Promise<string>(async (resolve, reject) => {
+    try {
+      const http: httm.HttpClient = new httm.HttpClient(
         userAgent,
         handlers,
         getRequestOptions()
       );
-      tl.debug(fileName);
-      // make sure that the folder exists
-      tl.mkdirP(path.dirname(destPath));
 
-      tl.debug("destination " + destPath);
+      // Make sure that the folder exists
+      tl.mkdirP(path.dirname(destPath));
 
       if (fs.existsSync(destPath)) {
         tl.debug("Destination file path already exists");
         _deleteFile(destPath);
       }
 
-      const response: httpm.HttpClientResponse = await http.get(
+      const response: httm.HttpClientResponse = await http.get(
         url,
         additionalHeaders
       );
@@ -115,6 +281,7 @@ export async function downloadTool(
               )
           )
         );
+        return;
       }
 
       const downloadedContentLength =
@@ -133,7 +300,7 @@ export async function downloadTool(
         .on("open", async () => {
           try {
             response.message
-              .on("error", (err) => {
+              .on("error", (err: Error) => {
                 file.end();
                 reject(err);
               })
@@ -176,6 +343,7 @@ export async function downloadTool(
                 .concat(constants.SPACE)
                 .concat(ErrorCode.CONTENT_LENGTH_MISMATCH.toString())
             );
+            return;
           }
           resolve(destPath);
         });
@@ -193,7 +361,7 @@ export async function downloadTool(
  * @returns number if the 'content-length' is not empty, otherwise NaN
  */
 function _getContentLengthOfDownloadedFile(
-  response: httpm.HttpClientResponse
+  response: httm.HttpClientResponse
 ): number {
   const contentLengthHeader = response.message.headers["content-length"];
   return parseInt(<string>contentLengthHeader);

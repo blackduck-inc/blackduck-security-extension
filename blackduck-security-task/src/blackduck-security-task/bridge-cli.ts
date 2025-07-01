@@ -18,6 +18,8 @@ import { extractZipped, getRemoteFile, parseToBoolean } from "./utility";
 import { readFileSync, renameSync } from "fs";
 import { DownloadFileResponse } from "./model/download-file-response";
 import DomParser from "dom-parser";
+import * as https from "https";
+import { getSSLConfig, createHTTPSRequestOptions } from "./ssl-utils";
 import {
   ENABLE_NETWORK_AIRGAP,
   SCAN_TYPE,
@@ -456,33 +458,101 @@ export class BridgeCli {
     return Promise.resolve(false);
   }
 
-  async getAllAvailableBridgeCliVersions(): Promise<string[]> {
-    let htmlResponse = "";
-    const httpClient = getSharedHttpClient();
+  /**
+   * Fetch content using direct HTTPS with enhanced SSL support.
+   * Falls back to typed-rest-client if direct HTTPS fails.
+   */
+  private async fetchWithDirectHTTPS(
+    fetchUrl: string,
+    headers: Record<string, string> = {}
+  ): Promise<string> {
+    const sslConfig = getSSLConfig();
+    const shouldUseDirectHTTPS =
+      sslConfig.trustAllCerts || (sslConfig.customCA && sslConfig.combinedCAs);
 
+    if (shouldUseDirectHTTPS) {
+      try {
+        taskLib.debug(
+          "Using direct HTTPS for Bridge CLI metadata fetch with enhanced SSL support"
+        );
+        return await new Promise<string>((resolve, reject) => {
+          const parsedUrl = new URL(fetchUrl);
+          const requestOptions = createHTTPSRequestOptions(
+            parsedUrl,
+            sslConfig,
+            headers
+          );
+
+          const request = https.request(requestOptions, (response) => {
+            const statusCode = response.statusCode || 0;
+
+            if (statusCode !== 200) {
+              reject(
+                new Error(`HTTP ${statusCode}: ${response.statusMessage}`)
+              );
+              return;
+            }
+
+            let data = "";
+            response.on("data", (chunk) => {
+              data += chunk;
+            });
+
+            response.on("end", () => {
+              resolve(data);
+            });
+          });
+
+          request.on("error", (err) => {
+            reject(err);
+          });
+
+          request.setTimeout(30000, () => {
+            request.destroy();
+            reject(new Error("Request timeout"));
+          });
+
+          request.end();
+        });
+      } catch (error) {
+        taskLib.debug(
+          `Direct HTTPS fetch failed, falling back to typed-rest-client: ${error}`
+        );
+        // Fall through to typed-rest-client approach
+      }
+    }
+
+    // Fallback to typed-rest-client
+    taskLib.debug("Using typed-rest-client for Bridge CLI metadata fetch");
+    const httpClient = getSharedHttpClient();
+    const response = await httpClient.get(fetchUrl, headers);
+
+    if (response.message.statusCode !== 200) {
+      throw new Error(
+        `HTTP ${response.message.statusCode}: ${response.message.statusMessage}`
+      );
+    }
+
+    return await response.readBody();
+  }
+
+  async getAllAvailableBridgeCliVersions(): Promise<string[]> {
     let retryCountLocal = RETRY_COUNT;
-    let httpResponse;
     let retryDelay = RETRY_DELAY_IN_MILLISECONDS;
     const versionArray: string[] = [];
-    do {
-      httpResponse = await httpClient.get(this.bridgeCliArtifactoryURL, {
-        Accept: "text/html",
-      });
 
-      if (!NON_RETRY_HTTP_CODES.has(Number(httpResponse.message.statusCode))) {
-        retryDelay = await this.retrySleepHelper(
-          GETTING_ALL_BRIDGE_VERSIONS_RETRY,
-          retryCountLocal,
-          retryDelay
+    do {
+      try {
+        const htmlResponse = await this.fetchWithDirectHTTPS(
+          this.bridgeCliArtifactoryURL,
+          {
+            Accept: "text/html",
+          }
         );
-        retryCountLocal--;
-      } else {
-        retryCountLocal = 0;
-        htmlResponse = await httpResponse.readBody();
 
         const domParser = new DomParser();
         const doms = domParser.parseFromString(htmlResponse);
-        const elems = doms.getElementsByTagName("a"); //querySelectorAll('a')
+        const elems = doms.getElementsByTagName("a");
 
         if (elems != null) {
           for (const el of elems) {
@@ -495,6 +565,23 @@ export class BridgeCli {
               }
             }
           }
+        }
+
+        // Success - break out of retry loop
+        break;
+      } catch (error) {
+        const err = error as Error;
+        const statusCode = err.message.match(/HTTP (\d+):/)?.[1];
+
+        if (!statusCode || !NON_RETRY_HTTP_CODES.has(Number(statusCode))) {
+          retryDelay = await this.retrySleepHelper(
+            GETTING_ALL_BRIDGE_VERSIONS_RETRY,
+            retryCountLocal,
+            retryDelay
+          );
+          retryCountLocal--;
+        } else {
+          retryCountLocal = 0;
         }
       }
 
@@ -522,33 +609,40 @@ export class BridgeCli {
     latestVersionsUrl: string
   ): Promise<string> {
     try {
-      const httpClient = getSharedHttpClient();
-
       let retryCountLocal = RETRY_COUNT;
       let retryDelay = RETRY_DELAY_IN_MILLISECONDS;
-      let httpResponse;
-      do {
-        httpResponse = await httpClient.get(latestVersionsUrl, {
-          Accept: "text/html",
-        });
 
-        if (
-          !NON_RETRY_HTTP_CODES.has(Number(httpResponse.message.statusCode))
-        ) {
-          retryDelay = await this.retrySleepHelper(
-            GETTING_LATEST_BRIDGE_VERSIONS_RETRY,
-            retryCountLocal,
-            retryDelay
+      do {
+        try {
+          const htmlResponse = await this.fetchWithDirectHTTPS(
+            latestVersionsUrl,
+            {
+              Accept: "text/html",
+            }
           );
-          retryCountLocal--;
-        } else if (httpResponse.message.statusCode === 200) {
-          retryCountLocal = 0;
-          const htmlResponse = (await httpResponse.readBody()).trim();
-          const lines = htmlResponse.split("\n");
+
+          const lines = htmlResponse.trim().split("\n");
           for (const line of lines) {
             if (line.includes("bridge-cli-bundle")) {
               return line.split(":")[1].trim();
             }
+          }
+
+          // Success but no version found - break out of retry loop
+          break;
+        } catch (error) {
+          const err = error as Error;
+          const statusCode = err.message.match(/HTTP (\d+):/)?.[1];
+
+          if (!statusCode || !NON_RETRY_HTTP_CODES.has(Number(statusCode))) {
+            retryDelay = await this.retrySleepHelper(
+              GETTING_LATEST_BRIDGE_VERSIONS_RETRY,
+              retryCountLocal,
+              retryDelay
+            );
+            retryCountLocal--;
+          } else {
+            retryCountLocal = 0;
           }
         }
 

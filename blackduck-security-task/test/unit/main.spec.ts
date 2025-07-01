@@ -139,9 +139,20 @@ describe("Main function test cases", () => {
 
     context('main function', () => {
         it('main failure', async () => {
-            main.run().catch(errorObj => {
-                expect(errorObj.message).includes("Requires at least one scan type");
-            })
+            // Enable air gap to skip Bridge CLI download but still run validation
+            Object.defineProperty(inputs, 'ENABLE_NETWORK_AIRGAP', {value: true});
+            // Stub getBridgeCliPath to avoid filesystem issues in test
+            sandbox.stub(BridgeCli.prototype, 'getBridgeCliPath').resolves('/fake/path');
+            
+            // Don't provide any scan type configuration, which should cause the error
+            try {
+                await main.run();
+                // If we reach here, the test should fail because main.run() should have thrown
+                expect.fail('Expected main.run() to throw an error');
+            } catch (errorObj) {
+                const error = errorObj as Error;
+                expect(error.message).to.include("Requires at least one scan type");
+            }
         });
     });
 

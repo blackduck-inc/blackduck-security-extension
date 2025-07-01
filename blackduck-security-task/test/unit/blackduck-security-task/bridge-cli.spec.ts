@@ -5,7 +5,7 @@ import * as sinon from "sinon";
 import {SinonStub} from "sinon";
 import {BridgeCli} from "../../../src/blackduck-security-task/bridge-cli";
 import * as utility from "../../../src/blackduck-security-task/utility";
-import {extractZipped} from "../../../src/blackduck-security-task/utility";
+import {extractZipped, clearHttpClientCache} from "../../../src/blackduck-security-task/utility";
 import {DownloadFileResponse} from "../../../src/blackduck-security-task/model/download-file-response";
 import * as path from "path";
 import * as inputs from "../../../src/blackduck-security-task/input";
@@ -925,7 +925,9 @@ describe("Download Bridge", () => {
         beforeEach(() => {
             sandbox = sinon.createSandbox();
             bridgeCli = new BridgeCli();
-            httpClientStub = sinon.stub()
+            httpClientStub = sinon.stub();
+            // Clear HTTP client cache to avoid test interference
+            clearHttpClientCache();
         });
 
         afterEach(() => {
@@ -1011,7 +1013,9 @@ describe("Download Bridge", () => {
         beforeEach(() => {
             sandbox = sinon.createSandbox();
             bridgeCli = new BridgeCli();
-            httpClientStub = sinon.stub()
+            httpClientStub = sinon.stub();
+            // Clear HTTP client cache to avoid test interference
+            clearHttpClientCache();
         });
 
         afterEach(() => {
