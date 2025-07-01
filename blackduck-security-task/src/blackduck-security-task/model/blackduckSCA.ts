@@ -3,6 +3,7 @@
 import { AzureData } from "./azure";
 import { Reports } from "./reports";
 import { AsyncMode } from "./async-mode";
+import { Network } from "./common";
 export enum BLACKDUCKSCA_SCAN_FAILURE_SEVERITIES {
   ALL = "ALL",
   NONE = "NONE",
@@ -20,7 +21,7 @@ export interface BlackduckSCA {
   detect?: BlackDuckDetect;
   project?: ProjectData;
   azure?: AzureData;
-  network?: NetworkAirGap;
+  network?: Network;
   environment?: Environment;
 }
 

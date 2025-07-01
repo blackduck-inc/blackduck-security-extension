@@ -5,6 +5,7 @@ import { AsyncMode } from "./async-mode";
 import { Reports } from "./reports";
 import { CoverityArbitrary } from "./coverity";
 import { BlackDuckDetect } from "./blackduckSCA";
+import { Network } from "./common";
 
 export interface Polaris {
   polaris: PolarisData;
@@ -12,6 +13,7 @@ export interface Polaris {
   azure?: AzureData;
   coverity?: CoverityArbitrary;
   detect?: BlackDuckDetect;
+  network?: Network;
 }
 
 export interface PolarisData extends AsyncMode {
