@@ -698,7 +698,7 @@ export const INTEGRATIONS_DEFAULT_POLARIS_SARIF_GENERATOR_DIRECTORY =
   "/polaris/sarif";
 
 export const INTEGRATIONS_CLI_LOCAL_DIRECTORY = ".blackduck/integrations";
-export const ADO_SERVER_URL = "https://dev.azure.com";
+export const ADO_SERVICES_URL = "https://dev.azure.com";
 export const INTEGRATIONS_ADO_CLOUD = "Integrations-ado-cloud";
 export const INTEGRATIONS_ADO_EE = "Integrations-ado-ee";
 export const VERSION = "3.5.0";

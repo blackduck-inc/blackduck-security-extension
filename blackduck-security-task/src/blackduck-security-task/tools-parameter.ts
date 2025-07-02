@@ -69,7 +69,7 @@ export class BridgeCliToolsParameter {
   async getFormattedCommandForPolaris(): Promise<string> {
     let command = "";
     const customHeader =
-      this.getInstanceUrl() === constants.ADO_SERVER_URL
+      this.getInstanceUrl() === constants.ADO_SERVICES_URL
         ? constants.INTEGRATIONS_ADO_CLOUD
         : constants.INTEGRATIONS_ADO_EE;
     const assessmentTypeArray: string[] = [];
@@ -278,7 +278,7 @@ export class BridgeCliToolsParameter {
       inputs.BLACKDUCKSCA_SCAN_FAILURE_SEVERITIES;
     let command = "";
     const customHeader =
-      this.getInstanceUrl() === constants.ADO_SERVER_URL
+      this.getInstanceUrl() === constants.ADO_SERVICES_URL
         ? constants.INTEGRATIONS_ADO_CLOUD
         : constants.INTEGRATIONS_ADO_EE;
     let blackduckData: InputData<BlackduckSCA> = {
@@ -453,7 +453,7 @@ export class BridgeCliToolsParameter {
   async getFormattedCommandForCoverity(): Promise<string> {
     let command = "";
     const customHeader =
-      this.getInstanceUrl() === constants.ADO_SERVER_URL
+      this.getInstanceUrl() === constants.ADO_SERVICES_URL
         ? constants.INTEGRATIONS_ADO_CLOUD
         : constants.INTEGRATIONS_ADO_EE;
     const azureRepositoryName = this.getAzureRepositoryName();
@@ -691,7 +691,7 @@ export class BridgeCliToolsParameter {
   async getFormattedCommandForSrm(): Promise<string> {
     let command = "";
     const customHeader =
-      this.getInstanceUrl() === constants.ADO_SERVER_URL
+      this.getInstanceUrl() === constants.ADO_SERVICES_URL
         ? constants.INTEGRATIONS_ADO_CLOUD
         : constants.INTEGRATIONS_ADO_EE;
     const assessmentTypeArray: string[] = [];
