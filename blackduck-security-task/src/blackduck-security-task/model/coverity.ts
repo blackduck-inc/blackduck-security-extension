@@ -3,12 +3,14 @@
 import { AzureData } from "./azure";
 import { Environment } from "./blackduckSCA";
 import { AsyncMode } from "./async-mode";
+import { Bridge } from "./bridge";
 
 export interface Coverity {
   coverity: CoverityConnect;
   project?: ProjectData;
   azure?: AzureData;
   environment?: Environment;
+  bridge: Bridge;
 }
 
 export interface ProjectData {

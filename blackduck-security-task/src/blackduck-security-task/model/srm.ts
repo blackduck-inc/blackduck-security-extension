@@ -3,12 +3,14 @@
 import { CoverityArbitrary } from "./coverity";
 import { BlackDuckDetect } from "./blackduckSCA";
 import { AsyncMode } from "./async-mode";
+import { Bridge } from "./bridge";
 
 export interface Srm {
   srm: SrmData;
   coverity?: CoverityDetails;
   detect?: BlackduckDetails;
   project?: ProjectData;
+  bridge: Bridge;
 }
 
 export interface SrmData extends AsyncMode {

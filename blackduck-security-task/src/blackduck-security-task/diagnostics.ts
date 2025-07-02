@@ -3,7 +3,10 @@
 import * as taskLib from "azure-pipelines-task-lib/task";
 import * as constants from "./application-constant";
 import * as path from "path";
-import { getDefaultSarifReportPath } from "./utility";
+import {
+  getDefaultSarifReportPath,
+  getIntegrationDefaultSarifReportPath,
+} from "./utility";
 
 export function uploadDiagnostics(workspaceDir: string) {
   const uploadArtifactPath = path.join(
@@ -25,23 +28,50 @@ export function uploadSarifResultAsArtifact(
   defaultSarifReportDirectory: string,
   userSarifFilePath: string
 ) {
-  const sarifFilePath = userSarifFilePath
-    ? userSarifFilePath
-    : getDefaultSarifReportPath(defaultSarifReportDirectory, true);
+  if (
+    defaultSarifReportDirectory ===
+      constants.DEFAULT_BLACKDUCK_SARIF_GENERATOR_DIRECTORY ||
+    defaultSarifReportDirectory ===
+      constants.DEFAULT_POLARIS_SARIF_GENERATOR_DIRECTORY
+  ) {
+    const sarifFilePath = userSarifFilePath
+      ? userSarifFilePath
+      : getDefaultSarifReportPath(defaultSarifReportDirectory, true);
 
-  let isSarifReportDirectoryExists = false;
-  isSarifReportDirectoryExists = taskLib.exist(sarifFilePath);
-  if (isSarifReportDirectoryExists) {
-    console.log(`Uploading SARIF report as artifact from: ${sarifFilePath}`);
-    taskLib.uploadArtifact(
-      constants.SARIF_UPLOAD_FOLDER_ARTIFACT_NAME,
-      sarifFilePath,
-      constants.SARIF_UPLOAD_FOLDER_ARTIFACT_NAME
-    );
-    console.log("Upload SARIF report successfully in the artifact");
+    let isSarifReportDirectoryExists = false;
+    isSarifReportDirectoryExists = taskLib.exist(sarifFilePath);
+    if (isSarifReportDirectoryExists) {
+      console.log(`Uploading SARIF report as artifact from: ${sarifFilePath}`);
+      taskLib.uploadArtifact(
+        constants.SARIF_UPLOAD_FOLDER_ARTIFACT_NAME,
+        sarifFilePath,
+        constants.SARIF_UPLOAD_FOLDER_ARTIFACT_NAME
+      );
+      console.log("Upload SARIF report successfully in the artifact");
+    } else {
+      console.log(
+        `Uploading SARIF report as artifact failed as file path not found at: ${sarifFilePath}`
+      );
+    }
   } else {
-    console.log(
-      `Uploading SARIF report as artifact failed as file path not found at: ${sarifFilePath}`
-    );
+    const sarifFilePath = userSarifFilePath
+      ? userSarifFilePath
+      : getIntegrationDefaultSarifReportPath(defaultSarifReportDirectory, true);
+
+    let isSarifReportDirectoryExists = false;
+    isSarifReportDirectoryExists = taskLib.exist(sarifFilePath);
+    if (isSarifReportDirectoryExists) {
+      console.log(`Uploading SARIF report as artifact from: ${sarifFilePath}`);
+      taskLib.uploadArtifact(
+        constants.SARIF_UPLOAD_FOLDER_ARTIFACT_NAME,
+        sarifFilePath,
+        constants.SARIF_UPLOAD_FOLDER_ARTIFACT_NAME
+      );
+      console.log("Upload SARIF report successfully in the artifact");
+    } else {
+      console.log(
+        `Uploading SARIF report as artifact failed as file path not found at: ${sarifFilePath}`
+      );
+    }
   }
 }

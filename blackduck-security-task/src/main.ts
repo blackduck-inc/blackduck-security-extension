@@ -13,6 +13,7 @@ import { TaskResult } from "azure-pipelines-task-lib/task";
 import * as constants from "./blackduck-security-task/application-constant";
 import * as inputs from "./blackduck-security-task/input";
 import { showLogForDeprecatedInputs } from "./blackduck-security-task/input";
+import * as util from "./blackduck-security-task/utility";
 import {
   uploadDiagnostics,
   uploadSarifResultAsArtifact,
@@ -22,6 +23,7 @@ import { ErrorCode } from "./blackduck-security-task/enum/ErrorCodes";
 import {
   BLACKDUCKSCA_SARIF_REPOST_ENABLED,
   BLACKDUCKSCA_SECURITY_SCAN_COMPLETED,
+  INTEGRATIONS_DEFAULT_BLACKDUCK_SARIF_GENERATOR_DIRECTORY,
   MARK_THE_BUILD_ON_BRIDGE_BREAK,
   MARK_THE_BUILD_STATUS,
   NETWORK_AIR_GAP_ENABLED_SKIP_DOWNLOAD_BRIDGE_CLI,
@@ -29,6 +31,8 @@ import {
   TASK_RETURN_STATUS,
   WORKFLOW_FAILED,
 } from "./blackduck-security-task/application-constant";
+import { readFileSync } from "fs";
+import { join } from "path";
 
 export async function run() {
   console.log("Black Duck Security Scan Task started...");
@@ -37,6 +41,9 @@ export async function run() {
   const workSpaceDir = getWorkSpaceDirectory();
   taskLib.debug(`workSpaceDir: ${workSpaceDir}`);
   let azurePrResponse: AzurePrResponse | undefined;
+  let bridgeVersion = "";
+  let productInputFilPath = "";
+  let productInputFileName = "";
   try {
     const bridge = new BridgeCli();
 
@@ -50,6 +57,21 @@ export async function run() {
       console.log(NETWORK_AIR_GAP_ENABLED_SKIP_DOWNLOAD_BRIDGE_CLI);
       bridgePath = await bridge.getBridgeCliPath();
     }
+    // Get Bridge version from bridge Path
+    bridgeVersion = getBridgeVersion(bridgePath);
+    taskLib.debug(`bridgePath: ${bridgePath}`);
+    //Extract input.json file and update sarif default file path based on bridge version
+    productInputFilPath = util.extractInputJsonFilename(command);
+    taskLib.debug(`Product input file path: ${productInputFilPath}`);
+    // Extract product input file name from the path
+    productInputFileName = productInputFilPath.split("/").pop() || "";
+    taskLib.debug(`Product input file name: ${productInputFileName}`);
+    // Based on bridge version and productInputFileName get the sarif file path
+    util.updateSarifFilePaths(
+      productInputFileName,
+      bridgeVersion,
+      productInputFilPath
+    );
 
     // Execute prepared commands
     const result: number = await bridge.executeBridgeCliCommand(
@@ -68,8 +90,15 @@ export async function run() {
     if (parseToBoolean(inputs.BLACKDUCKSCA_REPORTS_SARIF_CREATE)) {
       if (!IS_PR_EVENT) {
         console.log(BLACKDUCKSCA_SARIF_REPOST_ENABLED);
+        if (bridgeVersion < constants.VERSION) {
+          uploadSarifResultAsArtifact(
+            constants.DEFAULT_BLACKDUCK_SARIF_GENERATOR_DIRECTORY,
+            inputs.BLACKDUCKSCA_REPORTS_SARIF_FILE_PATH
+          );
+        }
+      } else {
         uploadSarifResultAsArtifact(
-          constants.DEFAULT_BLACKDUCK_SARIF_GENERATOR_DIRECTORY,
+          constants.INTEGRATIONS_DEFAULT_BLACKDUCK_SARIF_GENERATOR_DIRECTORY,
           inputs.BLACKDUCKSCA_REPORTS_SARIF_FILE_PATH
         );
       }
@@ -78,10 +107,17 @@ export async function run() {
     if (parseToBoolean(inputs.POLARIS_REPORTS_SARIF_CREATE)) {
       if (!IS_PR_EVENT) {
         console.log(POLARISSCA_SARIF_REPORT_ENABLED);
-        uploadSarifResultAsArtifact(
-          constants.DEFAULT_POLARIS_SARIF_GENERATOR_DIRECTORY,
-          inputs.POLARIS_REPORTS_SARIF_FILE_PATH
-        );
+        if (bridgeVersion < constants.VERSION) {
+          uploadSarifResultAsArtifact(
+            constants.DEFAULT_POLARIS_SARIF_GENERATOR_DIRECTORY,
+            inputs.POLARIS_REPORTS_SARIF_FILE_PATH
+          );
+        } else {
+          uploadSarifResultAsArtifact(
+            constants.INTEGRATIONS_DEFAULT_POLARIS_SARIF_GENERATOR_DIRECTORY,
+            inputs.POLARIS_REPORTS_SARIF_FILE_PATH
+          );
+        }
       }
     }
 
@@ -128,6 +164,20 @@ function markBuildStatusIfIssuesArePresent(
       taskLib.TaskResult.Failed,
       WORKFLOW_FAILED.concat(exitMessage)
     );
+  }
+}
+// Extract version number from bridge path
+function getBridgeVersion(bridgePath: string): string {
+  try {
+    const versionFilePath = join(bridgePath, "versions.txt");
+    const content = readFileSync(versionFilePath, "utf-8");
+    const match = content.match(/bridge-cli-bundle:\s*([0-9.]+)/);
+    if (match && match[1]) {
+      return match[1];
+    }
+    return "";
+  } catch (error) {
+    return "";
   }
 }
 
