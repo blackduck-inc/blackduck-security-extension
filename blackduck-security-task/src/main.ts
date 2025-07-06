@@ -23,7 +23,6 @@ import { ErrorCode } from "./blackduck-security-task/enum/ErrorCodes";
 import {
   BLACKDUCKSCA_SARIF_REPOST_ENABLED,
   BLACKDUCKSCA_SECURITY_SCAN_COMPLETED,
-  INTEGRATIONS_DEFAULT_BLACKDUCK_SARIF_GENERATOR_DIRECTORY,
   MARK_THE_BUILD_ON_BRIDGE_BREAK,
   MARK_THE_BUILD_STATUS,
   NETWORK_AIR_GAP_ENABLED_SKIP_DOWNLOAD_BRIDGE_CLI,
@@ -42,8 +41,7 @@ export async function run() {
   taskLib.debug(`workSpaceDir: ${workSpaceDir}`);
   let azurePrResponse: AzurePrResponse | undefined;
   let bridgeVersion = "";
-  let productInputFilPath = "";
-  let productInputFileName = "";
+  let productOutputFilPath = "";
   try {
     const bridge = new BridgeCli();
 
@@ -59,19 +57,7 @@ export async function run() {
     }
     // Get Bridge version from bridge Path
     bridgeVersion = getBridgeVersion(bridgePath);
-    taskLib.debug(`bridgePath: ${bridgePath}`);
-    //Extract input.json file and update sarif default file path based on bridge version
-    productInputFilPath = util.extractInputJsonFilename(command);
-    taskLib.debug(`Product input file path: ${productInputFilPath}`);
-    // Extract product input file name from the path
-    productInputFileName = productInputFilPath.split("/").pop() || "";
-    taskLib.debug(`Product input file name: ${productInputFileName}`);
-    // Based on bridge version and productInputFileName get the sarif file path
-    util.updateSarifFilePaths(
-      productInputFileName,
-      bridgeVersion,
-      productInputFilPath
-    );
+    taskLib.debug(`bridgePath: ${bridgeVersion}`);
 
     // Execute prepared commands
     const result: number = await bridge.executeBridgeCliCommand(
@@ -79,6 +65,13 @@ export async function run() {
       getWorkSpaceDirectory(),
       command
     );
+    // Extract Sarif file out file from the out.json file
+    productOutputFilPath = util.extractOutputJsonFilename(command);
+    taskLib.debug(`Product out file path: ${productOutputFilPath}`);
+
+    // Copy Sarif file from out.json to integration default directory
+    util.copySarifFileToIntegrationDefaultPath(productOutputFilPath);
+    taskLib.debug(`Sarif file copied to integration default path`);
 
     // The statement set the exit code in the 'status' variable which can be used in the YAML file
     if (parseToBoolean(inputs.RETURN_STATUS)) {

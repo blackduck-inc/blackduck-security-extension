@@ -13,7 +13,7 @@ exports.COVERITY_ARGS_KEY_CLASSIC_EDITOR_FOR_SRM = exports.COVERITY_ARGS_KEY_CLA
 exports.BLACKDUCK_REPORTS_SARIF_GROUP_SCA_ISSUES_KEY = exports.BLACKDUCKSCA_REPORTS_SARIF_SEVERITIES_KEY_CLASSIC_EDITOR = exports.BLACKDUCKSCA_REPORTS_SARIF_SEVERITIES_KEY = exports.BLACKDUCK_REPORTS_SARIF_SEVERITIES_KEY = exports.BLACKDUCKSCA_REPORTS_SARIF_FILE_PATH_KEY_CLASSIC_EDITOR = exports.BLACKDUCKSCA_REPORTS_SARIF_FILE_PATH_KEY = exports.BLACKDUCK_REPORTS_SARIF_FILE_PATH_KEY = exports.BLACKDUCKSCA_REPORTS_SARIF_CREATE_KEY_CLASSIC_EDITOR = exports.BLACKDUCKSCA_REPORTS_SARIF_CREATE_KEY = exports.BLACKDUCK_REPORTS_SARIF_CREATE_KEY = exports.BLACKDUCKSCA_PROJECT_DIRECTORY_KEY_CLASSIC_EDITOR = exports.BLACKDUCKSCA_WAITFORSCAN_KEY_CLASSIC_EDITOR = exports.BLACKDUCKSCA_WAITFORSCAN_KEY = exports.BLACKDUCK_WAITFORSCAN_KEY = exports.BLACKDUCKSCA_FIXPR_UPGRADE_GUIDANCE_KEY_CLASSIC_EDITOR = exports.BLACKDUCKSCA_FIXPR_UPGRADE_GUIDANCE_KEY = exports.BLACKDUCK_FIXPR_UPGRADE_GUIDANCE_KEY = exports.BLACKDUCKSCA_FIXPR_FILTER_SEVERITIES_KEY_CLASSIC_EDITOR = exports.BLACKDUCKSCA_FIXPR_FILTER_SEVERITIES_KEY = exports.BLACKDUCK_FIXPR_FILTER_SEVERITIES_KEY = exports.BLACKDUCKSCA_FIXPR_CREATE_SINGLE_PR_KEY_CLASSIC_EDITOR = exports.BLACKDUCKSCA_FIXPR_CREATE_SINGLE_PR_KEY = exports.BLACKDUCK_FIXPR_CREATE_SINGLE_PR_KEY = exports.BLACKDUCKSCA_FIXPR_MAXCOUNT_KEY_CLASSIC_EDITOR = exports.BLACKDUCKSCA_FIXPR_MAXCOUNT_KEY = exports.BLACKDUCK_FIXPR_MAXCOUNT_KEY = exports.BLACKDUCKSCA_FIXPR_ENABLED_KEY_CLASSIC_EDITOR = exports.BLACKDUCKSCA_FIXPR_ENABLED_KEY = exports.BLACKDUCK_FIXPR_ENABLED_KEY = exports.BLACKDUCKSCA_PRCOMMENT_ENABLED_KEY_CLASSIC_EDITOR = exports.BLACKDUCKSCA_PRCOMMENT_ENABLED_KEY = exports.BLACKDUCK_PRCOMMENT_ENABLED_KEY = exports.BLACKDUCKSCA_SCAN_FAILURE_SEVERITIES_KEY_CLASSIC_EDITOR = exports.BLACKDUCKSCA_SCAN_FAILURE_SEVERITIES_KEY = exports.BLACKDUCK_SCAN_FAILURE_SEVERITIES_KEY = exports.BLACKDUCKSCA_SCAN_FULL_KEY_CLASSIC_EDITOR = exports.BLACKDUCKSCA_SCAN_FULL_KEY = exports.BLACKDUCK_SCAN_FULL_KEY = exports.DETECT_EXECUTION_PATH_KEY_CLASSIC_EDITOR = exports.DETECT_EXECUTION_PATH_KEY = exports.BLACKDUCK_EXECUTION_PATH_KEY = exports.DETECT_INSTALL_DIRECTORY_KEY_CLASSIC_EDITOR = exports.DETECT_INSTALL_DIRECTORY_KEY = exports.BLACKDUCK_INSTALL_DIRECTORY_KEY = exports.BLACKDUCKSCA_TOKEN_KEY_CLASSIC_EDITOR = exports.BLACKDUCKSCA_TOKEN_KEY = exports.BLACKDUCK_TOKEN_KEY = exports.BLACKDUCKSCA_URL_KEY_CLASSIC_EDITOR = exports.BLACKDUCKSCA_URL_KEY = exports.BLACKDUCK_URL_KEY = void 0;
 exports.MARK_BUILD_STATUS_KEY = exports.RETURN_STATUS_KEY = exports.BRIDGECLI_DOWNLOAD_VERSION_KEY_CLASSIC_EDITOR = exports.BRIDGECLI_DOWNLOAD_VERSION_KEY = exports.SYNOPSYS_BRIDGE_DOWNLOAD_VERSION_KEY = exports.BRIDGECLI_DOWNLOAD_URL_KEY_CLASSIC_EDITOR = exports.BRIDGECLI_DOWNLOAD_URL_KEY = exports.SYNOPSYS_BRIDGE_DOWNLOAD_URL_KEY = exports.NETWORK_AIRGAP_KEY_CLASSIC_EDITOR = exports.NETWORK_AIRGAP_KEY = exports.BRIDGE_NETWORK_AIRGAP_KEY = exports.SRM_INCLUDE_DIAGNOSTICS_KEY_CLASSIC_EDITOR = exports.COVERITY_INCLUDE_DIAGNOSTICS_KEY_CLASSIC_EDITOR = exports.BLACKDUCKSCA_INCLUDE_DIAGNOSTICS_KEY_CLASSIC_EDITOR = exports.POLARIS_INCLUDE_DIAGNOSTICS_KEY_CLASSIC_EDITOR = exports.INCLUDE_DIAGNOSTICS_KEY = exports.SRM_PROJECT_DIRECTORY_KEY_CLASSIC_EDITOR = exports.SRM_WAITFORSCAN_KEY_CLASSIC_EDITOR = exports.SRM_WAITFORSCAN_KEY = exports.SRM_BRANCH_PARENT_KEY_CLASSIC_EDITOR = exports.SRM_BRANCH_PARENT_KEY = exports.SRM_BRANCH_NAME_KEY_CLASSIC_EDITOR = exports.SRM_BRANCH_NAME_KEY = exports.SRM_PROJECT_ID_KEY_CLASSIC_EDITOR = exports.SRM_PROJECT_ID_KEY = exports.SRM_PROJECT_NAME_KEY_CLASSIC_EDITOR = exports.SRM_PROJECT_NAME_KEY = exports.SRM_ASSESSMENT_TYPES_KEY_CLASSIC_EDITOR = exports.SRM_ASSESSMENT_TYPES_KEY = exports.SRM_APIKEY_KEY_CLASSIC_EDITOR = exports.SRM_APIKEY_KEY = exports.SRM_URL_KEY_CLASSIC_EDITOR = exports.SRM_URL_KEY = exports.DETECT_ARGS_KEY_CLASSIC_EDITOR_FOR_SRM = exports.DETECT_ARGS_KEY_CLASSIC_EDITOR_FOR_POLARIS = exports.DETECT_ARGS_KEY_CLASSIC_EDITOR = exports.DETECT_ARGS_KEY = exports.BLACKDUCK_ARGS_KEY = exports.DETECT_CONFIG_PATH_KEY_CLASSIC_EDITOR_FOR_SRM = exports.DETECT_CONFIG_PATH_KEY_CLASSIC_EDITOR_FOR_POLARIS = exports.DETECT_CONFIG_PATH_KEY_CLASSIC_EDITOR = exports.DETECT_CONFIG_PATH_KEY = exports.BLACKDUCK_CONFIG_PATH_KEY = exports.DETECT_DEPTH_KEY_CLASSIC_EDITOR_FOR_SRM = exports.DETECT_DEPTH_KEY_CLASSIC_EDITOR_FOR_POLARIS = exports.DETECT_DEPTH_KEY_CLASSIC_EDITOR = exports.DETECT_SEARCH_DEPTH_KEY = exports.BLACKDUCK_SEARCH_DEPTH_KEY = exports.BLACKDUCKSCA_REPORTS_SARIF_GROUP_SCA_ISSUES_KEY_CLASSIC_EDITOR = exports.BLACKDUCKSCA_REPORTS_SARIF_GROUP_SCA_ISSUES_KEY = void 0;
 exports.EXTRACTING_BRIDGE_CLI_ARCHIVE = exports.DOWNLOADING_BRIDGE_CLI = exports.CHECK_LATEST_BRIDGE_CLI_VERSION = exports.SKIP_DOWNLOAD_BRIDGE_CLI_WHEN_VERSION_NOT_FOUND = exports.FAILED_TO_GET_PULL_REQUEST_INFO = exports.MISSING_BOOL_VALUE = exports.REQUIRE_ONE_SCAN_TYPE = exports.INVALID_BLACKDUCKSCA_SCAN_FAILURE_SEVERITIES = exports.BRIDGE_CLI_DEFAULT_DIRECTORY_NOT_EXISTS = exports.BRIDGE_CLI_INSTALL_DIRECTORY_NOT_EXISTS = exports.BRIDGE_CLI_EXTRACT_DIRECTORY_NOT_FOUND = exports.WORKSPACE_DIR_NOT_FOUND = exports.BRIDGE_CLI_DOWNLOAD_FAILED_RETRY = exports.BRIDGE_CLI_DOWNLOAD_FAILED = exports.BRIDGE_CLI_ZIP_NOT_FOUND_FOR_EXTRACT = exports.WORKFLOW_FAILED = exports.INVALID_BRIDGE_CLI_URL = exports.INVALID_BRIDGE_CLI_URL_SPECIFIED_OS = exports.EMPTY_BRIDGE_CLI_URL = exports.BRIDGE_CLI_EXECUTABLE_FILE_NOT_FOUND = exports.BRIDGE_CLI_VERSION_NOT_FOUND = exports.MISSING_AZURE_TOKEN_FOR_FIX_PR_AND_PR_COMMENT = exports.BLACKDUCKSCA_SECURITY_SCAN_AZURE_DEVOPS_DOCS_URL = exports.DEFAULT_AZURE_API_URL = exports.MIN_SUPPORTED_BRIDGE_CLI_LINUX_ARM_VERSION = exports.MIN_SUPPORTED_BRIDGE_CLI_MAC_ARM_VERSION = exports.DARWIN = exports.LINUX = exports.WIN32 = exports.MAC_INTEL_PLATFORM = exports.MAC_ARM_PLATFORM = exports.LINUX_ARM_PLATFORM = exports.LINUX_PLATFORM = exports.WINDOWS_PLATFORM = exports.NON_RETRY_HTTP_CODES = exports.RETRY_COUNT = exports.RETRY_DELAY_IN_MILLISECONDS = exports.SARIF_UPLOAD_FOLDER_ARTIFACT_NAME = exports.DEFAULT_POLARIS_SARIF_GENERATOR_DIRECTORY = exports.DEFAULT_BLACKDUCK_SARIF_GENERATOR_DIRECTORY = exports.SARIF_DEFAULT_FILE_NAME = exports.BRIDGE_CLI_LOCAL_DIRECTORY = exports.UPLOAD_FOLDER_ARTIFACT_NAME = exports.BRIDGECLI_INSTALL_DIRECTORY_KEY_CLASSIC_EDITOR = exports.BRIDGECLI_INSTALL_DIRECTORY_KEY = exports.SYNOPSYS_BRIDGE_INSTALL_DIRECTORY_KEY = exports.SRM_MARK_BUILD_STATUS_KEY_CLASSIC_EDITOR = exports.COVERITY_MARK_BUILD_STATUS_KEY_CLASSIC_EDITOR = exports.BLACKDUCKSCA_MARK_BUILD_STATUS_KEY_CLASSIC_EDITOR = exports.POLARIS_MARK_BUILD_STATUS_KEY_CLASSIC_EDITOR = void 0;
-exports.VERSION = exports.INTEGRATIONS_ADO_EE = exports.INTEGRATIONS_ADO_CLOUD = exports.ADO_SERVICES_URL = exports.INTEGRATIONS_CLI_LOCAL_DIRECTORY = exports.INTEGRATIONS_DEFAULT_POLARIS_SARIF_GENERATOR_DIRECTORY = exports.INTEGRATIONS_DEFAULT_BLACKDUCK_SARIF_GENERATOR_DIRECTORY = exports.INTEGRATIONS_BLACKDUCK_SCA_DEFAULT_SARIF_FILE_PATH = exports.INTEGRATIONS_POLARIS_DEFAULT_SARIF_FILE_PATH = exports.BRIDGE_CLI_ARM_VERSION_FALLBACK_MESSAGE = exports.EXIT_CODE_MAP = exports.SARIF_GAS_API_RATE_LIMIT_FOR_ERROR = exports.PROVIDED_BLACKDUCKSCA_FAILURE_SEVERITIES_ERROR = exports.MISSING_BOOLEAN_VALUE_ERROR = exports.INVALID_VALUE_ERROR = exports.BRIDGE_DOWNLOAD_RETRY_ERROR = exports.SCAN_TYPE_REQUIRED_ERROR = exports.BRIDGE_DEFAULT_DIRECTORY_NOT_FOUND_ERROR = exports.BRIDGE_INSTALL_DIRECTORY_NOT_FOUND_ERROR = exports.BRIDGE_EXECUTABLE_NOT_FOUND_ERROR = exports.MARK_THE_BUILD_STATUS = exports.MARK_THE_BUILD_ON_BRIDGE_BREAK = exports.AZURE_PULL_REQUEST_NUMBER_IS_EMPTY = exports.BLACKDUCKSCA_SECURITY_SCAN_COMPLETED = exports.POLARISSCA_SARIF_REPORT_ENABLED = exports.BLACKDUCKSCA_SARIF_REPOST_ENABLED = exports.TASK_RETURN_STATUS = exports.NETWORK_AIR_GAP_ENABLED_SKIP_DOWNLOAD_BRIDGE_CLI = exports.UNABLE_TO_FIND_PULL_REQUEST_INFO = exports.GETTING_ALL_BRIDGE_VERSIONS_RETRY = exports.UNABLE_TO_GET_RECENT_BRIDGE_VERSION = exports.GETTING_LATEST_BRIDGE_VERSIONS_RETRY = exports.ERROR_READING_VERSION_FILE = exports.VERSION_FILE_NOT_FOUND_AT = exports.VERSION_FILE_FOUND_AT = exports.LOOKING_FOR_BRIDGE_CLI_DEFAULT_PATH = exports.LOOKING_FOR_BRIDGE_CLI_INSTALL_DIR = exports.BRIDGE_CLI_FOUND_AT = exports.BRIDGE_CLI_DOWNLOAD_COMPLETED = exports.BRIDGECLI_VERSION = exports.BRIDGE_CLI_URL_MESSAGE = exports.BRIDGE_CLI_EXTRACTION_COMPLETED = void 0;
+exports.BD_OUTPUT_FILE_NAME = exports.POLARIS_OUTPUT_FILE_NAME = exports.VERSION = exports.INTEGRATIONS_ADO_EE = exports.INTEGRATIONS_ADO_CLOUD = exports.ADO_SERVICES_URL = exports.INTEGRATIONS_CLI_LOCAL_DIRECTORY = exports.INTEGRATIONS_DEFAULT_POLARIS_SARIF_GENERATOR_DIRECTORY = exports.INTEGRATIONS_DEFAULT_BLACKDUCK_SARIF_GENERATOR_DIRECTORY = exports.INTEGRATIONS_BLACKDUCK_SCA_DEFAULT_SARIF_FILE_PATH = exports.INTEGRATIONS_POLARIS_DEFAULT_SARIF_FILE_PATH = exports.BRIDGE_CLI_ARM_VERSION_FALLBACK_MESSAGE = exports.EXIT_CODE_MAP = exports.SARIF_GAS_API_RATE_LIMIT_FOR_ERROR = exports.PROVIDED_BLACKDUCKSCA_FAILURE_SEVERITIES_ERROR = exports.MISSING_BOOLEAN_VALUE_ERROR = exports.INVALID_VALUE_ERROR = exports.BRIDGE_DOWNLOAD_RETRY_ERROR = exports.SCAN_TYPE_REQUIRED_ERROR = exports.BRIDGE_DEFAULT_DIRECTORY_NOT_FOUND_ERROR = exports.BRIDGE_INSTALL_DIRECTORY_NOT_FOUND_ERROR = exports.BRIDGE_EXECUTABLE_NOT_FOUND_ERROR = exports.MARK_THE_BUILD_STATUS = exports.MARK_THE_BUILD_ON_BRIDGE_BREAK = exports.AZURE_PULL_REQUEST_NUMBER_IS_EMPTY = exports.BLACKDUCKSCA_SECURITY_SCAN_COMPLETED = exports.POLARISSCA_SARIF_REPORT_ENABLED = exports.BLACKDUCKSCA_SARIF_REPOST_ENABLED = exports.TASK_RETURN_STATUS = exports.NETWORK_AIR_GAP_ENABLED_SKIP_DOWNLOAD_BRIDGE_CLI = exports.UNABLE_TO_FIND_PULL_REQUEST_INFO = exports.GETTING_ALL_BRIDGE_VERSIONS_RETRY = exports.UNABLE_TO_GET_RECENT_BRIDGE_VERSION = exports.GETTING_LATEST_BRIDGE_VERSIONS_RETRY = exports.ERROR_READING_VERSION_FILE = exports.VERSION_FILE_NOT_FOUND_AT = exports.VERSION_FILE_FOUND_AT = exports.LOOKING_FOR_BRIDGE_CLI_DEFAULT_PATH = exports.LOOKING_FOR_BRIDGE_CLI_INSTALL_DIR = exports.BRIDGE_CLI_FOUND_AT = exports.BRIDGE_CLI_DOWNLOAD_COMPLETED = exports.BRIDGECLI_VERSION = exports.BRIDGE_CLI_URL_MESSAGE = exports.BRIDGE_CLI_EXTRACTION_COMPLETED = void 0;
 const ErrorCodes_1 = __nccwpck_require__(8936);
 exports.BRIDGE_CLI_DEFAULT_PATH_UNIX = "/bridge-cli-bundle"; //Path will be in home
 exports.BRIDGE_CLI_DEFAULT_PATH_WINDOWS = "\\bridge-cli-bundle";
@@ -516,6 +516,8 @@ exports.ADO_SERVICES_URL = "https://dev.azure.com";
 exports.INTEGRATIONS_ADO_CLOUD = "Integrations-ado-cloud";
 exports.INTEGRATIONS_ADO_EE = "Integrations-ado-ee";
 exports.VERSION = "3.5.0";
+exports.POLARIS_OUTPUT_FILE_NAME = "polaris_output.json";
+exports.BD_OUTPUT_FILE_NAME = "bd_output.json";
 
 
 /***/ }),
@@ -2086,12 +2088,20 @@ class BridgeCliToolsParameter {
             // Wrap the file path with double quotes, to make it work with directory path with space as well
             stateFilePath = '"'.concat(stateFilePath).concat('"');
             taskLib.debug("Generated state json file at - ".concat(stateFilePath));
+            // Generate out file path
+            let outFilePath = path_1.default.join(this.tempDir, BridgeCliToolsParameter.POLARIS_OUT_FILE_NAME);
+            outFilePath = '"'.concat(outFilePath).concat('"');
+            taskLib.debug("Generated out json file at - ".concat(outFilePath));
             command = BridgeCliToolsParameter.STAGE_OPTION.concat(BridgeCliToolsParameter.SPACE)
                 .concat(BridgeCliToolsParameter.POLARIS_STAGE)
                 .concat(BridgeCliToolsParameter.SPACE)
                 .concat(BridgeCliToolsParameter.INPUT_OPTION)
                 .concat(BridgeCliToolsParameter.SPACE)
                 .concat(stateFilePath)
+                .concat(BridgeCliToolsParameter.SPACE)
+                .concat(BridgeCliToolsParameter.OUTPUT_OPTION)
+                .concat(BridgeCliToolsParameter.SPACE)
+                .concat(outFilePath)
                 .concat(BridgeCliToolsParameter.SPACE);
             return command;
         });
@@ -2214,12 +2224,20 @@ class BridgeCliToolsParameter {
             // Wrap the file path with double quotes, to make it work with directory path with space as well
             stateFilePath = '"'.concat(stateFilePath).concat('"');
             taskLib.debug("Generated state json file at - ".concat(stateFilePath));
+            // Generate out file path
+            let outFilePath = path_1.default.join(this.tempDir, BridgeCliToolsParameter.BD_OUT_FILE_NAME);
+            outFilePath = '"'.concat(outFilePath).concat('"');
+            taskLib.debug("Generated out json file at - ".concat(outFilePath));
             command = BridgeCliToolsParameter.STAGE_OPTION.concat(BridgeCliToolsParameter.SPACE)
                 .concat(BridgeCliToolsParameter.BLACKDUCKSCA_STAGE)
                 .concat(BridgeCliToolsParameter.SPACE)
                 .concat(BridgeCliToolsParameter.INPUT_OPTION)
                 .concat(BridgeCliToolsParameter.SPACE)
                 .concat(stateFilePath)
+                .concat(BridgeCliToolsParameter.SPACE)
+                .concat(BridgeCliToolsParameter.OUTPUT_OPTION)
+                .concat(BridgeCliToolsParameter.SPACE)
+                .concat(outFilePath)
                 .concat(BridgeCliToolsParameter.SPACE);
             return command;
         });
@@ -2754,9 +2772,12 @@ class BridgeCliToolsParameter {
 BridgeCliToolsParameter.STAGE_OPTION = "--stage";
 BridgeCliToolsParameter.BLACKDUCKSCA_STAGE = "blackducksca";
 BridgeCliToolsParameter.BD_STATE_FILE_NAME = "bd_input.json";
+BridgeCliToolsParameter.BD_OUT_FILE_NAME = "bd_output.json";
 BridgeCliToolsParameter.INPUT_OPTION = "--input";
+BridgeCliToolsParameter.OUTPUT_OPTION = "--out";
 BridgeCliToolsParameter.POLARIS_STAGE = "polaris";
 BridgeCliToolsParameter.POLARIS_STATE_FILE_NAME = "polaris_input.json";
+BridgeCliToolsParameter.POLARIS_OUT_FILE_NAME = "polaris_output.json";
 BridgeCliToolsParameter.SPACE = " ";
 BridgeCliToolsParameter.COVERITY_STATE_FILE_NAME = "coverity_input.json";
 BridgeCliToolsParameter.COVERITY_STAGE = "connect";
@@ -2810,10 +2831,10 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.updateSarifFilePaths = exports.updateBlackDuckSarifPath = exports.updatePolarisSarifPath = exports.extractInputJsonFilename = exports.getMappedTaskResult = exports.equalsIgnoreCase = exports.getStatusCode = exports.extractBranchName = exports.isPullRequestEvent = exports.IS_PR_EVENT = exports.filterEmptyData = exports.getIntegrationDefaultSarifReportPath = exports.getDefaultSarifReportPath = exports.sleep = exports.getWorkSpaceDirectory = exports.isBoolean = exports.parseToBoolean = exports.getRemoteFile = exports._getAgentTemp = exports._createExtractFolder = exports.extractZipWithQuiet = exports.extractZipped = exports.getTempDir = exports.cleanUrl = void 0;
+exports.extractSarifOutputPath = exports.copySarifFileToIntegrationDefaultPath = exports.extractOutputJsonFilename = exports.getMappedTaskResult = exports.equalsIgnoreCase = exports.getStatusCode = exports.extractBranchName = exports.isPullRequestEvent = exports.IS_PR_EVENT = exports.filterEmptyData = exports.getIntegrationDefaultSarifReportPath = exports.getDefaultSarifReportPath = exports.sleep = exports.getWorkSpaceDirectory = exports.isBoolean = exports.parseToBoolean = exports.getRemoteFile = exports._getAgentTemp = exports._createExtractFolder = exports.extractZipWithQuiet = exports.extractZipped = exports.getTempDir = exports.cleanUrl = void 0;
 const path_1 = __importDefault(__nccwpck_require__(1017));
+const fs = __importStar(__nccwpck_require__(7147));
 const utility = __importStar(__nccwpck_require__(8383));
-const input = __importStar(__nccwpck_require__(264));
 const constants = __importStar(__nccwpck_require__(8673));
 const application_constant_1 = __nccwpck_require__(8673);
 const toolLibLocal = __importStar(__nccwpck_require__(240));
@@ -2824,8 +2845,6 @@ const uuid_1 = __nccwpck_require__(5840);
 const azure_1 = __nccwpck_require__(5895);
 const ErrorCodes_1 = __nccwpck_require__(8936);
 const BuildStatus_1 = __nccwpck_require__(6724);
-const fs_1 = __nccwpck_require__(7147);
-const validator_1 = __nccwpck_require__(2062);
 function cleanUrl(url) {
     if (url && url.endsWith("/")) {
         return url.slice(0, url.length - 1);
@@ -3059,105 +3078,64 @@ function getMappedTaskResult(buildStatus) {
 }
 exports.getMappedTaskResult = getMappedTaskResult;
 // Extract File name from the formatted command
-function extractInputJsonFilename(command) {
-    const match = command.match(/--input\s+([^\s]+)/);
+function extractOutputJsonFilename(command) {
+    const match = command.match(/--out\s+([^\s]+)/);
     if (match && match[1]) {
-        // Extract just the filename from the full path
-        const fullPath = match[1];
-        return fullPath || "";
+        // Extract the full path and remove any quotes
+        const outputFilePath = match[1].replace(/^["']|["']$/g, "");
+        taskLib.debug(`Extracted Output Path:::: ${outputFilePath}`);
+        return outputFilePath || "";
     }
     return "";
 }
-exports.extractInputJsonFilename = extractInputJsonFilename;
-// Update SARIF file path in the input JSON
-function updatePolarisSarifPath(productInputFilPath, sarifPath) {
-    var _a, _b, _c, _d, _e, _f, _g, _h;
+exports.extractOutputJsonFilename = extractOutputJsonFilename;
+// Extract sarif output file path from out json
+function copySarifFileToIntegrationDefaultPath(sarifFilePath) {
+    const sourceDirectory = process.env["BUILD_SOURCESDIRECTORY"] || "";
+    const sarifFileName = path_1.default.basename(sarifFilePath);
+    const isPolarisFile = sarifFileName === constants.POLARIS_OUTPUT_FILE_NAME;
+    const isBlackduckFile = sarifFileName === constants.BD_OUTPUT_FILE_NAME;
+    if (!isPolarisFile && !isBlackduckFile)
+        return;
+    const sarifOutputPath = extractSarifOutputPath(sarifFilePath, sarifFileName);
+    if (!sarifOutputPath)
+        return;
+    const integrationSarifDir = path_1.default.dirname(isPolarisFile
+        ? constants.INTEGRATIONS_POLARIS_DEFAULT_SARIF_FILE_PATH
+        : constants.INTEGRATIONS_BLACKDUCK_SCA_DEFAULT_SARIF_FILE_PATH);
+    const integrationSarifDirPath = path_1.default.join(sourceDirectory, integrationSarifDir);
+    const destinationFile = path_1.default.join(integrationSarifDirPath, constants.SARIF_DEFAULT_FILE_NAME);
     try {
-        // Read and parse the JSON file
-        const jsonContent = (0, fs_1.readFileSync)(productInputFilPath, "utf-8");
-        const config = JSON.parse(jsonContent);
-        // Check if SARIF report creation is enabled and path exists
-        if ((_d = (_c = (_b = (_a = config.data) === null || _a === void 0 ? void 0 : _a.polaris) === null || _b === void 0 ? void 0 : _b.reports) === null || _c === void 0 ? void 0 : _c.sarif) === null || _d === void 0 ? void 0 : _d.file) {
-            config.data.polaris.reports.sarif.file.path = sarifPath;
-            // Write back the updated JSON with proper formatting
-            (0, fs_1.writeFileSync)(productInputFilPath, JSON.stringify(config, null, 2));
-        }
-        else {
-            // Ensure data structure exists
-            config.data = config.data || {};
-            config.data.polaris = config.data.polaris || {};
-            config.data.polaris.reports = config.data.polaris.reports || {
-                sarif: { file: { path: "" } },
-            };
-            // Update path and write back
-            if ((_h = (_g = (_f = (_e = config.data) === null || _e === void 0 ? void 0 : _e.polaris) === null || _f === void 0 ? void 0 : _f.reports) === null || _g === void 0 ? void 0 : _g.sarif) === null || _h === void 0 ? void 0 : _h.file) {
-                config.data.polaris.reports.sarif.file.path = sarifPath;
-            }
-            (0, fs_1.writeFileSync)(productInputFilPath, JSON.stringify(config, null, 2));
-        }
+        fs.mkdirSync(integrationSarifDirPath, { recursive: true });
+        fs.copyFileSync(sarifOutputPath, destinationFile, fs.constants.COPYFILE_FICLONE_FORCE);
+        taskLib.debug(`SARIF file ${fs.existsSync(destinationFile) ? "overwritten" : "copied"} at: ${destinationFile}`);
     }
     catch (error) {
-        console.log("Error updating SARIF file path.");
+        console.error("Error copying SARIF file:", error);
     }
 }
-exports.updatePolarisSarifPath = updatePolarisSarifPath;
-// Update SARIF file path in the input JSON
-function updateBlackDuckSarifPath(productInputFilPath, sarifPath) {
-    var _a, _b, _c, _d, _e, _f, _g, _h;
+exports.copySarifFileToIntegrationDefaultPath = copySarifFileToIntegrationDefaultPath;
+// Extract the file name from the path
+function extractSarifOutputPath(outputJsonPath, sarifFileName) {
+    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k;
     try {
-        // Read and parse the JSON file
-        const jsonContent = (0, fs_1.readFileSync)(productInputFilPath, "utf-8");
-        const config = JSON.parse(jsonContent);
-        // Check if SARIF report creation is enabled and path exists
-        if ((_d = (_c = (_b = (_a = config.data) === null || _a === void 0 ? void 0 : _a.blackducksca) === null || _b === void 0 ? void 0 : _b.reports) === null || _c === void 0 ? void 0 : _c.sarif) === null || _d === void 0 ? void 0 : _d.file) {
-            config.data.blackducksca.reports.sarif.file.path = sarifPath;
-            // Write back the updated JSON with proper formatting
-            (0, fs_1.writeFileSync)(productInputFilPath, JSON.stringify(config, null, 2));
-            console.log(`Successfully updated Polaris SARIF file path:::: ${config.data.blackducksca.reports.sarif.file.path}`);
+        const config = JSON.parse(fs.readFileSync(outputJsonPath, "utf-8"));
+        const sarifOutputPath = sarifFileName === constants.POLARIS_OUTPUT_FILE_NAME
+            ? (_e = (_d = (_c = (_b = (_a = config === null || config === void 0 ? void 0 : config.data) === null || _a === void 0 ? void 0 : _a.polaris) === null || _b === void 0 ? void 0 : _b.reports) === null || _c === void 0 ? void 0 : _c.sarif) === null || _d === void 0 ? void 0 : _d.file) === null || _e === void 0 ? void 0 : _e.output
+            : (_k = (_j = (_h = (_g = (_f = config === null || config === void 0 ? void 0 : config.data) === null || _f === void 0 ? void 0 : _f.blackducksca) === null || _g === void 0 ? void 0 : _g.reports) === null || _h === void 0 ? void 0 : _h.sarif) === null || _j === void 0 ? void 0 : _j.file) === null || _k === void 0 ? void 0 : _k.output;
+        if (!sarifOutputPath) {
+            console.log("SARIF output path not found in JSON");
+            return "";
         }
-        else {
-            // Ensure data structure exists
-            config.data = config.data || {};
-            config.data.blackducksca = config.data.blackducksca || {};
-            config.data.blackducksca.reports = config.data.blackducksca.reports || {
-                sarif: { file: { path: "" } },
-            };
-            // Update path and write back
-            if ((_h = (_g = (_f = (_e = config.data) === null || _e === void 0 ? void 0 : _e.blackducksca) === null || _f === void 0 ? void 0 : _f.reports) === null || _g === void 0 ? void 0 : _g.sarif) === null || _h === void 0 ? void 0 : _h.file) {
-                config.data.blackducksca.reports.sarif.file.path = sarifPath;
-            }
-            (0, fs_1.writeFileSync)(productInputFilPath, JSON.stringify(config, null, 2));
-            console.log(`Successfully updated Polaris SARIF file path:::: ${sarifPath}`);
-        }
+        taskLib.debug(`Extracted SARIF output path: ${sarifOutputPath}`);
+        return sarifOutputPath;
     }
     catch (error) {
-        console.log("Error updating SARIF file path.");
+        console.error("Error reading or parsing output JSON file:", error);
+        return "";
     }
 }
-exports.updateBlackDuckSarifPath = updateBlackDuckSarifPath;
-function updateSarifFilePaths(productInputFileName, bridgeVersion, productInputFilPath) {
-    if (productInputFileName === "polaris_input.json") {
-        const sarifPath = bridgeVersion < constants.VERSION
-            ? (0, validator_1.isNullOrEmptyValue)(input.POLARIS_REPORTS_SARIF_FILE_PATH)
-                ? `${constants.BRIDGE_CLI_LOCAL_DIRECTORY}/${constants.DEFAULT_POLARIS_SARIF_GENERATOR_DIRECTORY}/${constants.SARIF_DEFAULT_FILE_NAME}`
-                : input.POLARIS_REPORTS_SARIF_FILE_PATH.trim()
-            : (0, validator_1.isNullOrEmptyValue)(input.POLARIS_REPORTS_SARIF_FILE_PATH)
-                ? constants.INTEGRATIONS_POLARIS_DEFAULT_SARIF_FILE_PATH
-                : input.POLARIS_REPORTS_SARIF_FILE_PATH.trim();
-        updatePolarisSarifPath(productInputFilPath, sarifPath);
-    }
-    if (productInputFileName === "bd_input.json") {
-        const sarifPath = bridgeVersion < constants.VERSION
-            ? (0, validator_1.isNullOrEmptyValue)(input.BLACKDUCKSCA_REPORTS_SARIF_FILE_PATH)
-                ? `${constants.BRIDGE_CLI_LOCAL_DIRECTORY}/${constants.DEFAULT_BLACKDUCK_SARIF_GENERATOR_DIRECTORY}/${constants.SARIF_DEFAULT_FILE_NAME}`
-                : input.BLACKDUCKSCA_REPORTS_SARIF_FILE_PATH.trim()
-            : (0, validator_1.isNullOrEmptyValue)(input.BLACKDUCKSCA_REPORTS_SARIF_FILE_PATH)
-                ? constants.INTEGRATIONS_BLACKDUCK_SCA_DEFAULT_SARIF_FILE_PATH
-                : input.BLACKDUCKSCA_REPORTS_SARIF_FILE_PATH.trim();
-        updateBlackDuckSarifPath(productInputFilPath, sarifPath);
-    }
-}
-exports.updateSarifFilePaths = updateSarifFilePaths;
+exports.extractSarifOutputPath = extractSarifOutputPath;
 
 
 /***/ }),
@@ -3386,8 +3364,7 @@ function run() {
         taskLib.debug(`workSpaceDir: ${workSpaceDir}`);
         let azurePrResponse;
         let bridgeVersion = "";
-        let productInputFilPath = "";
-        let productInputFileName = "";
+        let productOutputFilPath = "";
         try {
             const bridge = new bridge_cli_1.BridgeCli();
             (0, input_1.showLogForDeprecatedInputs)();
@@ -3403,17 +3380,15 @@ function run() {
             }
             // Get Bridge version from bridge Path
             bridgeVersion = getBridgeVersion(bridgePath);
-            taskLib.debug(`bridgePath: ${bridgePath}`);
-            //Extract input.json file and update sarif default file path based on bridge version
-            productInputFilPath = util.extractInputJsonFilename(command);
-            taskLib.debug(`Product input file path: ${productInputFilPath}`);
-            // Extract product input file name from the path
-            productInputFileName = productInputFilPath.split("/").pop() || "";
-            taskLib.debug(`Product input file name: ${productInputFileName}`);
-            // Based on bridge version and productInputFileName get the sarif file path
-            util.updateSarifFilePaths(productInputFileName, bridgeVersion, productInputFilPath);
+            taskLib.debug(`bridgePath: ${bridgeVersion}`);
             // Execute prepared commands
             const result = yield bridge.executeBridgeCliCommand(bridgePath, (0, utility_1.getWorkSpaceDirectory)(), command);
+            // Extract Sarif file out file from the out.json file
+            productOutputFilPath = util.extractOutputJsonFilename(command);
+            taskLib.debug(`Product out file path: ${productOutputFilPath}`);
+            // Copy Sarif file from out.json to integration default directory
+            util.copySarifFileToIntegrationDefaultPath(productOutputFilPath);
+            taskLib.debug(`Sarif file copied to integration default path`);
             // The statement set the exit code in the 'status' variable which can be used in the YAML file
             if ((0, utility_1.parseToBoolean)(inputs.RETURN_STATUS)) {
                 console.log(application_constant_1.TASK_RETURN_STATUS);

@@ -1,6 +1,5 @@
 // Copyright (c) 2024 Black Duck Software Inc. All rights reserved worldwide.
 
-import {expect} from "chai";
 import * as utility from "../../../src/blackduck-security-task/utility";
 import {
     extractZipped, getStatusCode,
@@ -19,6 +18,8 @@ import { ErrorCode } from "../../../src/blackduck-security-task/enum/ErrorCodes"
 import {BuildStatus} from "../../../src/blackduck-security-task/enum/BuildStatus";
 import {TaskResult} from "azure-pipelines-task-lib/task";
 import * as trm from "azure-pipelines-task-lib/toolrunner";
+import { expect } from "chai";
+import * as fs from 'fs';
 
 
 describe("Utilities", () => {
@@ -381,4 +382,5 @@ describe("Utilities", () => {
             expect(utility.getMappedTaskResult("")).equals(undefined);
         });
     });
+
 });

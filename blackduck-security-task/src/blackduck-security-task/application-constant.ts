@@ -702,3 +702,5 @@ export const ADO_SERVICES_URL = "https://dev.azure.com";
 export const INTEGRATIONS_ADO_CLOUD = "Integrations-ado-cloud";
 export const INTEGRATIONS_ADO_EE = "Integrations-ado-ee";
 export const VERSION = "3.5.0";
+export const POLARIS_OUTPUT_FILE_NAME = "polaris_output.json";
+export const BD_OUTPUT_FILE_NAME = "bd_output.json";

@@ -23,7 +23,6 @@ import { InputData } from "./model/input-data";
 import * as constants from "./application-constant";
 import * as taskLib from "azure-pipelines-task-lib/task";
 import {
-  isNullOrEmptyValue,
   validateBlackduckFailureSeverities,
   validateCoverityInstallDirectoryParam,
 } from "./validator";
@@ -51,9 +50,12 @@ export class BridgeCliToolsParameter {
   private static STAGE_OPTION = "--stage";
   private static BLACKDUCKSCA_STAGE = "blackducksca";
   private static BD_STATE_FILE_NAME = "bd_input.json";
+  private static BD_OUT_FILE_NAME = "bd_output.json";
   private static INPUT_OPTION = "--input";
+  private static OUTPUT_OPTION = "--out";
   private static POLARIS_STAGE = "polaris";
   private static POLARIS_STATE_FILE_NAME = "polaris_input.json";
+  private static POLARIS_OUT_FILE_NAME = "polaris_output.json";
   static SPACE = " ";
   private static COVERITY_STATE_FILE_NAME = "coverity_input.json";
   private static COVERITY_STAGE = "connect";
@@ -261,6 +263,14 @@ export class BridgeCliToolsParameter {
 
     taskLib.debug("Generated state json file at - ".concat(stateFilePath));
 
+    // Generate out file path
+    let outFilePath = path.join(
+      this.tempDir,
+      BridgeCliToolsParameter.POLARIS_OUT_FILE_NAME
+    );
+    outFilePath = '"'.concat(outFilePath).concat('"');
+    taskLib.debug("Generated out json file at - ".concat(outFilePath));
+
     command = BridgeCliToolsParameter.STAGE_OPTION.concat(
       BridgeCliToolsParameter.SPACE
     )
@@ -269,6 +279,10 @@ export class BridgeCliToolsParameter {
       .concat(BridgeCliToolsParameter.INPUT_OPTION)
       .concat(BridgeCliToolsParameter.SPACE)
       .concat(stateFilePath)
+      .concat(BridgeCliToolsParameter.SPACE)
+      .concat(BridgeCliToolsParameter.OUTPUT_OPTION)
+      .concat(BridgeCliToolsParameter.SPACE)
+      .concat(outFilePath)
       .concat(BridgeCliToolsParameter.SPACE);
     return command;
   }
@@ -438,6 +452,14 @@ export class BridgeCliToolsParameter {
 
     taskLib.debug("Generated state json file at - ".concat(stateFilePath));
 
+    // Generate out file path
+    let outFilePath = path.join(
+      this.tempDir,
+      BridgeCliToolsParameter.BD_OUT_FILE_NAME
+    );
+    outFilePath = '"'.concat(outFilePath).concat('"');
+    taskLib.debug("Generated out json file at - ".concat(outFilePath));
+
     command = BridgeCliToolsParameter.STAGE_OPTION.concat(
       BridgeCliToolsParameter.SPACE
     )
@@ -446,7 +468,12 @@ export class BridgeCliToolsParameter {
       .concat(BridgeCliToolsParameter.INPUT_OPTION)
       .concat(BridgeCliToolsParameter.SPACE)
       .concat(stateFilePath)
+      .concat(BridgeCliToolsParameter.SPACE)
+      .concat(BridgeCliToolsParameter.OUTPUT_OPTION)
+      .concat(BridgeCliToolsParameter.SPACE)
+      .concat(outFilePath)
       .concat(BridgeCliToolsParameter.SPACE);
+
     return command;
   }
 
