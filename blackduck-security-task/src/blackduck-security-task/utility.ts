@@ -1,6 +1,7 @@
 // Copyright (c) 2024 Black Duck Software Inc. All rights reserved worldwide.
 
 import path from "path";
+import * as fs from "fs";
 import * as utility from "./utility";
 import * as constants from "./application-constant";
 import {
@@ -17,7 +18,6 @@ import {
   BRIDGE_CLI_DOWNLOAD_FAILED_RETRY,
 } from "./application-constant";
 
-import * as toolLib from "azure-pipelines-tool-lib";
 import * as toolLibLocal from ".//download-tool";
 import * as process from "process";
 import { DownloadFileResponse } from "./model/download-file-response";
@@ -253,6 +253,25 @@ export function getDefaultSarifReportPath(
         constants.SARIF_DEFAULT_FILE_NAME
       );
 }
+// Get Integration Default Sarif Report Path
+export function getIntegrationDefaultSarifReportPath(
+  sarifReportDirectory: string,
+  appendFilePath: boolean
+): string {
+  const pwd = getWorkSpaceDirectory();
+  return !appendFilePath
+    ? path.join(
+        pwd,
+        constants.INTEGRATIONS_CLI_LOCAL_DIRECTORY,
+        sarifReportDirectory
+      )
+    : path.join(
+        pwd,
+        constants.INTEGRATIONS_CLI_LOCAL_DIRECTORY,
+        sarifReportDirectory,
+        constants.SARIF_DEFAULT_FILE_NAME
+      );
+}
 
 export function filterEmptyData(data: object) {
   return JSON.parse(JSON.stringify(data), (key, value) =>
@@ -319,5 +338,84 @@ export function getMappedTaskResult(
       );
     }
     return undefined;
+  }
+}
+// Extract File name from the formatted command
+export function extractOutputJsonFilename(command: string): string {
+  const match = command.match(/--out\s+([^\s]+)/);
+  if (match && match[1]) {
+    // Extract the full path and remove any quotes
+    const outputFilePath = match[1].replace(/^["']|["']$/g, "");
+    taskLib.debug(`Extracted Output Path:::: ${outputFilePath}`);
+    return outputFilePath || "";
+  }
+  return "";
+}
+
+// Extract sarif output file path from out json
+export function copySarifFileToIntegrationDefaultPath(
+  sarifFilePath: string
+): void {
+  const sourceDirectory = process.env["BUILD_SOURCESDIRECTORY"] || "";
+  const sarifFileName = path.basename(sarifFilePath);
+
+  const isPolarisFile = sarifFileName === constants.POLARIS_OUTPUT_FILE_NAME;
+  const isBlackduckFile = sarifFileName === constants.BD_OUTPUT_FILE_NAME;
+
+  if (!isPolarisFile && !isBlackduckFile) return;
+
+  const sarifOutputPath = extractSarifOutputPath(sarifFilePath, sarifFileName);
+  if (!sarifOutputPath) return;
+
+  const integrationSarifDir = path.dirname(
+    isPolarisFile
+      ? constants.INTEGRATIONS_POLARIS_DEFAULT_SARIF_FILE_PATH
+      : constants.INTEGRATIONS_BLACKDUCK_SCA_DEFAULT_SARIF_FILE_PATH
+  );
+
+  const integrationSarifDirPath = path.join(
+    sourceDirectory,
+    integrationSarifDir
+  );
+  const destinationFile = path.join(
+    integrationSarifDirPath,
+    constants.SARIF_DEFAULT_FILE_NAME
+  );
+
+  try {
+    fs.mkdirSync(integrationSarifDirPath, { recursive: true });
+    fs.copyFileSync(sarifOutputPath, destinationFile);
+    taskLib.debug(
+      `SARIF file ${
+        fs.existsSync(destinationFile) ? "overwritten" : "copied"
+      } at: ${destinationFile}`
+    );
+  } catch (error) {
+    console.error("Error copying SARIF file:", error);
+  }
+}
+
+// Extract the file name from the path
+export function extractSarifOutputPath(
+  outputJsonPath: string,
+  sarifFileName: string
+): string {
+  try {
+    const config = JSON.parse(fs.readFileSync(outputJsonPath, "utf-8"));
+    const sarifOutputPath =
+      sarifFileName === constants.POLARIS_OUTPUT_FILE_NAME
+        ? config?.data?.polaris?.reports?.sarif?.file?.output
+        : config?.data?.blackducksca?.reports?.sarif?.file?.output;
+
+    if (!sarifOutputPath) {
+      console.log("SARIF output path not found in JSON");
+      return "";
+    }
+
+    taskLib.debug(`Extracted SARIF output path: ${sarifOutputPath}`);
+    return sarifOutputPath;
+  } catch (error) {
+    console.error("Error reading or parsing output JSON file:", error);
+    return "";
   }
 }

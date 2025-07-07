@@ -7,6 +7,9 @@ import * as inputs from "../../src/blackduck-security-task/input";
 import { BridgeCli } from "../../src/blackduck-security-task/bridge-cli";
 import * as diagnostics from "../../src/blackduck-security-task/diagnostics";
 import { ErrorCode } from "../../src/blackduck-security-task/enum/ErrorCodes";
+import * as util from "../../src/blackduck-security-task/utility";
+import * as constants from "../../src/blackduck-security-task/application-constant";
+
 
 describe("Main function test cases", () => {
 
@@ -131,6 +134,54 @@ describe("Main function test cases", () => {
             })
         });
 
+        it('uploads SARIF report to integration directory when PR event is true', async () => {
+            Object.defineProperty(inputs, 'BLACKDUCKSCA_REPORTS_SARIF_CREATE', { value: 'true' });
+            sandbox.stub(util, 'IS_PR_EVENT').value(true);
+            sandbox.stub(BridgeCli.prototype, 'prepareCommand').resolves("test command");
+            sandbox.stub(BridgeCli.prototype, 'downloadAndExtractBridgeCli').resolves("test-path");
+            sandbox.stub(BridgeCli.prototype, 'executeBridgeCliCommand').resolves(0);
+            const uploadArtifactStub = sandbox.stub(diagnostics, 'uploadSarifResultAsArtifact').returns(undefined);
+
+            await main.run();
+
+            sinon.assert.calledWith(
+                uploadArtifactStub,
+                constants.INTEGRATIONS_DEFAULT_BLACKDUCK_SARIF_GENERATOR_DIRECTORY,
+                inputs.BLACKDUCKSCA_REPORTS_SARIF_FILE_PATH
+            );
+        });
+
+        it('does not upload SARIF report when BLACKDUCKSCA_REPORTS_SARIF_CREATE is false', async () => {
+            Object.defineProperty(inputs, 'BLACKDUCKSCA_REPORTS_SARIF_CREATE', { value: 'false' });
+            sandbox.stub(util, 'IS_PR_EVENT').value(true);
+            sandbox.stub(BridgeCli.prototype, 'prepareCommand').resolves("test command");
+            sandbox.stub(BridgeCli.prototype, 'downloadAndExtractBridgeCli').resolves("test-path");
+            sandbox.stub(BridgeCli.prototype, 'executeBridgeCliCommand').resolves(0);
+            const uploadArtifactStub = sandbox.stub(diagnostics, 'uploadSarifResultAsArtifact').returns(undefined);
+
+            await main.run();
+
+            sinon.assert.notCalled(uploadArtifactStub);
+        });
+
+        it('uploads SARIF report to integration directory when PR event is true and file path is empty', async () => {
+            Object.defineProperty(inputs, 'BLACKDUCKSCA_REPORTS_SARIF_CREATE', { value: 'true' });
+            Object.defineProperty(inputs, 'BLACKDUCKSCA_REPORTS_SARIF_FILE_PATH', { value: '' });
+            sandbox.stub(util, 'IS_PR_EVENT').value(true);
+            sandbox.stub(BridgeCli.prototype, 'prepareCommand').resolves("test command");
+            sandbox.stub(BridgeCli.prototype, 'downloadAndExtractBridgeCli').resolves("test-path");
+            sandbox.stub(BridgeCli.prototype, 'executeBridgeCliCommand').resolves(0);
+            const uploadArtifactStub = sandbox.stub(diagnostics, 'uploadSarifResultAsArtifact').returns(undefined);
+
+            await main.run();
+
+            sinon.assert.calledWith(
+                uploadArtifactStub,
+                constants.INTEGRATIONS_DEFAULT_BLACKDUCK_SARIF_GENERATOR_DIRECTORY,
+                ''
+            );
+        });
+
     });
 
     context('main function', () => {
@@ -192,4 +243,5 @@ describe("Main function test cases", () => {
             expect("Exit Code: 999 - Undefined error from extension: Unknown error").to.equal(errorMessageForUndefinedExitCodes);
         });
     });
+
 });

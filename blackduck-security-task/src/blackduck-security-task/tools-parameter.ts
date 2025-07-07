@@ -50,9 +50,12 @@ export class BridgeCliToolsParameter {
   private static STAGE_OPTION = "--stage";
   private static BLACKDUCKSCA_STAGE = "blackducksca";
   private static BD_STATE_FILE_NAME = "bd_input.json";
+  private static BD_OUT_FILE_NAME = "bd_output.json";
   private static INPUT_OPTION = "--input";
+  private static OUTPUT_OPTION = "--out";
   private static POLARIS_STAGE = "polaris";
   private static POLARIS_STATE_FILE_NAME = "polaris_input.json";
+  private static POLARIS_OUT_FILE_NAME = "polaris_output.json";
   static SPACE = " ";
   private static COVERITY_STATE_FILE_NAME = "coverity_input.json";
   private static COVERITY_STAGE = "connect";
@@ -67,6 +70,10 @@ export class BridgeCliToolsParameter {
 
   async getFormattedCommandForPolaris(): Promise<string> {
     let command = "";
+    const customHeader =
+      this.getInstanceUrl() === constants.ADO_SERVICES_URL
+        ? constants.INTEGRATIONS_ADO_CLOUD
+        : constants.INTEGRATIONS_ADO_EE;
     const assessmentTypeArray: string[] = [];
     const assessmentTypes = inputs.POLARIS_ASSESSMENT_TYPES;
     if (assessmentTypes != null && assessmentTypes.length > 0) {
@@ -117,6 +124,11 @@ export class BridgeCliToolsParameter {
             }),
           },
           branch: { parent: {} },
+        },
+        bridge: {
+          invoked: {
+            from: customHeader,
+          },
         },
       },
     };
@@ -251,6 +263,14 @@ export class BridgeCliToolsParameter {
 
     taskLib.debug("Generated state json file at - ".concat(stateFilePath));
 
+    // Generate out file path
+    let outFilePath = path.join(
+      this.tempDir,
+      BridgeCliToolsParameter.POLARIS_OUT_FILE_NAME
+    );
+    outFilePath = '"'.concat(outFilePath).concat('"');
+    taskLib.debug("Generated out json file at - ".concat(outFilePath));
+
     command = BridgeCliToolsParameter.STAGE_OPTION.concat(
       BridgeCliToolsParameter.SPACE
     )
@@ -259,6 +279,10 @@ export class BridgeCliToolsParameter {
       .concat(BridgeCliToolsParameter.INPUT_OPTION)
       .concat(BridgeCliToolsParameter.SPACE)
       .concat(stateFilePath)
+      .concat(BridgeCliToolsParameter.SPACE)
+      .concat(BridgeCliToolsParameter.OUTPUT_OPTION)
+      .concat(BridgeCliToolsParameter.SPACE)
+      .concat(outFilePath)
       .concat(BridgeCliToolsParameter.SPACE);
     return command;
   }
@@ -267,11 +291,20 @@ export class BridgeCliToolsParameter {
     const failureSeverities: string[] =
       inputs.BLACKDUCKSCA_SCAN_FAILURE_SEVERITIES;
     let command = "";
+    const customHeader =
+      this.getInstanceUrl() === constants.ADO_SERVICES_URL
+        ? constants.INTEGRATIONS_ADO_CLOUD
+        : constants.INTEGRATIONS_ADO_EE;
     let blackduckData: InputData<BlackduckSCA> = {
       data: {
         blackducksca: {
           url: inputs.BLACKDUCKSCA_URL,
           token: inputs.BLACKDUCKSCA_API_TOKEN,
+        },
+        bridge: {
+          invoked: {
+            from: customHeader,
+          },
         },
       },
     };
@@ -419,6 +452,14 @@ export class BridgeCliToolsParameter {
 
     taskLib.debug("Generated state json file at - ".concat(stateFilePath));
 
+    // Generate out file path
+    let outFilePath = path.join(
+      this.tempDir,
+      BridgeCliToolsParameter.BD_OUT_FILE_NAME
+    );
+    outFilePath = '"'.concat(outFilePath).concat('"');
+    taskLib.debug("Generated out json file at - ".concat(outFilePath));
+
     command = BridgeCliToolsParameter.STAGE_OPTION.concat(
       BridgeCliToolsParameter.SPACE
     )
@@ -427,13 +468,21 @@ export class BridgeCliToolsParameter {
       .concat(BridgeCliToolsParameter.INPUT_OPTION)
       .concat(BridgeCliToolsParameter.SPACE)
       .concat(stateFilePath)
+      .concat(BridgeCliToolsParameter.SPACE)
+      .concat(BridgeCliToolsParameter.OUTPUT_OPTION)
+      .concat(BridgeCliToolsParameter.SPACE)
+      .concat(outFilePath)
       .concat(BridgeCliToolsParameter.SPACE);
+
     return command;
   }
 
   async getFormattedCommandForCoverity(): Promise<string> {
     let command = "";
-
+    const customHeader =
+      this.getInstanceUrl() === constants.ADO_SERVICES_URL
+        ? constants.INTEGRATIONS_ADO_CLOUD
+        : constants.INTEGRATIONS_ADO_EE;
     const azureRepositoryName = this.getAzureRepositoryName();
 
     let coverityProjectName = inputs.COVERITY_PROJECT_NAME;
@@ -509,6 +558,11 @@ export class BridgeCliToolsParameter {
             url: inputs.COVERITY_URL,
             project: { name: coverityProjectName },
             stream: { name: coverityStreamName },
+          },
+        },
+        bridge: {
+          invoked: {
+            from: customHeader,
           },
         },
       },
@@ -663,6 +717,10 @@ export class BridgeCliToolsParameter {
 
   async getFormattedCommandForSrm(): Promise<string> {
     let command = "";
+    const customHeader =
+      this.getInstanceUrl() === constants.ADO_SERVICES_URL
+        ? constants.INTEGRATIONS_ADO_CLOUD
+        : constants.INTEGRATIONS_ADO_EE;
     const assessmentTypeArray: string[] = [];
     const assessmentTypes = inputs.SRM_ASSESSMENT_TYPES;
     if (assessmentTypes != null && assessmentTypes.length > 0) {
@@ -690,6 +748,11 @@ export class BridgeCliToolsParameter {
           apikey: inputs.SRM_APIKEY,
           assessment: {
             types: assessmentTypeArray,
+          },
+        },
+        bridge: {
+          invoked: {
+            from: customHeader,
           },
         },
       },
@@ -1115,5 +1178,31 @@ export class BridgeCliToolsParameter {
     }
 
     return blackDuckDetectInputData.data;
+  }
+
+  private getInstanceUrl(): string {
+    let azureInstanceUrl = "";
+    let azureOrganization = "";
+    const collectionUri =
+      taskLib.getVariable(AZURE_ENVIRONMENT_VARIABLES.AZURE_ORGANIZATION) || "";
+
+    if (collectionUri !== "") {
+      const parsedUrl = url.parse(collectionUri);
+      azureInstanceUrl = `${parsedUrl.protocol}//${parsedUrl.host}`;
+      azureOrganization = parsedUrl.pathname?.split("/")[1] || "";
+
+      if (
+        parsedUrl.host &&
+        !azureOrganization &&
+        parsedUrl.host.indexOf(".visualstudio.com") !== -1
+      ) {
+        if (parsedUrl.host.split(".")[0]) {
+          azureOrganization = parsedUrl.host.split(".")[0];
+          azureInstanceUrl = constants.DEFAULT_AZURE_API_URL;
+        }
+      }
+    }
+
+    return azureInstanceUrl;
   }
 }
