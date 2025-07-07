@@ -3107,7 +3107,7 @@ function copySarifFileToIntegrationDefaultPath(sarifFilePath) {
     const destinationFile = path_1.default.join(integrationSarifDirPath, constants.SARIF_DEFAULT_FILE_NAME);
     try {
         fs.mkdirSync(integrationSarifDirPath, { recursive: true });
-        fs.copyFileSync(sarifOutputPath, destinationFile, fs.constants.COPYFILE_FICLONE_FORCE);
+        fs.copyFileSync(sarifOutputPath, destinationFile);
         taskLib.debug(`SARIF file ${fs.existsSync(destinationFile) ? "overwritten" : "copied"} at: ${destinationFile}`);
     }
     catch (error) {

@@ -384,11 +384,7 @@ export function copySarifFileToIntegrationDefaultPath(
 
   try {
     fs.mkdirSync(integrationSarifDirPath, { recursive: true });
-    fs.copyFileSync(
-      sarifOutputPath,
-      destinationFile,
-      fs.constants.COPYFILE_FICLONE_FORCE
-    );
+    fs.copyFileSync(sarifOutputPath, destinationFile);
     taskLib.debug(
       `SARIF file ${
         fs.existsSync(destinationFile) ? "overwritten" : "copied"
