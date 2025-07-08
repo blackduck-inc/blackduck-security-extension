@@ -1,6 +1,6 @@
 {
   "name": "blackduck-security-scan",
-  "version": "2.1.0",
+  "version": "v2.2.0",
   "main": "lib/main.js",
   "engines": {
     "node": ">=20.0.0"
