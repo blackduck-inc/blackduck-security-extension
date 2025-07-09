@@ -154,7 +154,7 @@ describe("getPullRequestIdForClassicEditorFlow", () => {
                 get: sinon.stub()
             };
             const azureData = {
-                api: { url: 'https://azureDevOpsserver/' },
+                api: { url: 'https://azureDevOpsserver' },
                 user: { token: 'token' },
                 organization: { name: 'org' },
                 project: { name: 'proj' },
@@ -170,13 +170,14 @@ describe("getPullRequestIdForClassicEditorFlow", () => {
                 readBody: sinon.stub().resolves('{}')
             };
             (httpClient.get as SinonStub).resolves(response);
+            const httpClientCtorStub = sinon.stub(httpc, 'HttpClient').returns(httpClient as any);
             const azureService = new AzureService();
             const version = await (azureService as any).fetchAzureServerApiVersion({
-                httpClient,
                 azureData,
                 StringFormat
             });
             expect(version).to.equal('6.2');
+            httpClientCtorStub.restore();
         });
     })
 })

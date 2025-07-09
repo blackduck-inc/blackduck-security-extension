@@ -579,21 +579,19 @@ class AzureService {
             if (azureData &&
                 process.env["BUILD_REASON"] &&
                 process.env["BUILD_REASON"] !== "PullRequest") {
-                const StringFormat = (url, ...args) => url.replace(/{(\d+)}/g, (match, index) => encodeURIComponent(args[index]) || "");
-                const httpClient = new HttpClient_1.HttpClient("blackduck-azure-service");
                 const urlObj = new URL(azureData.api.url);
                 if (urlObj.hostname !== "dev.azure.com") {
                     this.apiVersion = yield this.fetchAzureServerApiVersion({
-                        httpClient,
                         azureData,
-                        StringFormat,
                     });
                     taskLib.debug(`API Version of Azure instance: ${this.apiVersion}`);
                 }
+                const StringFormat = (url, ...args) => url.replace(/{(\d+)}/g, (match, index) => encodeURIComponent(args[index]) || "");
                 const endpoint = StringFormat(azureData.api.url.concat(this.azureGetMergeRequestsAPI), azureData.organization.name, azureData.project.name, azureData.repository.name, azureData.repository.branch.name, this.apiVersion);
                 taskLib.debug(`Azure check pull request API: ${endpoint}`);
                 const token = ":".concat(azureData.user.token);
                 const encodedToken = Buffer.from(token, "utf8").toString("base64");
+                const httpClient = new HttpClient_1.HttpClient("blackduck-azure-service");
                 const httpResponse = yield httpClient.get(endpoint, {
                     Authorization: "Basic ".concat(encodedToken),
                     Accept: "application/json",
@@ -619,9 +617,11 @@ class AzureService {
             return undefined;
         });
     }
-    fetchAzureServerApiVersion({ httpClient, azureData, StringFormat, }) {
+    fetchAzureServerApiVersion({ azureData, }) {
         return __awaiter(this, void 0, void 0, function* () {
+            const StringFormat = (url, ...args) => url.replace(/{(\d+)}/g, (match, index) => encodeURIComponent(args[index]) || "");
             const repoEndpoint = StringFormat(azureData.api.url.concat(this.azureGetRepositoryAPI), azureData.organization.name, azureData.project.name, azureData.repository.name);
+            const httpClient = new HttpClient_1.HttpClient("blackduck-azure-service");
             taskLib.debug(`Fetching Azure server API version from: ${repoEndpoint}`);
             const token = ":".concat(azureData.user.token);
             const encodedToken = Buffer.from(token, "utf8").toString("base64");
