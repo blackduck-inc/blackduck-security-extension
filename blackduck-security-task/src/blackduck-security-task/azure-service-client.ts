@@ -62,7 +62,6 @@ export class AzureService {
         "base64"
       );
 
-      const httpClient = getSharedHttpClient();
       const httpResponse = await httpClient.get(endpoint, {
         Authorization: "Basic ".concat(encodedToken),
         Accept: "application/json",
@@ -96,21 +95,23 @@ export class AzureService {
     return undefined;
   }
 
-  private async fetchAzureServerApiVersion({
-    httpClient,
+  async fetchAzureServerApiVersion({
     azureData,
-    StringFormat,
   }: {
-    httpClient: HttpClient;
     azureData: AzureData;
-    StringFormat: (url: string, ...args: string[]) => string;
   }): Promise<string> {
+    const StringFormat = (url: string, ...args: string[]) =>
+      url.replace(
+        /{(\d+)}/g,
+        (match, index) => encodeURIComponent(args[index]) || ""
+      );
     const repoEndpoint = StringFormat(
       azureData.api.url.concat(this.azureGetRepositoryAPI),
       azureData.organization.name,
       azureData.project.name,
       azureData.repository.name
     );
+    const httpClient = new HttpClient("blackduck-azure-service");
     taskLib.debug(`Fetching Azure server API version from: ${repoEndpoint}`);
     const token: string = ":".concat(azureData.user.token);
     const encodedToken: string = Buffer.from(token, "utf8").toString("base64");
