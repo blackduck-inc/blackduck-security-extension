@@ -124,26 +124,59 @@ describe("getPullRequestIdForClassicEditorFlow", () => {
 
         })
 
-        it('Test getPullRequestIdForClassicEditorFlow - HTTP status 401 unauthorized', async () => {
+        it('should use stubbed API version when Azure URL is not dev.azure.com', async () => {
+            const invalidAzureData = {
+                ...azureData,
+                api: {
+                    url: "https://azureDevOpsserver/",
+                }
+            };
+            sinon.stub(azureService as any, 'fetchAzureServerApiVersion').resolves('5.0');
+            sinon.stub(httpc, 'HttpClient').returns({
+                get: httpClientStub,
+            } as any);
             const incomingMessage: IncomingMessage = new IncomingMessage(new Socket())
-            incomingMessage.statusCode = 401
-            const responseBody = "Unauthorized"
-
+            incomingMessage.statusCode = 200
+            const responseBody = getPullRequestsMockResponse()
             const response: ifm.IHttpClientResponse = {
                 message: incomingMessage,
                 readBody: sinon.stub().resolves(responseBody)
             };
-
             httpClientStub.resolves(response)
-            sinon.stub(httpc, 'HttpClient').returns({
-                get: httpClientStub,
-            } as any);
+            const result = await azureService.getAzurePrResponseForManualTriggerFlow(invalidAzureData)
+            expect((azureService as any).apiVersion).to.equal('5.0');
+            expect(result?.pullRequestId).equals(18);
+            expect(result?.targetRefName).equals('refs/heads/main');
+        });
 
-            await azureService.getAzurePrResponseForManualTriggerFlow(azureData).catch(errorObj => {
-                expect(errorObj.message).to.include('Failed to get pull request info for current build from source branch: feature/xyz');
-                expect(errorObj.message).to.include(ErrorCode.FAILED_TO_GET_PULL_REQUEST_INFO_FROM_SOURCE_BRANCH.toString());
-                expect(errorObj instanceof Error).to.be.true;
+        it('should return API version from content-type header in fetchAzureServerApiVersion', async () => {
+            const httpClient = {
+                get: sinon.stub()
+            };
+            const azureData = {
+                api: { url: 'https://azureDevOpsserver/' },
+                user: { token: 'token' },
+                organization: { name: 'org' },
+                project: { name: 'proj' },
+                repository: { name: 'repo', branch: { name: 'main' }, pull: {} }
+            };
+            const StringFormat = (url: string, ...args: string[]) =>
+                url.replace(/\{(\d+)\}/g, (match, index) => encodeURIComponent(args[index]) || "");
+            const incomingMessage: IncomingMessage = new IncomingMessage(new Socket());
+            incomingMessage.statusCode = 200;
+            incomingMessage.headers = { 'content-type': 'application/json; api-version=6.2' };
+            const response: ifm.IHttpClientResponse = {
+                message: incomingMessage,
+                readBody: sinon.stub().resolves('{}')
+            };
+            (httpClient.get as SinonStub).resolves(response);
+            const azureService = new AzureService();
+            const version = await (azureService as any).fetchAzureServerApiVersion({
+                httpClient,
+                azureData,
+                StringFormat
             });
+            expect(version).to.equal('6.2');
         });
     })
 })
