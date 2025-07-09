@@ -13,10 +13,12 @@ import {
 export class AzureService {
   azureGetMergeRequestsAPI: string;
   apiVersion: string;
+  azureGetRepositoryAPI: string;
 
   constructor() {
     this.azureGetMergeRequestsAPI =
       "/{0}/{1}/_apis/git/repositories/{2}/pullrequests?searchCriteria.status=active&$top=1&searchCriteria.sourceRefName={3}&api-version={4}";
+    this.azureGetRepositoryAPI = "/{0}/{1}/_apis/git/repositories/{2}";
     this.apiVersion = "7.0";
   }
 
@@ -28,12 +30,19 @@ export class AzureService {
       process.env["BUILD_REASON"] &&
       process.env["BUILD_REASON"] !== "PullRequest"
     ) {
+      const urlObj = new URL(azureData.api.url);
+      if (urlObj.hostname !== "dev.azure.com") {
+        this.apiVersion = await this.fetchAzureServerApiVersion({
+          azureData,
+        });
+        taskLib.debug(`API Version of Azure instance: ${this.apiVersion}`);
+      }
+
       const StringFormat = (url: string, ...args: string[]) =>
         url.replace(
           /{(\d+)}/g,
           (match, index) => encodeURIComponent(args[index]) || ""
         );
-
       const endpoint = StringFormat(
         azureData.api.url.concat(this.azureGetMergeRequestsAPI),
         azureData.organization.name,
@@ -80,5 +89,52 @@ export class AzureService {
       }
     }
     return undefined;
+  }
+
+  async fetchAzureServerApiVersion({
+    azureData,
+  }: {
+    azureData: AzureData;
+  }): Promise<string> {
+    const StringFormat = (url: string, ...args: string[]) =>
+      url.replace(
+        /{(\d+)}/g,
+        (match, index) => encodeURIComponent(args[index]) || ""
+      );
+    const repoEndpoint = StringFormat(
+      azureData.api.url.concat(this.azureGetRepositoryAPI),
+      azureData.organization.name,
+      azureData.project.name,
+      azureData.repository.name
+    );
+    const httpClient = new HttpClient("blackduck-azure-service");
+    taskLib.debug(`Fetching Azure server API version from: ${repoEndpoint}`);
+    const token: string = ":".concat(azureData.user.token);
+    const encodedToken: string = Buffer.from(token, "utf8").toString("base64");
+    return await this.getVersionForAzureServer(
+      httpClient,
+      repoEndpoint,
+      encodedToken
+    );
+  }
+
+  private async getVersionForAzureServer(
+    httpClient: HttpClient,
+    repoEndpoint: string,
+    encodedToken: string
+  ) {
+    const response = await httpClient.get(repoEndpoint, {
+      Authorization: "Basic ".concat(encodedToken),
+      Accept: "application/json",
+    });
+    const header =
+      response.message.headers["content-type"] ||
+      response.message.headers["Content-Type"];
+    const match =
+      typeof header === "string" && header.match(/api-version=([\d.]+)/);
+    if (match) {
+      return match[1];
+    }
+    return "";
   }
 }
