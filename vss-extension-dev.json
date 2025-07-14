@@ -6,7 +6,8 @@
   "publisher": "QATPublisher",
   "targets": [
     {
-      "id": "Microsoft.VisualStudio.Services"
+      "id": "Microsoft.VisualStudio.Services",
+      "version": "[16.131,)"
     }
   ],
   "tags": [
