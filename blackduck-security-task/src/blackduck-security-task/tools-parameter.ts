@@ -139,21 +139,20 @@ export class BridgeCliToolsParameter {
 
     if (inputs.POLARIS_TEST_SCA_TYPE || inputs.POLARIS_TEST_SAST_TYPE) {
       polData.data.polaris.test = {};
-    }
-
-    if (inputs.POLARIS_TEST_SCA_TYPE) {
-      polData.data.polaris.test.sca = {
-        type: inputs.POLARIS_TEST_SCA_TYPE,
-      };
-    }
-    if (inputs.POLARIS_TEST_SAST_TYPE) {
-      const polarisTestSastTypeList: string[] =
-        inputs.POLARIS_TEST_SAST_TYPE.split(",").map((polarisTestSastType) =>
-          polarisTestSastType.trim()
-        );
-      polData.data.polaris.test.sast = {
-        type: polarisTestSastTypeList,
-      };
+      if (inputs.POLARIS_TEST_SCA_TYPE) {
+        polData.data.polaris.test.sca = {
+          type: inputs.POLARIS_TEST_SCA_TYPE,
+        };
+      }
+      if (inputs.POLARIS_TEST_SAST_TYPE) {
+        const polarisTestSastTypeList: string[] =
+          inputs.POLARIS_TEST_SAST_TYPE.split(",").map((polarisTestSastType) =>
+            polarisTestSastType.trim()
+          );
+        polData.data.polaris.test.sast = {
+          type: polarisTestSastTypeList,
+        };
+      }
     }
 
     if (isBoolean(inputs.POLARIS_WAITFORSCAN)) {

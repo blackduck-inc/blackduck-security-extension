@@ -2019,23 +2019,17 @@ class BridgeCliToolsParameter {
             }
             if (inputs.POLARIS_TEST_SCA_TYPE || inputs.POLARIS_TEST_SAST_TYPE) {
                 polData.data.polaris.test = {};
-            }
-            if (inputs.POLARIS_TEST_SCA_TYPE) {
-                if (!polData.data.polaris.test) {
-                    polData.data.polaris.test = {};
+                if (inputs.POLARIS_TEST_SCA_TYPE) {
+                    polData.data.polaris.test.sca = {
+                        type: inputs.POLARIS_TEST_SCA_TYPE,
+                    };
                 }
-                polData.data.polaris.test.sca = {
-                    type: inputs.POLARIS_TEST_SCA_TYPE,
-                };
-            }
-            if (inputs.POLARIS_TEST_SAST_TYPE) {
-                const polarisTestSastTypeList = inputs.POLARIS_TEST_SAST_TYPE.split(",").map((polarisTestSastType) => polarisTestSastType.trim());
-                if (!polData.data.polaris.test) {
-                    polData.data.polaris.test = {};
+                if (inputs.POLARIS_TEST_SAST_TYPE) {
+                    const polarisTestSastTypeList = inputs.POLARIS_TEST_SAST_TYPE.split(",").map((polarisTestSastType) => polarisTestSastType.trim());
+                    polData.data.polaris.test.sast = {
+                        type: polarisTestSastTypeList,
+                    };
                 }
-                polData.data.polaris.test.sast = {
-                    type: polarisTestSastTypeList,
-                };
             }
             if ((0, utility_1.isBoolean)(inputs.POLARIS_WAITFORSCAN)) {
                 polData.data.polaris.waitForScan = (0, utility_1.parseToBoolean)(inputs.POLARIS_WAITFORSCAN);
