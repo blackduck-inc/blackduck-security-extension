@@ -13,6 +13,9 @@ export function uploadDiagnostics(workspaceDir: string) {
     workspaceDir,
     constants.BRIDGE_CLI_LOCAL_DIRECTORY
   );
+  taskLib.debug("workspaceDir::: " + workspaceDir);
+  taskLib.debug("constant::: " + constants.BRIDGE_CLI_LOCAL_DIRECTORY);
+  taskLib.debug("uploadArtifactPath::: " + uploadArtifactPath);
   let isBridgeDirectoryExists = false;
   isBridgeDirectoryExists = taskLib.exist(uploadArtifactPath);
   if (isBridgeDirectoryExists) {
