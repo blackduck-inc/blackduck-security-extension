@@ -26,7 +26,7 @@
 .build:
   extends:
     - .retry
-  image: gcr.io/snps-polaris-ops-prod/ember_cli:3.28.5-node_16.14
+  image: us-docker.pkg.dev/cloudops-artifacts-prd/polaris/ember_cli:3.28.5-node_16
   cache:
     key: ${CI_JOB_NAME}
     paths:
@@ -37,7 +37,7 @@
     - npm run format && npm run lint && npm run build && npm run package
 
 .unit_test_and_coverage:
-  image: gcr.io/snps-polaris-ops-prod/ember_cli:3.28.5-node_16.14
+  image: us-docker.pkg.dev/cloudops-artifacts-prd/polaris/ember_cli:3.28.5-node_16
   script:
     - cd blackduck-security-task
     - npm ci
@@ -45,7 +45,7 @@
   coverage: /All files[^|]*\|[^|]*\s+([\d\.]+)/
 
 .new_pop_blackduck_analysis:
-  image: gcr.io/snps-polaris-ops-prod/ember_cli:3.28.5-node_16.14
+  image: us-docker.pkg.dev/cloudops-artifacts-prd/polaris/ember_cli:3.28.5-node_16
   extends:
     - .new_pop_blackduck
     - .retry
