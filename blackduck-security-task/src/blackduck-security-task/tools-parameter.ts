@@ -204,7 +204,7 @@ export class BridgeCliToolsParameter {
     polData.data.coverity = this.setCoverityArbitraryArgs();
     polData.data.detect = this.setDetectArgs();
 
-    const azureData = this.getAzureRepoInfo();
+    const azureData = await this.getAzureRepoInfo();
 
     const isPrCommentEnabled = parseToBoolean(
       inputs.POLARIS_PR_COMMENT_ENABLED
@@ -237,6 +237,7 @@ export class BridgeCliToolsParameter {
           ""
         );
 
+        polData.data.azure.restAPIVersion = azureData?.restAPIVersion;
         polData.data.polaris.prcomment = { severities: [], enabled: true };
 
         if (inputs.POLARIS_PR_COMMENT_SEVERITIES) {
@@ -393,7 +394,8 @@ export class BridgeCliToolsParameter {
       }
     }
 
-    const azureData = this.getAzureRepoInfo();
+    const azureData = await this.getAzureRepoInfo();
+    const azureRestAPIVersion = azureData?.restAPIVersion;
 
     const isPrCommentEnabled = parseToBoolean(
       inputs.BLACKDUCKSCA_PRCOMMENT_ENABLED
@@ -448,6 +450,10 @@ export class BridgeCliToolsParameter {
     // Remove empty data from json object
     blackduckData = filterEmptyData(blackduckData);
 
+    if (azureRestAPIVersion && blackduckData.data.azure) {
+      blackduckData.data.azure.restAPIVersion = azureRestAPIVersion;
+    }
+
     const inputJson = JSON.stringify(blackduckData);
 
     let stateFilePath = path.join(
@@ -500,7 +506,7 @@ export class BridgeCliToolsParameter {
       taskLib.debug(`COVERITY_PROJECT_NAME: ${coverityProjectName}`);
     }
 
-    const azureData = this.getAzureRepoInfo();
+    const azureData = await this.getAzureRepoInfo();
 
     const isPrCommentEnabled = parseToBoolean(
       inputs.COVERITY_AUTOMATION_PRCOMMENT
@@ -846,7 +852,7 @@ export class BridgeCliToolsParameter {
     return command;
   }
 
-  private getAzureRepoInfo(): AzureData | undefined {
+  private async getAzureRepoInfo(): Promise<AzureData | undefined> {
     let azureOrganization = "";
     const azureToken = AZURE_TOKEN;
     let azureInstanceUrl = "";
@@ -909,7 +915,7 @@ export class BridgeCliToolsParameter {
     taskLib.debug(`Azure Repository Branch Name: ${azureRepoBranchName}`);
     taskLib.debug(`Azure Pull Request Number: ${azurePullRequestNumber}`);
 
-    return this.setAzureData(
+    const azureData = this.setAzureData(
       azureInstanceUrl,
       azureToken,
       azureOrganization,
@@ -918,6 +924,37 @@ export class BridgeCliToolsParameter {
       azureRepoBranchName,
       azurePullRequestNumber
     );
+
+    if (
+      azureData &&
+      azureInstanceUrl &&
+      azureOrganization &&
+      azureProject &&
+      azureRepo &&
+      azureToken
+    ) {
+      try {
+        const urlObj = new URL(azureInstanceUrl);
+        if (
+          urlObj.hostname !== "dev.azure.com" &&
+          urlObj.hostname !== "visualstudio.com"
+        ) {
+          const azureService = new AzureService();
+          const apiVersion = azureService.fetchAzureServerApiVersion(
+            azureInstanceUrl,
+            azureOrganization,
+            azureProject,
+            azureRepo,
+            azureToken
+          );
+          azureData.restAPIVersion = await apiVersion;
+          console.log("Azure REST API Version: ", azureData.restAPIVersion);
+        }
+      } catch (error) {
+        taskLib.warning(`Failed to fetch Azure API version: ${error}`);
+      }
+    }
+    return azureData;
   }
 
   private async updateAzurePrNumberForManualTriggerFlow(
