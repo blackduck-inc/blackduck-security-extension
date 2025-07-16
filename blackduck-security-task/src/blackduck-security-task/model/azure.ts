@@ -6,6 +6,7 @@ export interface AzureData {
   organization: Organization;
   project: Project;
   repository: Repository;
+  restAPIVersion?: string;
 }
 
 export interface Api {
