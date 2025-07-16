@@ -13,12 +13,22 @@ export function uploadDiagnostics(workspaceDir: string) {
     workspaceDir,
     constants.BRIDGE_CLI_LOCAL_DIRECTORY
   );
+  const uploadIntegrationDefaultArtifactPath = path.join(
+    workspaceDir,
+    constants.INTEGRATIONS_CLI_LOCAL_DIRECTORY
+  );
   let isBridgeDirectoryExists = false;
   isBridgeDirectoryExists = taskLib.exist(uploadArtifactPath);
   if (isBridgeDirectoryExists) {
     taskLib.uploadArtifact(
       constants.UPLOAD_FOLDER_ARTIFACT_NAME,
       uploadArtifactPath,
+      constants.UPLOAD_FOLDER_ARTIFACT_NAME
+    );
+  } else {
+    taskLib.uploadArtifact(
+      constants.UPLOAD_FOLDER_ARTIFACT_NAME,
+      uploadIntegrationDefaultArtifactPath,
       constants.UPLOAD_FOLDER_ARTIFACT_NAME
     );
   }
