@@ -9,8 +9,7 @@ import {
   FAILED_TO_GET_PULL_REQUEST_INFO,
   UNABLE_TO_FIND_PULL_REQUEST_INFO,
 } from "./application-constant";
-import { getSharedHttpClient } from "./utility";
-
+import { stringFormat } from "./utility";
 export class AzureService {
   azureGetMergeRequestsAPI: string;
   apiVersion: string;
@@ -37,24 +36,13 @@ export class AzureService {
           (match, index) => encodeURIComponent(args[index]) || ""
         );
 
-      const httpClient = new HttpClient("blackduck-azure-service");
-      const urlObj = new URL(azureData.api.url);
-      if (urlObj.hostname !== "dev.azure.com") {
-        this.apiVersion = await this.fetchAzureServerApiVersion({
-          httpClient,
-          azureData,
-          StringFormat,
-        });
-        taskLib.debug(`API Version of Azure instance: ${this.apiVersion}`);
-      }
-
       const endpoint = StringFormat(
         azureData.api.url.concat(this.azureGetMergeRequestsAPI),
         azureData.organization.name,
         azureData.project.name,
         azureData.repository.name,
         azureData.repository.branch.name,
-        this.apiVersion
+        azureData.restAPIVersion || this.apiVersion
       );
       taskLib.debug(`Azure check pull request API: ${endpoint}`);
       const token: string = ":".concat(azureData.user.token);
@@ -62,6 +50,7 @@ export class AzureService {
         "base64"
       );
 
+      const httpClient = new HttpClient("blackduck-azure-service");
       const httpResponse = await httpClient.get(endpoint, {
         Authorization: "Basic ".concat(encodedToken),
         Accept: "application/json",
@@ -95,33 +84,6 @@ export class AzureService {
     return undefined;
   }
 
-  async fetchAzureServerApiVersion({
-    azureData,
-  }: {
-    azureData: AzureData;
-  }): Promise<string> {
-    const StringFormat = (url: string, ...args: string[]) =>
-      url.replace(
-        /{(\d+)}/g,
-        (match, index) => encodeURIComponent(args[index]) || ""
-      );
-    const repoEndpoint = StringFormat(
-      azureData.api.url.concat(this.azureGetRepositoryAPI),
-      azureData.organization.name,
-      azureData.project.name,
-      azureData.repository.name
-    );
-    const httpClient = new HttpClient("blackduck-azure-service");
-    taskLib.debug(`Fetching Azure server API version from: ${repoEndpoint}`);
-    const token: string = ":".concat(azureData.user.token);
-    const encodedToken: string = Buffer.from(token, "utf8").toString("base64");
-    return await this.getVersionForAzureServer(
-      httpClient,
-      repoEndpoint,
-      encodedToken
-    );
-  }
-
   private async getVersionForAzureServer(
     httpClient: HttpClient,
     repoEndpoint: string,
@@ -140,5 +102,41 @@ export class AzureService {
       return match[1];
     }
     return "";
+  }
+
+  async fetchAzureServerApiVersion(
+    url: string,
+    orgName: string,
+    projectName: string,
+    repoName: string,
+    userToken: string
+  ) {
+    const repoEndpoint = stringFormat(
+      url + this.azureGetRepositoryAPI,
+      orgName,
+      projectName,
+      repoName
+    );
+    const httpClient = new HttpClient("blackduck-azure-service");
+    taskLib.debug(`Fetching Azure server API version from: ${repoEndpoint}`);
+    const encodedToken = Buffer.from(`:${userToken}`, "utf8").toString(
+      "base64"
+    );
+    const version = await this.getVersionForAzureServer(
+      httpClient,
+      repoEndpoint,
+      encodedToken
+    );
+    taskLib.debug(`Fetched Azure server API version: ${version}`);
+    if (!version) {
+      throw new Error(
+        stringFormat(
+          "Unable to fetch API version for Azure server at {0}",
+          repoEndpoint
+        )
+      );
+    }
+    taskLib.debug(`Azure server API version: ${version}`);
+    return version;
   }
 }
