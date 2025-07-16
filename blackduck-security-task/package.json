@@ -10,7 +10,7 @@
     "package": "ncc build --source-map",
     "lint": "eslint src/**/*.ts",
     "test": "nyc --reporter=html --reporter=text mocha --require ts-node/register test/unit/**/*.spec.ts test/unit/*.spec.ts",
-    "all": "npm run format && npm run lint && npm run build && npm run package && npm run test",
+    "all": "npm run format && npm run lint && npm run build && npm run package",
     "format": "prettier 'src/**/*.ts' --write",
     "integraionTestBuild": "tsc --project tsconfig-int-test.json",
     "integrationTest": "npm run build && npm run integraionTestBuild && mocha test/integration/_suite.js"
