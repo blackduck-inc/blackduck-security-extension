@@ -6,6 +6,7 @@ import { Reports } from "./reports";
 import { CoverityArbitrary } from "./coverity";
 import { BlackDuckDetect } from "./blackduckSCA";
 import { Bridge } from "./bridge";
+import { Network } from "./common";
 
 export interface Polaris {
   polaris: PolarisData;
@@ -14,6 +15,7 @@ export interface Polaris {
   coverity?: CoverityArbitrary;
   detect?: BlackDuckDetect;
   bridge: Bridge;
+  network?: Network;
 }
 
 export interface PolarisData extends AsyncMode {

@@ -2,13 +2,11 @@
 
 import * as utility from "../../../src/blackduck-security-task/utility";
 import {
-    extractZipped, getStatusCode,
-    getWorkSpaceDirectory,
-    parseToBoolean
+    createSSLConfiguredHttpClient,
+    clearHttpClientCache
 } from "../../../src/blackduck-security-task/utility";
 import process from "process";
 import * as sinon from "sinon";
-import * as toolLib from "azure-pipelines-tool-lib";
 import * as toolLibLocal from "../../../src/blackduck-security-task/download-tool";
 import {DownloadFileResponse} from "../../../src/blackduck-security-task/model/download-file-response";
 import * as constants from "../../../src/blackduck-security-task/application-constant";
@@ -19,7 +17,6 @@ import {BuildStatus} from "../../../src/blackduck-security-task/enum/BuildStatus
 import {TaskResult} from "azure-pipelines-task-lib/task";
 import * as trm from "azure-pipelines-task-lib/toolrunner";
 import { expect } from "chai";
-import * as fs from 'fs';
 
 
 describe("Utilities", () => {
@@ -382,5 +379,84 @@ describe("Utilities", () => {
             expect(utility.getMappedTaskResult("")).equals(undefined);
         });
     });
+    context('SSL HTTP Client Functions', () => {
+        let originalTrustAll: string | undefined;
+        let originalCertFile: string | undefined;
 
+        beforeEach(() => {
+            originalTrustAll = process.env.NETWORK_SSL_TRUST_ALL;
+            originalCertFile = process.env.NETWORK_SSL_CERT_FILE;
+            clearHttpClientCache();
+        });
+
+        afterEach(() => {
+            if (originalTrustAll !== undefined) {
+                process.env.NETWORK_SSL_TRUST_ALL = originalTrustAll;
+            } else {
+                delete process.env.NETWORK_SSL_TRUST_ALL;
+            }
+            if (originalCertFile !== undefined) {
+                process.env.NETWORK_SSL_CERT_FILE = originalCertFile;
+            } else {
+                delete process.env.NETWORK_SSL_CERT_FILE;
+            }
+            clearHttpClientCache();
+        });
+
+        context('createSSLConfiguredHttpClient', () => {
+            it('should create new HttpClient instance with default user agent', () => {
+                const client1 = createSSLConfiguredHttpClient();
+                expect(client1).to.not.be.undefined;
+            });
+
+            it('should create new HttpClient instance with custom user agent', () => {
+                const customUserAgent = 'TestAgent';
+                const client = createSSLConfiguredHttpClient(customUserAgent);
+                expect(client).to.not.be.undefined;
+            });
+
+            it('should reuse cached HttpClient instance when SSL config unchanged', () => {
+                const client1 = createSSLConfiguredHttpClient();
+                const client2 = createSSLConfiguredHttpClient();
+                expect(client1).to.equal(client2);
+            });
+
+            it('should create new HttpClient instance when SSL config changes', () => {
+                const client1 = createSSLConfiguredHttpClient();
+                process.env.NETWORK_SSL_TRUST_ALL = 'true';
+                clearHttpClientCache();
+                const client2 = createSSLConfiguredHttpClient();
+                expect(client1).to.not.equal(client2);
+            });
+
+            it('should handle NETWORK_SSL_TRUST_ALL=true configuration', () => {
+                process.env.NETWORK_SSL_TRUST_ALL = 'true';
+                const client = createSSLConfiguredHttpClient();
+                expect(client).to.not.be.undefined;
+            });
+
+            it('should handle custom CA certificate file configuration', () => {
+                process.env.NETWORK_SSL_CERT_FILE = '/path/to/cert.pem';
+                const client = createSSLConfiguredHttpClient();
+                expect(client).to.not.be.undefined;
+            });
+        });
+
+        context('clearHttpClientCache', () => {
+            it('should clear cached HttpClient instance', () => {
+                const client1 = createSSLConfiguredHttpClient();
+                clearHttpClientCache();
+                const client2 = createSSLConfiguredHttpClient();
+                expect(client1).to.not.equal(client2);
+            });
+
+            it('should allow recreation of HttpClient with different SSL config after cache clear', () => {
+                const client1 = createSSLConfiguredHttpClient();
+                clearHttpClientCache();
+                process.env.NETWORK_SSL_TRUST_ALL = 'true';
+                const client2 = createSSLConfiguredHttpClient();
+                expect(client1).to.not.equal(client2);
+            });
+        });
+    });
 });

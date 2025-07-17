@@ -69,9 +69,14 @@ export async function run() {
     productOutputFilPath = util.extractOutputJsonFilename(command);
     taskLib.debug(`Product out file path: ${productOutputFilPath}`);
 
-    // Copy Sarif file from out.json to integration default directory
-    util.copySarifFileToIntegrationDefaultPath(productOutputFilPath);
-    taskLib.debug(`Sarif file copied to integration default path`);
+    if (
+      inputs.POLARIS_REPORTS_SARIF_CREATE === "true" ||
+      inputs.BLACKDUCKSCA_REPORTS_SARIF_CREATE === "true"
+    ) {
+      // Copy Sarif file from out.json to integration default directory
+      util.copySarifFileToIntegrationDefaultPath(productOutputFilPath);
+      taskLib.debug(`Sarif file copied to integration default path`);
+    }
 
     // The statement set the exit code in the 'status' variable which can be used in the YAML file
     if (parseToBoolean(inputs.RETURN_STATUS)) {

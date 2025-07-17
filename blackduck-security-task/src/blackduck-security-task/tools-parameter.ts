@@ -6,6 +6,7 @@ import { AZURE_TOKEN } from "./input";
 import { Polaris } from "./model/polaris";
 import { Coverity, CoverityArbitrary, CoverityConnect } from "./model/coverity";
 import { Srm } from "./model/srm";
+import { Network } from "./model/common";
 import {
   BlackduckSCA,
   BLACKDUCKSCA_SCAN_FAILURE_SEVERITIES,
@@ -246,7 +247,7 @@ export class BridgeCliToolsParameter {
         );
       }
     }
-
+    polData.data.network = this.setNetworkObj();
     // Remove empty data from json object
     polData = filterEmptyData(polData);
 
@@ -421,9 +422,7 @@ export class BridgeCliToolsParameter {
       }
     }
 
-    if (parseToBoolean(inputs.ENABLE_NETWORK_AIRGAP)) {
-      blackduckData.data.network = { airGap: true };
-    }
+    blackduckData.data.network = this.setNetworkObj();
 
     if (parseToBoolean(inputs.BLACKDUCKSCA_REPORTS_SARIF_CREATE)) {
       if (!isPullRequest) {
@@ -617,9 +616,7 @@ export class BridgeCliToolsParameter {
       covData.data.coverity.version = inputs.COVERITY_VERSION;
     }
 
-    if (parseToBoolean(inputs.ENABLE_NETWORK_AIRGAP)) {
-      covData.data.coverity.network = { airGap: true };
-    }
+    covData.data.network = this.setNetworkObj();
 
     // Set arbitrary (To support both Coverity and Polaris)
     covData.data.coverity = Object.assign(
@@ -1202,7 +1199,26 @@ export class BridgeCliToolsParameter {
         }
       }
     }
-
+    taskLib.debug("Azure azureInstanceUrl name:".concat(azureInstanceUrl));
     return azureInstanceUrl;
+  }
+  private setNetworkObj(): Network {
+    const network: Network = {};
+    if (isBoolean(inputs.ENABLE_NETWORK_AIRGAP)) {
+      network.airGap = parseToBoolean(inputs.ENABLE_NETWORK_AIRGAP);
+    }
+
+    if (!network.ssl) {
+      network.ssl = {};
+    }
+
+    if (inputs.NETWORK_SSL_CERT_FILE) {
+      network.ssl.cert = { file: inputs.NETWORK_SSL_CERT_FILE };
+    }
+
+    if (inputs.NETWORK_SSL_TRUST_ALL) {
+      network.ssl.trustAll = parseToBoolean(inputs.NETWORK_SSL_TRUST_ALL);
+    }
+    return network;
   }
 }

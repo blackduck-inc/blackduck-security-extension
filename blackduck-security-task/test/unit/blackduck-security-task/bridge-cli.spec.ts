@@ -5,7 +5,7 @@ import * as sinon from "sinon";
 import {SinonStub} from "sinon";
 import {BridgeCli} from "../../../src/blackduck-security-task/bridge-cli";
 import * as utility from "../../../src/blackduck-security-task/utility";
-import {extractZipped} from "../../../src/blackduck-security-task/utility";
+import {extractZipped,clearHttpClientCache} from "../../../src/blackduck-security-task/utility";
 import {DownloadFileResponse} from "../../../src/blackduck-security-task/model/download-file-response";
 import * as path from "path";
 import * as inputs from "../../../src/blackduck-security-task/input";
@@ -14,7 +14,7 @@ import * as validator from "../../../src/blackduck-security-task/validator";
 import * as constants from "../../../src/blackduck-security-task/application-constant";
 import fs from "fs";
 import * as taskLib from "azure-pipelines-task-lib";
-import * as httpc from "typed-rest-client/HttpClient";
+import * as httmc from "typed-rest-client/HttpClient";
 import * as ifm from "typed-rest-client/Interfaces";
 import {IncomingMessage} from "http";
 import {Socket} from "net";
@@ -920,12 +920,14 @@ describe("Download Bridge", () => {
 
     context("getBridgeCliVersionFromLatestURL", () => {
 
-        let httpClientStub: SinonStub<any[], Promise<httpc.HttpClientResponse>>;
+        let httpClientStub: SinonStub<any[], Promise<httmc.HttpClientResponse>>;
         let bridgeCli: BridgeCli;
         beforeEach(() => {
             sandbox = sinon.createSandbox();
             bridgeCli = new BridgeCli();
-            httpClientStub = sinon.stub()
+            httpClientStub = sinon.stub();
+            // Clear HTTP client cache to avoid test interference
+            clearHttpClientCache();
         });
 
         afterEach(() => {
@@ -956,7 +958,7 @@ describe("Download Bridge", () => {
             };
 
             httpClientStub.resolves(response)
-            sinon.stub(httpc, 'HttpClient').returns({
+            sinon.stub(httmc, 'HttpClient').returns({
                 get: httpClientStub,
             } as any);
             const result = await bridgeCli.getBridgeCliVersionFromLatestURL("https://repo.blackduck.com/bds-integrations-release/com/blackduck/integration/bridge/binaries/bridge-cli-bundle/latest/bridge-cli-bundle-macosx.zip")
@@ -975,7 +977,7 @@ describe("Download Bridge", () => {
             };
 
             httpClientStub.resolves(response)
-            sinon.stub(httpc, 'HttpClient').throws({
+            sinon.stub(httmc, 'HttpClient').throws({
                 get: httpClientStub,
             } as any);
 
@@ -995,7 +997,7 @@ describe("Download Bridge", () => {
             };
 
             httpClientStub.resolves(response)
-            sinon.stub(httpc, 'HttpClient').returns({
+            sinon.stub(httmc, 'HttpClient').returns({
                 get: httpClientStub,
             } as any);
 
@@ -1006,12 +1008,13 @@ describe("Download Bridge", () => {
 
     context("getAllAvailableBridgeCliVersions", () => {
 
-        let httpClientStub: SinonStub<any[], Promise<httpc.HttpClientResponse>>;
+        let httpClientStub: SinonStub<any[], Promise<httmc.HttpClientResponse>>;
         let bridgeCli: BridgeCli;
         beforeEach(() => {
             sandbox = sinon.createSandbox();
             bridgeCli = new BridgeCli();
             httpClientStub = sinon.stub()
+            clearHttpClientCache();
         });
 
         afterEach(() => {
@@ -1033,7 +1036,7 @@ describe("Download Bridge", () => {
             };
 
             httpClientStub.resolves(response)
-            sinon.stub(httpc, 'HttpClient').returns({
+            sinon.stub(httmc, 'HttpClient').returns({
                 get: httpClientStub,
             } as any);
             const result = await bridgeCli.getAllAvailableBridgeCliVersions()
@@ -1052,7 +1055,7 @@ describe("Download Bridge", () => {
             };
 
             httpClientStub.resolves(response)
-            sinon.stub(httpc, 'HttpClient').returns({
+            sinon.stub(httmc, 'HttpClient').returns({
                 get: httpClientStub,
             } as any);
 

@@ -8,9 +8,9 @@
   "category": "Utility",
   "author": "Black Duck Software Inc.",
   "version": {
-    "Major": 2,
-    "Minor": 1,
-    "Patch": 0
+    "Major": 5,
+    "Minor": 0,
+    "Patch": 1
   },
   "instanceNameFormat": "Black Duck Security Scan",
   "groups": [
@@ -120,6 +120,11 @@
       "name": "bridgecliOptions",
       "displayName": "Bridge CLI Options",
       "isExpanded": false
+    },
+    {
+      "name": "networkOptions",
+      "displayName": "Network Options",
+      "isExpanded": false
     }
   ],
   "inputs": [
@@ -157,7 +162,25 @@
       "defaultValue": false,
       "required": false,
       "helpMarkDown": "If provided, Black Duck Task will be using local network to download and execute bridge-CLI.",
-      "groupName": "bridgecliOptions"
+      "groupName": "networkOptions"
+    },
+    {
+      "name": "networkSslCertFile",
+      "type": "string",
+      "label": "SSL Certificate File",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Path to a file containing trusted CA certificates for SSL connections. This can be a PEM formatted file containing one or more certificates.",
+      "groupName": "networkOptions"
+    },
+    {
+      "name": "networkSslTrustAll",
+      "type": "boolean",
+      "label": "Trust All SSL Certificates",
+      "defaultValue": false,
+      "required": false,
+      "helpMarkDown": "Disables SSL certificate verification. Use with caution as this reduces security. When enabled, all SSL certificates will be trusted.",
+      "groupName": "networkOptions"
     },
     {
       "name": "scanType",

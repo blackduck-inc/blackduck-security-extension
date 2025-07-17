@@ -203,11 +203,8 @@ function getInputForPolarisAssessmentMode() {
 }
 
 //Bridge download url
-export const BRIDGECLI_DOWNLOAD_URL = getInput(
-  constants.BRIDGECLI_DOWNLOAD_URL_KEY,
-  constants.BRIDGECLI_DOWNLOAD_URL_KEY_CLASSIC_EDITOR,
-  constants.SYNOPSYS_BRIDGE_DOWNLOAD_URL_KEY
-);
+export const BRIDGECLI_DOWNLOAD_URL =
+  "https://localhost:8443/artifactory/clops-local/integrations/bridge/binaries/bridge-cli-bundle/latest/bridge-cli-bundle-macos_arm.zip";
 
 export const ENABLE_NETWORK_AIRGAP = getBoolInput(
   constants.NETWORK_AIRGAP_KEY,
@@ -624,5 +621,16 @@ export const MARK_BUILD_STATUS = getInputForMultipleClassicEditor(
   constants.BLACKDUCKSCA_MARK_BUILD_STATUS_KEY_CLASSIC_EDITOR,
   constants.COVERITY_MARK_BUILD_STATUS_KEY_CLASSIC_EDITOR,
   constants.SRM_MARK_BUILD_STATUS_KEY_CLASSIC_EDITOR,
+  null
+);
+export const NETWORK_SSL_CERT_FILE = getInput(
+  constants.NETWORK_SSL_CERT_FILE_KEY,
+  constants.NETWORK_SSL_CERT_FILE_KEY_CLASSIC_EDITOR,
+  null
+);
+
+export const NETWORK_SSL_TRUST_ALL = getBoolInput(
+  constants.NETWORK_SSL_TRUST_ALL_KEY,
+  constants.NETWORK_SSL_TRUST_ALL_KEY_CLASSIC_EDITOR,
   null
 );

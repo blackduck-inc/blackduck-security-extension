@@ -418,7 +418,7 @@ describe("Bridge CLI Tools Parameter test", () => {
             expect(jsonData.data.coverity.connect.policy.view).to.be.equals('test');
             expect(jsonData.data.coverity.connect.stream.name).to.be.equals('test');
             expect(jsonData.data.coverity.connect.project.name).to.be.equals('test');
-            expect(jsonData.data.coverity.install.directory).to.be.equals(process.cwd());        
+            expect(jsonData.data.coverity.install.directory).to.be.equals(process.cwd());
             expect(jsonData.data.coverity.local).to.be.equals(true);
             expect(jsonData.data.coverity.version).to.be.equals('2022.12.0');
             expect(formattedCommand).contains('--stage connect');
@@ -441,7 +441,7 @@ describe("Bridge CLI Tools Parameter test", () => {
             expect(jsonData.data.coverity.connect.user.name).to.be.equals('test-user');
             expect(jsonData.data.coverity.connect.user.password).to.be.equals('password');
             expect(jsonData.data.coverity.connect.stream.name).to.be.equals('test');
-            expect(jsonData.data.coverity.connect.project.name).to.be.equals('test');   
+            expect(jsonData.data.coverity.connect.project.name).to.be.equals('test');
             expect(formattedCommand).contains(Promise.resolve('--stage connect'));
 
             coverityStateFile = '"'.concat(coverityStateFile).concat('"');
@@ -861,44 +861,44 @@ describe("Bridge CLI Tools Parameter test", () => {
             sandbox.restore();
         });
 
-         it('should success for blackduck command formation with mandatory and some optional parameters', async function () {
+        it('should success for blackduck command formation with mandatory and some optional parameters', async function () {
             Object.defineProperty(inputs, 'BLACKDUCKSCA_URL', {value: 'https://test.com'})
             Object.defineProperty(inputs, 'BLACKDUCKSCA_API_TOKEN', {value: 'token'})
             Object.defineProperty(inputs, 'DETECT_INSTALL_DIRECTORY', {value: 'test'})
             Object.defineProperty(inputs, 'BLACKDUCKSCA_SCAN_FULL', {value: 'true'})
             Object.defineProperty(inputs, 'BLACKDUCKSCA_SCAN_FAILURE_SEVERITIES', {value : ["BLOCKER","CRITICAL","TRIVIAL"]})
-            
-             sandbox.stub(validator, "validateBlackduckFailureSeverities").returns(true);
-             const formattedCommand = await bridgeToolsParameter.getFormattedCommandForBlackduck();
-             const jsonString = fs.readFileSync(blackduckStateFile, 'utf-8');
-             const jsonData = JSON.parse(jsonString);
-             expect(jsonData.data.blackducksca.url).to.be.equals('https://test.com');
-             expect(jsonData.data.blackducksca.token).to.be.equals('token');
-             expect(formattedCommand).contains('--stage blackducksca');
 
-             blackduckStateFile = '"'.concat(blackduckStateFile).concat('"');
-             expect(formattedCommand).contains('--input '.concat(blackduckStateFile));
-         });
+            sandbox.stub(validator, "validateBlackduckFailureSeverities").returns(true);
+            const formattedCommand = await bridgeToolsParameter.getFormattedCommandForBlackduck();
+            const jsonString = fs.readFileSync(blackduckStateFile, 'utf-8');
+            const jsonData = JSON.parse(jsonString);
+            expect(jsonData.data.blackducksca.url).to.be.equals('https://test.com');
+            expect(jsonData.data.blackducksca.token).to.be.equals('token');
+            expect(formattedCommand).contains('--stage blackducksca');
 
-         it('should success for blackduck command formation with PR Comment in PR context', async function () {
+            blackduckStateFile = '"'.concat(blackduckStateFile).concat('"');
+            expect(formattedCommand).contains('--input '.concat(blackduckStateFile));
+        });
+
+        it('should success for blackduck command formation with PR Comment in PR context', async function () {
             Object.defineProperty(inputs, 'BLACKDUCKSCA_URL', {value: 'https://test.com'})
             Object.defineProperty(inputs, 'BLACKDUCKSCA_API_TOKEN', {value: 'token'})
-             Object.defineProperty(inputs, 'BLACKDUCKSCA_PRCOMMENT_ENABLED', {value: 'true'})
-             Object.defineProperty(inputs, 'AZURE_TOKEN', {value: 'token'})
-             sandbox.stub(taskLib, "getVariable").returns(AZURE_BUILD_REASON.PULL_REQUEST);
+            Object.defineProperty(inputs, 'BLACKDUCKSCA_PRCOMMENT_ENABLED', {value: 'true'})
+            Object.defineProperty(inputs, 'AZURE_TOKEN', {value: 'token'})
+            sandbox.stub(taskLib, "getVariable").returns(AZURE_BUILD_REASON.PULL_REQUEST);
 
-             sandbox.stub(validator, "validateBlackduckFailureSeverities").returns(true);
-             const formattedCommand = await bridgeToolsParameter.getFormattedCommandForBlackduck();
-             const jsonString = fs.readFileSync(blackduckStateFile, 'utf-8');
-             const jsonData = JSON.parse(jsonString);
-             expect(jsonData.data.blackducksca.url).to.be.equals('https://test.com');
-             expect(jsonData.data.blackducksca.token).to.be.equals('token');
-             expect(jsonData.data.blackducksca.automation.prcomment).to.be.equals(true);
-             expect(formattedCommand).contains('--stage blackducksca');
+            sandbox.stub(validator, "validateBlackduckFailureSeverities").returns(true);
+            const formattedCommand = await bridgeToolsParameter.getFormattedCommandForBlackduck();
+            const jsonString = fs.readFileSync(blackduckStateFile, 'utf-8');
+            const jsonData = JSON.parse(jsonString);
+            expect(jsonData.data.blackducksca.url).to.be.equals('https://test.com');
+            expect(jsonData.data.blackducksca.token).to.be.equals('token');
+            expect(jsonData.data.blackducksca.automation.prcomment).to.be.equals(true);
+            expect(formattedCommand).contains('--stage blackducksca');
 
-             blackduckStateFile = '"'.concat(blackduckStateFile).concat('"');
-             expect(formattedCommand).contains('--input '.concat(blackduckStateFile));
-         });
+            blackduckStateFile = '"'.concat(blackduckStateFile).concat('"');
+            expect(formattedCommand).contains('--input '.concat(blackduckStateFile));
+        });
 
         it('should success for blackduck command formation with PR Comment in non-PR context', async function () {
             Object.defineProperty(inputs, 'BLACKDUCKSCA_URL', {value: 'https://test.com'})
@@ -919,7 +919,7 @@ describe("Bridge CLI Tools Parameter test", () => {
             expect(formattedCommand).contains('--input '.concat(blackduckStateFile));
         });
 
-         it('should fail for invalid blackduck_scan_failure_severities', function () {
+        it('should fail for invalid blackduck_scan_failure_severities', function () {
             Object.defineProperty(inputs, 'BLACKDUCKSCA_SCAN_FAILURE_SEVERITIES', {value: ['SCA','sast123']})
 
             bridgeToolsParameter.getFormattedCommandForBlackduck().catch(errorObj =>{
@@ -1095,22 +1095,22 @@ describe("Bridge CLI Tools Parameter test", () => {
             getStubVariable.withArgs("Build.Reason").returns("Manual")
             getStubVariable.withArgs("Build.SourceBranch").returns("test-branch")
 
-             const formattedCommand = await bridgeToolsParameter.getFormattedCommandForBlackduck();
-             const jsonString = fs.readFileSync(blackduckStateFile, 'utf-8');
-             const jsonData = JSON.parse(jsonString);
+            const formattedCommand = await bridgeToolsParameter.getFormattedCommandForBlackduck();
+            const jsonString = fs.readFileSync(blackduckStateFile, 'utf-8');
+            const jsonData = JSON.parse(jsonString);
 
-             expect(jsonData.data.blackducksca.url).to.be.equals('https://test.com');
-             expect(jsonData.data.blackducksca.token).to.be.equals('token');
-             expect(jsonData.data.azure.api.url).to.be.equals('https://dev.azure.com');
-             expect(jsonData.data.azure.organization.name).to.be.equals('bdorg');
-             expect(jsonData.data.azure.project.name).to.be.equals('test-project');
-             expect(jsonData.data.azure.repository.name).to.be.equals('test-repo');
-             expect(jsonData.data.azure.repository.branch.name).to.be.equals('test-branch');
-             expect(formattedCommand).contains('--stage blackducksca');
+            expect(jsonData.data.blackducksca.url).to.be.equals('https://test.com');
+            expect(jsonData.data.blackducksca.token).to.be.equals('token');
+            expect(jsonData.data.azure.api.url).to.be.equals('https://dev.azure.com');
+            expect(jsonData.data.azure.organization.name).to.be.equals('bdorg');
+            expect(jsonData.data.azure.project.name).to.be.equals('test-project');
+            expect(jsonData.data.azure.repository.name).to.be.equals('test-repo');
+            expect(jsonData.data.azure.repository.branch.name).to.be.equals('test-branch');
+            expect(formattedCommand).contains('--stage blackducksca');
 
             blackduckStateFile = '"'.concat(blackduckStateFile).concat('"');
-             expect(formattedCommand).contains('--input '.concat(blackduckStateFile));
-         });
+            expect(formattedCommand).contains('--input '.concat(blackduckStateFile));
+        });
 
         it('should success for blackduck command formation with fix pr true', async function () {
             Object.defineProperty(inputs, 'BLACKDUCKSCA_URL', {value: 'https://test.com'})
@@ -1259,20 +1259,20 @@ describe("Bridge CLI Tools Parameter test", () => {
             getStubVariable.withArgs("Build.SourceBranch").returns("")
 
             const formattedCommand = await bridgeToolsParameter.getFormattedCommandForBlackduck();
-             const jsonString = fs.readFileSync(blackduckStateFile, 'utf-8');
-             const jsonData = JSON.parse(jsonString);
-             expect(jsonData.data.blackducksca.url).to.be.equals('https://test.com');
-             expect(jsonData.data.blackducksca.token).to.be.equals('token');
-             expect(formattedCommand).contains('--stage blackducksca');
+            const jsonString = fs.readFileSync(blackduckStateFile, 'utf-8');
+            const jsonData = JSON.parse(jsonString);
+            expect(jsonData.data.blackducksca.url).to.be.equals('https://test.com');
+            expect(jsonData.data.blackducksca.token).to.be.equals('token');
+            expect(formattedCommand).contains('--stage blackducksca');
 
             blackduckStateFile = '"'.concat(blackduckStateFile).concat('"');
-             expect(formattedCommand).contains('--input '.concat(blackduckStateFile));
+            expect(formattedCommand).contains('--input '.concat(blackduckStateFile));
         });
 
         it('should success for blackduck command formation with mandatory parameters', async function () {
             Object.defineProperty(inputs, 'BLACKDUCKSCA_URL', {value: 'https://test.com'})
             Object.defineProperty(inputs, 'BLACKDUCKSCA_API_TOKEN', {value: 'token'})
-           
+
             const formattedCommand = await bridgeToolsParameter.getFormattedCommandForBlackduck();
             const jsonString = fs.readFileSync(blackduckStateFile, 'utf-8');
             const jsonData = JSON.parse(jsonString);
@@ -1290,7 +1290,7 @@ describe("Bridge CLI Tools Parameter test", () => {
             Object.defineProperty(inputs, 'DETECT_INSTALL_DIRECTORY', {value: '/test'})
             Object.defineProperty(inputs, 'BLACKDUCKSCA_SCAN_FULL', {value: 'false'})
             Object.defineProperty(inputs, 'BLACKDUCKSCA_SCAN_FAILURE_SEVERITIES', {value : ["BLOCKER","CRITICAL","TRIVIAL"]})
-            
+
             sandbox.stub(validator, "validateBlackduckFailureSeverities").returns(false);
             const formattedCommand = await bridgeToolsParameter.getFormattedCommandForBlackduck();
 
@@ -1374,7 +1374,7 @@ describe("Bridge CLI Tools Parameter test", () => {
             Object.defineProperty(inputs, 'BLACKDUCKSCA_URL', {value: 'https://test.com'})
             Object.defineProperty(inputs, 'BLACKDUCKSCA_API_TOKEN', {value: 'token'})
             Object.defineProperty(inputs, 'BLACKDUCKSCA_WAITFORSCAN', {value: true})
-            
+
             sandbox.stub(validator, "validateBlackduckFailureSeverities").returns(false);
             const formattedCommand = await bridgeToolsParameter.getFormattedCommandForBlackduck();
 
@@ -1383,7 +1383,7 @@ describe("Bridge CLI Tools Parameter test", () => {
             expect(jsonData.data.blackducksca.url).to.be.equals('https://test.com');
             expect(jsonData.data.blackducksca.token).to.be.equals('token');
             expect(jsonData.data.blackducksca.waitForScan).to.be.equals(true);
-            
+
             expect(formattedCommand).contains('--stage blackducksca');
 
             blackduckStateFile = '"'.concat(blackduckStateFile).concat('"');
@@ -1395,7 +1395,7 @@ describe("Bridge CLI Tools Parameter test", () => {
             Object.defineProperty(inputs, 'BLACKDUCKSCA_API_TOKEN', {value: 'token'})
             Object.defineProperty(inputs, 'BLACKDUCK_INSTALL_DIRECTORY', {value: 'test'})
             Object.defineProperty(inputs, 'BLACKDUCKSCA_PROJECT_DIRECTORY', {value: 'blackduck_project_directory'})
-            
+
             sandbox.stub(validator, "validateBlackduckFailureSeverities").returns(false);
             const formattedCommand = await bridgeToolsParameter.getFormattedCommandForBlackduck();
 
@@ -1672,5 +1672,304 @@ describe("Bridge CLI Tools Parameter test", () => {
             expect(formattedCommand).contains('--input '.concat(srmStateFile));
         });
 
-    })
+    });
+
+    context('SSL Certificate Network Configuration', () => {
+        let sandbox: sinon.SinonSandbox;
+        let bridgeToolsParameter: BridgeCliToolsParameter;
+        let polarisStateFile: string;
+        let blackduckStateFile: string;
+        let coverityStateFile: string;
+
+        beforeEach(() => {
+            sandbox = sinon.createSandbox();
+            const tempDir = process.cwd();
+            polarisStateFile = path.join(tempDir, "polaris_input.json");
+            blackduckStateFile = path.join(tempDir, "bd_input.json");
+            coverityStateFile = path.join(tempDir, "coverity_input.json");
+            bridgeToolsParameter = new BridgeCliToolsParameter(tempDir);
+        });
+
+        afterEach(() => {
+            taskLib.rmRF(polarisStateFile);
+            taskLib.rmRF(blackduckStateFile);
+            taskLib.rmRF(coverityStateFile);
+            // Reset SSL certificate inputs
+            Object.defineProperty(inputs, 'NETWORK_SSL_CERT_FILE', {value: ''});
+            Object.defineProperty(inputs, 'NETWORK_SSL_TRUST_ALL', {value: false});
+            Object.defineProperty(inputs, 'ENABLE_NETWORK_AIRGAP', {value: false});
+            // Reset basic required inputs
+            Object.defineProperty(inputs, 'POLARIS_SERVER_URL', {value: ''});
+            Object.defineProperty(inputs, 'POLARIS_ACCESS_TOKEN', {value: ''});
+            Object.defineProperty(inputs, 'POLARIS_ASSESSMENT_TYPES', {value: ['SCA']});
+            Object.defineProperty(inputs, 'BLACKDUCKSCA_URL', {value: ''});
+            Object.defineProperty(inputs, 'BLACKDUCKSCA_API_TOKEN', {value: ''});
+            Object.defineProperty(inputs, 'COVERITY_URL', {value: ''});
+            Object.defineProperty(inputs, 'COVERITY_USER', {value: ''});
+            Object.defineProperty(inputs, 'COVERITY_USER_PASSWORD', {value: ''});
+            sandbox.restore();
+        });
+
+        context('Polaris SSL Certificate Configuration', () => {
+            it('should include SSL certificate file in network configuration', async function () {
+                const sslCertFile = '/path/to/certificate.pem';
+                Object.defineProperty(inputs, 'POLARIS_SERVER_URL', {value: 'server_url'});
+                Object.defineProperty(inputs, 'POLARIS_ACCESS_TOKEN', {value: 'access_token'});
+                Object.defineProperty(inputs, 'POLARIS_ASSESSMENT_TYPES', {value: ['SCA']});
+                Object.defineProperty(inputs, 'NETWORK_SSL_CERT_FILE', {value: sslCertFile});
+
+                const formattedCommand = await bridgeToolsParameter.getFormattedCommandForPolaris();
+                const jsonString = fs.readFileSync(polarisStateFile, 'utf-8');
+                const jsonData = JSON.parse(jsonString);
+
+                expect(jsonData.data.network).to.exist;
+                expect(jsonData.data.network.ssl).to.exist;
+                expect(jsonData.data.network.ssl.cert).to.exist;
+                expect(jsonData.data.network.ssl.cert.file).to.equal(sslCertFile);
+                expect(formattedCommand).contains('--stage polaris');
+            });
+
+            it('should include SSL trust all setting in network configuration', async function () {
+                Object.defineProperty(inputs, 'POLARIS_SERVER_URL', {value: 'server_url'});
+                Object.defineProperty(inputs, 'POLARIS_ACCESS_TOKEN', {value: 'access_token'});
+                Object.defineProperty(inputs, 'POLARIS_ASSESSMENT_TYPES', {value: ['SCA']});
+                Object.defineProperty(inputs, 'NETWORK_SSL_TRUST_ALL', {value: true});
+
+                const formattedCommand = await bridgeToolsParameter.getFormattedCommandForPolaris();
+                const jsonString = fs.readFileSync(polarisStateFile, 'utf-8');
+                const jsonData = JSON.parse(jsonString);
+
+                expect(jsonData.data.network).to.exist;
+                expect(jsonData.data.network.ssl).to.exist;
+                expect(jsonData.data.network.ssl.trustAll).to.equal(true);
+                expect(formattedCommand).contains('--stage polaris');
+            });
+
+            it('should include both SSL certificate file and trust all settings', async function () {
+                const sslCertFile = '/path/to/certificate.pem';
+                Object.defineProperty(inputs, 'POLARIS_SERVER_URL', {value: 'server_url'});
+                Object.defineProperty(inputs, 'POLARIS_ACCESS_TOKEN', {value: 'access_token'});
+                Object.defineProperty(inputs, 'POLARIS_ASSESSMENT_TYPES', {value: ['SCA']});
+                Object.defineProperty(inputs, 'NETWORK_SSL_CERT_FILE', {value: sslCertFile});
+                Object.defineProperty(inputs, 'NETWORK_SSL_TRUST_ALL', {value: true});
+
+                const formattedCommand = await bridgeToolsParameter.getFormattedCommandForPolaris();
+                const jsonString = fs.readFileSync(polarisStateFile, 'utf-8');
+                const jsonData = JSON.parse(jsonString);
+
+                expect(jsonData.data.network).to.exist;
+                expect(jsonData.data.network.ssl).to.exist;
+                expect(jsonData.data.network.ssl.cert).to.exist;
+                expect(jsonData.data.network.ssl.cert.file).to.equal(sslCertFile);
+                expect(jsonData.data.network.ssl.trustAll).to.equal(true);
+                expect(formattedCommand).contains('--stage polaris');
+            });
+
+            it('should include airgap and SSL settings together', async function () {
+                const sslCertFile = '/path/to/certificate.pem';
+                Object.defineProperty(inputs, 'POLARIS_SERVER_URL', {value: 'server_url'});
+                Object.defineProperty(inputs, 'POLARIS_ACCESS_TOKEN', {value: 'access_token'});
+                Object.defineProperty(inputs, 'POLARIS_ASSESSMENT_TYPES', {value: ['SCA']});
+                Object.defineProperty(inputs, 'ENABLE_NETWORK_AIRGAP', {value: true});
+                Object.defineProperty(inputs, 'NETWORK_SSL_CERT_FILE', {value: sslCertFile});
+                Object.defineProperty(inputs, 'NETWORK_SSL_TRUST_ALL', {value: false});
+
+                const formattedCommand = await bridgeToolsParameter.getFormattedCommandForPolaris();
+                const jsonString = fs.readFileSync(polarisStateFile, 'utf-8');
+                const jsonData = JSON.parse(jsonString);
+
+                expect(jsonData.data.network).to.exist;
+                expect(jsonData.data.network.airGap).to.equal(true);
+                expect(jsonData.data.network.ssl).to.exist;
+                expect(jsonData.data.network.ssl.cert).to.exist;
+                expect(jsonData.data.network.ssl.cert.file).to.equal(sslCertFile);
+                expect(jsonData.data.network?.ssl?.trustAll).to.be.undefined;
+                expect(formattedCommand).contains('--stage polaris');
+            });
+        });
+
+        context('BlackDuck SCA SSL Certificate Configuration', () => {
+            it('should include SSL certificate file in network configuration', async function () {
+                const sslCertFile = '/path/to/certificate.pem';
+                Object.defineProperty(inputs, 'BLACKDUCKSCA_URL', {value: 'blackduck_url'});
+                Object.defineProperty(inputs, 'BLACKDUCKSCA_API_TOKEN', {value: 'api_token'});
+                Object.defineProperty(inputs, 'NETWORK_SSL_CERT_FILE', {value: sslCertFile});
+
+                const formattedCommand = await bridgeToolsParameter.getFormattedCommandForBlackduck();
+                const jsonString = fs.readFileSync(blackduckStateFile, 'utf-8');
+                const jsonData = JSON.parse(jsonString);
+
+                expect(jsonData.data.network).to.exist;
+                expect(jsonData.data.network.ssl).to.exist;
+                expect(jsonData.data.network.ssl.cert).to.exist;
+                expect(jsonData.data.network.ssl.cert.file).to.equal(sslCertFile);
+                expect(formattedCommand).contains('--stage blackducksca');
+            });
+
+            it('should include SSL trust all setting in network configuration', async function () {
+                Object.defineProperty(inputs, 'BLACKDUCKSCA_URL', {value: 'blackduck_url'});
+                Object.defineProperty(inputs, 'BLACKDUCKSCA_API_TOKEN', {value: 'api_token'});
+                Object.defineProperty(inputs, 'NETWORK_SSL_TRUST_ALL', {value: true});
+
+                const formattedCommand = await bridgeToolsParameter.getFormattedCommandForBlackduck();
+                const jsonString = fs.readFileSync(blackduckStateFile, 'utf-8');
+                const jsonData = JSON.parse(jsonString);
+
+                expect(jsonData.data.network).to.exist;
+                expect(jsonData.data.network.ssl).to.exist;
+                expect(jsonData.data.network.ssl.trustAll).to.equal(true);
+                expect(formattedCommand).contains('--stage blackducksca');
+            });
+
+            it('should include both airgap and SSL certificate settings', async function () {
+                const sslCertFile = '/path/to/certificate.pem';
+                Object.defineProperty(inputs, 'BLACKDUCKSCA_URL', {value: 'blackduck_url'});
+                Object.defineProperty(inputs, 'BLACKDUCKSCA_API_TOKEN', {value: 'api_token'});
+                Object.defineProperty(inputs, 'ENABLE_NETWORK_AIRGAP', {value: true});
+                Object.defineProperty(inputs, 'NETWORK_SSL_CERT_FILE', {value: sslCertFile});
+                Object.defineProperty(inputs, 'NETWORK_SSL_TRUST_ALL', {value: true});
+
+                const formattedCommand = await bridgeToolsParameter.getFormattedCommandForBlackduck();
+                const jsonString = fs.readFileSync(blackduckStateFile, 'utf-8');
+                const jsonData = JSON.parse(jsonString);
+
+                expect(jsonData.data.network).to.exist;
+                expect(jsonData.data.network.airGap).to.equal(true);
+                expect(jsonData.data.network.ssl).to.exist;
+                expect(jsonData.data.network.ssl.cert).to.exist;
+                expect(jsonData.data.network.ssl.cert.file).to.equal(sslCertFile);
+                expect(jsonData.data.network.ssl.trustAll).to.equal(true);
+                expect(formattedCommand).contains('--stage blackducksca');
+            });
+        });
+
+        context('Coverity SSL Certificate Configuration', () => {
+            it('should include SSL certificate file in network configuration', async function () {
+                const sslCertFile = '/path/to/certificate.pem';
+                Object.defineProperty(inputs, 'COVERITY_URL', {value: 'coverity_url'});
+                Object.defineProperty(inputs, 'COVERITY_USER', {value: 'coverity_user'});
+                Object.defineProperty(inputs, 'COVERITY_USER_PASSWORD', {value: 'coverity_password'});
+                Object.defineProperty(inputs, 'NETWORK_SSL_CERT_FILE', {value: sslCertFile});
+
+                const getStubVariable = sandbox.stub(taskLib, "getVariable");
+                getStubVariable.withArgs(AZURE_ENVIRONMENT_VARIABLES.AZURE_REPOSITORY).returns("testRepo");
+
+                const formattedCommand = await bridgeToolsParameter.getFormattedCommandForCoverity();
+                const jsonString = fs.readFileSync(coverityStateFile, 'utf-8');
+                const jsonData = JSON.parse(jsonString);
+
+                expect(jsonData.data.network).to.exist;
+                expect(jsonData.data.network.ssl).to.exist;
+                expect(jsonData.data.network.ssl.cert).to.exist;
+                expect(jsonData.data.network.ssl.cert.file).to.equal(sslCertFile);
+                expect(formattedCommand).contains('--stage connect');
+            });
+
+            it('should include SSL trust all setting in network configuration', async function () {
+                Object.defineProperty(inputs, 'COVERITY_URL', {value: 'coverity_url'});
+                Object.defineProperty(inputs, 'COVERITY_USER', {value: 'coverity_user'});
+                Object.defineProperty(inputs, 'COVERITY_USER_PASSWORD', {value: 'coverity_password'});
+                Object.defineProperty(inputs, 'NETWORK_SSL_TRUST_ALL', {value: true});
+
+                const getStubVariable = sandbox.stub(taskLib, "getVariable");
+                getStubVariable.withArgs(AZURE_ENVIRONMENT_VARIABLES.AZURE_REPOSITORY).returns("testRepo");
+
+                const formattedCommand = await bridgeToolsParameter.getFormattedCommandForCoverity();
+                const jsonString = fs.readFileSync(coverityStateFile, 'utf-8');
+                const jsonData = JSON.parse(jsonString);
+
+                expect(jsonData.data.network).to.exist;
+                expect(jsonData.data.network.ssl).to.exist;
+                expect(jsonData.data.network.ssl.trustAll).to.equal(true);
+                expect(formattedCommand).contains('--stage connect');
+            });
+
+            it('should replace legacy hardcoded airgap network configuration with unified setNetworkObj', async function () {
+                const sslCertFile = '/path/to/certificate.pem';
+                Object.defineProperty(inputs, 'COVERITY_URL', {value: 'coverity_url'});
+                Object.defineProperty(inputs, 'COVERITY_USER', {value: 'coverity_user'});
+                Object.defineProperty(inputs, 'COVERITY_USER_PASSWORD', {value: 'coverity_password'});
+                Object.defineProperty(inputs, 'ENABLE_NETWORK_AIRGAP', {value: true});
+                Object.defineProperty(inputs, 'NETWORK_SSL_CERT_FILE', {value: sslCertFile});
+                Object.defineProperty(inputs, 'NETWORK_SSL_TRUST_ALL', {value: false});
+
+                const getStubVariable = sandbox.stub(taskLib, "getVariable");
+                getStubVariable.withArgs(AZURE_ENVIRONMENT_VARIABLES.AZURE_REPOSITORY).returns("testRepo");
+
+                const formattedCommand = await bridgeToolsParameter.getFormattedCommandForCoverity();
+                const jsonString = fs.readFileSync(coverityStateFile, 'utf-8');
+                const jsonData = JSON.parse(jsonString);
+
+                // Verify unified network configuration at data.network level (not coverity.network)
+                expect(jsonData.data.network).to.exist;
+                expect(jsonData.data.network.airGap).to.equal(true);
+                expect(jsonData.data.network.ssl).to.exist;
+                expect(jsonData.data.network.ssl.cert).to.exist;
+                expect(jsonData.data.network.ssl.cert.file).to.equal(sslCertFile);
+                expect(jsonData.data.network?.ssl?.trustAll).to.be.undefined;
+
+                // Verify no legacy coverity.network configuration exists
+                expect(jsonData.data.coverity.network).to.be.undefined;
+
+                expect(formattedCommand).contains('--stage connect');
+            });
+        });
+
+        context('Network Configuration Edge Cases', () => {
+            it('should handle empty SSL certificate file gracefully', async function () {
+                Object.defineProperty(inputs, 'POLARIS_SERVER_URL', {value: 'server_url'});
+                Object.defineProperty(inputs, 'POLARIS_ACCESS_TOKEN', {value: 'access_token'});
+                Object.defineProperty(inputs, 'POLARIS_ASSESSMENT_TYPES', {value: ['SCA']});
+                Object.defineProperty(inputs, 'NETWORK_SSL_CERT_FILE', {value: ''});
+                Object.defineProperty(inputs, 'NETWORK_SSL_TRUST_ALL', {value: true});
+
+                const formattedCommand = await bridgeToolsParameter.getFormattedCommandForPolaris();
+                const jsonString = fs.readFileSync(polarisStateFile, 'utf-8');
+                const jsonData = JSON.parse(jsonString);
+
+                expect(jsonData.data.network).to.exist;
+                expect(jsonData.data.network.ssl).to.exist;
+                expect(jsonData.data.network.ssl.trustAll).to.equal(true);
+                // cert should not be present when file is empty
+                expect(jsonData.data.network.ssl.cert).to.be.undefined;
+                expect(formattedCommand).contains('--stage polaris');
+            });
+
+            it('should handle no SSL configuration gracefully', async function () {
+                Object.defineProperty(inputs, 'POLARIS_SERVER_URL', {value: 'server_url'});
+                Object.defineProperty(inputs, 'POLARIS_ACCESS_TOKEN', {value: 'access_token'});
+                Object.defineProperty(inputs, 'POLARIS_ASSESSMENT_TYPES', {value: ['SCA']});
+                Object.defineProperty(inputs, 'NETWORK_SSL_CERT_FILE', {value: ''});
+                Object.defineProperty(inputs, 'NETWORK_SSL_TRUST_ALL', {value: false});
+                Object.defineProperty(inputs, 'ENABLE_NETWORK_AIRGAP', {value: false});
+
+                const formattedCommand = await bridgeToolsParameter.getFormattedCommandForPolaris();
+                const jsonString = fs.readFileSync(polarisStateFile, 'utf-8');
+                const jsonData = JSON.parse(jsonString);
+
+                // Network section should not exist when no network configuration is provided
+                expect(jsonData.data.network.airGap).to.equal(false);
+                expect(formattedCommand).contains('--stage polaris');
+            });
+
+            it('should handle only airgap setting without SSL configuration', async function () {
+                Object.defineProperty(inputs, 'POLARIS_SERVER_URL', {value: 'server_url'});
+                Object.defineProperty(inputs, 'POLARIS_ACCESS_TOKEN', {value: 'access_token'});
+                Object.defineProperty(inputs, 'POLARIS_ASSESSMENT_TYPES', {value: ['SCA']});
+                Object.defineProperty(inputs, 'ENABLE_NETWORK_AIRGAP', {value: true});
+                Object.defineProperty(inputs, 'NETWORK_SSL_CERT_FILE', {value: ''});
+                Object.defineProperty(inputs, 'NETWORK_SSL_TRUST_ALL', {value: false});
+
+                const formattedCommand = await bridgeToolsParameter.getFormattedCommandForPolaris();
+                const jsonString = fs.readFileSync(polarisStateFile, 'utf-8');
+                const jsonData = JSON.parse(jsonString);
+
+                expect(jsonData.data.network).to.exist;
+                expect(jsonData.data.network.airGap).to.equal(true);
+                // SSL section should not exist when no SSL configuration is provided
+                expect(jsonData.data.network.ssl).to.be.undefined;
+                expect(formattedCommand).contains('--stage polaris');
+            });
+        });
+    });
 });
