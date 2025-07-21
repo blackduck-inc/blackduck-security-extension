@@ -416,3 +416,10 @@ export function extractSarifOutputPath(
     return "";
   }
 }
+
+export function stringFormat(url: string, ...args: string[]): string {
+  return url.replace(
+    /{(\d+)}/g,
+    (match, index) => encodeURIComponent(args[index]) || ""
+  );
+}
