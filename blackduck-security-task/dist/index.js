@@ -952,50 +952,38 @@ class BridgeCli {
     fetchWithDirectHTTPS(fetchUrl, headers = {}) {
         return __awaiter(this, void 0, void 0, function* () {
             const sslConfig = (0, ssl_utils_1.getSSLConfig)();
-            const shouldUseDirectHTTPS = sslConfig.trustAllCerts || (sslConfig.customCA && sslConfig.combinedCAs);
-            if (shouldUseDirectHTTPS) {
-                try {
-                    taskLib.debug("Using direct HTTPS for Bridge CLI metadata fetch with enhanced SSL support");
-                    return yield new Promise((resolve, reject) => {
-                        const parsedUrl = new URL(fetchUrl);
-                        const requestOptions = (0, ssl_utils_1.createHTTPSRequestOptions)(parsedUrl, sslConfig, headers);
-                        const request = https.request(requestOptions, (response) => {
-                            const statusCode = response.statusCode || 0;
-                            if (statusCode !== 200) {
-                                reject(new Error(`HTTP ${statusCode}: ${response.statusMessage}`));
-                                return;
-                            }
-                            let data = "";
-                            response.on("data", (chunk) => {
-                                data += chunk;
-                            });
-                            response.on("end", () => {
-                                resolve(data);
-                            });
-                        });
-                        request.on("error", (err) => {
-                            reject(err);
-                        });
-                        request.setTimeout(30000, () => {
-                            request.destroy();
-                            reject(new Error("Request timeout"));
-                        });
-                        request.end();
+            taskLib.debug(`Using Node.js HTTPS for Bridge CLI metadata fetch from: ${new URL(fetchUrl).hostname}`);
+            return yield new Promise((resolve, reject) => {
+                const parsedUrl = new URL(fetchUrl);
+                const requestOptions = (0, ssl_utils_1.createHTTPSRequestOptions)(parsedUrl, sslConfig, headers);
+                taskLib.debug(`HTTPS request options - SSL: ${sslConfig.trustAllCerts ? "disabled" : "enabled"}, ` +
+                    `Custom CA: ${sslConfig.customCA ? "yes" : "no"}, ` +
+                    `Combined CAs: ${sslConfig.combinedCAs ? sslConfig.combinedCAs.length : 0}`);
+                const request = https.request(requestOptions, (response) => {
+                    const statusCode = response.statusCode || 0;
+                    if (statusCode !== 200) {
+                        reject(new Error(`HTTP ${statusCode}: ${response.statusMessage}`));
+                        return;
+                    }
+                    let data = "";
+                    response.on("data", (chunk) => {
+                        data += chunk;
                     });
-                }
-                catch (error) {
-                    taskLib.debug(`Direct HTTPS fetch failed, falling back to typed-rest-client: ${error}`);
-                    // Fall through to typed-rest-client approach
-                }
-            }
-            // Fallback to typed-rest-client
-            taskLib.debug("Using typed-rest-client for Bridge CLI metadata fetch");
-            const httpClient = (0, utility_1.getSharedHttpClient)();
-            const response = yield httpClient.get(fetchUrl, headers);
-            if (response.message.statusCode !== 200) {
-                throw new Error(`HTTP ${response.message.statusCode}: ${response.message.statusMessage}`);
-            }
-            return yield response.readBody();
+                    response.on("end", () => {
+                        taskLib.debug(`Successfully fetched ${data.length} bytes from ${parsedUrl.hostname}`);
+                        resolve(data);
+                    });
+                });
+                request.on("error", (err) => {
+                    taskLib.error(`HTTPS request error for ${parsedUrl.hostname}: ${err.message}`);
+                    reject(err);
+                });
+                request.setTimeout(30000, () => {
+                    request.destroy();
+                    reject(new Error(`Request timeout after 30 seconds for ${parsedUrl.hostname}`));
+                });
+                request.end();
+            });
         });
     }
     getAllAvailableBridgeCliVersions() {
@@ -1374,7 +1362,6 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports._getFileSizeOnDisk = exports.downloadTool = exports.debug = void 0;
-const httm = __importStar(__nccwpck_require__(5538));
 const path = __importStar(__nccwpck_require__(1017));
 const fs = __importStar(__nccwpck_require__(7147));
 const https = __importStar(__nccwpck_require__(5687));
@@ -1481,7 +1468,7 @@ function downloadWithCustomSSL(downloadUrl, destPath, additionalHeaders) {
                 }
                 const request = https.request(requestOptions, (response) => {
                     const statusCode = response.statusCode || 0;
-                    if (statusCode !== 200) {
+                    if (statusCode < 200 || statusCode >= 400) {
                         tl.debug(`Failed to download file from "${downloadUrl}". Code(${statusCode}) Message(${response.statusMessage})`);
                         reject(new Error("Failed to download Bridge CLI zip from specified URL. HTTP status code: "
                             .concat(String(statusCode))
@@ -1564,95 +1551,16 @@ function downloadTool(url, fileName, handlers, additionalHeaders) {
         }
         tl.debug(`Download request: ${fileName}`);
         tl.debug(`Destination: ${destPath}`);
-        // Hybrid approach: Use direct HTTPS for SSL-enhanced downloads (proper CA combination)
-        // Fall back to typed-rest-client for other scenarios
-        const sslConfig = (0, ssl_utils_1.getSSLConfig)();
-        const shouldUseDirectHTTPS = sslConfig.trustAllCerts || (sslConfig.customCA && sslConfig.combinedCAs);
-        if (shouldUseDirectHTTPS) {
-            tl.debug("Using direct HTTPS for download with enhanced SSL support");
-            try {
-                return yield downloadWithCustomSSL(url, destPath, additionalHeaders);
-            }
-            catch (error) {
-                tl.debug(`Direct HTTPS download failed, falling back to typed-rest-client: ${error}`);
-                // Fall through to typed-rest-client approach
-            }
+        // Always use Node.js HTTPS for downloads (proper CA combination support)
+        // No fallback to typed-rest-client needed
+        tl.debug("Using Node.js HTTPS for download with enhanced SSL support");
+        try {
+            return yield downloadWithCustomSSL(url, destPath, additionalHeaders);
         }
-        // Fallback to typed-rest-client (original logic)
-        tl.debug("Using typed-rest-client for download");
-        return new Promise((resolve, reject) => __awaiter(this, void 0, void 0, function* () {
-            try {
-                // For testing compatibility with nock mocking, use original approach when in test environment
-                // Check multiple ways to detect test environment
-                /* eslint-disable @typescript-eslint/no-explicit-any */
-                const isTestEnvironment = process.env.NODE_ENV === "test" ||
-                    process.env.npm_lifecycle_event === "test" ||
-                    typeof global.__coverage__ !== "undefined" || // Istanbul coverage
-                    typeof global.describe !== "undefined" || // Mocha
-                    typeof global.it !== "undefined"; // Mocha
-                /* eslint-enable @typescript-eslint/no-explicit-any */
-                const hasHandlers = handlers && handlers.length > 0;
-                const http = isTestEnvironment || hasHandlers
-                    ? new httm.HttpClient(userAgent, handlers, getRequestOptions())
-                    : (0, utility_1.createSSLConfiguredHttpClient)(userAgent);
-                // Make sure that the folder exists
-                tl.mkdirP(path.dirname(destPath));
-                if (fs.existsSync(destPath)) {
-                    tl.debug("Destination file path already exists");
-                    _deleteFile(destPath);
-                }
-                const response = yield http.get(url, additionalHeaders);
-                if (response.message.statusCode != 200) {
-                    tl.debug(`Failed to download from "${url}". Code(${response.message.statusCode}) Message(${response.message.statusMessage})`);
-                    reject(new Error("Failed to download Bridge CLI zip from specified URL. HTTP status code: "
-                        .concat(String(response.message.statusCode))
-                        .concat(constants.SPACE)
-                        .concat(ErrorCodes_1.ErrorCode.DOWNLOAD_FAILED_WITH_HTTP_STATUS_CODE.toString())));
-                    return;
-                }
-                const downloadedContentLength = _getContentLengthOfDownloadedFile(response);
-                if (!isNaN(downloadedContentLength)) {
-                    tl.debug(`Content-Length of downloaded file: ${downloadedContentLength}`);
-                }
-                else {
-                    tl.debug(`Content-Length header missing`);
-                }
-                tl.debug("creating stream");
-                const file = fs.createWriteStream(destPath);
-                file
-                    .on("open", () => __awaiter(this, void 0, void 0, function* () {
-                    try {
-                        response.message
-                            .on("error", (err) => {
-                            file.end();
-                            reject(err);
-                        })
-                            .pipe(file);
-                    }
-                    catch (err) {
-                        reject(err);
-                    }
-                }))
-                    .on("error", (err) => {
-                    file.end();
-                    reject(err);
-                })
-                    .on("close", () => __awaiter(this, void 0, void 0, function* () {
-                    try {
-                        const result = yield validateDownloadedFile(destPath, downloadedContentLength);
-                        tl.debug("typed-rest-client download completed successfully");
-                        resolve(result);
-                    }
-                    catch (err) {
-                        reject(err);
-                    }
-                }));
-            }
-            catch (error) {
-                _deleteFile(destPath);
-                throw error;
-            }
-        }));
+        catch (error) {
+            tl.error(`Node.js HTTPS download failed: ${error}`);
+            throw error;
+        }
     });
 }
 exports.downloadTool = downloadTool;
@@ -1942,7 +1850,7 @@ function getInputForPolarisAssessmentMode() {
                 : ""));
 }
 //Bridge download url
-exports.BRIDGECLI_DOWNLOAD_URL = "https://localhost:8443/artifactory/clops-local/integrations/bridge/binaries/bridge-cli-bundle/latest/bridge-cli-bundle-macos_arm.zip";
+exports.BRIDGECLI_DOWNLOAD_URL = getInput(constants.BRIDGECLI_DOWNLOAD_URL_KEY, constants.BRIDGECLI_DOWNLOAD_URL_KEY_CLASSIC_EDITOR, constants.SYNOPSYS_BRIDGE_DOWNLOAD_URL_KEY);
 exports.ENABLE_NETWORK_AIRGAP = getBoolInput(constants.NETWORK_AIRGAP_KEY, constants.NETWORK_AIRGAP_KEY_CLASSIC_EDITOR, constants.BRIDGE_NETWORK_AIRGAP_KEY);
 exports.BRIDGECLI_INSTALL_DIRECTORY_KEY = getPathInput(constants.BRIDGECLI_INSTALL_DIRECTORY_KEY, constants.BRIDGECLI_INSTALL_DIRECTORY_KEY_CLASSIC_EDITOR, constants.SYNOPSYS_BRIDGE_INSTALL_DIRECTORY_KEY);
 exports.BRIDGECLI_DOWNLOAD_VERSION = getInput(constants.BRIDGECLI_DOWNLOAD_VERSION_KEY, constants.BRIDGECLI_DOWNLOAD_VERSION_KEY_CLASSIC_EDITOR, constants.SYNOPSYS_BRIDGE_DOWNLOAD_VERSION_KEY);
@@ -3392,7 +3300,11 @@ exports.createSSLConfiguredHttpsAgent = createSSLConfiguredHttpsAgent;
  * Creates an HttpClient instance with SSL configuration based on task inputs.
  * Uses singleton pattern to reuse the same client instance when configuration hasn't changed.
  * This uses typed-rest-client for structured API operations.
- * Note: typed-rest-client has limitations with combining system CAs + custom CAs.
+ *
+ * IMPORTANT: typed-rest-client 1.8.9 has significant SSL limitations:
+ * - Cannot combine system CAs with custom CAs (only supports single caFile)
+ * - For operations requiring advanced SSL support, use direct HTTPS with createHTTPSAgent()
+ * - agentOptions parameter is not supported
  *
  * @param userAgent The user agent string to use for the HTTP client (default: "BlackDuckSecurityTask")
  * @returns HttpClient instance configured with appropriate SSL settings
@@ -3411,11 +3323,10 @@ function createSSLConfiguredHttpClient(userAgent = "BlackDuckSecurityTask") {
         _httpClientCache = new HttpClient_1.HttpClient(userAgent, [], { ignoreSslError: true });
     }
     else if (sslConfig.customCA) {
-        taskLib.debug(`Using custom CA certificate for HttpClient: ${inputs.NETWORK_SSL_CERT_FILE}`);
+        taskLib.debug(`Creating HttpClient with custom CA certificate: ${inputs.NETWORK_SSL_CERT_FILE}`);
         try {
-            // Note: typed-rest-client has limitations with combining system CAs + custom CAs
-            // For downloads, use createSSLConfiguredHttpsAgent() which properly combines CAs
-            // For API operations, this fallback to caFile option (custom CA only) is acceptable
+            // typed-rest-client limitation: can only use custom CA file, not combined with system CAs
+            // For operations requiring combined CAs, the code should use direct HTTPS with createHTTPSAgent()
             _httpClientCache = new HttpClient_1.HttpClient(userAgent, [], {
                 allowRetries: true,
                 maxRetries: 3,
@@ -3423,7 +3334,7 @@ function createSSLConfiguredHttpClient(userAgent = "BlackDuckSecurityTask") {
                     caFile: inputs.NETWORK_SSL_CERT_FILE,
                 },
             });
-            taskLib.debug("HttpClient configured with custom CA certificate (Note: typed-rest-client limitation - system CAs not combined)");
+            taskLib.debug("HttpClient configured with custom CA certificate (Note: system CAs not included due to typed-rest-client limitations)");
         }
         catch (err) {
             taskLib.warning(`Failed to configure custom CA certificate, using default HttpClient: ${err}`);
