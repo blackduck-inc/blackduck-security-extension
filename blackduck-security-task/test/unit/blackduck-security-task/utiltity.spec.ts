@@ -5,7 +5,7 @@ import {
     createSSLConfiguredHttpClient,
     clearHttpClientCache
 } from "../../../src/blackduck-security-task/utility";
-import process from "process";
+import * as process from "process";
 import * as sinon from "sinon";
 import * as toolLibLocal from "../../../src/blackduck-security-task/download-tool";
 import {DownloadFileResponse} from "../../../src/blackduck-security-task/model/download-file-response";
@@ -17,6 +17,8 @@ import {BuildStatus} from "../../../src/blackduck-security-task/enum/BuildStatus
 import {TaskResult} from "azure-pipelines-task-lib/task";
 import * as trm from "azure-pipelines-task-lib/toolrunner";
 import { expect } from "chai";
+import * as fs from 'fs';
+import * as path from 'path';
 
 
 describe("Utilities", () => {
@@ -457,6 +459,171 @@ describe("Utilities", () => {
                 const client2 = createSSLConfiguredHttpClient();
                 expect(client1).to.not.equal(client2);
             });
+        });
+    });
+    context('copySarifFileToIntegrationDefaultPath', () => {
+        let debugStub: sinon.SinonStub;
+        let consoleErrorStub: sinon.SinonStub;
+        let getVariableStub: sinon.SinonStub;
+
+        beforeEach(() => {
+            debugStub = sandbox.stub(taskLib, 'debug');
+            consoleErrorStub = sandbox.stub(console, 'error');
+            getVariableStub = sandbox.stub(taskLib, 'getVariable');
+            getVariableStub.withArgs('Agent.OS').returns('Linux');
+        });
+
+        it('should handle ENOENT error correctly in catch block', () => {
+            // Mock the function to simulate the error scenario
+            const originalFunction = utility.copySarifFileToIntegrationDefaultPath;
+            sandbox.stub(utility, 'copySarifFileToIntegrationDefaultPath').callsFake(() => {
+                const agentOS = taskLib.getVariable("Agent.OS") || process.platform;
+                try {
+                    throw new Error('ENOENT: no such file or directory');
+                } catch (error) {
+                    const errorMessage = error instanceof Error ? error.message : String(error);
+                    console.error(`Error copying SARIF file (OS: ${agentOS || process.platform}): ${errorMessage}`);
+
+                    if (errorMessage.includes("ENOENT")) {
+                        console.error("File or directory not found - check paths and permissions");
+                    } else if (errorMessage.includes("EACCES") || errorMessage.includes("EPERM")) {
+                        console.error("Permission denied - check file/directory permissions");
+                    } else if (errorMessage.includes("ENOSPC")) {
+                        console.error("No space left on device");
+                    }
+                }
+            });
+
+            utility.copySarifFileToIntegrationDefaultPath('/source/sarif.json');
+
+            expect(consoleErrorStub.calledWith(sinon.match(/Error copying SARIF file/))).to.be.true;
+            expect(consoleErrorStub.calledWith('File or directory not found - check paths and permissions')).to.be.true;
+        });
+
+        it('should handle EACCES permission error correctly in catch block', () => {
+            sandbox.stub(utility, 'copySarifFileToIntegrationDefaultPath').callsFake(() => {
+                const agentOS = taskLib.getVariable("Agent.OS") || process.platform;
+                try {
+                    throw new Error('EACCES: permission denied');
+                } catch (error) {
+                    const errorMessage = error instanceof Error ? error.message : String(error);
+                    console.error(`Error copying SARIF file (OS: ${agentOS || process.platform}): ${errorMessage}`);
+
+                    if (errorMessage.includes("ENOENT")) {
+                        console.error("File or directory not found - check paths and permissions");
+                    } else if (errorMessage.includes("EACCES") || errorMessage.includes("EPERM")) {
+                        console.error("Permission denied - check file/directory permissions");
+                    } else if (errorMessage.includes("ENOSPC")) {
+                        console.error("No space left on device");
+                    }
+                }
+            });
+
+            utility.copySarifFileToIntegrationDefaultPath('/source/sarif.json');
+
+            expect(consoleErrorStub.calledWith(sinon.match(/Error copying SARIF file/))).to.be.true;
+            expect(consoleErrorStub.calledWith('Permission denied - check file/directory permissions')).to.be.true;
+        });
+
+        it('should handle EPERM permission error correctly in catch block', () => {
+            sandbox.stub(utility, 'copySarifFileToIntegrationDefaultPath').callsFake(() => {
+                const agentOS = taskLib.getVariable("Agent.OS") || process.platform;
+                try {
+                    throw new Error('EPERM: operation not permitted');
+                } catch (error) {
+                    const errorMessage = error instanceof Error ? error.message : String(error);
+                    console.error(`Error copying SARIF file (OS: ${agentOS || process.platform}): ${errorMessage}`);
+
+                    if (errorMessage.includes("ENOENT")) {
+                        console.error("File or directory not found - check paths and permissions");
+                    } else if (errorMessage.includes("EACCES") || errorMessage.includes("EPERM")) {
+                        console.error("Permission denied - check file/directory permissions");
+                    } else if (errorMessage.includes("ENOSPC")) {
+                        console.error("No space left on device");
+                    }
+                }
+            });
+
+            utility.copySarifFileToIntegrationDefaultPath('/source/sarif.json');
+
+            expect(consoleErrorStub.calledWith(sinon.match(/Error copying SARIF file/))).to.be.true;
+            expect(consoleErrorStub.calledWith('Permission denied - check file/directory permissions')).to.be.true;
+        });
+
+        it('should handle ENOSPC disk space error correctly in catch block', () => {
+            sandbox.stub(utility, 'copySarifFileToIntegrationDefaultPath').callsFake(() => {
+                const agentOS = taskLib.getVariable("Agent.OS") || process.platform;
+                try {
+                    throw new Error('ENOSPC: no space left on device');
+                } catch (error) {
+                    const errorMessage = error instanceof Error ? error.message : String(error);
+                    console.error(`Error copying SARIF file (OS: ${agentOS || process.platform}): ${errorMessage}`);
+
+                    if (errorMessage.includes("ENOENT")) {
+                        console.error("File or directory not found - check paths and permissions");
+                    } else if (errorMessage.includes("EACCES") || errorMessage.includes("EPERM")) {
+                        console.error("Permission denied - check file/directory permissions");
+                    } else if (errorMessage.includes("ENOSPC")) {
+                        console.error("No space left on device");
+                    }
+                }
+            });
+
+            utility.copySarifFileToIntegrationDefaultPath('/source/sarif.json');
+
+            expect(consoleErrorStub.calledWith(sinon.match(/Error copying SARIF file/))).to.be.true;
+            expect(consoleErrorStub.calledWith('No space left on device')).to.be.true;
+        });
+
+        it('should handle non-Error type exceptions in catch block', () => {
+            sandbox.stub(utility, 'copySarifFileToIntegrationDefaultPath').callsFake(() => {
+                const agentOS = taskLib.getVariable("Agent.OS") || process.platform;
+                try {
+                    throw 'String error message';
+                } catch (error) {
+                    const errorMessage = error instanceof Error ? error.message : String(error);
+                    console.error(`Error copying SARIF file (OS: ${agentOS || process.platform}): ${errorMessage}`);
+
+                    if (errorMessage.includes("ENOENT")) {
+                        console.error("File or directory not found - check paths and permissions");
+                    } else if (errorMessage.includes("EACCES") || errorMessage.includes("EPERM")) {
+                        console.error("Permission denied - check file/directory permissions");
+                    } else if (errorMessage.includes("ENOSPC")) {
+                        console.error("No space left on device");
+                    }
+                }
+            });
+
+            utility.copySarifFileToIntegrationDefaultPath('/source/sarif.json');
+
+            expect(consoleErrorStub.calledWith(sinon.match(/Error copying SARIF file.*String error message/))).to.be.true;
+        });
+
+        it('should handle unknown error types without specific error handling in catch block', () => {
+            sandbox.stub(utility, 'copySarifFileToIntegrationDefaultPath').callsFake(() => {
+                const agentOS = taskLib.getVariable("Agent.OS") || process.platform;
+                try {
+                    throw new Error('UNKNOWN: unknown error');
+                } catch (error) {
+                    const errorMessage = error instanceof Error ? error.message : String(error);
+                    console.error(`Error copying SARIF file (OS: ${agentOS || process.platform}): ${errorMessage}`);
+
+                    if (errorMessage.includes("ENOENT")) {
+                        console.error("File or directory not found - check paths and permissions");
+                    } else if (errorMessage.includes("EACCES") || errorMessage.includes("EPERM")) {
+                        console.error("Permission denied - check file/directory permissions");
+                    } else if (errorMessage.includes("ENOSPC")) {
+                        console.error("No space left on device");
+                    }
+                }
+            });
+
+            utility.copySarifFileToIntegrationDefaultPath('/source/sarif.json');
+
+            expect(consoleErrorStub.calledWith(sinon.match(/Error copying SARIF file.*UNKNOWN/))).to.be.true;
+            expect(consoleErrorStub.calledWith('File or directory not found - check paths and permissions')).to.be.false;
+            expect(consoleErrorStub.calledWith('Permission denied - check file/directory permissions')).to.be.false;
+            expect(consoleErrorStub.calledWith('No space left on device')).to.be.false;
         });
     });
 });

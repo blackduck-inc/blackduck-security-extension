@@ -31,7 +31,7 @@ import {
   WORKFLOW_FAILED,
 } from "./blackduck-security-task/application-constant";
 import { readFileSync } from "fs";
-import { join } from "path";
+import { join, basename } from "path";
 
 export async function run() {
   console.log("Black Duck Security Scan Task started...");
@@ -57,7 +57,6 @@ export async function run() {
     }
     // Get Bridge version from bridge Path
     bridgeVersion = getBridgeVersion(bridgePath);
-    taskLib.debug(`bridgePath: ${bridgeVersion}`);
 
     // Execute prepared commands
     const result: number = await bridge.executeBridgeCliCommand(

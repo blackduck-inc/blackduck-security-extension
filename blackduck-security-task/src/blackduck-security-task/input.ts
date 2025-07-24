@@ -203,8 +203,11 @@ function getInputForPolarisAssessmentMode() {
 }
 
 //Bridge download url
-export const BRIDGECLI_DOWNLOAD_URL =
-  "https://localhost:8443/artifactory/clops-local/integrations/bridge/binaries/bridge-cli-bundle/latest/bridge-cli-bundle-macos_arm.zip";
+export const BRIDGECLI_DOWNLOAD_URL = getInput(
+  constants.BRIDGECLI_DOWNLOAD_URL_KEY,
+  constants.BRIDGECLI_DOWNLOAD_URL_KEY_CLASSIC_EDITOR,
+  constants.SYNOPSYS_BRIDGE_DOWNLOAD_URL_KEY
+);
 
 export const ENABLE_NETWORK_AIRGAP = getBoolInput(
   constants.NETWORK_AIRGAP_KEY,

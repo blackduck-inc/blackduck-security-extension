@@ -148,7 +148,9 @@ export class BridgeCli {
         inputs.NETWORK_SSL_CERT_FILE &&
         inputs.NETWORK_SSL_TRUST_ALL === true
       ) {
-        return Promise.reject(constants.NETWORK_SSL_VALIDATION_ERROR_MESSAGE);
+        return Promise.reject(
+          new Error(constants.NETWORK_SSL_VALIDATION_ERROR_MESSAGE)
+        );
       }
 
       const invalidParams: string[] = validateScanTypes();

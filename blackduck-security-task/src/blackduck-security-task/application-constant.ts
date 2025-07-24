@@ -1,6 +1,7 @@
 // Copyright (c) 2024 Black Duck Software Inc. All rights reserved worldwide.
 
 import { ErrorCode } from "./enum/ErrorCodes";
+import path from "path";
 export const BRIDGE_CLI_DEFAULT_PATH_UNIX = "/bridge-cli-bundle"; //Path will be in home
 export const BRIDGE_CLI_DEFAULT_PATH_WINDOWS = "\\bridge-cli-bundle";
 export const BRIDGE_CLI_DEFAULT_SUBDIRECTORY_PATH_UNIX = "/bridge-cli-bundle"; //Subdirectory for bridle-cli
@@ -692,16 +693,31 @@ export const EXIT_CODE_MAP = new Map<string, string>([
 
 export const BRIDGE_CLI_ARM_VERSION_FALLBACK_MESSAGE =
   "Detected Bridge CLI version ({version}) below the minimum ARM support requirement ({minVersion}). Defaulting to {intelSuffix} platform.";
-export const INTEGRATIONS_POLARIS_DEFAULT_SARIF_FILE_PATH =
-  ".blackduck/integrations/polaris/sarif/report.sarif.json";
-export const INTEGRATIONS_BLACKDUCK_SCA_DEFAULT_SARIF_FILE_PATH =
-  ".blackduck/integrations/blackducksca/sarif/report.sarif.json";
+export const INTEGRATIONS_POLARIS_DEFAULT_SARIF_FILE_PATH = path.join(
+  ".blackduck",
+  "integrations",
+  "polaris",
+  "sarif",
+  "report.sarif.json"
+);
+export const INTEGRATIONS_BLACKDUCK_SCA_DEFAULT_SARIF_FILE_PATH = path.join(
+  ".blackduck",
+  "integrations",
+  "blackducksca",
+  "sarif",
+  "report.sarif.json"
+);
 export const INTEGRATIONS_DEFAULT_BLACKDUCK_SARIF_GENERATOR_DIRECTORY =
-  "/blackducksca/sarif";
-export const INTEGRATIONS_DEFAULT_POLARIS_SARIF_GENERATOR_DIRECTORY =
-  "/polaris/sarif";
+  path.join("blackducksca", "sarif");
+export const INTEGRATIONS_DEFAULT_POLARIS_SARIF_GENERATOR_DIRECTORY = path.join(
+  "polaris",
+  "sarif"
+);
 
-export const INTEGRATIONS_CLI_LOCAL_DIRECTORY = ".blackduck/integrations";
+export const INTEGRATIONS_CLI_LOCAL_DIRECTORY = path.join(
+  ".blackduck",
+  "integrations"
+);
 export const ADO_SERVICES_URL = "https://dev.azure.com";
 export const INTEGRATIONS_ADO_CLOUD = "Integrations-ado-cloud";
 export const INTEGRATIONS_ADO_EE = "Integrations-ado-ee";

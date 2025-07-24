@@ -10,7 +10,7 @@
   "version": {
     "Major": 5,
     "Minor": 0,
-    "Patch": 1
+    "Patch": 9
   },
   "instanceNameFormat": "Black Duck Security Scan",
   "groups": [
