@@ -382,6 +382,195 @@ describe("Utilities", () => {
             expect(utility.getMappedTaskResult("")).equals(undefined);
         });
     });
+
+    describe('extractOutputJsonFilename', () => {
+        let debugStub: sinon.SinonStub;
+
+        beforeEach(() => {
+            debugStub = sandbox.stub(taskLib, 'debug');
+        });
+
+        it('should extract output file path when --out flag is present', () => {
+            const command = 'bridge-cli --out /path/to/output.json --other-flag value';
+
+            const result = utility.extractOutputJsonFilename(command);
+
+            expect(result).to.equal('/path/to/output.json');
+            expect(debugStub.calledWith('Extracted Output Path:::: /path/to/output.json')).to.be.true;
+        });
+
+        it('should extract output file path and remove double quotes', () => {
+            const command = 'bridge-cli --out "/path/to/output.json" --other-flag';
+
+            const result = utility.extractOutputJsonFilename(command);
+
+            expect(result).to.equal('/path/to/output.json');
+            expect(debugStub.calledWith('Extracted Output Path:::: /path/to/output.json')).to.be.true;
+        });
+
+        it('should extract output file path and remove single quotes', () => {
+            const command = "bridge-cli --out '/path/to/output.json' --other-flag";
+
+            const result = utility.extractOutputJsonFilename(command);
+
+            expect(result).to.equal('/path/to/output.json');
+            expect(debugStub.calledWith('Extracted Output Path:::: /path/to/output.json')).to.be.true;
+        });
+
+        it('should handle Windows-style paths with backslashes', () => {
+            const command = 'bridge-cli --out C:\\Users\\test\\output.json';
+
+            const result = utility.extractOutputJsonFilename(command);
+
+            expect(result).to.equal('C:\\Users\\test\\output.json');
+            expect(debugStub.calledWith('Extracted Output Path:::: C:\\Users\\test\\output.json')).to.be.true;
+        });
+
+        it('should handle Windows-style paths with quotes', () => {
+            const command = 'bridge-cli --out "C:\\ProgramFiles\\output.json"';
+
+            const result = utility.extractOutputJsonFilename(command);
+
+            expect(result).to.equal('C:\\ProgramFiles\\output.json');
+            expect(debugStub.calledWith('Extracted Output Path:::: C:\\ProgramFiles\\output.json')).to.be.true;
+        });
+
+        it('should handle --out flag with multiple spaces', () => {
+            const command = 'bridge-cli --out    /path/to/output.json --other-flag';
+
+            const result = utility.extractOutputJsonFilename(command);
+
+            expect(result).to.equal('/path/to/output.json');
+            expect(debugStub.calledWith('Extracted Output Path:::: /path/to/output.json')).to.be.true;
+        });
+
+        it('should handle --out flag at the beginning of command', () => {
+            const command = '--out /path/to/output.json bridge-cli --other-flag';
+
+            const result = utility.extractOutputJsonFilename(command);
+
+            expect(result).to.equal('/path/to/output.json');
+            expect(debugStub.calledWith('Extracted Output Path:::: /path/to/output.json')).to.be.true;
+        });
+
+        it('should handle --out flag at the end of command', () => {
+            const command = 'bridge-cli --other-flag value --out /path/to/output.json';
+
+            const result = utility.extractOutputJsonFilename(command);
+
+            expect(result).to.equal('/path/to/output.json');
+            expect(debugStub.calledWith('Extracted Output Path:::: /path/to/output.json')).to.be.true;
+        });
+
+        it('should return empty string when --out flag is not present', () => {
+            const command = 'bridge-cli --other-flag value --another-flag';
+
+            const result = utility.extractOutputJsonFilename(command);
+
+            expect(result).to.equal('');
+            expect(debugStub.called).to.be.false;
+        });
+
+        it('should return empty string when command is empty', () => {
+            const command = '';
+
+            const result = utility.extractOutputJsonFilename(command);
+
+            expect(result).to.equal('');
+            expect(debugStub.called).to.be.false;
+        });
+
+        it('should return empty string when --out flag has no value', () => {
+            const command = 'bridge-cli --out';
+
+            const result = utility.extractOutputJsonFilename(command);
+
+            expect(result).to.equal('');
+            expect(debugStub.called).to.be.false;
+        });
+
+        it('should handle --out flag with relative path', () => {
+            const command = 'bridge-cli --out ./output/results.json';
+
+            const result = utility.extractOutputJsonFilename(command);
+
+            expect(result).to.equal('./output/results.json');
+            expect(debugStub.calledWith('Extracted Output Path:::: ./output/results.json')).to.be.true;
+        });
+
+        it('should handle --out flag with filename only', () => {
+            const command = 'bridge-cli --out output.json';
+
+            const result = utility.extractOutputJsonFilename(command);
+
+            expect(result).to.equal('output.json');
+            expect(debugStub.calledWith('Extracted Output Path:::: output.json')).to.be.true;
+        });
+
+        it('should handle complex paths with special characters', () => {
+            const command = 'bridge-cli --out "/path/withspaces/and-dashes/output_file.json"';
+
+            const result = utility.extractOutputJsonFilename(command);
+
+            expect(result).to.equal('/path/withspaces/and-dashes/output_file.json');
+            expect(debugStub.calledWith('Extracted Output Path:::: /path/withspaces/and-dashes/output_file.json')).to.be.true;
+        });
+
+        it('should handle --out flag with mixed quotes (double at start, single at end)', () => {
+            const command = "bridge-cli --out \"/path/to/output.json'";
+
+            const result = utility.extractOutputJsonFilename(command);
+
+            expect(result).to.equal('/path/to/output.json');
+            expect(debugStub.calledWith('Extracted Output Path:::: /path/to/output.json')).to.be.true;
+        });
+
+        it('should handle --out flag with mixed quotes (single at start, double at end)', () => {
+            const command = 'bridge-cli --out \'/path/to/output.json"';
+
+            const result = utility.extractOutputJsonFilename(command);
+
+            expect(result).to.equal('/path/to/output.json');
+            expect(debugStub.calledWith('Extracted Output Path:::: /path/to/output.json')).to.be.true;
+        });
+
+        it('should handle --out flag with path containing numbers and underscores', () => {
+            const command = 'bridge-cli --out /home/user123/project_2024/output_v1.json';
+
+            const result = utility.extractOutputJsonFilename(command);
+
+            expect(result).to.equal('/home/user123/project_2024/output_v1.json');
+            expect(debugStub.calledWith('Extracted Output Path:::: /home/user123/project_2024/output_v1.json')).to.be.true;
+        });
+
+        it('should handle command with multiple --out-like patterns but match only --out', () => {
+            const command = 'bridge-cli --output /wrong/path --out /correct/path.json --outro value';
+
+            const result = utility.extractOutputJsonFilename(command);
+
+            expect(result).to.equal('/correct/path.json');
+            expect(debugStub.calledWith('Extracted Output Path:::: /correct/path.json')).to.be.true;
+        });
+
+        it('should return empty string for edge case when match exists but captured group is empty', () => {
+            const command = 'bridge-cli --out ""';
+
+            const result = utility.extractOutputJsonFilename(command);
+
+            expect(result).to.equal('');
+            expect(debugStub.calledWith('Extracted Output Path:::: ')).to.be.true;
+        });
+
+        it('should handle path with dots and extensions correctly', () => {
+            const command = 'bridge-cli --out /path/to/file.name.with.dots.json';
+
+            const result = utility.extractOutputJsonFilename(command);
+
+            expect(result).to.equal('/path/to/file.name.with.dots.json');
+            expect(debugStub.calledWith('Extracted Output Path:::: /path/to/file.name.with.dots.json')).to.be.true;
+        });
+    });
+
     context('SSL HTTP Client Functions', () => {
         let originalTrustAll: string | undefined;
         let originalCertFile: string | undefined;
@@ -462,4 +651,5 @@ describe("Utilities", () => {
             });
         });
     });
+
 });
