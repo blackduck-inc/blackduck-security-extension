@@ -57,7 +57,7 @@ export async function run() {
     }
     // Get Bridge version from bridge Path
     bridgeVersion = getBridgeVersion(bridgePath);
-     taskLib.debug(`bridgePath: ${bridgeVersion}`);
+    taskLib.debug(`bridgePath: ${bridgeVersion}`);
 
     // Execute prepared commands
     const result: number = await bridge.executeBridgeCliCommand(

@@ -412,11 +412,8 @@ export function extractSarifOutputPath(
         : config?.data?.blackducksca?.reports?.sarif?.file?.output;
 
     if (!sarifOutputPath) {
-      console.log("SARIF output path not found in JSON");
       return "";
     }
-
-    taskLib.debug(`Extracted SARIF output path: ${sarifOutputPath}`);
     return sarifOutputPath;
   } catch (error) {
     console.error("Error reading or parsing output JSON file:", error);

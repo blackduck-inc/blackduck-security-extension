@@ -1251,13 +1251,14 @@ const path = __importStar(__nccwpck_require__(1017));
 const utility_1 = __nccwpck_require__(8383);
 function uploadDiagnostics(workspaceDir) {
     const uploadArtifactPath = path.join(workspaceDir, constants.BRIDGE_CLI_LOCAL_DIRECTORY);
-    taskLib.debug("workspaceDir::: " + workspaceDir);
-    taskLib.debug("constant::: " + constants.BRIDGE_CLI_LOCAL_DIRECTORY);
-    taskLib.debug("uploadArtifactPath::: " + uploadArtifactPath);
+    const uploadIntegrationDefaultArtifactPath = path.join(workspaceDir, constants.INTEGRATIONS_CLI_LOCAL_DIRECTORY);
     let isBridgeDirectoryExists = false;
     isBridgeDirectoryExists = taskLib.exist(uploadArtifactPath);
     if (isBridgeDirectoryExists) {
         taskLib.uploadArtifact(constants.UPLOAD_FOLDER_ARTIFACT_NAME, uploadArtifactPath, constants.UPLOAD_FOLDER_ARTIFACT_NAME);
+    }
+    else {
+        taskLib.uploadArtifact(constants.UPLOAD_FOLDER_ARTIFACT_NAME, uploadIntegrationDefaultArtifactPath, constants.UPLOAD_FOLDER_ARTIFACT_NAME);
     }
 }
 exports.uploadDiagnostics = uploadDiagnostics;
@@ -3137,10 +3138,8 @@ function extractSarifOutputPath(outputJsonPath, sarifFileName) {
             ? (_e = (_d = (_c = (_b = (_a = config === null || config === void 0 ? void 0 : config.data) === null || _a === void 0 ? void 0 : _a.polaris) === null || _b === void 0 ? void 0 : _b.reports) === null || _c === void 0 ? void 0 : _c.sarif) === null || _d === void 0 ? void 0 : _d.file) === null || _e === void 0 ? void 0 : _e.output
             : (_k = (_j = (_h = (_g = (_f = config === null || config === void 0 ? void 0 : config.data) === null || _f === void 0 ? void 0 : _f.blackducksca) === null || _g === void 0 ? void 0 : _g.reports) === null || _h === void 0 ? void 0 : _h.sarif) === null || _j === void 0 ? void 0 : _j.file) === null || _k === void 0 ? void 0 : _k.output;
         if (!sarifOutputPath) {
-            console.log("SARIF output path not found in JSON");
             return "";
         }
-        taskLib.debug(`Extracted SARIF output path: ${sarifOutputPath}`);
         return sarifOutputPath;
     }
     catch (error) {
@@ -3399,14 +3398,11 @@ function run() {
             // Extract Sarif file out file from the out.json file
             productOutputFilPath = util.extractOutputJsonFilename(command);
             taskLib.debug(`Product out file path: ${productOutputFilPath}`);
-            // if (
-            //   inputs.POLARIS_REPORTS_SARIF_CREATE === "true" ||
-            //   inputs.BLACKDUCKSCA_REPORTS_SARIF_CREATE === "true"
-            // ) {
-            // Copy Sarif file from out.json to integration default directory
-            util.copySarifFileToIntegrationDefaultPath(productOutputFilPath);
-            taskLib.debug(`Sarif file copied to integration default path`);
-            //}
+            if (inputs.POLARIS_REPORTS_SARIF_CREATE === "true" ||
+                inputs.BLACKDUCKSCA_REPORTS_SARIF_CREATE === "true") {
+                // Copy Sarif file from out.json to integration default directory
+                util.copySarifFileToIntegrationDefaultPath(productOutputFilPath);
+            }
             // The statement set the exit code in the 'status' variable which can be used in the YAML file
             if ((0, utility_1.parseToBoolean)(inputs.RETURN_STATUS)) {
                 console.log(application_constant_1.TASK_RETURN_STATUS);
