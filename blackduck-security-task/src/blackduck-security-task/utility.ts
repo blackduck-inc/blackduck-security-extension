@@ -356,7 +356,7 @@ export function extractOutputJsonFilename(command: string): string {
   return "";
 }
 
-// Extract sarif output file path from out json
+// Extract sarif output file path from output.json
 export function copySarifFileToIntegrationDefaultPath(
   sarifFilePath: string
 ): void {

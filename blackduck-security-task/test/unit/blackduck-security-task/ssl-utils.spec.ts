@@ -72,8 +72,46 @@ describe('SSL Utils Unit Tests', () => {
 
     describe('getSSLConfig', () => {
 
+        function reloadSslUtils() {
+            // Clear module cache
+            delete require.cache[require.resolve('../../../src/blackduck-security-task/ssl-utils')];
+            delete require.cache[require.resolve('fs')];
+            delete require.cache[require.resolve('tls')];
+            delete require.cache[require.resolve('../../../src/blackduck-security-task/input')];
+            delete require.cache[require.resolve('azure-pipelines-task-lib')];
+
+            // Re-establish module mocking
+            const Module = require('module');
+            const originalRequire = Module.prototype.require;
+            Module.prototype.require = function(id: string, ...args: any[]) {
+                if (id === 'fs') return mockFs;
+                if (id === 'tls') return mockTls;
+                if (id === './input') return mockInputs;
+                if (id === 'azure-pipelines-task-lib') return mockTaskLib;
+                return originalRequire.apply(this, [id, ...args]);
+            };
+
+            // Import after mocking
+            sslUtils = require('../../../src/blackduck-security-task/ssl-utils');
+
+            // Restore require
+            Module.prototype.require = originalRequire;
+        }
+
+        beforeEach(() => {
+            // Override environment variables to bypass test mode detection
+            delete process.env.NODE_ENV;
+            delete process.env.npm_lifecycle_event;
+        });
+
+        afterEach(() => {
+            // Reset environment variables
+            process.env.NODE_ENV = 'test';
+        });
+
         it('returns trustAllCerts=true when NETWORK_SSL_TRUST_ALL is "true" string', () => {
             mockInputs.NETWORK_SSL_TRUST_ALL = 'true';
+            reloadSslUtils();
 
             const result = sslUtils.getSSLConfig();
 
@@ -82,6 +120,7 @@ describe('SSL Utils Unit Tests', () => {
 
         it('returns trustAllCerts=true when NETWORK_SSL_TRUST_ALL is "TRUE" string', () => {
             mockInputs.NETWORK_SSL_TRUST_ALL = 'TRUE';
+            reloadSslUtils();
 
             const result = sslUtils.getSSLConfig();
 
@@ -90,6 +129,7 @@ describe('SSL Utils Unit Tests', () => {
 
         it('returns trustAllCerts=false when NETWORK_SSL_TRUST_ALL is false', () => {
             mockInputs.NETWORK_SSL_TRUST_ALL = false;
+            reloadSslUtils();
 
             const result = sslUtils.getSSLConfig();
 
@@ -98,6 +138,7 @@ describe('SSL Utils Unit Tests', () => {
 
         it('returns trustAllCerts=false when NETWORK_SSL_TRUST_ALL is "false" string', () => {
             mockInputs.NETWORK_SSL_TRUST_ALL = 'false';
+            reloadSslUtils();
 
             const result = sslUtils.getSSLConfig();
 
@@ -106,6 +147,7 @@ describe('SSL Utils Unit Tests', () => {
 
         it('returns trustAllCerts=false when NETWORK_SSL_TRUST_ALL is empty string', () => {
             mockInputs.NETWORK_SSL_TRUST_ALL = '';
+            reloadSslUtils();
 
             const result = sslUtils.getSSLConfig();
 
@@ -114,6 +156,7 @@ describe('SSL Utils Unit Tests', () => {
 
         it('returns trustAllCerts=false when NETWORK_SSL_TRUST_ALL is null', () => {
             mockInputs.NETWORK_SSL_TRUST_ALL = null;
+            reloadSslUtils();
 
             const result = sslUtils.getSSLConfig();
 
@@ -122,8 +165,13 @@ describe('SSL Utils Unit Tests', () => {
 
         it('loads custom CA certificate when NETWORK_SSL_CERT_FILE is provided', () => {
             mockInputs.NETWORK_SSL_CERT_FILE = '/path/to/cert.pem';
+            mockInputs.NETWORK_SSL_TRUST_ALL = false;
+
             const mockCertContent = '-----BEGIN CERTIFICATE-----\ntest-cert\n-----END CERTIFICATE-----';
             mockFs.readFileSync.returns(mockCertContent);
+            mockTls.rootCertificates = ['system-ca-1', 'system-ca-2'];
+
+            reloadSslUtils();
 
             const result = sslUtils.getSSLConfig();
 
@@ -132,12 +180,16 @@ describe('SSL Utils Unit Tests', () => {
                 customCA: mockCertContent,
                 combinedCAs: [mockCertContent, 'system-ca-1', 'system-ca-2']
             });
+
+            expect(mockFs.readFileSync.calledWith('/path/to/cert.pem', 'utf8')).to.be.true;
         });
 
         it('handles file read error and returns default config', () => {
             mockInputs.NETWORK_SSL_CERT_FILE = '/path/to/nonexistent.pem';
             const mockError = new Error('File not found');
             mockFs.readFileSync.throws(mockError);
+
+            reloadSslUtils();
 
             const result = sslUtils.getSSLConfig();
 
@@ -149,6 +201,8 @@ describe('SSL Utils Unit Tests', () => {
             const mockCertContent = '-----BEGIN CERTIFICATE-----\ntest-cert\n-----END CERTIFICATE-----';
             mockFs.readFileSync.returns(mockCertContent);
             mockTls.rootCertificates = [];
+
+            reloadSslUtils();
 
             const result = sslUtils.getSSLConfig();
 
@@ -164,6 +218,8 @@ describe('SSL Utils Unit Tests', () => {
             const mockCertContent = '-----BEGIN CERTIFICATE-----\ntest-cert\n-----END CERTIFICATE-----';
             mockFs.readFileSync.returns(mockCertContent);
             mockTls.rootCertificates = undefined;
+
+            reloadSslUtils();
 
             const result = sslUtils.getSSLConfig();
 
