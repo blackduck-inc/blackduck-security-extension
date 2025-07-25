@@ -120,11 +120,6 @@
       "name": "bridgecliOptions",
       "displayName": "Bridge CLI Options",
       "isExpanded": false
-    },
-    {
-      "name": "networkOptions",
-      "displayName": "Network Options",
-      "isExpanded": false
     }
   ],
   "inputs": [
@@ -162,25 +157,7 @@
       "defaultValue": false,
       "required": false,
       "helpMarkDown": "If provided, Black Duck Task will be using local network to download and execute bridge-CLI.",
-      "groupName": "networkOptions"
-    },
-    {
-      "name": "networkSslTrustAll",
-      "type": "boolean",
-      "label": "Trust All SSL Certificates",
-      "defaultValue": false,
-      "required": false,
-      "helpMarkDown": "TrustALL -> Disables SSL certificate verification. Use with caution.",
-      "groupName": "networkOptions"
-    },
-    {
-      "name": "networkSslCertFile",
-      "type": "string",
-      "label": "SSL Certificate File",
-      "defaultValue": "",
-      "required": false,
-      "helpMarkDown": "Cert file path -> Path to a file that includes one or more trusted CA certificates. Supported formats: PEM, CRT.",
-      "groupName": "networkOptions"
+      "groupName": "bridgecliOptions"
     },
     {
       "name": "scanType",
