@@ -222,8 +222,6 @@ describe("Utilities", () => {
         });
     });
 
-
-
     context('getWorkSpaceDirectory', () => {
 
         it('getWorkSpaceDirectory - success', async function () {
@@ -382,5 +380,4 @@ describe("Utilities", () => {
             expect(utility.getMappedTaskResult("")).equals(undefined);
         });
     });
-
 });

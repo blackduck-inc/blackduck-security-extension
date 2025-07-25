@@ -370,7 +370,7 @@ export function copySarifFileToIntegrationDefaultPath(
   const integrationSarifDir = path.dirname(
     isPolarisFile
       ? constants.INTEGRATIONS_POLARIS_DEFAULT_SARIF_FILE_PATH
-      : constants.INTEGRATIONS_BLACKDUCK_SCA_DEFAULT_SARIF_FILE_PATH
+      : constants.INTEGRATIONS_BLACKDUCKSCA_DEFAULT_SARIF_FILE_PATH
   );
 
   const integrationSarifDirPath = path.join(
