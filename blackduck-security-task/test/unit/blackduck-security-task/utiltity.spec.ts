@@ -7,7 +7,6 @@ import {
 } from "../../../src/blackduck-security-task/utility";
 import * as process from "process";
 import * as sinon from "sinon";
-import * as toolLib from "azure-pipelines-tool-lib";
 import * as toolLibLocal from "../../../src/blackduck-security-task/download-tool";
 import {DownloadFileResponse} from "../../../src/blackduck-security-task/model/download-file-response";
 import * as constants from "../../../src/blackduck-security-task/application-constant";
@@ -18,7 +17,6 @@ import {BuildStatus} from "../../../src/blackduck-security-task/enum/BuildStatus
 import {TaskResult} from "azure-pipelines-task-lib/task";
 import * as trm from "azure-pipelines-task-lib/toolrunner";
 import { expect } from "chai";
-import * as fs from 'fs';
 
 
 describe("Utilities", () => {
@@ -220,6 +218,8 @@ describe("Utilities", () => {
             })
         });
     });
+
+
 
     context('getWorkSpaceDirectory', () => {
 

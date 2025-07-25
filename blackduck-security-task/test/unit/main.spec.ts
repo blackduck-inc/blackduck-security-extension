@@ -10,7 +10,6 @@ import { ErrorCode } from "../../src/blackduck-security-task/enum/ErrorCodes";
 import * as util from "../../src/blackduck-security-task/utility";
 import * as constants from "../../src/blackduck-security-task/application-constant";
 
-
 describe("Main function test cases", () => {
 
     let sandbox: sinon.SinonSandbox;
