@@ -148,7 +148,7 @@ describe("Main function test cases", () => {
 
             sinon.assert.calledWith(
                 uploadArtifactStub,
-                constants.INTEGRATIONS_DEFAULT_BLACKDUCK_SARIF_GENERATOR_DIRECTORY,
+                constants.INTEGRATIONS_DEFAULT_BLACKDUCKSCA_SARIF_GENERATOR_DIRECTORY,
                 inputs.BLACKDUCKSCA_REPORTS_SARIF_FILE_PATH
             );
         });
@@ -179,7 +179,7 @@ describe("Main function test cases", () => {
 
             sinon.assert.calledWith(
                 uploadArtifactStub,
-                constants.INTEGRATIONS_DEFAULT_BLACKDUCK_SARIF_GENERATOR_DIRECTORY,
+                constants.INTEGRATIONS_DEFAULT_BLACKDUCKSCA_SARIF_GENERATOR_DIRECTORY,
                 ''
             );
         });
