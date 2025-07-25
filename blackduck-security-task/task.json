@@ -239,6 +239,16 @@
       "groupName": "scanConfiguration"
     },
     {
+      "name": "polarisTestSastType",
+      "type": "string",
+      "label": "SAST Test Type",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Polaris test type to trigger sigma rapid scan or full scan. Supported values: SAST_RAPID or SAST_FULL",
+      "visibleRule": "scanType = polaris",
+      "groupName": "scanConfiguration"
+    },
+    {
       "name": "polarisProjectDirectory",
       "type": "string",
       "label": "Project Directory",
