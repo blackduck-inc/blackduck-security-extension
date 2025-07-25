@@ -89,9 +89,6 @@ export const POLARIS_ASSESSMENT_MODE_KEY_CLASSIC_EDITOR =
 export const POLARIS_TEST_SCA_TYPE_KEY = "polaris_test_sca_type";
 export const POLARIS_TEST_SCA_TYPE_KEY_CLASSIC_EDITOR = "polarisTestScaType";
 
-export const POLARIS_TEST_SAST_TYPE_KEY = "polaris_test_sast_type";
-export const POLARIS_TEST_SAST_TYPE_KEY_CLASSIC_EDITOR = "polarisTestSastType";
-
 export const PROJECT_DIRECTORY_KEY = "project_directory";
 export const POLARIS_PROJECT_DIRECTORY_KEY_CLASSIC_EDITOR =
   "polarisProjectDirectory";
@@ -696,8 +693,6 @@ export const EXIT_CODE_MAP = new Map<string, string>([
 
 export const BRIDGE_CLI_ARM_VERSION_FALLBACK_MESSAGE =
   "Detected Bridge CLI version ({version}) below the minimum ARM support requirement ({minVersion}). Defaulting to {intelSuffix} platform.";
-
-// Sarif file path related and custom header info messages
 export const INTEGRATIONS_POLARIS_DEFAULT_SARIF_FILE_PATH = path.join(
   ".blackduck",
   "integrations",
@@ -705,14 +700,14 @@ export const INTEGRATIONS_POLARIS_DEFAULT_SARIF_FILE_PATH = path.join(
   "sarif",
   "report.sarif.json"
 );
-export const INTEGRATIONS_BLACKDUCKSCA_DEFAULT_SARIF_FILE_PATH = path.join(
+export const INTEGRATIONS_BLACKDUCK_SCA_DEFAULT_SARIF_FILE_PATH = path.join(
   ".blackduck",
   "integrations",
   "blackducksca",
   "sarif",
   "report.sarif.json"
 );
-export const INTEGRATIONS_DEFAULT_BLACKDUCKSCA_SARIF_GENERATOR_DIRECTORY =
+export const INTEGRATIONS_DEFAULT_BLACKDUCK_SARIF_GENERATOR_DIRECTORY =
   path.join("blackducksca", "sarif");
 export const INTEGRATIONS_DEFAULT_POLARIS_SARIF_GENERATOR_DIRECTORY = path.join(
   "polaris",
@@ -723,7 +718,6 @@ export const INTEGRATIONS_CLI_LOCAL_DIRECTORY = path.join(
   ".blackduck",
   "integrations"
 );
-
 export const ADO_SERVICES_URL = "https://dev.azure.com";
 export const INTEGRATIONS_ADO_CLOUD = "Integrations-ado-cloud";
 export const INTEGRATIONS_ADO_EE = "Integrations-ado-ee";

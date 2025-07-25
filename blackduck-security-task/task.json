@@ -120,6 +120,11 @@
       "name": "bridgecliOptions",
       "displayName": "Bridge CLI Options",
       "isExpanded": false
+    },
+    {
+      "name": "networkOptions",
+      "displayName": "Network Options",
+      "isExpanded": false
     }
   ],
   "inputs": [
