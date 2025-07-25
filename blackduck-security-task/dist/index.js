@@ -3112,8 +3112,6 @@ exports.extractOutputJsonFilename = extractOutputJsonFilename;
 function copySarifFileToIntegrationDefaultPath(sarifFilePath) {
     const sourceDirectory = process.env["BUILD_SOURCESDIRECTORY"] || "";
     const sarifFileName = path_1.default.basename(sarifFilePath);
-    const agentOS = taskLib.getVariable("Agent.OS");
-    taskLib.debug(`Agent OS:::: ${agentOS}`);
     const isPolarisFile = sarifFileName === constants.POLARIS_OUTPUT_FILE_NAME;
     const isBlackduckFile = sarifFileName === constants.BD_OUTPUT_FILE_NAME;
     if (!isPolarisFile && !isBlackduckFile)
@@ -3127,53 +3125,12 @@ function copySarifFileToIntegrationDefaultPath(sarifFilePath) {
     const integrationSarifDirPath = path_1.default.join(sourceDirectory, integrationSarifDir);
     const destinationFile = path_1.default.join(integrationSarifDirPath, constants.SARIF_DEFAULT_FILE_NAME);
     try {
-        // Get OS type for potential OS-specific handling
-        const agentOS = taskLib.getVariable("Agent.OS") || process.platform;
-        // Normalize paths for different OS types
-        const normalizedSarifDirPath = path_1.default.normalize(integrationSarifDirPath);
-        const normalizedDestinationFile = path_1.default.normalize(destinationFile);
-        const normalizedSarifOutputPath = path_1.default.normalize(sarifOutputPath);
-        // Validate source file exists
-        if (!fs.existsSync(normalizedSarifOutputPath)) {
-            taskLib.debug(`Source SARIF file does not exist: ${normalizedSarifOutputPath}`);
-        }
-        // Create directory recursively (works on all OS)
-        fs.mkdirSync(normalizedSarifDirPath, { recursive: true });
-        taskLib.debug(`Directory created/verified: ${normalizedSarifDirPath}`);
-        // Check if destination file exists before copying
-        const fileExists = fs.existsSync(normalizedDestinationFile);
-        // Copy file (works on all OS)
-        fs.copyFileSync(normalizedSarifOutputPath, normalizedDestinationFile);
-        // Verify the copy was successful
-        if (fs.existsSync(normalizedDestinationFile)) {
-            const action = fileExists ? "overwritten" : "copied";
-            taskLib.debug(`SARIF file ${action} successfully at: ${normalizedDestinationFile}`);
-            const osType = agentOS || process.platform;
-            const osMessage = osType === "Windows_NT" || osType === "win32"
-                ? "Windows"
-                : osType === "Darwin" || osType === "darwin"
-                    ? "macOS"
-                    : "Linux";
-            taskLib.debug(`OS Type: ${osMessage}`);
-        }
-        else {
-            taskLib.debug(`File copy verification failed for: ${normalizedDestinationFile}`);
-        }
+        fs.mkdirSync(integrationSarifDirPath, { recursive: true });
+        fs.copyFileSync(sarifOutputPath, destinationFile);
+        taskLib.debug(`SARIF file ${fs.existsSync(destinationFile) ? "overwritten" : "copied"} at: ${destinationFile}`);
     }
     catch (error) {
-        const errorMessage = error instanceof Error ? error.message : String(error);
-        console.error(`Error copying SARIF file (OS: ${agentOS || process.platform}): ${errorMessage}`);
-        // OS-specific error handling if needed
-        if (errorMessage.includes("ENOENT")) {
-            console.error("File or directory not found - check paths and permissions");
-        }
-        else if (errorMessage.includes("EACCES") ||
-            errorMessage.includes("EPERM")) {
-            console.error("Permission denied - check file/directory permissions");
-        }
-        else if (errorMessage.includes("ENOSPC")) {
-            console.error("No space left on device");
-        }
+        console.error("Error copying SARIF file:", error);
     }
 }
 exports.copySarifFileToIntegrationDefaultPath = copySarifFileToIntegrationDefaultPath;

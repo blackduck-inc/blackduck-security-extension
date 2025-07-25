@@ -221,8 +221,6 @@ describe("Utilities", () => {
         });
     });
 
-
-
     context('getWorkSpaceDirectory', () => {
 
         it('getWorkSpaceDirectory - success', async function () {
