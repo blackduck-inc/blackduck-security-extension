@@ -456,6 +456,10 @@ export const MIN_SUPPORTED_BRIDGE_CLI_LINUX_ARM_VERSION = "3.5.1";
 export const DEFAULT_AZURE_API_URL = "https://dev.azure.com";
 export const BLACKDUCKSCA_SECURITY_SCAN_AZURE_DEVOPS_DOCS_URL =
   "https://documentation.blackduck.com/bundle/bridge/page/documentation/c_additional-azure-parameters.html";
+export const NETWORK_SSL_CERT_FILE_KEY = "network_ssl_cert_file";
+export const NETWORK_SSL_CERT_FILE_KEY_CLASSIC_EDITOR = "networkSslCertFile";
+export const NETWORK_SSL_TRUST_ALL_KEY = "network_ssl_trustAll";
+export const NETWORK_SSL_TRUST_ALL_KEY_CLASSIC_EDITOR = "networkSslTrustAll";
 // Error Messages
 export const MISSING_AZURE_TOKEN_FOR_FIX_PR_AND_PR_COMMENT =
   "Missing required azure token for fix pull request/automation comment";
@@ -692,6 +696,9 @@ export const EXIT_CODE_MAP = new Map<string, string>([
 
 export const BRIDGE_CLI_ARM_VERSION_FALLBACK_MESSAGE =
   "Detected Bridge CLI version ({version}) below the minimum ARM support requirement ({minVersion}). Defaulting to {intelSuffix} platform.";
+
+export const NETWORK_SSL_VALIDATION_ERROR_MESSAGE =
+  "Both network_ssl_cert_file and network_ssl_trustAll are set. Only one of these resources should be set at a time.";
 
 // Sarif file path related and custom header info messages
 export const INTEGRATIONS_POLARIS_DEFAULT_SARIF_FILE_PATH = path.join(

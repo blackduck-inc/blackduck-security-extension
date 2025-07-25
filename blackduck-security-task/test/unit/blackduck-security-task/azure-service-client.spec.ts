@@ -123,6 +123,28 @@ describe("getPullRequestIdForClassicEditorFlow", () => {
 
 
         })
+
+        it('Test getPullRequestIdForClassicEditorFlow - HTTP status 401 unauthorized', async () => {
+            const incomingMessage: IncomingMessage = new IncomingMessage(new Socket())
+            incomingMessage.statusCode = 401
+            const responseBody = "Unauthorized"
+
+            const response: ifm.IHttpClientResponse = {
+                message: incomingMessage,
+                readBody: sinon.stub().resolves(responseBody)
+            };
+
+            httpClientStub.resolves(response)
+            sinon.stub(httpc, 'HttpClient').returns({
+                get: httpClientStub,
+            } as any);
+
+            await azureService.getAzurePrResponseForManualTriggerFlow(azureData).catch(errorObj => {
+                expect(errorObj.message).to.include('Failed to get pull request info for current build from source branch: feature/xyz');
+                expect(errorObj.message).to.include(ErrorCode.FAILED_TO_GET_PULL_REQUEST_INFO_FROM_SOURCE_BRANCH.toString());
+                expect(errorObj instanceof Error).to.be.true;
+            });
+        });
     })
 })
 ;

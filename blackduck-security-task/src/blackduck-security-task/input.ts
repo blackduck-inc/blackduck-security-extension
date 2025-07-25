@@ -631,3 +631,15 @@ export const MARK_BUILD_STATUS = getInputForMultipleClassicEditor(
   constants.SRM_MARK_BUILD_STATUS_KEY_CLASSIC_EDITOR,
   null
 );
+
+export const NETWORK_SSL_CERT_FILE = getInput(
+  constants.NETWORK_SSL_CERT_FILE_KEY,
+  constants.NETWORK_SSL_CERT_FILE_KEY_CLASSIC_EDITOR,
+  null
+);
+
+export const NETWORK_SSL_TRUST_ALL = getBoolInput(
+  constants.NETWORK_SSL_TRUST_ALL_KEY,
+  constants.NETWORK_SSL_TRUST_ALL_KEY_CLASSIC_EDITOR,
+  null
+);

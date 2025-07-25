@@ -1,6 +1,5 @@
 // Copyright (c) 2024 Black Duck Software Inc. All rights reserved worldwide.
 
-import { HttpClient } from "typed-rest-client/HttpClient";
 import { AzureData, AzurePrResponse } from "./model/azure";
 import * as taskLib from "azure-pipelines-task-lib/task";
 import * as constants from "./application-constant";
@@ -9,6 +8,7 @@ import {
   FAILED_TO_GET_PULL_REQUEST_INFO,
   UNABLE_TO_FIND_PULL_REQUEST_INFO,
 } from "./application-constant";
+import { getSharedHttpClient } from "./utility";
 
 export class AzureService {
   azureGetMergeRequestsAPI: string;
@@ -48,7 +48,7 @@ export class AzureService {
         "base64"
       );
 
-      const httpClient = new HttpClient("blackduck-azure-service");
+      const httpClient = getSharedHttpClient();
       const httpResponse = await httpClient.get(endpoint, {
         Authorization: "Basic ".concat(encodedToken),
         Accept: "application/json",

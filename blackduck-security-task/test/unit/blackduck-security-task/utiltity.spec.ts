@@ -1,10 +1,14 @@
 // Copyright (c) 2024 Black Duck Software Inc. All rights reserved worldwide.
 
 import * as utility from "../../../src/blackduck-security-task/utility";
+import * as input from "../../../src/blackduck-security-task/input";
+import * as sslUtils from "../../../src/blackduck-security-task/ssl-utils";
 import {
     extractZipped, getStatusCode,
     getWorkSpaceDirectory,
-    parseToBoolean
+    parseToBoolean,
+    createSSLConfiguredHttpClient,
+    clearHttpClientCache
 } from "../../../src/blackduck-security-task/utility";
 import process from "process";
 import * as sinon from "sinon";
@@ -20,7 +24,7 @@ import {TaskResult} from "azure-pipelines-task-lib/task";
 import * as trm from "azure-pipelines-task-lib/toolrunner";
 import { expect } from "chai";
 import * as fs from 'fs';
-
+import * as https from "node:https";
 
 describe("Utilities", () => {
 
@@ -380,4 +384,574 @@ describe("Utilities", () => {
             expect(utility.getMappedTaskResult("")).equals(undefined);
         });
     });
+
+    describe('extractOutputJsonFilename', () => {
+        let debugStub: sinon.SinonStub;
+
+        beforeEach(() => {
+            debugStub = sandbox.stub(taskLib, 'debug');
+        });
+
+        it('should extract output file path when --out flag is present', () => {
+            const command = 'bridge-cli --out /path/to/output.json --other-flag value';
+
+            const result = utility.extractOutputJsonFilename(command);
+
+            expect(result).to.equal('/path/to/output.json');
+            expect(debugStub.calledWith('Extracted Output Path:::: /path/to/output.json')).to.be.true;
+        });
+
+        it('should extract output file path and remove double quotes', () => {
+            const command = 'bridge-cli --out "/path/to/output.json" --other-flag';
+
+            const result = utility.extractOutputJsonFilename(command);
+
+            expect(result).to.equal('/path/to/output.json');
+            expect(debugStub.calledWith('Extracted Output Path:::: /path/to/output.json')).to.be.true;
+        });
+
+        it('should extract output file path and remove single quotes', () => {
+            const command = "bridge-cli --out '/path/to/output.json' --other-flag";
+
+            const result = utility.extractOutputJsonFilename(command);
+
+            expect(result).to.equal('/path/to/output.json');
+            expect(debugStub.calledWith('Extracted Output Path:::: /path/to/output.json')).to.be.true;
+        });
+
+        it('should handle Windows-style paths with backslashes', () => {
+            const command = 'bridge-cli --out C:\\Users\\test\\output.json';
+
+            const result = utility.extractOutputJsonFilename(command);
+
+            expect(result).to.equal('C:\\Users\\test\\output.json');
+            expect(debugStub.calledWith('Extracted Output Path:::: C:\\Users\\test\\output.json')).to.be.true;
+        });
+
+        it('should handle Windows-style paths with quotes', () => {
+            const command = 'bridge-cli --out "C:\\ProgramFiles\\output.json"';
+
+            const result = utility.extractOutputJsonFilename(command);
+
+            expect(result).to.equal('C:\\ProgramFiles\\output.json');
+            expect(debugStub.calledWith('Extracted Output Path:::: C:\\ProgramFiles\\output.json')).to.be.true;
+        });
+
+        it('should handle --out flag with multiple spaces', () => {
+            const command = 'bridge-cli --out    /path/to/output.json --other-flag';
+
+            const result = utility.extractOutputJsonFilename(command);
+
+            expect(result).to.equal('/path/to/output.json');
+            expect(debugStub.calledWith('Extracted Output Path:::: /path/to/output.json')).to.be.true;
+        });
+
+        it('should handle --out flag at the beginning of command', () => {
+            const command = '--out /path/to/output.json bridge-cli --other-flag';
+
+            const result = utility.extractOutputJsonFilename(command);
+
+            expect(result).to.equal('/path/to/output.json');
+            expect(debugStub.calledWith('Extracted Output Path:::: /path/to/output.json')).to.be.true;
+        });
+
+        it('should handle --out flag at the end of command', () => {
+            const command = 'bridge-cli --other-flag value --out /path/to/output.json';
+
+            const result = utility.extractOutputJsonFilename(command);
+
+            expect(result).to.equal('/path/to/output.json');
+            expect(debugStub.calledWith('Extracted Output Path:::: /path/to/output.json')).to.be.true;
+        });
+
+        it('should return empty string when --out flag is not present', () => {
+            const command = 'bridge-cli --other-flag value --another-flag';
+
+            const result = utility.extractOutputJsonFilename(command);
+
+            expect(result).to.equal('');
+            expect(debugStub.called).to.be.false;
+        });
+
+        it('should return empty string when command is empty', () => {
+            const command = '';
+
+            const result = utility.extractOutputJsonFilename(command);
+
+            expect(result).to.equal('');
+            expect(debugStub.called).to.be.false;
+        });
+
+        it('should return empty string when --out flag has no value', () => {
+            const command = 'bridge-cli --out';
+
+            const result = utility.extractOutputJsonFilename(command);
+
+            expect(result).to.equal('');
+            expect(debugStub.called).to.be.false;
+        });
+
+        it('should handle --out flag with relative path', () => {
+            const command = 'bridge-cli --out ./output/results.json';
+
+            const result = utility.extractOutputJsonFilename(command);
+
+            expect(result).to.equal('./output/results.json');
+            expect(debugStub.calledWith('Extracted Output Path:::: ./output/results.json')).to.be.true;
+        });
+
+        it('should handle --out flag with filename only', () => {
+            const command = 'bridge-cli --out output.json';
+
+            const result = utility.extractOutputJsonFilename(command);
+
+            expect(result).to.equal('output.json');
+            expect(debugStub.calledWith('Extracted Output Path:::: output.json')).to.be.true;
+        });
+
+        it('should handle complex paths with special characters', () => {
+            const command = 'bridge-cli --out "/path/withspaces/and-dashes/output_file.json"';
+
+            const result = utility.extractOutputJsonFilename(command);
+
+            expect(result).to.equal('/path/withspaces/and-dashes/output_file.json');
+            expect(debugStub.calledWith('Extracted Output Path:::: /path/withspaces/and-dashes/output_file.json')).to.be.true;
+        });
+
+        it('should handle --out flag with mixed quotes (double at start, single at end)', () => {
+            const command = "bridge-cli --out \"/path/to/output.json'";
+
+            const result = utility.extractOutputJsonFilename(command);
+
+            expect(result).to.equal('/path/to/output.json');
+            expect(debugStub.calledWith('Extracted Output Path:::: /path/to/output.json')).to.be.true;
+        });
+
+        it('should handle --out flag with mixed quotes (single at start, double at end)', () => {
+            const command = 'bridge-cli --out \'/path/to/output.json"';
+
+            const result = utility.extractOutputJsonFilename(command);
+
+            expect(result).to.equal('/path/to/output.json');
+            expect(debugStub.calledWith('Extracted Output Path:::: /path/to/output.json')).to.be.true;
+        });
+
+        it('should handle --out flag with path containing numbers and underscores', () => {
+            const command = 'bridge-cli --out /home/user123/project_2024/output_v1.json';
+
+            const result = utility.extractOutputJsonFilename(command);
+
+            expect(result).to.equal('/home/user123/project_2024/output_v1.json');
+            expect(debugStub.calledWith('Extracted Output Path:::: /home/user123/project_2024/output_v1.json')).to.be.true;
+        });
+
+        it('should handle command with multiple --out-like patterns but match only --out', () => {
+            const command = 'bridge-cli --output /wrong/path --out /correct/path.json --outro value';
+
+            const result = utility.extractOutputJsonFilename(command);
+
+            expect(result).to.equal('/correct/path.json');
+            expect(debugStub.calledWith('Extracted Output Path:::: /correct/path.json')).to.be.true;
+        });
+
+        it('should return empty string for edge case when match exists but captured group is empty', () => {
+            const command = 'bridge-cli --out ""';
+
+            const result = utility.extractOutputJsonFilename(command);
+
+            expect(result).to.equal('');
+            expect(debugStub.calledWith('Extracted Output Path:::: ')).to.be.true;
+        });
+
+        it('should handle path with dots and extensions correctly', () => {
+            const command = 'bridge-cli --out /path/to/file.name.with.dots.json';
+
+            const result = utility.extractOutputJsonFilename(command);
+
+            expect(result).to.equal('/path/to/file.name.with.dots.json');
+            expect(debugStub.calledWith('Extracted Output Path:::: /path/to/file.name.with.dots.json')).to.be.true;
+        });
+    });
+
+    context('SSL HTTP Client Functions', () => {
+        let originalTrustAll: string | undefined;
+        let originalCertFile: string | undefined;
+
+        beforeEach(() => {
+            originalTrustAll = process.env.NETWORK_SSL_TRUST_ALL;
+            originalCertFile = process.env.NETWORK_SSL_CERT_FILE;
+            clearHttpClientCache();
+        });
+
+        afterEach(() => {
+            if (originalTrustAll !== undefined) {
+                process.env.NETWORK_SSL_TRUST_ALL = originalTrustAll;
+            } else {
+                delete process.env.NETWORK_SSL_TRUST_ALL;
+            }
+            if (originalCertFile !== undefined) {
+                process.env.NETWORK_SSL_CERT_FILE = originalCertFile;
+            } else {
+                delete process.env.NETWORK_SSL_CERT_FILE;
+            }
+            clearHttpClientCache();
+        });
+
+        context('createSSLConfiguredHttpClient', () => {
+            it('should create new HttpClient instance with default user agent', () => {
+                const client1 = createSSLConfiguredHttpClient();
+                expect(client1).to.not.be.undefined;
+            });
+
+            it('should create new HttpClient instance with custom user agent', () => {
+                const customUserAgent = 'TestAgent';
+                const client = createSSLConfiguredHttpClient(customUserAgent);
+                expect(client).to.not.be.undefined;
+            });
+
+            it('should reuse cached HttpClient instance when SSL config unchanged', () => {
+                const client1 = createSSLConfiguredHttpClient();
+                const client2 = createSSLConfiguredHttpClient();
+                expect(client1).to.equal(client2);
+            });
+
+            it('should create new HttpClient instance when SSL config changes', () => {
+                const client1 = createSSLConfiguredHttpClient();
+                process.env.NETWORK_SSL_TRUST_ALL = 'true';
+                clearHttpClientCache();
+                const client2 = createSSLConfiguredHttpClient();
+                expect(client1).to.not.equal(client2);
+            });
+
+            it('should handle NETWORK_SSL_TRUST_ALL=true configuration', () => {
+                process.env.NETWORK_SSL_TRUST_ALL = 'true';
+                const client = createSSLConfiguredHttpClient();
+                expect(client).to.not.be.undefined;
+            });
+
+            it('should handle custom CA certificate file configuration', () => {
+                process.env.NETWORK_SSL_CERT_FILE = '/path/to/cert.pem';
+                const client = createSSLConfiguredHttpClient();
+                expect(client).to.not.be.undefined;
+            });
+        });
+
+        context('clearHttpClientCache', () => {
+            it('should clear cached HttpClient instance', () => {
+                const client1 = createSSLConfiguredHttpClient();
+                clearHttpClientCache();
+                const client2 = createSSLConfiguredHttpClient();
+                expect(client1).to.not.equal(client2);
+            });
+
+            it('should allow recreation of HttpClient with different SSL config after cache clear', () => {
+                const client1 = createSSLConfiguredHttpClient();
+                clearHttpClientCache();
+                process.env.NETWORK_SSL_TRUST_ALL = 'true';
+                const client2 = createSSLConfiguredHttpClient();
+                expect(client1).to.not.equal(client2);
+            });
+        });
+    });
+
+    describe('createSSLConfiguredHttpClient', () => {
+        let sandbox: sinon.SinonSandbox;
+        let getSSLConfigHashStub: sinon.SinonStub;
+        let getSSLConfigStub: sinon.SinonStub;
+        let taskLibDebugStub: sinon.SinonStub;
+        let taskLibWarningStub: sinon.SinonStub;
+
+        beforeEach(() => {
+            sandbox = sinon.createSandbox();
+            getSSLConfigHashStub = sandbox.stub(sslUtils, 'getSSLConfigHash');
+            getSSLConfigStub = sandbox.stub(sslUtils, 'getSSLConfig');
+            taskLibDebugStub = sandbox.stub(taskLib, 'debug');
+            taskLibWarningStub = sandbox.stub(taskLib, 'warning');
+
+            // Reset module-level cache variables
+            (utility as any)._httpClientCache = null;
+            (utility as any)._httpClientConfigHash = null;
+        });
+
+        afterEach(() => {
+            sandbox.restore();
+        });
+
+        it('should return cached HttpClient when configuration hash matches', () => {
+            const configHash = 'test-hash-123';
+            const userAgent = 'TestAgent';
+
+            getSSLConfigHashStub.returns(configHash);
+
+            // Create first client to cache it
+            getSSLConfigStub.returns({ trustAllCerts: false, customCA: false });
+            const client1 = utility.createSSLConfiguredHttpClient(userAgent);
+
+            // Now test cache retrieval
+            const client2 = utility.createSSLConfiguredHttpClient(userAgent);
+
+            expect(client1).to.equal(client2);
+            expect(taskLibDebugStub.calledWith(`Reusing existing HttpClient instance with user agent: ${userAgent}`)).to.be.true;
+        });
+
+        it('should create new HttpClient with ignoreSslError when trustAllCerts is true', () => {
+            const configHash = 'test-hash-456';
+            const userAgent = 'TestAgent';
+
+            utility.clearHttpClientCache();
+
+            getSSLConfigHashStub.returns(configHash);
+            getSSLConfigStub.returns({ trustAllCerts: true, customCA: false });
+
+            const result = utility.createSSLConfiguredHttpClient(userAgent);
+
+            expect(result).to.not.be.undefined;
+            expect(taskLibDebugStub.calledWith('SSL certificate verification disabled for HttpClient (NETWORK_SSL_TRUST_ALL=true)')).to.be.true;
+            expect(taskLibDebugStub.calledWith(`Created new HttpClient instance with user agent: ${userAgent}`)).to.be.true;
+
+            const result2 = utility.createSSLConfiguredHttpClient(userAgent);
+            expect(result).to.equal(result2);
+        });
+
+        it('should create new HttpClient with custom CA certificate when customCA is true', () => {
+            const configHash = 'test-hash-789';
+            const userAgent = 'TestAgent';
+            const certFile = '/path/to/cert.pem';
+
+            // Ensure cache is cleared before test
+            utility.clearHttpClientCache();
+
+            getSSLConfigHashStub.returns(configHash);
+            getSSLConfigStub.returns({ trustAllCerts: false, customCA: true });
+            Object.defineProperty(input, 'NETWORK_SSL_CERT_FILE', { value: certFile, configurable: true });
+
+            const result = utility.createSSLConfiguredHttpClient(userAgent);
+
+            expect(result).to.not.be.undefined;
+            expect(taskLibDebugStub.calledWith(`Using custom CA certificate for HttpClient: ${certFile}`)).to.be.true;
+            expect(taskLibDebugStub.calledWith(`Created new HttpClient instance with user agent: ${userAgent}`)).to.be.true;
+
+            // Verify the cache was set by checking if subsequent calls return the same instance
+            const result2 = utility.createSSLConfiguredHttpClient(userAgent);
+            expect(result).to.equal(result2);
+        });
+
+        it('should create default HttpClient when neither trustAllCerts nor customCA is true', () => {
+            const configHash = 'test-hash-default';
+            const userAgent = 'TestAgent';
+
+            // Ensure cache is cleared before test
+            utility.clearHttpClientCache();
+
+            getSSLConfigHashStub.returns(configHash);
+            getSSLConfigStub.returns({ trustAllCerts: false, customCA: false });
+
+            const result = utility.createSSLConfiguredHttpClient(userAgent);
+
+            expect(result).to.not.be.undefined;
+            expect(taskLibDebugStub.calledWith('Using default HttpClient with system SSL certificates')).to.be.true;
+            expect(taskLibDebugStub.calledWith(`Created new HttpClient instance with user agent: ${userAgent}`)).to.be.true;
+
+            // Verify the cache was set by checking if subsequent calls return the same instance
+            const result2 = utility.createSSLConfiguredHttpClient(userAgent);
+            expect(result).to.equal(result2);
+        });
+
+        it('should use default user agent when none provided', () => {
+            const configHash = 'test-hash-default-ua';
+
+            getSSLConfigHashStub.returns(configHash);
+            getSSLConfigStub.returns({ trustAllCerts: false, customCA: false });
+
+            const result = utility.createSSLConfiguredHttpClient();
+
+            expect(result).to.not.be.undefined;
+            expect(taskLibDebugStub.calledWith('Using default HttpClient with system SSL certificates')).to.be.true;
+            expect(taskLibDebugStub.calledWith('Created new HttpClient instance with user agent: BlackDuckSecurityTask')).to.be.true;
+        });
+
+        it('should create new HttpClient when configuration hash changes', () => {
+            const oldConfigHash = 'old-hash';
+            const newConfigHash = 'new-hash';
+            const userAgent = 'TestAgent';
+
+            // Ensure cache is cleared before test
+            utility.clearHttpClientCache();
+
+            // First call with old hash
+            getSSLConfigHashStub.returns(oldConfigHash);
+            getSSLConfigStub.returns({ trustAllCerts: false, customCA: false });
+            const client1 = utility.createSSLConfiguredHttpClient(userAgent);
+
+            // Verify first client is cached by calling again with same config
+            const client1Cached = utility.createSSLConfiguredHttpClient(userAgent);
+            expect(client1).to.equal(client1Cached);
+
+            // Second call with new hash
+            getSSLConfigHashStub.returns(newConfigHash);
+            const client2 = utility.createSSLConfiguredHttpClient(userAgent);
+
+            // Verify that different hash produces different client instance
+            expect(client1).to.not.equal(client2);
+
+            // Verify second client is also cached by calling again with same new config
+            const client2Cached = utility.createSSLConfiguredHttpClient(userAgent);
+            expect(client2).to.equal(client2Cached);
+        });
+    });
+
+    describe('createSSLConfiguredHttpsAgent', () => {
+        let sandbox: sinon.SinonSandbox;
+        let getSSLConfigHashStub: sinon.SinonStub;
+        let getSSLConfigStub: sinon.SinonStub;
+        let createHTTPSAgentStub: sinon.SinonStub;
+        let taskLibDebugStub: sinon.SinonStub;
+        let mockAgent: https.Agent;
+
+        beforeEach(() => {
+            sandbox = sinon.createSandbox();
+            getSSLConfigHashStub = sandbox.stub(sslUtils, 'getSSLConfigHash');
+            getSSLConfigStub = sandbox.stub(sslUtils, 'getSSLConfig');
+            createHTTPSAgentStub = sandbox.stub(sslUtils, 'createHTTPSAgent');
+            taskLibDebugStub = sandbox.stub(taskLib, 'debug');
+
+            // Create a mock HTTPS agent
+            mockAgent = new https.Agent();
+            createHTTPSAgentStub.returns(mockAgent);
+
+            // Clear cache before each test
+            utility.clearHttpClientCache();
+        });
+
+        afterEach(() => {
+            sandbox.restore();
+        });
+
+        it('should create new HTTPS agent on first call', () => {
+            const configHash = 'test-hash-123';
+            const mockConfig = { trustAllCerts: false, customCA: false };
+
+            getSSLConfigHashStub.returns(configHash);
+            getSSLConfigStub.returns(mockConfig);
+
+            const result = utility.createSSLConfiguredHttpsAgent();
+
+            expect(result).to.equal(mockAgent);
+            expect(getSSLConfigHashStub.calledOnce).to.be.true;
+            expect(getSSLConfigStub.calledOnce).to.be.true;
+            expect(createHTTPSAgentStub.calledOnceWith(mockConfig)).to.be.true;
+            expect(taskLibDebugStub.calledWith('Created new HTTPS agent instance with SSL configuration')).to.be.true;
+        });
+
+        it('should return cached HTTPS agent when configuration hash unchanged', () => {
+            const configHash = 'test-hash-456';
+            const mockConfig = { trustAllCerts: true, customCA: false };
+
+            getSSLConfigHashStub.returns(configHash);
+            getSSLConfigStub.returns(mockConfig);
+
+            // First call creates the agent
+            const result1 = utility.createSSLConfiguredHttpsAgent();
+
+            // Second call should return cached agent
+            const result2 = utility.createSSLConfiguredHttpsAgent();
+
+            expect(result1).to.equal(mockAgent);
+            expect(result2).to.equal(mockAgent);
+            expect(result1).to.equal(result2);
+
+            // Verify getSSLConfigHash called twice but getSSLConfig and createHTTPSAgent only once
+            expect(getSSLConfigHashStub.calledTwice).to.be.true;
+            expect(getSSLConfigStub.calledOnce).to.be.true;
+            expect(createHTTPSAgentStub.calledOnce).to.be.true;
+
+            // Verify debug messages
+            expect(taskLibDebugStub.calledWith('Created new HTTPS agent instance with SSL configuration')).to.be.true;
+            expect(taskLibDebugStub.calledWith('Reusing existing HTTPS agent instance')).to.be.true;
+        });
+
+        it('should create new HTTPS agent when configuration hash changes', () => {
+            const oldConfigHash = 'old-hash';
+            const newConfigHash = 'new-hash';
+            const oldConfig = { trustAllCerts: false, customCA: false };
+            const newConfig = { trustAllCerts: true, customCA: false };
+            const newMockAgent = new https.Agent();
+
+            // First call with old configuration
+            getSSLConfigHashStub.returns(oldConfigHash);
+            getSSLConfigStub.returns(oldConfig);
+            const result1 = utility.createSSLConfiguredHttpsAgent();
+
+            // Setup new configuration
+            getSSLConfigHashStub.returns(newConfigHash);
+            getSSLConfigStub.returns(newConfig);
+            createHTTPSAgentStub.returns(newMockAgent);
+
+            // Second call with new configuration
+            const result2 = utility.createSSLConfiguredHttpsAgent();
+
+            expect(result1).to.equal(mockAgent);
+            expect(result2).to.equal(newMockAgent);
+            expect(result1).to.not.equal(result2);
+
+            // Verify both configurations were used
+            expect(getSSLConfigHashStub.calledTwice).to.be.true;
+            expect(getSSLConfigStub.calledTwice).to.be.true;
+            expect(createHTTPSAgentStub.calledTwice).to.be.true;
+            expect(createHTTPSAgentStub.firstCall.calledWith(oldConfig)).to.be.true;
+            expect(createHTTPSAgentStub.secondCall.calledWith(newConfig)).to.be.true;
+
+            // Verify debug messages for both creations
+            expect(taskLibDebugStub.calledWith('Created new HTTPS agent instance with SSL configuration')).to.be.true;
+            expect(taskLibDebugStub.callCount).to.be.at.least(2);
+        });
+
+        it('should handle different SSL configurations correctly', () => {
+            const configHash = 'ssl-config-hash';
+            const sslConfig = {
+                trustAllCerts: true,
+                customCA: true,
+                cert: '/path/to/cert.pem'
+            };
+
+            getSSLConfigHashStub.returns(configHash);
+            getSSLConfigStub.returns(sslConfig);
+
+            const result = utility.createSSLConfiguredHttpsAgent();
+
+            expect(result).to.equal(mockAgent);
+            expect(createHTTPSAgentStub.calledOnceWith(sslConfig)).to.be.true;
+            expect(taskLibDebugStub.calledWith('Created new HTTPS agent instance with SSL configuration')).to.be.true;
+        });
+
+        it('should handle cache invalidation after clearHttpClientCache', () => {
+            const configHash = 'cache-clear-hash';
+            const mockConfig = { trustAllCerts: false, customCA: false };
+
+            getSSLConfigHashStub.returns(configHash);
+            getSSLConfigStub.returns(mockConfig);
+
+            // First call creates agent
+            const result1 = utility.createSSLConfiguredHttpsAgent();
+
+            // Clear cache
+            utility.clearHttpClientCache();
+
+            // Second call should create new agent even with same config
+            const result2 = utility.createSSLConfiguredHttpsAgent();
+
+            expect(result1).to.equal(mockAgent);
+            expect(result2).to.equal(mockAgent);
+
+            // Should have called create functions twice due to cache clear
+            expect(getSSLConfigHashStub.calledTwice).to.be.true;
+            expect(getSSLConfigStub.calledTwice).to.be.true;
+            expect(createHTTPSAgentStub.calledTwice).to.be.true;
+
+            // Should have two creation debug messages
+            expect(taskLibDebugStub.calledWith('Created new HTTPS agent instance with SSL configuration')).to.be.true;
+            expect(taskLibDebugStub.callCount).to.be.at.least(3); // 2 creation + 1 cache clear
+        });
+    });
+
 });
