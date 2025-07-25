@@ -9,7 +9,6 @@ import * as diagnostics from "../../src/blackduck-security-task/diagnostics";
 import { ErrorCode } from "../../src/blackduck-security-task/enum/ErrorCodes";
 import * as util from "../../src/blackduck-security-task/utility";
 import * as constants from "../../src/blackduck-security-task/application-constant";
-import * as sslUtils from "../../src/blackduck-security-task/ssl-utils";
 
 
 describe("Main function test cases", () => {
@@ -30,8 +29,6 @@ describe("Main function test cases", () => {
         sandbox.restore();
         process.env['BUILD_REPOSITORY_LOCALPATH']  = ''
         process.env['BUILD_REPOSITORY_LOCALPATH']  = '';
-        delete process.env['NODE_EXTRA_CA_CERTS'];
-        delete process.env['NODE_TLS_REJECT_UNAUTHORIZED'];
     });
     context('uploadDiagnostics', () => {
 

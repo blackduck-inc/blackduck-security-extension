@@ -8,9 +8,9 @@
   "category": "Utility",
   "author": "Black Duck Software Inc.",
   "version": {
-    "Major": 5,
-    "Minor": 0,
-    "Patch": 9
+    "Major": 2,
+    "Minor": 2,
+    "Patch": 0
   },
   "instanceNameFormat": "Black Duck Security Scan",
   "groups": [
@@ -165,21 +165,21 @@
       "groupName": "networkOptions"
     },
     {
-      "name": "networkSslCertFile",
-      "type": "string",
-      "label": "SSL Certificate File",
-      "defaultValue": "",
-      "required": false,
-      "helpMarkDown": "Path to a file containing trusted CA certificates for SSL connections. This can be a PEM formatted file containing one or more certificates.",
-      "groupName": "networkOptions"
-    },
-    {
       "name": "networkSslTrustAll",
       "type": "boolean",
       "label": "Trust All SSL Certificates",
       "defaultValue": false,
       "required": false,
-      "helpMarkDown": "Disables SSL certificate verification. Use with caution as this reduces security. When enabled, all SSL certificates will be trusted.",
+      "helpMarkDown": "TrustALL -> Disables SSL certificate verification. Use with caution.",
+      "groupName": "networkOptions"
+    },
+    {
+      "name": "networkSslCertFile",
+      "type": "string",
+      "label": "SSL Certificate File",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Cert file path -> Path to a file that includes one or more trusted CA certificates. Supported formats: PEM, CRT.",
       "groupName": "networkOptions"
     },
     {

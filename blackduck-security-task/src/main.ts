@@ -31,7 +31,7 @@ import {
   WORKFLOW_FAILED,
 } from "./blackduck-security-task/application-constant";
 import { readFileSync } from "fs";
-import { join, basename } from "path";
+import { join } from "path";
 
 export async function run() {
   console.log("Black Duck Security Scan Task started...");
