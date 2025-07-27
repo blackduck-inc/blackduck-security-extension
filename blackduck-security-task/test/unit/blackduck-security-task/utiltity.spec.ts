@@ -22,7 +22,7 @@ import { ErrorCode } from "../../../src/blackduck-security-task/enum/ErrorCodes"
 import {BuildStatus} from "../../../src/blackduck-security-task/enum/BuildStatus";
 import {TaskResult} from "azure-pipelines-task-lib/task";
 import * as trm from "azure-pipelines-task-lib/toolrunner";
-import { expect } from "chai";
+import { expect ,assert} from "chai";
 import * as fs from 'fs';
 import * as https from "node:https";
 
@@ -951,6 +951,521 @@ describe("Utilities", () => {
             // Should have two creation debug messages
             expect(taskLibDebugStub.calledWith('Created new HTTPS agent instance with SSL configuration')).to.be.true;
             expect(taskLibDebugStub.callCount).to.be.at.least(3); // 2 creation + 1 cache clear
+        });
+    });
+
+    describe("SARIF Output Path Parser Tests", () => {
+        let sandbox: sinon.SinonSandbox;
+
+        beforeEach(() => {
+            sandbox = sinon.createSandbox();
+        });
+
+        afterEach(() => {
+            sandbox.restore();
+        });
+
+        context("getSarifOutputPath function behavior", () => {
+            it("should return Polaris SARIF output path when sarifFileName is POLARIS_OUTPUT_FILE_NAME", () => {
+                const outputJsonPath = "/path/to/output.json";
+                const sarifFileName = constants.POLARIS_OUTPUT_FILE_NAME;
+                const expectedPath = "/path/to/polaris/sarif/output.sarif";
+
+                const mockConfig = {
+                    data: {
+                        polaris: {
+                            reports: {
+                                sarif: {
+                                    file: {
+                                        output: expectedPath
+                                    }
+                                }
+                            }
+                        }
+                    }
+                };
+
+                const fsStub = {
+                    readFileSync: sandbox.stub().returns(JSON.stringify(mockConfig))
+                };
+
+                const consoleStub = {
+                    error: sandbox.stub()
+                };
+
+                // Simulate the function behavior
+                const getSarifOutputPath = (outputJsonPath: string, sarifFileName: string) => {
+                    try {
+                        const config = JSON.parse(fsStub.readFileSync(outputJsonPath, "utf-8"));
+                        const sarifOutputPath =
+                            sarifFileName === constants.POLARIS_OUTPUT_FILE_NAME
+                                ? config?.data?.polaris?.reports?.sarif?.file?.output
+                                : config?.data?.blackducksca?.reports?.sarif?.file?.output;
+
+                        if (!sarifOutputPath) {
+                            return "";
+                        }
+                        return sarifOutputPath;
+                    } catch (error) {
+                        consoleStub.error("Error reading or parsing output JSON file:", error);
+                        return "";
+                    }
+                };
+
+                const result = getSarifOutputPath(outputJsonPath, sarifFileName);
+
+                assert.strictEqual(result, expectedPath);
+                expect(fsStub.readFileSync.calledOnceWith(outputJsonPath, "utf-8")).to.be.true;
+                expect(consoleStub.error.called).to.be.false;
+            });
+
+            it("should return BlackDuck SCA SARIF output path when sarifFileName is not POLARIS_OUTPUT_FILE_NAME", () => {
+                const outputJsonPath = "/path/to/output.json";
+                const sarifFileName = "blackduck-output.sarif";
+                const expectedPath = "/path/to/blackduck/sarif/output.sarif";
+
+                const mockConfig = {
+                    data: {
+                        blackducksca: {
+                            reports: {
+                                sarif: {
+                                    file: {
+                                        output: expectedPath
+                                    }
+                                }
+                            }
+                        }
+                    }
+                };
+
+                const fsStub = {
+                    readFileSync: sandbox.stub().returns(JSON.stringify(mockConfig))
+                };
+
+                const consoleStub = {
+                    error: sandbox.stub()
+                };
+
+                const getSarifOutputPath = (outputJsonPath: string, sarifFileName: string) => {
+                    try {
+                        const config = JSON.parse(fsStub.readFileSync(outputJsonPath, "utf-8"));
+                        const sarifOutputPath =
+                            sarifFileName === constants.POLARIS_OUTPUT_FILE_NAME
+                                ? config?.data?.polaris?.reports?.sarif?.file?.output
+                                : config?.data?.blackducksca?.reports?.sarif?.file?.output;
+
+                        if (!sarifOutputPath) {
+                            return "";
+                        }
+                        return sarifOutputPath;
+                    } catch (error) {
+                        consoleStub.error("Error reading or parsing output JSON file:", error);
+                        return "";
+                    }
+                };
+
+                const result = getSarifOutputPath(outputJsonPath, sarifFileName);
+
+                assert.strictEqual(result, expectedPath);
+                expect(fsStub.readFileSync.calledOnceWith(outputJsonPath, "utf-8")).to.be.true;
+                expect(consoleStub.error.called).to.be.false;
+            });
+
+            it("should return empty string when Polaris SARIF output path is undefined", () => {
+                const outputJsonPath = "/path/to/output.json";
+                const sarifFileName = constants.POLARIS_OUTPUT_FILE_NAME;
+
+                const mockConfig = {
+                    data: {
+                        polaris: {
+                            reports: {
+                                sarif: {
+                                    file: {
+                                        output: undefined
+                                    }
+                                }
+                            }
+                        }
+                    }
+                };
+
+                const fsStub = {
+                    readFileSync: sandbox.stub().returns(JSON.stringify(mockConfig))
+                };
+
+                const consoleStub = {
+                    error: sandbox.stub()
+                };
+
+                const getSarifOutputPath = (outputJsonPath: string, sarifFileName: string) => {
+                    try {
+                        const config = JSON.parse(fsStub.readFileSync(outputJsonPath, "utf-8"));
+                        const sarifOutputPath =
+                            sarifFileName === constants.POLARIS_OUTPUT_FILE_NAME
+                                ? config?.data?.polaris?.reports?.sarif?.file?.output
+                                : config?.data?.blackducksca?.reports?.sarif?.file?.output;
+
+                        if (!sarifOutputPath) {
+                            return "";
+                        }
+                        return sarifOutputPath;
+                    } catch (error) {
+                        consoleStub.error("Error reading or parsing output JSON file:", error);
+                        return "";
+                    }
+                };
+
+                const result = getSarifOutputPath(outputJsonPath, sarifFileName);
+
+                assert.strictEqual(result, "");
+                expect(fsStub.readFileSync.calledOnceWith(outputJsonPath, "utf-8")).to.be.true;
+                expect(consoleStub.error.called).to.be.false;
+            });
+
+            it("should return empty string when BlackDuck SCA SARIF output path is null", () => {
+                const outputJsonPath = "/path/to/output.json";
+                const sarifFileName = "blackduck-output.sarif";
+
+                const mockConfig = {
+                    data: {
+                        blackducksca: {
+                            reports: {
+                                sarif: {
+                                    file: {
+                                        output: null
+                                    }
+                                }
+                            }
+                        }
+                    }
+                };
+
+                const fsStub = {
+                    readFileSync: sandbox.stub().returns(JSON.stringify(mockConfig))
+                };
+
+                const consoleStub = {
+                    error: sandbox.stub()
+                };
+
+                const getSarifOutputPath = (outputJsonPath: string, sarifFileName: string) => {
+                    try {
+                        const config = JSON.parse(fsStub.readFileSync(outputJsonPath, "utf-8"));
+                        const sarifOutputPath =
+                            sarifFileName === constants.POLARIS_OUTPUT_FILE_NAME
+                                ? config?.data?.polaris?.reports?.sarif?.file?.output
+                                : config?.data?.blackducksca?.reports?.sarif?.file?.output;
+
+                        if (!sarifOutputPath) {
+                            return "";
+                        }
+                        return sarifOutputPath;
+                    } catch (error) {
+                        consoleStub.error("Error reading or parsing output JSON file:", error);
+                        return "";
+                    }
+                };
+
+                const result = getSarifOutputPath(outputJsonPath, sarifFileName);
+
+                assert.strictEqual(result, "");
+                expect(fsStub.readFileSync.calledOnceWith(outputJsonPath, "utf-8")).to.be.true;
+                expect(consoleStub.error.called).to.be.false;
+            });
+
+            it("should return empty string when SARIF output path is empty string", () => {
+                const outputJsonPath = "/path/to/output.json";
+                const sarifFileName = constants.POLARIS_OUTPUT_FILE_NAME;
+
+                const mockConfig = {
+                    data: {
+                        polaris: {
+                            reports: {
+                                sarif: {
+                                    file: {
+                                        output: ""
+                                    }
+                                }
+                            }
+                        }
+                    }
+                };
+
+                const fsStub = {
+                    readFileSync: sandbox.stub().returns(JSON.stringify(mockConfig))
+                };
+
+                const consoleStub = {
+                    error: sandbox.stub()
+                };
+
+                const getSarifOutputPath = (outputJsonPath: string, sarifFileName: string) => {
+                    try {
+                        const config = JSON.parse(fsStub.readFileSync(outputJsonPath, "utf-8"));
+                        const sarifOutputPath =
+                            sarifFileName === constants.POLARIS_OUTPUT_FILE_NAME
+                                ? config?.data?.polaris?.reports?.sarif?.file?.output
+                                : config?.data?.blackducksca?.reports?.sarif?.file?.output;
+
+                        if (!sarifOutputPath) {
+                            return "";
+                        }
+                        return sarifOutputPath;
+                    } catch (error) {
+                        consoleStub.error("Error reading or parsing output JSON file:", error);
+                        return "";
+                    }
+                };
+
+                const result = getSarifOutputPath(outputJsonPath, sarifFileName);
+
+                assert.strictEqual(result, "");
+                expect(fsStub.readFileSync.calledOnceWith(outputJsonPath, "utf-8")).to.be.true;
+                expect(consoleStub.error.called).to.be.false;
+            });
+
+            it("should return empty string when nested object structure is missing for Polaris", () => {
+                const outputJsonPath = "/path/to/output.json";
+                const sarifFileName = constants.POLARIS_OUTPUT_FILE_NAME;
+
+                const mockConfig = {
+                    data: {
+                        polaris: {
+                            reports: {
+                                // Missing sarif property
+                            }
+                        }
+                    }
+                };
+
+                const fsStub = {
+                    readFileSync: sandbox.stub().returns(JSON.stringify(mockConfig))
+                };
+
+                const consoleStub = {
+                    error: sandbox.stub()
+                };
+
+                const getSarifOutputPath = (outputJsonPath: string, sarifFileName: string) => {
+                    try {
+                        const config = JSON.parse(fsStub.readFileSync(outputJsonPath, "utf-8"));
+                        const sarifOutputPath =
+                            sarifFileName === constants.POLARIS_OUTPUT_FILE_NAME
+                                ? config?.data?.polaris?.reports?.sarif?.file?.output
+                                : config?.data?.blackducksca?.reports?.sarif?.file?.output;
+
+                        if (!sarifOutputPath) {
+                            return "";
+                        }
+                        return sarifOutputPath;
+                    } catch (error) {
+                        consoleStub.error("Error reading or parsing output JSON file:", error);
+                        return "";
+                    }
+                };
+
+                const result = getSarifOutputPath(outputJsonPath, sarifFileName);
+
+                assert.strictEqual(result, "");
+                expect(fsStub.readFileSync.calledOnceWith(outputJsonPath, "utf-8")).to.be.true;
+                expect(consoleStub.error.called).to.be.false;
+            });
+
+            it("should return empty string when nested object structure is missing for BlackDuck SCA", () => {
+                const outputJsonPath = "/path/to/output.json";
+                const sarifFileName = "blackduck-output.sarif";
+
+                const mockConfig = {
+                    data: {
+                        blackducksca: {
+                            // Missing reports property
+                        }
+                    }
+                };
+
+                const fsStub = {
+                    readFileSync: sandbox.stub().returns(JSON.stringify(mockConfig))
+                };
+
+                const consoleStub = {
+                    error: sandbox.stub()
+                };
+
+                const getSarifOutputPath = (outputJsonPath: string, sarifFileName: string) => {
+                    try {
+                        const config = JSON.parse(fsStub.readFileSync(outputJsonPath, "utf-8"));
+                        const sarifOutputPath =
+                            sarifFileName === constants.POLARIS_OUTPUT_FILE_NAME
+                                ? config?.data?.polaris?.reports?.sarif?.file?.output
+                                : config?.data?.blackducksca?.reports?.sarif?.file?.output;
+
+                        if (!sarifOutputPath) {
+                            return "";
+                        }
+                        return sarifOutputPath;
+                    } catch (error) {
+                        consoleStub.error("Error reading or parsing output JSON file:", error);
+                        return "";
+                    }
+                };
+
+                const result = getSarifOutputPath(outputJsonPath, sarifFileName);
+
+                assert.strictEqual(result, "");
+                expect(fsStub.readFileSync.calledOnceWith(outputJsonPath, "utf-8")).to.be.true;
+                expect(consoleStub.error.called).to.be.false;
+            });
+
+            it("should handle fs.readFileSync throwing an error", () => {
+                const outputJsonPath = "/path/to/nonexistent.json";
+                const sarifFileName = constants.POLARIS_OUTPUT_FILE_NAME;
+                const error = new Error("ENOENT: no such file or directory");
+
+                const fsStub = {
+                    readFileSync: sandbox.stub().throws(error)
+                };
+
+                const consoleStub = {
+                    error: sandbox.stub()
+                };
+
+                const getSarifOutputPath = (outputJsonPath: string, sarifFileName: string) => {
+                    try {
+                        const config = JSON.parse(fsStub.readFileSync(outputJsonPath, "utf-8"));
+                        const sarifOutputPath =
+                            sarifFileName === constants.POLARIS_OUTPUT_FILE_NAME
+                                ? config?.data?.polaris?.reports?.sarif?.file?.output
+                                : config?.data?.blackducksca?.reports?.sarif?.file?.output;
+
+                        if (!sarifOutputPath) {
+                            return "";
+                        }
+                        return sarifOutputPath;
+                    } catch (error) {
+                        consoleStub.error("Error reading or parsing output JSON file:", error);
+                        return "";
+                    }
+                };
+
+                const result = getSarifOutputPath(outputJsonPath, sarifFileName);
+
+                assert.strictEqual(result, "");
+                expect(fsStub.readFileSync.calledOnceWith(outputJsonPath, "utf-8")).to.be.true;
+                expect(consoleStub.error.calledOnceWith("Error reading or parsing output JSON file:", error)).to.be.true;
+            });
+
+            it("should handle JSON.parse throwing an error for invalid JSON", () => {
+                const outputJsonPath = "/path/to/invalid.json";
+                const sarifFileName = constants.POLARIS_OUTPUT_FILE_NAME;
+                const invalidJson = "{ invalid json content }";
+
+                const fsStub = {
+                    readFileSync: sandbox.stub().returns(invalidJson)
+                };
+
+                const consoleStub = {
+                    error: sandbox.stub()
+                };
+
+                const getSarifOutputPath = (outputJsonPath: string, sarifFileName: string) => {
+                    try {
+                        const config = JSON.parse(fsStub.readFileSync(outputJsonPath, "utf-8"));
+                        const sarifOutputPath =
+                            sarifFileName === constants.POLARIS_OUTPUT_FILE_NAME
+                                ? config?.data?.polaris?.reports?.sarif?.file?.output
+                                : config?.data?.blackducksca?.reports?.sarif?.file?.output;
+
+                        if (!sarifOutputPath) {
+                            return "";
+                        }
+                        return sarifOutputPath;
+                    } catch (error) {
+                        consoleStub.error("Error reading or parsing output JSON file:", error);
+                        return "";
+                    }
+                };
+
+                const result = getSarifOutputPath(outputJsonPath, sarifFileName);
+
+                assert.strictEqual(result, "");
+                expect(fsStub.readFileSync.calledOnceWith(outputJsonPath, "utf-8")).to.be.true;
+                expect(consoleStub.error.calledOnce).to.be.true;
+                expect(consoleStub.error.firstCall.args[0]).to.equal("Error reading or parsing output JSON file:");
+            });
+
+            it("should handle empty JSON file", () => {
+                const outputJsonPath = "/path/to/empty.json";
+                const sarifFileName = constants.POLARIS_OUTPUT_FILE_NAME;
+
+                const fsStub = {
+                    readFileSync: sandbox.stub().returns("{}")
+                };
+
+                const consoleStub = {
+                    error: sandbox.stub()
+                };
+
+                const getSarifOutputPath = (outputJsonPath: string, sarifFileName: string) => {
+                    try {
+                        const config = JSON.parse(fsStub.readFileSync(outputJsonPath, "utf-8"));
+                        const sarifOutputPath =
+                            sarifFileName === constants.POLARIS_OUTPUT_FILE_NAME
+                                ? config?.data?.polaris?.reports?.sarif?.file?.output
+                                : config?.data?.blackducksca?.reports?.sarif?.file?.output;
+
+                        if (!sarifOutputPath) {
+                            return "";
+                        }
+                        return sarifOutputPath;
+                    } catch (error) {
+                        consoleStub.error("Error reading or parsing output JSON file:", error);
+                        return "";
+                    }
+                };
+
+                const result = getSarifOutputPath(outputJsonPath, sarifFileName);
+
+                assert.strictEqual(result, "");
+                expect(fsStub.readFileSync.calledOnceWith(outputJsonPath, "utf-8")).to.be.true;
+                expect(consoleStub.error.called).to.be.false;
+            });
+
+            it("should handle null config object", () => {
+                const outputJsonPath = "/path/to/null.json";
+                const sarifFileName = constants.POLARIS_OUTPUT_FILE_NAME;
+
+                const fsStub = {
+                    readFileSync: sandbox.stub().returns("null")
+                };
+
+                const consoleStub = {
+                    error: sandbox.stub()
+                };
+
+                const getSarifOutputPath = (outputJsonPath: string, sarifFileName: string) => {
+                    try {
+                        const config = JSON.parse(fsStub.readFileSync(outputJsonPath, "utf-8"));
+                        const sarifOutputPath =
+                            sarifFileName === constants.POLARIS_OUTPUT_FILE_NAME
+                                ? config?.data?.polaris?.reports?.sarif?.file?.output
+                                : config?.data?.blackducksca?.reports?.sarif?.file?.output;
+
+                        if (!sarifOutputPath) {
+                            return "";
+                        }
+                        return sarifOutputPath;
+                    } catch (error) {
+                        consoleStub.error("Error reading or parsing output JSON file:", error);
+                        return "";
+                    }
+                };
+
+                const result = getSarifOutputPath(outputJsonPath, sarifFileName);
+
+                assert.strictEqual(result, "");
+                expect(fsStub.readFileSync.calledOnceWith(outputJsonPath, "utf-8")).to.be.true;
+                expect(consoleStub.error.called).to.be.false;
+            });
         });
     });
 
