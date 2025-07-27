@@ -20,7 +20,7 @@ const userAgent = "BlackDuckSecurityScan";
  * @param expectedContentLength Expected content length from HTTP headers
  * @returns Promise that resolves with the file path if valid, rejects if invalid
  */
-function validateDownloadedFile(
+export function validateDownloadedFile(
   destPath: string,
   expectedContentLength?: number
 ): Promise<string> {
@@ -64,7 +64,7 @@ function validateDownloadedFile(
   });
 }
 
-function getRequestOptions(): ifm.IRequestOptions {
+export function getRequestOptions(): ifm.IRequestOptions {
   const options: ifm.IRequestOptions = {
     proxy: tl.getHttpProxyConfiguration() || undefined,
     cert: tl.getHttpCertConfiguration() || undefined,

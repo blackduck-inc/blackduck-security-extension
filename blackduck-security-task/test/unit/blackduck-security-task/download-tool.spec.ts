@@ -13,6 +13,10 @@ import { getSSLConfig, createHTTPSRequestOptions } from "../../../src/blackduck-
 import { downloadTool, debug, _getFileSizeOnDisk } from "../../../src/blackduck-security-task/download-tool";
 import { _getContentLengthOfDownloadedFile } from "../../../src/blackduck-security-task/download-tool";
 import { _deleteFile } from "../../../src/blackduck-security-task/download-tool";
+import { getRequestOptions } from "../../../src/blackduck-security-task/download-tool";
+import { validateDownloadedFile } from "../../../src/blackduck-security-task/download-tool";
+import * as downloadToolModule from "../../../src/blackduck-security-task/download-tool";
+
 
 describe("Download Tool Tests", () => {
     let sandbox: sinon.SinonSandbox;
@@ -1264,6 +1268,404 @@ describe("Download Tool Tests", () => {
                 expect(tlDebugStub.calledThrice).to.be.true;
                 expect(tlDebugStub.alwaysCalledWith("Removed unfinished downloaded file")).to.be.true;
             });
+        });
+    });
+    describe("getRequestOptions Function Tests", () => {
+        let sandbox: sinon.SinonSandbox;
+        let tlGetHttpProxyConfigurationStub: sinon.SinonStub;
+        let tlGetHttpCertConfigurationStub: sinon.SinonStub;
+        let tlDebugStub: sinon.SinonStub;
+        let tlWarningStub: sinon.SinonStub;
+        let fsReadFileSyncStub: sinon.SinonStub;
+        let parseToBooleanStub: sinon.SinonStub;
+        let inputsStub: any;
+
+        beforeEach(() => {
+            sandbox = sinon.createSandbox();
+
+            // Setup tl stubs
+            tlGetHttpProxyConfigurationStub = sandbox.stub(tl, "getHttpProxyConfiguration");
+            tlGetHttpCertConfigurationStub = sandbox.stub(tl, "getHttpCertConfiguration");
+            tlDebugStub = sandbox.stub(tl, "debug");
+            tlWarningStub = sandbox.stub(tl, "warning");
+
+            // Setup fs stub
+            fsReadFileSyncStub = sandbox.stub(require("fs"), "readFileSync");
+
+            // Setup parseToBoolean stub
+            parseToBooleanStub = sandbox.stub(require("../../../src/blackduck-security-task/utility"), "parseToBoolean");
+
+            // Setup inputs mock
+            inputsStub = {
+                NETWORK_SSL_TRUST_ALL: "",
+                NETWORK_SSL_CERT_FILE: ""
+            };
+            sandbox.stub(inputs, "NETWORK_SSL_TRUST_ALL").get(() => inputsStub.NETWORK_SSL_TRUST_ALL);
+            sandbox.stub(inputs, "NETWORK_SSL_CERT_FILE").get(() => inputsStub.NETWORK_SSL_CERT_FILE);
+
+            // Default returns
+            tlGetHttpProxyConfigurationStub.returns(null);
+            tlGetHttpCertConfigurationStub.returns(null);
+            parseToBooleanStub.returns(false);
+        });
+
+        afterEach(() => {
+            sandbox.restore();
+        });
+
+        context("getRequestOptions", () => {
+            it("should return basic options with proxy and cert configuration", () => {
+                const mockProxyConfig = { proxyUrl: "http://proxy:8080" };
+                const mockCertConfig = { certPath: "/path/to/cert" };
+
+                tlGetHttpProxyConfigurationStub.returns(mockProxyConfig);
+                tlGetHttpCertConfigurationStub.returns(mockCertConfig);
+                parseToBooleanStub.returns(false);
+
+                const result = getRequestOptions();
+
+                expect(result).to.deep.equal({
+                    proxy: mockProxyConfig,
+                    cert: mockCertConfig,
+                    allowRedirects: true,
+                    allowRetries: true
+                });
+
+                expect(tlGetHttpProxyConfigurationStub.calledOnce).to.be.true;
+                expect(tlGetHttpCertConfigurationStub.calledOnce).to.be.true;
+                expect(parseToBooleanStub.calledOnceWith(inputsStub.NETWORK_SSL_TRUST_ALL)).to.be.true;
+                expect(tlDebugStub.calledWith("Using default SSL configuration for download tool")).to.be.true;
+            });
+
+            it("should set ignoreSslError to true when NETWORK_SSL_TRUST_ALL is true", () => {
+                inputsStub.NETWORK_SSL_TRUST_ALL = "true";
+                parseToBooleanStub.returns(true);
+
+                const result = getRequestOptions();
+
+                expect(result.ignoreSslError).to.be.true;
+                expect(result.allowRedirects).to.be.true;
+                expect(result.allowRetries).to.be.true;
+                expect(tlDebugStub.calledWith("SSL certificate verification disabled for download tool (NETWORK_SSL_TRUST_ALL=true)")).to.be.true;
+            });
+
+            it("should handle custom CA certificate file successfully", () => {
+                inputsStub.NETWORK_SSL_CERT_FILE = "/path/to/ca.crt";
+                const certContent = "-----BEGIN CERTIFICATE-----\nMIIC...";
+
+                parseToBooleanStub.returns(false);
+                fsReadFileSyncStub.returns(certContent);
+
+                const result = getRequestOptions();
+
+                expect(result.ignoreSslError).to.be.true;
+                expect(fsReadFileSyncStub.calledOnceWith("/path/to/ca.crt", "utf8")).to.be.true;
+                expect(tlDebugStub.calledWith("Custom CA certificate specified for download tool: /path/to/ca.crt")).to.be.true;
+                expect(tlWarningStub.calledWith("typed-rest-client does not support custom CA certificates, disabling SSL verification")).to.be.true;
+            });
+
+            it("should handle custom CA certificate file read error", () => {
+                inputsStub.NETWORK_SSL_CERT_FILE = "/path/to/nonexistent.crt";
+                const error = new Error("ENOENT: no such file or directory");
+
+                parseToBooleanStub.returns(false);
+                fsReadFileSyncStub.throws(error);
+
+                const result = getRequestOptions();
+
+                expect(result.ignoreSslError).to.be.undefined;
+                expect(fsReadFileSyncStub.calledOnceWith("/path/to/nonexistent.crt", "utf8")).to.be.true;
+                expect(tlDebugStub.calledWith("Custom CA certificate specified for download tool: /path/to/nonexistent.crt")).to.be.true;
+                expect(tlWarningStub.calledWith(`Failed to read custom CA certificate file, using default SSL settings: ${error}`)).to.be.true;
+            });
+
+            it("should handle empty NETWORK_SSL_CERT_FILE", () => {
+                inputsStub.NETWORK_SSL_CERT_FILE = "";
+                parseToBooleanStub.returns(false);
+
+                const result = getRequestOptions();
+
+                expect(result.ignoreSslError).to.be.undefined;
+                expect(fsReadFileSyncStub.called).to.be.false;
+                expect(tlDebugStub.calledWith("Using default SSL configuration for download tool")).to.be.true;
+            });
+
+            it("should handle NETWORK_SSL_CERT_FILE with only whitespace", () => {
+                inputsStub.NETWORK_SSL_CERT_FILE = "   ";
+                parseToBooleanStub.returns(false);
+
+                const result = getRequestOptions();
+
+                expect(result.ignoreSslError).to.be.undefined;
+                expect(fsReadFileSyncStub.called).to.be.false;
+                expect(tlDebugStub.calledWith("Using default SSL configuration for download tool")).to.be.true;
+            });
+
+            it("should handle NETWORK_SSL_CERT_FILE with leading/trailing whitespace", () => {
+                inputsStub.NETWORK_SSL_CERT_FILE = "  /path/to/ca.crt  ";
+                const certContent = "-----BEGIN CERTIFICATE-----\nMIIC...";
+
+                parseToBooleanStub.returns(false);
+                fsReadFileSyncStub.returns(certContent);
+
+                const result = getRequestOptions();
+
+                expect(result.ignoreSslError).to.be.true;
+                expect(fsReadFileSyncStub.calledOnceWith("  /path/to/ca.crt  ", "utf8")).to.be.true;
+                expect(tlDebugStub.calledWith("Custom CA certificate specified for download tool:   /path/to/ca.crt  ")).to.be.true;
+                expect(tlWarningStub.calledWith("typed-rest-client does not support custom CA certificates, disabling SSL verification")).to.be.true;
+            });
+
+            it("should handle null proxy and cert configuration", () => {
+                tlGetHttpProxyConfigurationStub.returns(null);
+                tlGetHttpCertConfigurationStub.returns(null);
+                parseToBooleanStub.returns(false);
+
+                const result = getRequestOptions();
+
+                expect(result.proxy).to.be.undefined;
+                expect(result.cert).to.be.undefined;
+                expect(result.allowRedirects).to.be.true;
+                expect(result.allowRetries).to.be.true;
+                expect(tlDebugStub.calledWith("Using default SSL configuration for download tool")).to.be.true;
+            });
+
+            it("should handle undefined proxy and cert configuration", () => {
+                tlGetHttpProxyConfigurationStub.returns(null);
+                tlGetHttpCertConfigurationStub.returns(null);
+                parseToBooleanStub.returns(false);
+
+                const result = getRequestOptions();
+
+                expect(result.proxy).to.be.undefined;
+                expect(result.cert).to.be.undefined;
+                expect(result.allowRedirects).to.be.true;
+                expect(result.allowRetries).to.be.true;
+                expect(tlDebugStub.calledWith("Using default SSL configuration for download tool")).to.be.true;
+            });
+
+            it("should prioritize NETWORK_SSL_TRUST_ALL over NETWORK_SSL_CERT_FILE", () => {
+                inputsStub.NETWORK_SSL_TRUST_ALL = "true";
+                inputsStub.NETWORK_SSL_CERT_FILE = "/path/to/ca.crt";
+
+                parseToBooleanStub.returns(true);
+
+                const result = getRequestOptions();
+
+                expect(result.ignoreSslError).to.be.true;
+                expect(fsReadFileSyncStub.called).to.be.false;
+                expect(tlDebugStub.calledWith("SSL certificate verification disabled for download tool (NETWORK_SSL_TRUST_ALL=true)")).to.be.true;
+                expect(tlDebugStub.calledWith("Custom CA certificate specified for download tool: /path/to/ca.crt")).to.be.false;
+            });
+
+            it("should handle different error types from fs.readFileSync", () => {
+                inputsStub.NETWORK_SSL_CERT_FILE = "/path/to/ca.crt";
+                const error = "String error message";
+
+                parseToBooleanStub.returns(false);
+                fsReadFileSyncStub.throws(error);
+
+                const result = getRequestOptions();
+
+                expect(result.ignoreSslError).to.be.undefined;
+                expect(tlWarningStub.calledWith(`Failed to read custom CA certificate file, using default SSL settings: ${error}`)).to.be.true;
+            });
+
+            it("should handle permission error when reading cert file", () => {
+                inputsStub.NETWORK_SSL_CERT_FILE = "/path/to/ca.crt";
+                const error = new Error("EACCES: permission denied");
+                error.name = "EACCES";
+
+                parseToBooleanStub.returns(false);
+                fsReadFileSyncStub.throws(error);
+
+                const result = getRequestOptions();
+
+                expect(result.ignoreSslError).to.be.undefined;
+                expect(tlWarningStub.calledWith(`Failed to read custom CA certificate file, using default SSL settings: ${error}`)).to.be.true;
+            });
+
+            it("should handle empty cert file content", () => {
+                inputsStub.NETWORK_SSL_CERT_FILE = "/path/to/empty.crt";
+                const certContent = "";
+
+                parseToBooleanStub.returns(false);
+                fsReadFileSyncStub.returns(certContent);
+
+                const result = getRequestOptions();
+
+                expect(result.ignoreSslError).to.be.true;
+                expect(fsReadFileSyncStub.calledOnceWith("/path/to/empty.crt", "utf8")).to.be.true;
+                expect(tlWarningStub.calledWith("typed-rest-client does not support custom CA certificates, disabling SSL verification")).to.be.true;
+            });
+
+            it("should handle complex proxy configuration", () => {
+                const mockProxyConfig = {
+                    proxyUrl: "http://proxy:8080",
+                    proxyUsername: "user",
+                    proxyPassword: "pass",
+                    proxyBypassHosts: ["localhost", "127.0.0.1"]
+                };
+
+                tlGetHttpProxyConfigurationStub.returns(mockProxyConfig);
+                parseToBooleanStub.returns(false);
+
+                const result = getRequestOptions();
+
+                expect(result.proxy).to.deep.equal(mockProxyConfig);
+                expect(tlDebugStub.calledWith("Using default SSL configuration for download tool")).to.be.true;
+            });
+
+            it("should handle complex cert configuration", () => {
+                const mockCertConfig = {
+                    certPath: "/path/to/cert.pem",
+                    keyPath: "/path/to/key.pem",
+                    passphrase: "secret"
+                };
+
+                tlGetHttpCertConfigurationStub.returns(mockCertConfig);
+                parseToBooleanStub.returns(false);
+
+                const result = getRequestOptions();
+
+                expect(result.cert).to.deep.equal(mockCertConfig);
+                expect(tlDebugStub.calledWith("Using default SSL configuration for download tool")).to.be.true;
+            });
+
+            it("should handle NETWORK_SSL_TRUST_ALL with various truthy values", () => {
+                const truthyValues = ["true", "True", "TRUE", "1", "yes", "on"];
+
+                truthyValues.forEach(value => {
+                    sandbox.restore();
+                    sandbox = sinon.createSandbox();
+
+                    tlGetHttpProxyConfigurationStub = sandbox.stub(tl, "getHttpProxyConfiguration").returns(null);
+                    tlGetHttpCertConfigurationStub = sandbox.stub(tl, "getHttpCertConfiguration").returns(null);
+                    tlDebugStub = sandbox.stub(tl, "debug");
+                    tlWarningStub = sandbox.stub(tl, "warning");
+                    parseToBooleanStub = sandbox.stub(require("../../../src/blackduck-security-task/utility"), "parseToBoolean");
+
+                    inputsStub = { NETWORK_SSL_TRUST_ALL: value, NETWORK_SSL_CERT_FILE: "" };
+                    sandbox.stub(inputs, "NETWORK_SSL_TRUST_ALL").get(() => inputsStub.NETWORK_SSL_TRUST_ALL);
+                    sandbox.stub(inputs, "NETWORK_SSL_CERT_FILE").get(() => inputsStub.NETWORK_SSL_CERT_FILE);
+
+                    parseToBooleanStub.returns(true);
+
+                    const result = getRequestOptions();
+
+                    expect(result.ignoreSslError).to.be.true;
+                    expect(parseToBooleanStub.calledOnceWith(value)).to.be.true;
+                    expect(tlDebugStub.calledWith("SSL certificate verification disabled for download tool (NETWORK_SSL_TRUST_ALL=true)")).to.be.true;
+                });
+            });
+
+            it("should handle NETWORK_SSL_TRUST_ALL with various falsy values", () => {
+                const falsyValues = ["false", "False", "FALSE", "0", "no", "off", ""];
+
+                falsyValues.forEach(value => {
+                    sandbox.restore();
+                    sandbox = sinon.createSandbox();
+
+                    tlGetHttpProxyConfigurationStub = sandbox.stub(tl, "getHttpProxyConfiguration").returns(null);
+                    tlGetHttpCertConfigurationStub = sandbox.stub(tl, "getHttpCertConfiguration").returns(null);
+                    tlDebugStub = sandbox.stub(tl, "debug");
+                    tlWarningStub = sandbox.stub(tl, "warning");
+                    parseToBooleanStub = sandbox.stub(require("../../../src/blackduck-security-task/utility"), "parseToBoolean");
+
+                    inputsStub = { NETWORK_SSL_TRUST_ALL: value, NETWORK_SSL_CERT_FILE: "" };
+                    sandbox.stub(inputs, "NETWORK_SSL_TRUST_ALL").get(() => inputsStub.NETWORK_SSL_TRUST_ALL);
+                    sandbox.stub(inputs, "NETWORK_SSL_CERT_FILE").get(() => inputsStub.NETWORK_SSL_CERT_FILE);
+
+                    parseToBooleanStub.returns(false);
+
+                    const result = getRequestOptions();
+
+                    expect(result.ignoreSslError).to.be.undefined;
+                    expect(parseToBooleanStub.calledOnceWith(value)).to.be.true;
+                    expect(tlDebugStub.calledWith("Using default SSL configuration for download tool")).to.be.true;
+                });
+            });
+
+            it("should handle very long cert file path", () => {
+                const longPath = "/very/long/path/" + "a".repeat(200) + "/ca.crt";
+                inputsStub.NETWORK_SSL_CERT_FILE = longPath;
+                const certContent = "-----BEGIN CERTIFICATE-----\nMIIC...";
+
+                parseToBooleanStub.returns(false);
+                fsReadFileSyncStub.returns(certContent);
+
+                const result = getRequestOptions();
+
+                expect(result.ignoreSslError).to.be.true;
+                expect(fsReadFileSyncStub.calledOnceWith(longPath, "utf8")).to.be.true;
+                expect(tlDebugStub.calledWith(`Custom CA certificate specified for download tool: ${longPath}`)).to.be.true;
+            });
+
+            it("should handle special characters in cert file path", () => {
+                const specialPath = "/path/with spaces/special@#$%^&*()chars/ca.crt";
+                inputsStub.NETWORK_SSL_CERT_FILE = specialPath;
+                const certContent = "-----BEGIN CERTIFICATE-----\nMIIC...";
+
+                parseToBooleanStub.returns(false);
+                fsReadFileSyncStub.returns(certContent);
+
+                const result = getRequestOptions();
+
+                expect(result.ignoreSslError).to.be.true;
+                expect(fsReadFileSyncStub.calledOnceWith(specialPath, "utf8")).to.be.true;
+                expect(tlDebugStub.calledWith(`Custom CA certificate specified for download tool: ${specialPath}`)).to.be.true;
+            });
+
+            it("should verify return object structure", () => {
+                const result = getRequestOptions();
+
+                expect(result).to.have.property("proxy");
+                expect(result).to.have.property("cert");
+                expect(result).to.have.property("allowRedirects");
+                expect(result).to.have.property("allowRetries");
+                expect(result.allowRedirects).to.be.true;
+                expect(result.allowRetries).to.be.true;
+            });
+        });
+    });
+    describe("validateDownloadedFile Function Tests", () => {
+        let sandbox: sinon.SinonSandbox;
+        let tlWarningStub: sinon.SinonStub;
+        let tlDebugStub: sinon.SinonStub;
+        let _getFileSizeOnDiskStub: sinon.SinonStub;
+        let _deleteFileStub: sinon.SinonStub;
+
+        beforeEach(() => {
+            sandbox = sinon.createSandbox();
+
+            // Setup tl stubs
+            tlWarningStub = sandbox.stub(tl, "warning");
+            tlDebugStub = sandbox.stub(tl, "debug");
+
+            // Setup function stubs
+            _getFileSizeOnDiskStub = sandbox.stub(downloadToolModule, "_getFileSizeOnDisk");
+            _deleteFileStub = sandbox.stub(downloadToolModule, "_deleteFile");
+        });
+
+        afterEach(() => {
+            sandbox.restore();
+        });
+
+        context("validateDownloadedFile", () => {
+            it("should verify promise resolution", async () => {
+                const destPath = "/tmp/test-file.zip";
+                const fileSizeInBytes = 1024;
+
+                _getFileSizeOnDiskStub.returns(fileSizeInBytes);
+
+                const promise = validateDownloadedFile(destPath);
+
+                expect(promise).to.be.instanceOf(Promise);
+
+                const result = await promise;
+                expect(result).to.equal(destPath);
+            });
+
         });
     });
 });
