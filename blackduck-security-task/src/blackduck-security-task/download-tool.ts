@@ -379,7 +379,7 @@ export async function downloadTool(
  * @param response    response for request to get the file
  * @returns number if the 'content-length' is not empty, otherwise NaN
  */
-function _getContentLengthOfDownloadedFile(
+export function _getContentLengthOfDownloadedFile(
   response: httm.HttpClientResponse
 ): number {
   const contentLengthHeader = response.message.headers["content-length"];
@@ -396,7 +396,7 @@ export function _getFileSizeOnDisk(filePath: string): number {
   return fs.statSync(filePath).size;
 }
 
-function _getAgentTemp(): string {
+export function _getAgentTemp(): string {
   tl.assertAgent("2.115.0");
   const tempDirectory = tl.getVariable("Agent.TempDirectory");
   if (!tempDirectory) {
@@ -409,7 +409,7 @@ function _getAgentTemp(): string {
   return tempDirectory;
 }
 
-function _deleteFile(filePath: string) {
+export function _deleteFile(filePath: string) {
   try {
     if (fs.existsSync(filePath)) {
       fs.rmSync(filePath);

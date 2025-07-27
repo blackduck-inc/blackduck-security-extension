@@ -1422,7 +1422,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports._getFileSizeOnDisk = exports.downloadTool = exports.debug = void 0;
+exports._deleteFile = exports._getAgentTemp = exports._getFileSizeOnDisk = exports._getContentLengthOfDownloadedFile = exports.downloadTool = exports.debug = void 0;
 const httm = __importStar(__nccwpck_require__(5538));
 const path = __importStar(__nccwpck_require__(1017));
 const fs = __importStar(__nccwpck_require__(7147));
@@ -1717,6 +1717,7 @@ function _getContentLengthOfDownloadedFile(response) {
     const contentLengthHeader = response.message.headers["content-length"];
     return parseInt(contentLengthHeader);
 }
+exports._getContentLengthOfDownloadedFile = _getContentLengthOfDownloadedFile;
 /**
  * Gets size of file saved to disk
  *
@@ -1737,6 +1738,7 @@ function _getAgentTemp() {
     }
     return tempDirectory;
 }
+exports._getAgentTemp = _getAgentTemp;
 function _deleteFile(filePath) {
     try {
         if (fs.existsSync(filePath)) {
@@ -1748,6 +1750,7 @@ function _deleteFile(filePath) {
         tl.debug(`Failed to delete '${filePath}'. ${err}`);
     }
 }
+exports._deleteFile = _deleteFile;
 
 
 /***/ }),

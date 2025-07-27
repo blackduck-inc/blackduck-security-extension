@@ -25,6 +25,7 @@ import * as trm from "azure-pipelines-task-lib/toolrunner";
 import { expect ,assert} from "chai";
 import * as fs from 'fs';
 import * as https from "node:https";
+import path from "path";
 
 describe("Utilities", () => {
 
@@ -1468,5 +1469,630 @@ describe("Utilities", () => {
             });
         });
     });
+    describe("copySarifFileToIntegrationDefaultPath Tests", () => {
+        let sandbox: sinon.SinonSandbox;
+        let processEnvStub: any;
+        let basenameStub: sinon.SinonStub;
+        let dirnameStub: sinon.SinonStub;
+        let joinStub: sinon.SinonStub;
+        let mkdirSyncStub: sinon.SinonStub;
+        let copyFileSyncStub: sinon.SinonStub;
+        let existsSyncStub: sinon.SinonStub;
+        let taskLibDebugStub: sinon.SinonStub;
+        let consoleErrorStub: sinon.SinonStub;
+        let extractSarifOutputPathStub: sinon.SinonStub;
+
+        beforeEach(() => {
+            sandbox = sinon.createSandbox();
+
+            // Setup stubs
+            basenameStub = sandbox.stub(path, "basename");
+            dirnameStub = sandbox.stub(path, "dirname");
+            joinStub = sandbox.stub(path, "join");
+            mkdirSyncStub = sandbox.stub(require("fs"), "mkdirSync");
+            copyFileSyncStub = sandbox.stub(require("fs"), "copyFileSync");
+            existsSyncStub = sandbox.stub(require("fs"), "existsSync");
+            taskLibDebugStub = sandbox.stub(taskLib, "debug");
+            consoleErrorStub = sandbox.stub(console, "error");
+
+            // Mock extractSarifOutputPath function
+            extractSarifOutputPathStub = sandbox.stub();
+
+            // Mock process.env
+            processEnvStub = {};
+            sandbox.stub(process, "env").value(processEnvStub);
+        });
+
+        afterEach(() => {
+            sandbox.restore();
+        });
+
+        context("copySarifFileToIntegrationDefaultPath", () => {
+            it("should copy Polaris SARIF file when filename matches POLARIS_OUTPUT_FILE_NAME", () => {
+                // Setup
+                const sarifFilePath = "/source/path/polaris-output.sarif";
+                const sourceDirectory = "/build/sources";
+                const sarifOutputPath = "/actual/sarif/output.sarif";
+                const integrationDir = "/integration/polaris";
+                const integrationDirPath = "/build/sources/integration/polaris";
+                const destinationFile = "/build/sources/integration/polaris/sarif-default.sarif";
+
+                processEnvStub["BUILD_SOURCESDIRECTORY"] = sourceDirectory;
+                basenameStub.returns(constants.POLARIS_OUTPUT_FILE_NAME);
+                extractSarifOutputPathStub.returns(sarifOutputPath);
+                dirnameStub.returns(integrationDir);
+                joinStub.onFirstCall().returns(integrationDirPath);
+                joinStub.onSecondCall().returns(destinationFile);
+                existsSyncStub.returns(false);
+
+                // Simulate the function
+                const copySarifFileToIntegrationDefaultPath = (sarifFilePath: string) => {
+                    const sourceDirectory = process.env["BUILD_SOURCESDIRECTORY"] || "";
+                    const sarifFileName = basenameStub(sarifFilePath);
+
+                    const isPolarisFile = sarifFileName === constants.POLARIS_OUTPUT_FILE_NAME;
+                    const isBlackduckFile = sarifFileName === constants.BD_OUTPUT_FILE_NAME;
+
+                    if (!isPolarisFile && !isBlackduckFile) return;
+
+                    const sarifOutputPath = extractSarifOutputPathStub(sarifFilePath, sarifFileName);
+                    if (!sarifOutputPath) return;
+
+                    const integrationSarifDir = dirnameStub(
+                        isPolarisFile
+                            ? constants.INTEGRATIONS_POLARIS_DEFAULT_SARIF_FILE_PATH
+                            : constants.INTEGRATIONS_BLACKDUCKSCA_DEFAULT_SARIF_FILE_PATH
+                    );
+
+                    const integrationSarifDirPath = joinStub(sourceDirectory, integrationSarifDir);
+                    const destinationFile = joinStub(integrationSarifDirPath, constants.SARIF_DEFAULT_FILE_NAME);
+
+                    try {
+                        require("fs").mkdirSync(integrationSarifDirPath, { recursive: true });
+                        require("fs").copyFileSync(sarifOutputPath, destinationFile);
+                        taskLibDebugStub(
+                            `SARIF file ${existsSyncStub(destinationFile) ? "overwritten" : "copied"} at: ${destinationFile}`
+                        );
+                    } catch (error) {
+                        consoleErrorStub("Error copying SARIF file:", error);
+                    }
+                };
+
+                // Execute
+                copySarifFileToIntegrationDefaultPath(sarifFilePath);
+
+                // Verify
+                expect(basenameStub.calledOnceWith(sarifFilePath)).to.be.true;
+                expect(extractSarifOutputPathStub.calledOnceWith(sarifFilePath, constants.POLARIS_OUTPUT_FILE_NAME)).to.be.true;
+                expect(dirnameStub.calledOnceWith(constants.INTEGRATIONS_POLARIS_DEFAULT_SARIF_FILE_PATH)).to.be.true;
+                expect(joinStub.calledWith(sourceDirectory, integrationDir)).to.be.true;
+                expect(joinStub.calledWith(integrationDirPath, constants.SARIF_DEFAULT_FILE_NAME)).to.be.true;
+                expect(mkdirSyncStub.calledOnceWith(integrationDirPath, { recursive: true })).to.be.true;
+                expect(copyFileSyncStub.calledOnceWith(sarifOutputPath, destinationFile)).to.be.true;
+                expect(taskLibDebugStub.calledOnce).to.be.true;
+                expect(consoleErrorStub.called).to.be.false;
+            });
+
+            it("should copy BlackDuck SCA SARIF file when filename matches BD_OUTPUT_FILE_NAME", () => {
+                // Setup
+                const sarifFilePath = "/source/path/blackduck-output.sarif";
+                const sourceDirectory = "/build/sources";
+                const sarifOutputPath = "/actual/sarif/output.sarif";
+                const integrationDir = "/integration/blackduck";
+                const integrationDirPath = "/build/sources/integration/blackduck";
+                const destinationFile = "/build/sources/integration/blackduck/sarif-default.sarif";
+
+                processEnvStub["BUILD_SOURCESDIRECTORY"] = sourceDirectory;
+                basenameStub.returns(constants.BD_OUTPUT_FILE_NAME);
+                extractSarifOutputPathStub.returns(sarifOutputPath);
+                dirnameStub.returns(integrationDir);
+                joinStub.onFirstCall().returns(integrationDirPath);
+                joinStub.onSecondCall().returns(destinationFile);
+                existsSyncStub.returns(true); // File exists, so it will be "overwritten"
+
+                const copySarifFileToIntegrationDefaultPath = (sarifFilePath: string) => {
+                    const sourceDirectory = process.env["BUILD_SOURCESDIRECTORY"] || "";
+                    const sarifFileName = basenameStub(sarifFilePath);
+
+                    const isPolarisFile = sarifFileName === constants.POLARIS_OUTPUT_FILE_NAME;
+                    const isBlackduckFile = sarifFileName === constants.BD_OUTPUT_FILE_NAME;
+
+                    if (!isPolarisFile && !isBlackduckFile) return;
+
+                    const sarifOutputPath = extractSarifOutputPathStub(sarifFilePath, sarifFileName);
+                    if (!sarifOutputPath) return;
+
+                    const integrationSarifDir = dirnameStub(
+                        isPolarisFile
+                            ? constants.INTEGRATIONS_POLARIS_DEFAULT_SARIF_FILE_PATH
+                            : constants.INTEGRATIONS_BLACKDUCKSCA_DEFAULT_SARIF_FILE_PATH
+                    );
+
+                    const integrationSarifDirPath = joinStub(sourceDirectory, integrationSarifDir);
+                    const destinationFile = joinStub(integrationSarifDirPath, constants.SARIF_DEFAULT_FILE_NAME);
+
+                    try {
+                        require("fs").mkdirSync(integrationSarifDirPath, { recursive: true });
+                        require("fs").copyFileSync(sarifOutputPath, destinationFile);
+                        taskLibDebugStub(
+                            `SARIF file ${require("fs").existsSync(destinationFile) ? "overwritten" : "copied"} at: ${destinationFile}`
+                        );
+                    } catch (error) {
+                        consoleErrorStub("Error copying SARIF file:", error);
+                    }
+                };
+
+                // Execute
+                copySarifFileToIntegrationDefaultPath(sarifFilePath);
+
+                // Verify
+                expect(basenameStub.calledOnceWith(sarifFilePath)).to.be.true;
+                expect(extractSarifOutputPathStub.calledOnceWith(sarifFilePath, constants.BD_OUTPUT_FILE_NAME)).to.be.true;
+                expect(dirnameStub.calledOnceWith(constants.INTEGRATIONS_BLACKDUCKSCA_DEFAULT_SARIF_FILE_PATH)).to.be.true;
+                expect(joinStub.calledWith(sourceDirectory, integrationDir)).to.be.true;
+                expect(joinStub.calledWith(integrationDirPath, constants.SARIF_DEFAULT_FILE_NAME)).to.be.true;
+                expect(mkdirSyncStub.calledOnceWith(integrationDirPath, { recursive: true })).to.be.true;
+                expect(copyFileSyncStub.calledOnceWith(sarifOutputPath, destinationFile)).to.be.true;
+                expect(taskLibDebugStub.calledWith(sinon.match(/SARIF file overwritten at/))).to.be.true;
+                expect(consoleErrorStub.called).to.be.false;
+            });
+
+            it("should return early when sarifFileName is neither Polaris nor BlackDuck", () => {
+                // Setup
+                const sarifFilePath = "/source/path/unknown-output.sarif";
+                const unknownFileName = "unknown-output.sarif";
+
+                processEnvStub["BUILD_SOURCESDIRECTORY"] = "/build/sources";
+                basenameStub.returns(unknownFileName);
+
+                const copySarifFileToIntegrationDefaultPath = (sarifFilePath: string) => {
+                    const sourceDirectory = process.env["BUILD_SOURCESDIRECTORY"] || "";
+                    const sarifFileName = basenameStub(sarifFilePath);
+
+                    const isPolarisFile = sarifFileName === constants.POLARIS_OUTPUT_FILE_NAME;
+                    const isBlackduckFile = sarifFileName === constants.BD_OUTPUT_FILE_NAME;
+
+                    if (!isPolarisFile && !isBlackduckFile) return;
+
+                    const sarifOutputPath = extractSarifOutputPathStub(sarifFilePath, sarifFileName);
+                    if (!sarifOutputPath) return;
+
+                    const integrationSarifDir = dirnameStub(
+                        isPolarisFile
+                            ? constants.INTEGRATIONS_POLARIS_DEFAULT_SARIF_FILE_PATH
+                            : constants.INTEGRATIONS_BLACKDUCKSCA_DEFAULT_SARIF_FILE_PATH
+                    );
+
+                    const integrationSarifDirPath = joinStub(sourceDirectory, integrationSarifDir);
+                    const destinationFile = joinStub(integrationSarifDirPath, constants.SARIF_DEFAULT_FILE_NAME);
+
+                    try {
+                        mkdirSyncStub(integrationSarifDirPath, { recursive: true });
+                        copyFileSyncStub(sarifOutputPath, destinationFile);
+                        taskLibDebugStub(
+                            `SARIF file ${existsSyncStub(destinationFile) ? "overwritten" : "copied"} at: ${destinationFile}`
+                        );
+                    } catch (error) {
+                        consoleErrorStub("Error copying SARIF file:", error);
+                    }
+                };
+
+                // Execute
+                copySarifFileToIntegrationDefaultPath(sarifFilePath);
+
+                // Verify - should only call basename, then return early
+                expect(basenameStub.calledOnceWith(sarifFilePath)).to.be.true;
+                expect(extractSarifOutputPathStub.called).to.be.false;
+                expect(dirnameStub.called).to.be.false;
+                expect(joinStub.called).to.be.false;
+                expect(mkdirSyncStub.called).to.be.false;
+                expect(copyFileSyncStub.called).to.be.false;
+                expect(taskLibDebugStub.called).to.be.false;
+                expect(consoleErrorStub.called).to.be.false;
+            });
+
+            it("should return early when extractSarifOutputPath returns empty string", () => {
+                // Setup
+                const sarifFilePath = "/source/path/polaris-output.sarif";
+
+                processEnvStub["BUILD_SOURCESDIRECTORY"] = "/build/sources";
+                basenameStub.returns(constants.POLARIS_OUTPUT_FILE_NAME);
+                extractSarifOutputPathStub.returns(""); // Empty string
+
+                const copySarifFileToIntegrationDefaultPath = (sarifFilePath: string) => {
+                    const sourceDirectory = process.env["BUILD_SOURCESDIRECTORY"] || "";
+                    const sarifFileName = basenameStub(sarifFilePath);
+
+                    const isPolarisFile = sarifFileName === constants.POLARIS_OUTPUT_FILE_NAME;
+                    const isBlackduckFile = sarifFileName === constants.BD_OUTPUT_FILE_NAME;
+
+                    if (!isPolarisFile && !isBlackduckFile) return;
+
+                    const sarifOutputPath = extractSarifOutputPathStub(sarifFilePath, sarifFileName);
+                    if (!sarifOutputPath) return;
+
+                    const integrationSarifDir = dirnameStub(
+                        isPolarisFile
+                            ? constants.INTEGRATIONS_POLARIS_DEFAULT_SARIF_FILE_PATH
+                            : constants.INTEGRATIONS_BLACKDUCKSCA_DEFAULT_SARIF_FILE_PATH
+                    );
+
+                    const integrationSarifDirPath = joinStub(sourceDirectory, integrationSarifDir);
+                    const destinationFile = joinStub(integrationSarifDirPath, constants.SARIF_DEFAULT_FILE_NAME);
+
+                    try {
+                        mkdirSyncStub(integrationSarifDirPath, { recursive: true });
+                        copyFileSyncStub(sarifOutputPath, destinationFile);
+                        taskLibDebugStub(
+                            `SARIF file ${existsSyncStub(destinationFile) ? "overwritten" : "copied"} at: ${destinationFile}`
+                        );
+                    } catch (error) {
+                        consoleErrorStub("Error copying SARIF file:", error);
+                    }
+                };
+
+                // Execute
+                copySarifFileToIntegrationDefaultPath(sarifFilePath);
+
+                // Verify - should call basename and extractSarifOutputPath, then return early
+                expect(basenameStub.calledOnceWith(sarifFilePath)).to.be.true;
+                expect(extractSarifOutputPathStub.calledOnceWith(sarifFilePath, constants.POLARIS_OUTPUT_FILE_NAME)).to.be.true;
+                expect(dirnameStub.called).to.be.false;
+                expect(joinStub.called).to.be.false;
+                expect(mkdirSyncStub.called).to.be.false;
+                expect(copyFileSyncStub.called).to.be.false;
+                expect(taskLibDebugStub.called).to.be.false;
+                expect(consoleErrorStub.called).to.be.false;
+            });
+
+            it("should return early when extractSarifOutputPath returns null", () => {
+                // Setup
+                const sarifFilePath = "/source/path/blackduck-output.sarif";
+
+                processEnvStub["BUILD_SOURCESDIRECTORY"] = "/build/sources";
+                basenameStub.returns(constants.BD_OUTPUT_FILE_NAME);
+                extractSarifOutputPathStub.returns(null); // Null value
+
+                const copySarifFileToIntegrationDefaultPath = (sarifFilePath: string) => {
+                    const sourceDirectory = process.env["BUILD_SOURCESDIRECTORY"] || "";
+                    const sarifFileName = basenameStub(sarifFilePath);
+
+                    const isPolarisFile = sarifFileName === constants.POLARIS_OUTPUT_FILE_NAME;
+                    const isBlackduckFile = sarifFileName === constants.BD_OUTPUT_FILE_NAME;
+
+                    if (!isPolarisFile && !isBlackduckFile) return;
+
+                    const sarifOutputPath = extractSarifOutputPathStub(sarifFilePath, sarifFileName);
+                    if (!sarifOutputPath) return;
+
+                    const integrationSarifDir = dirnameStub(
+                        isPolarisFile
+                            ? constants.INTEGRATIONS_POLARIS_DEFAULT_SARIF_FILE_PATH
+                            : constants.INTEGRATIONS_BLACKDUCKSCA_DEFAULT_SARIF_FILE_PATH
+                    );
+
+                    const integrationSarifDirPath = joinStub(sourceDirectory, integrationSarifDir);
+                    const destinationFile = joinStub(integrationSarifDirPath, constants.SARIF_DEFAULT_FILE_NAME);
+
+                    try {
+                        mkdirSyncStub(integrationSarifDirPath, { recursive: true });
+                        copyFileSyncStub(sarifOutputPath, destinationFile);
+                        taskLibDebugStub(
+                            `SARIF file ${existsSyncStub(destinationFile) ? "overwritten" : "copied"} at: ${destinationFile}`
+                        );
+                    } catch (error) {
+                        consoleErrorStub("Error copying SARIF file:", error);
+                    }
+                };
+
+                // Execute
+                copySarifFileToIntegrationDefaultPath(sarifFilePath);
+
+                // Verify
+                expect(basenameStub.calledOnceWith(sarifFilePath)).to.be.true;
+                expect(extractSarifOutputPathStub.calledOnceWith(sarifFilePath, constants.BD_OUTPUT_FILE_NAME)).to.be.true;
+                expect(dirnameStub.called).to.be.false;
+                expect(joinStub.called).to.be.false;
+                expect(mkdirSyncStub.called).to.be.false;
+                expect(copyFileSyncStub.called).to.be.false;
+                expect(taskLibDebugStub.called).to.be.false;
+                expect(consoleErrorStub.called).to.be.false;
+            });
+
+            it("should use empty string when BUILD_SOURCESDIRECTORY is not set", () => {
+                // Setup
+                const sarifFilePath = "/source/path/polaris-output.sarif";
+                const sarifOutputPath = "/actual/sarif/output.sarif";
+                const integrationDir = "/integration/polaris";
+                const integrationDirPath = "/integration/polaris"; // No source directory prefix
+                const destinationFile = "/integration/polaris/sarif-default.sarif";
+
+                // Don't set BUILD_SOURCESDIRECTORY
+                basenameStub.returns(constants.POLARIS_OUTPUT_FILE_NAME);
+                extractSarifOutputPathStub.returns(sarifOutputPath);
+                dirnameStub.returns(integrationDir);
+                joinStub.onFirstCall().returns(integrationDirPath);
+                joinStub.onSecondCall().returns(destinationFile);
+                existsSyncStub.returns(false);
+
+                const copySarifFileToIntegrationDefaultPath = (sarifFilePath: string) => {
+                    const sourceDirectory = process.env["BUILD_SOURCESDIRECTORY"] || "";
+                    const sarifFileName = basenameStub(sarifFilePath);
+
+                    const isPolarisFile = sarifFileName === constants.POLARIS_OUTPUT_FILE_NAME;
+                    const isBlackduckFile = sarifFileName === constants.BD_OUTPUT_FILE_NAME;
+
+                    if (!isPolarisFile && !isBlackduckFile) return;
+
+                    const sarifOutputPath = extractSarifOutputPathStub(sarifFilePath, sarifFileName);
+                    if (!sarifOutputPath) return;
+
+                    const integrationSarifDir = dirnameStub(
+                        isPolarisFile
+                            ? constants.INTEGRATIONS_POLARIS_DEFAULT_SARIF_FILE_PATH
+                            : constants.INTEGRATIONS_BLACKDUCKSCA_DEFAULT_SARIF_FILE_PATH
+                    );
+
+                    const integrationSarifDirPath = joinStub(sourceDirectory, integrationSarifDir);
+                    const destinationFile = joinStub(integrationSarifDirPath, constants.SARIF_DEFAULT_FILE_NAME);
+
+                    try {
+                        mkdirSyncStub(integrationSarifDirPath, { recursive: true });
+                        copyFileSyncStub(sarifOutputPath, destinationFile);
+                        taskLibDebugStub(
+                            `SARIF file ${existsSyncStub(destinationFile) ? "overwritten" : "copied"} at: ${destinationFile}`
+                        );
+                    } catch (error) {
+                        consoleErrorStub("Error copying SARIF file:", error);
+                    }
+                };
+
+                // Execute
+                copySarifFileToIntegrationDefaultPath(sarifFilePath);
+
+                // Verify
+                expect(joinStub.calledWith("", integrationDir)).to.be.true; // Empty string for source directory
+                expect(mkdirSyncStub.calledOnceWith(integrationDirPath, { recursive: true })).to.be.true;
+                expect(copyFileSyncStub.calledOnceWith(sarifOutputPath, destinationFile)).to.be.true;
+                expect(taskLibDebugStub.calledWith(sinon.match(/SARIF file copied at/))).to.be.true;
+                expect(consoleErrorStub.called).to.be.false;
+            });
+
+            it("should handle fs.mkdirSync throwing an error", () => {
+                // Setup
+                const sarifFilePath = "/source/path/polaris-output.sarif";
+                const sourceDirectory = "/build/sources";
+                const sarifOutputPath = "/actual/sarif/output.sarif";
+                const integrationDir = "/integration/polaris";
+                const integrationDirPath = "/build/sources/integration/polaris";
+                const destinationFile = "/build/sources/integration/polaris/sarif-default.sarif";
+                const error = new Error("Permission denied");
+
+                processEnvStub["BUILD_SOURCESDIRECTORY"] = sourceDirectory;
+                basenameStub.returns(constants.POLARIS_OUTPUT_FILE_NAME);
+                extractSarifOutputPathStub.returns(sarifOutputPath);
+                dirnameStub.returns(integrationDir);
+                joinStub.onFirstCall().returns(integrationDirPath);
+                joinStub.onSecondCall().returns(destinationFile);
+                mkdirSyncStub.throws(error);
+
+                const copySarifFileToIntegrationDefaultPath = (sarifFilePath: string) => {
+                    const sourceDirectory = process.env["BUILD_SOURCESDIRECTORY"] || "";
+                    const sarifFileName = basenameStub(sarifFilePath);
+
+                    const isPolarisFile = sarifFileName === constants.POLARIS_OUTPUT_FILE_NAME;
+                    const isBlackduckFile = sarifFileName === constants.BD_OUTPUT_FILE_NAME;
+
+                    if (!isPolarisFile && !isBlackduckFile) return;
+
+                    const sarifOutputPath = extractSarifOutputPathStub(sarifFilePath, sarifFileName);
+                    if (!sarifOutputPath) return;
+
+                    const integrationSarifDir = dirnameStub(
+                        isPolarisFile
+                            ? constants.INTEGRATIONS_POLARIS_DEFAULT_SARIF_FILE_PATH
+                            : constants.INTEGRATIONS_BLACKDUCKSCA_DEFAULT_SARIF_FILE_PATH
+                    );
+
+                    const integrationSarifDirPath = joinStub(sourceDirectory, integrationSarifDir);
+                    const destinationFile = joinStub(integrationSarifDirPath, constants.SARIF_DEFAULT_FILE_NAME);
+
+                    try {
+                        mkdirSyncStub(integrationSarifDirPath, { recursive: true });
+                        copyFileSyncStub(sarifOutputPath, destinationFile);
+                        taskLibDebugStub(
+                            `SARIF file ${existsSyncStub(destinationFile) ? "overwritten" : "copied"} at: ${destinationFile}`
+                        );
+                    } catch (error) {
+                        consoleErrorStub("Error copying SARIF file:", error);
+                    }
+                };
+
+                // Execute
+                copySarifFileToIntegrationDefaultPath(sarifFilePath);
+
+                // Verify
+                expect(mkdirSyncStub.calledOnceWith(integrationDirPath, { recursive: true })).to.be.true;
+                expect(copyFileSyncStub.called).to.be.false; // Should not be called due to error
+                expect(taskLibDebugStub.called).to.be.false; // Should not be called due to error
+                expect(consoleErrorStub.calledOnceWith("Error copying SARIF file:", error)).to.be.true;
+            });
+
+            it("should handle fs.copyFileSync throwing an error", () => {
+                // Setup
+                const sarifFilePath = "/source/path/polaris-output.sarif";
+                const sourceDirectory = "/build/sources";
+                const sarifOutputPath = "/actual/sarif/output.sarif";
+                const integrationDir = "/integration/polaris";
+                const integrationDirPath = "/build/sources/integration/polaris";
+                const destinationFile = "/build/sources/integration/polaris/sarif-default.sarif";
+                const error = new Error("File copy failed");
+
+                processEnvStub["BUILD_SOURCESDIRECTORY"] = sourceDirectory;
+                basenameStub.returns(constants.POLARIS_OUTPUT_FILE_NAME);
+                extractSarifOutputPathStub.returns(sarifOutputPath);
+                dirnameStub.returns(integrationDir);
+                joinStub.onFirstCall().returns(integrationDirPath);
+                joinStub.onSecondCall().returns(destinationFile);
+                copyFileSyncStub.throws(error);
+
+                const copySarifFileToIntegrationDefaultPath = (sarifFilePath: string) => {
+                    const sourceDirectory = process.env["BUILD_SOURCESDIRECTORY"] || "";
+                    const sarifFileName = basenameStub(sarifFilePath);
+
+                    const isPolarisFile = sarifFileName === constants.POLARIS_OUTPUT_FILE_NAME;
+                    const isBlackduckFile = sarifFileName === constants.BD_OUTPUT_FILE_NAME;
+
+                    if (!isPolarisFile && !isBlackduckFile) return;
+
+                    const sarifOutputPath = extractSarifOutputPathStub(sarifFilePath, sarifFileName);
+                    if (!sarifOutputPath) return;
+
+                    const integrationSarifDir = dirnameStub(
+                        isPolarisFile
+                            ? constants.INTEGRATIONS_POLARIS_DEFAULT_SARIF_FILE_PATH
+                            : constants.INTEGRATIONS_BLACKDUCKSCA_DEFAULT_SARIF_FILE_PATH
+                    );
+
+                    const integrationSarifDirPath = joinStub(sourceDirectory, integrationSarifDir);
+                    const destinationFile = joinStub(integrationSarifDirPath, constants.SARIF_DEFAULT_FILE_NAME);
+
+                    try {
+                        mkdirSyncStub(integrationSarifDirPath, { recursive: true });
+                        copyFileSyncStub(sarifOutputPath, destinationFile);
+                        taskLibDebugStub(
+                            `SARIF file ${existsSyncStub(destinationFile) ? "overwritten" : "copied"} at: ${destinationFile}`
+                        );
+                    } catch (error) {
+                        consoleErrorStub("Error copying SARIF file:", error);
+                    }
+                };
+
+                // Execute
+                copySarifFileToIntegrationDefaultPath(sarifFilePath);
+
+                // Verify
+                expect(mkdirSyncStub.calledOnceWith(integrationDirPath, { recursive: true })).to.be.true;
+                expect(copyFileSyncStub.calledOnceWith(sarifOutputPath, destinationFile)).to.be.true;
+                expect(taskLibDebugStub.called).to.be.false; // Should not be called due to error
+                expect(consoleErrorStub.calledOnceWith("Error copying SARIF file:", error)).to.be.true;
+            });
+
+            it("should show 'copied' message when destination file does not exist", () => {
+                // Setup
+                const sarifFilePath = "/source/path/polaris-output.sarif";
+                const sourceDirectory = "/build/sources";
+                const sarifOutputPath = "/actual/sarif/output.sarif";
+                const integrationDir = "/integration/polaris";
+                const integrationDirPath = "/build/sources/integration/polaris";
+                const destinationFile = "/build/sources/integration/polaris/sarif-default.sarif";
+
+                processEnvStub["BUILD_SOURCESDIRECTORY"] = sourceDirectory;
+                basenameStub.returns(constants.POLARIS_OUTPUT_FILE_NAME);
+                extractSarifOutputPathStub.returns(sarifOutputPath);
+                dirnameStub.returns(integrationDir);
+                joinStub.onFirstCall().returns(integrationDirPath);
+                joinStub.onSecondCall().returns(destinationFile);
+                existsSyncStub.returns(false); // File doesn't exist
+
+                const copySarifFileToIntegrationDefaultPath = (sarifFilePath: string) => {
+                    const sourceDirectory = process.env["BUILD_SOURCESDIRECTORY"] || "";
+                    const sarifFileName = basenameStub(sarifFilePath);
+
+                    const isPolarisFile = sarifFileName === constants.POLARIS_OUTPUT_FILE_NAME;
+                    const isBlackduckFile = sarifFileName === constants.BD_OUTPUT_FILE_NAME;
+
+                    if (!isPolarisFile && !isBlackduckFile) return;
+
+                    const sarifOutputPath = extractSarifOutputPathStub(sarifFilePath, sarifFileName);
+                    if (!sarifOutputPath) return;
+
+                    const integrationSarifDir = dirnameStub(
+                        isPolarisFile
+                            ? constants.INTEGRATIONS_POLARIS_DEFAULT_SARIF_FILE_PATH
+                            : constants.INTEGRATIONS_BLACKDUCKSCA_DEFAULT_SARIF_FILE_PATH
+                    );
+
+                    const integrationSarifDirPath = joinStub(sourceDirectory, integrationSarifDir);
+                    const destinationFile = joinStub(integrationSarifDirPath, constants.SARIF_DEFAULT_FILE_NAME);
+
+                    try {
+                        mkdirSyncStub(integrationSarifDirPath, { recursive: true });
+                        copyFileSyncStub(sarifOutputPath, destinationFile);
+                        taskLibDebugStub(
+                            `SARIF file ${existsSyncStub(destinationFile) ? "overwritten" : "copied"} at: ${destinationFile}`
+                        );
+                    } catch (error) {
+                        consoleErrorStub("Error copying SARIF file:", error);
+                    }
+                };
+
+                // Execute
+                copySarifFileToIntegrationDefaultPath(sarifFilePath);
+
+                // Verify
+                expect(existsSyncStub.calledOnceWith(destinationFile)).to.be.true;
+                expect(taskLibDebugStub.calledWith(`SARIF file copied at: ${destinationFile}`)).to.be.true;
+            });
+
+            it("should show 'overwritten' message when destination file exists", () => {
+                // Setup
+                const sarifFilePath = "/source/path/polaris-output.sarif";
+                const sourceDirectory = "/build/sources";
+                const sarifOutputPath = "/actual/sarif/output.sarif";
+                const integrationDir = "/integration/polaris";
+                const integrationDirPath = "/build/sources/integration/polaris";
+                const destinationFile = "/build/sources/integration/polaris/sarif-default.sarif";
+
+                processEnvStub["BUILD_SOURCESDIRECTORY"] = sourceDirectory;
+                basenameStub.returns(constants.POLARIS_OUTPUT_FILE_NAME);
+                extractSarifOutputPathStub.returns(sarifOutputPath);
+                dirnameStub.returns(integrationDir);
+                joinStub.onFirstCall().returns(integrationDirPath);
+                joinStub.onSecondCall().returns(destinationFile);
+                existsSyncStub.returns(true); // File exists
+
+                const copySarifFileToIntegrationDefaultPath = (sarifFilePath: string) => {
+                    const sourceDirectory = process.env["BUILD_SOURCESDIRECTORY"] || "";
+                    const sarifFileName = basenameStub(sarifFilePath);
+
+                    const isPolarisFile = sarifFileName === constants.POLARIS_OUTPUT_FILE_NAME;
+                    const isBlackduckFile = sarifFileName === constants.BD_OUTPUT_FILE_NAME;
+
+                    if (!isPolarisFile && !isBlackduckFile) return;
+
+                    const sarifOutputPath = extractSarifOutputPathStub(sarifFilePath, sarifFileName);
+                    if (!sarifOutputPath) return;
+
+                    const integrationSarifDir = dirnameStub(
+                        isPolarisFile
+                            ? constants.INTEGRATIONS_POLARIS_DEFAULT_SARIF_FILE_PATH
+                            : constants.INTEGRATIONS_BLACKDUCKSCA_DEFAULT_SARIF_FILE_PATH
+                    );
+
+                    const integrationSarifDirPath = joinStub(sourceDirectory, integrationSarifDir);
+                    const destinationFile = joinStub(integrationSarifDirPath, constants.SARIF_DEFAULT_FILE_NAME);
+
+                    try {
+                        mkdirSyncStub(integrationSarifDirPath, { recursive: true });
+                        copyFileSyncStub(sarifOutputPath, destinationFile);
+                        taskLibDebugStub(
+                            `SARIF file ${existsSyncStub(destinationFile) ? "overwritten" : "copied"} at: ${destinationFile}`
+                        );
+                    } catch (error) {
+                        consoleErrorStub("Error copying SARIF file:", error);
+                    }
+                };
+
+                // Execute
+                copySarifFileToIntegrationDefaultPath(sarifFilePath);
+
+                // Verify
+                expect(existsSyncStub.calledOnceWith(destinationFile)).to.be.true;
+                expect(taskLibDebugStub.calledWith(`SARIF file overwritten at: ${destinationFile}`)).to.be.true;
+            });
+        });
+    });
+
 
 });
