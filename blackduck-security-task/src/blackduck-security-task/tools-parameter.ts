@@ -237,9 +237,7 @@ export class BridgeCliToolsParameter {
           "",
           ""
         );
-        if (azureRestAPIVersion && polData.data.azure) {
-          polData.data.azure.restAPIVersion = azureRestAPIVersion;
-        }
+
         polData.data.polaris.prcomment = { severities: [], enabled: true };
 
         if (inputs.POLARIS_PR_COMMENT_SEVERITIES) {
@@ -264,6 +262,9 @@ export class BridgeCliToolsParameter {
     // Remove empty data from json object
     polData = filterEmptyData(polData);
 
+    if (azureRestAPIVersion && polData.data.azure) {
+      polData.data.azure.restAPIVersion = azureRestAPIVersion;
+    }
     const inputJson = JSON.stringify(polData);
 
     let stateFilePath = path.join(
@@ -509,6 +510,7 @@ export class BridgeCliToolsParameter {
     }
 
     const azureData = await this.getAzureRepoInfo();
+    const azureRestAPIVersion = azureData?.restAPIVersion;
 
     const isPrCommentEnabled = parseToBoolean(
       inputs.COVERITY_AUTOMATION_PRCOMMENT
@@ -646,6 +648,9 @@ export class BridgeCliToolsParameter {
     // Remove empty data from json object
     covData = filterEmptyData(covData);
 
+    if (azureRestAPIVersion && covData.data.azure) {
+      covData.data.azure.restAPIVersion = azureRestAPIVersion;
+    }
     const inputJson = JSON.stringify(covData);
 
     let stateFilePath = path.join(
