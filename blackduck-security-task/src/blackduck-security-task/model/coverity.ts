@@ -4,6 +4,7 @@ import { AzureData } from "./azure";
 import { Environment } from "./blackduckSCA";
 import { AsyncMode } from "./async-mode";
 import { Bridge } from "./bridge";
+import { Network } from "./common";
 
 export interface Coverity {
   coverity: CoverityConnect;
@@ -11,6 +12,7 @@ export interface Coverity {
   azure?: AzureData;
   environment?: Environment;
   bridge: Bridge;
+  network?: Network;
 }
 
 export interface ProjectData {
@@ -27,7 +29,7 @@ export interface CoverityConnect extends CoverityArbitrary, AsyncMode {
   connect: CoverityData;
   install?: { directory: string };
   automation?: AutomationData;
-  network?: NetworkAirGap;
+  network?: Network;
   local?: boolean;
   version?: string;
 }
