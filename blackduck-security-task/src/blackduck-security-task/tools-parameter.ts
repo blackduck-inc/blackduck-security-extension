@@ -205,6 +205,7 @@ export class BridgeCliToolsParameter {
     polData.data.detect = this.setDetectArgs();
 
     const azureData = await this.getAzureRepoInfo();
+    const azureRestAPIVersion = azureData?.restAPIVersion;
 
     const isPrCommentEnabled = parseToBoolean(
       inputs.POLARIS_PR_COMMENT_ENABLED
@@ -236,8 +237,9 @@ export class BridgeCliToolsParameter {
           "",
           ""
         );
-
-        polData.data.azure.restAPIVersion = azureData?.restAPIVersion;
+        if (azureRestAPIVersion && polData.data.azure) {
+          polData.data.azure.restAPIVersion = azureRestAPIVersion;
+        }
         polData.data.polaris.prcomment = { severities: [], enabled: true };
 
         if (inputs.POLARIS_PR_COMMENT_SEVERITIES) {
