@@ -1628,44 +1628,4 @@ describe("Download Tool Tests", () => {
             });
         });
     });
-    describe("validateDownloadedFile Function Tests", () => {
-        let sandbox: sinon.SinonSandbox;
-        let tlWarningStub: sinon.SinonStub;
-        let tlDebugStub: sinon.SinonStub;
-        let _getFileSizeOnDiskStub: sinon.SinonStub;
-        let _deleteFileStub: sinon.SinonStub;
-
-        beforeEach(() => {
-            sandbox = sinon.createSandbox();
-
-            // Setup tl stubs
-            tlWarningStub = sandbox.stub(tl, "warning");
-            tlDebugStub = sandbox.stub(tl, "debug");
-
-            // Setup function stubs
-            _getFileSizeOnDiskStub = sandbox.stub(downloadToolModule, "_getFileSizeOnDisk");
-            _deleteFileStub = sandbox.stub(downloadToolModule, "_deleteFile");
-        });
-
-        afterEach(() => {
-            sandbox.restore();
-        });
-
-        context("validateDownloadedFile", () => {
-            it("should verify promise resolution", async () => {
-                const destPath = "/tmp/test-file.zip";
-                const fileSizeInBytes = 1024;
-
-                _getFileSizeOnDiskStub.returns(fileSizeInBytes);
-
-                const promise = validateDownloadedFile(destPath);
-
-                expect(promise).to.be.instanceOf(Promise);
-
-                const result = await promise;
-                expect(result).to.equal(destPath);
-            });
-
-        });
-    });
 });

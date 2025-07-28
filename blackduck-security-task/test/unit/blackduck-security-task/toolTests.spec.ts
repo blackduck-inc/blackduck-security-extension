@@ -168,14 +168,14 @@ describe('Tool Tests - Clean Version', function () {
 
     it('should handle content length mismatch', async function() {
         // Mock a response with mismatched content length
-        nock('https://microsoft.com')
+        nock('https://example.com')
             .get('/mismatch')
             .reply(200, 'short content', {
                 'content-length': '100' // Much larger than actual content
             });
 
         try {
-            await toolLib.downloadTool('https://microsoft.com/mismatch', fileName);
+            await toolLib.downloadTool('https://example.com/mismatch', fileName);
             assert.fail('Should have thrown error for content length mismatch');
         } catch (err) {
             const error = err as Error;
