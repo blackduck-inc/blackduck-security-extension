@@ -1422,7 +1422,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports._deleteFile = exports._getAgentTemp = exports._getFileSizeOnDisk = exports._getContentLengthOfDownloadedFile = exports.downloadTool = exports.debug = exports.getRequestOptions = exports.validateDownloadedFile = void 0;
+exports._deleteFile = exports._getAgentTemp = exports._getFileSizeOnDisk = exports._getContentLengthOfDownloadedFile = exports.downloadTool = exports.downloadWithCustomSSL = exports.debug = exports.getRequestOptions = exports.validateDownloadedFile = void 0;
 const httm = __importStar(__nccwpck_require__(5538));
 const path = __importStar(__nccwpck_require__(1017));
 const fs = __importStar(__nccwpck_require__(7147));
@@ -1595,6 +1595,7 @@ function downloadWithCustomSSL(downloadUrl, destPath, additionalHeaders) {
         });
     });
 }
+exports.downloadWithCustomSSL = downloadWithCustomSSL;
 /**
  * Download a tool from a URL and stream it into a file
  *
