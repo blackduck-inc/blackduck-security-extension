@@ -117,7 +117,7 @@ export function debug(message: string): void {
  * @param additionalHeaders Optional custom HTTP headers
  * @returns Promise resolving to the destination path
  */
-async function downloadWithCustomSSL(
+export async function downloadWithCustomSSL(
   downloadUrl: string,
   destPath: string,
   additionalHeaders?: ifm.IHeaders

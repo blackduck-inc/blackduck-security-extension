@@ -10,12 +10,15 @@ import { ErrorCode } from "../../../src/blackduck-security-task/enum/ErrorCodes"
 import * as inputs from "../../../src/blackduck-security-task/input";
 import { parseToBoolean, createSSLConfiguredHttpClient } from "../../../src/blackduck-security-task/utility";
 import { getSSLConfig, createHTTPSRequestOptions } from "../../../src/blackduck-security-task/ssl-utils";
-import { downloadTool, debug, _getFileSizeOnDisk } from "../../../src/blackduck-security-task/download-tool";
+import {
+    downloadTool,
+    debug,
+    _getFileSizeOnDisk,
+    validateDownloadedFile
+} from "../../../src/blackduck-security-task/download-tool";
 import { _getContentLengthOfDownloadedFile } from "../../../src/blackduck-security-task/download-tool";
 import { _deleteFile } from "../../../src/blackduck-security-task/download-tool";
 import { getRequestOptions } from "../../../src/blackduck-security-task/download-tool";
-import { validateDownloadedFile } from "../../../src/blackduck-security-task/download-tool";
-import * as downloadToolModule from "../../../src/blackduck-security-task/download-tool";
 
 
 describe("Download Tool Tests", () => {
@@ -1626,6 +1629,40 @@ describe("Download Tool Tests", () => {
                 expect(result.allowRedirects).to.be.true;
                 expect(result.allowRetries).to.be.true;
             });
+        });
+    });
+    describe("validateDownloadedFile Function Tests", () => {
+        let sandbox: sinon.SinonSandbox;
+        let tlWarningStub: sinon.SinonStub;
+        let tlDebugStub: sinon.SinonStub;
+        let _getFileSizeOnDiskStub: sinon.SinonStub;
+        let _deleteFileStub: sinon.SinonStub;
+
+        const testDestPath = "/tmp/test-file.zip";
+        const testContentLength = 1024;
+
+        beforeEach(() => {
+            sandbox = sinon.createSandbox();
+
+            // Setup tl stubs
+            tlWarningStub = sandbox.stub(tl, "warning");
+            tlDebugStub = sandbox.stub(tl, "debug");
+
+            // Fixed: Use require() to get proper reference for stubbing
+            _getFileSizeOnDiskStub = sandbox.stub(require("../../../src/blackduck-security-task/download-tool"), "_getFileSizeOnDisk");
+            _deleteFileStub = sandbox.stub(require("../../../src/blackduck-security-task/download-tool"), "_deleteFile");
+        });
+
+        afterEach(() => {
+            sandbox.restore();
+        });
+
+        it("should return a Promise instance", () => {
+            _getFileSizeOnDiskStub.returns(1024);
+
+            const promise = validateDownloadedFile(testDestPath, testContentLength);
+
+            expect(promise).to.be.instanceOf(Promise);
         });
     });
 });
