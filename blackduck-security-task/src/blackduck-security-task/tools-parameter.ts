@@ -456,7 +456,6 @@ export class BridgeCliToolsParameter {
     if (azureRestAPIVersion && blackduckData.data.azure) {
       blackduckData.data.azure.restAPIVersion = azureRestAPIVersion;
     }
-
     const inputJson = JSON.stringify(blackduckData);
 
     let stateFilePath = path.join(
