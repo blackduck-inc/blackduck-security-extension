@@ -9,7 +9,7 @@ import {
   FAILED_TO_GET_PULL_REQUEST_INFO,
   UNABLE_TO_FIND_PULL_REQUEST_INFO,
 } from "./application-constant";
-import { stringFormat } from "./utility";
+import { stringFormat, getSharedHttpClient } from "./utility";
 export class AzureService {
   azureGetMergeRequestsAPI: string;
   apiVersion: string;
@@ -50,7 +50,7 @@ export class AzureService {
         "base64"
       );
 
-      const httpClient = new HttpClient("blackduck-azure-service");
+      const httpClient = getSharedHttpClient();
       const httpResponse = await httpClient.get(endpoint, {
         Authorization: "Basic ".concat(encodedToken),
         Accept: "application/json",
@@ -105,33 +105,35 @@ export class AzureService {
   }
 
   async fetchAzureServerApiVersion(
-      url: string,
-      orgName: string,
-      projectName: string,
-      repoName: string,
-      userToken: string
+    url: string,
+    orgName: string,
+    projectName: string,
+    repoName: string,
+    userToken: string
   ): Promise<string> {
     const repoEndpoint = stringFormat(
-        url + this.azureGetRepositoryAPI,
-        orgName,
-        projectName,
-        repoName
+      url + this.azureGetRepositoryAPI,
+      orgName,
+      projectName,
+      repoName
     );
-    const httpClient = new HttpClient("blackduck-azure-service");
+    const httpClient = getSharedHttpClient();
     taskLib.debug(`Fetching Azure server API version from: ${repoEndpoint}`);
-    const encodedToken = Buffer.from(`:${userToken}`, "utf8").toString("base64");
+    const encodedToken = Buffer.from(`:${userToken}`, "utf8").toString(
+      "base64"
+    );
     const version = await this.getVersionForAzureServer(
-        httpClient,
-        repoEndpoint,
-        encodedToken
+      httpClient,
+      repoEndpoint,
+      encodedToken
     );
     taskLib.debug(`Fetched Azure server API version: ${version}`);
     if (!version) {
       throw new Error(
-          stringFormat(
-              "Unable to fetch API version for Azure server at {0}",
-              repoEndpoint
-          )
+        stringFormat(
+          "Unable to fetch API version for Azure server at {0}",
+          repoEndpoint
+        )
       );
     }
 
