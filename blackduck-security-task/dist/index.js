@@ -3254,9 +3254,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.clearHttpClientCache = exports.getSharedHttpClient = exports.getSharedHttpsAgent = exports.createSSLConfiguredHttpClient = exports.createSSLConfiguredHttpsAgent = exports.extractSarifOutputPath = exports.copySarifFileToIntegrationDefaultPath = exports.extractOutputJsonFilename = exports.getMappedTaskResult = exports.equalsIgnoreCase = exports.getStatusCode = exports.extractBranchName = exports.isPullRequestEvent = exports.IS_PR_EVENT = exports.filterEmptyData = exports.getIntegrationDefaultSarifReportPath = exports.getDefaultSarifReportPath = exports.sleep = exports.getWorkSpaceDirectory = exports.isBoolean = exports.parseToBoolean = exports.getRemoteFile = exports._getAgentTemp = exports._createExtractFolder = exports.extractZipWithQuiet = exports.extractZipped = exports.getTempDir = exports.cleanUrl = void 0;
+exports.updateBlackDuckSarifPath = exports.updatePolarisSarifPath = exports.updateSarifFilePaths = exports.extractInputJsonFilename = exports.clearHttpClientCache = exports.getSharedHttpClient = exports.getSharedHttpsAgent = exports.createSSLConfiguredHttpClient = exports.createSSLConfiguredHttpsAgent = exports.getMappedTaskResult = exports.equalsIgnoreCase = exports.getStatusCode = exports.extractBranchName = exports.isPullRequestEvent = exports.IS_PR_EVENT = exports.filterEmptyData = exports.getIntegrationDefaultSarifReportPath = exports.getDefaultSarifReportPath = exports.sleep = exports.getWorkSpaceDirectory = exports.isBoolean = exports.parseToBoolean = exports.getRemoteFile = exports._getAgentTemp = exports._createExtractFolder = exports.extractZipWithQuiet = exports.extractZipped = exports.getTempDir = exports.cleanUrl = void 0;
 const path_1 = __importDefault(__nccwpck_require__(1017));
-const fs = __importStar(__nccwpck_require__(7147));
 const utility = __importStar(__nccwpck_require__(8383));
 const constants = __importStar(__nccwpck_require__(8673));
 const application_constant_1 = __nccwpck_require__(8673);
@@ -3271,6 +3270,8 @@ const BuildStatus_1 = __nccwpck_require__(6724);
 const HttpClient_1 = __nccwpck_require__(5538);
 const inputs = __importStar(__nccwpck_require__(264));
 const ssl_utils_1 = __nccwpck_require__(6821);
+const validator_1 = __nccwpck_require__(2062);
+const fs_1 = __nccwpck_require__(7147);
 function cleanUrl(url) {
     if (url && url.endsWith("/")) {
         return url.slice(0, url.length - 1);
@@ -3503,63 +3504,6 @@ function getMappedTaskResult(buildStatus) {
     }
 }
 exports.getMappedTaskResult = getMappedTaskResult;
-// Extract File name from the formatted command
-function extractOutputJsonFilename(command) {
-    const match = command.match(/--out\s+([^\s]+)/);
-    if (match && match[1]) {
-        // Extract the full path and remove any quotes
-        const outputFilePath = match[1].replace(/^["']|["']$/g, "");
-        taskLib.debug(`Extracted Output Path:::: ${outputFilePath}`);
-        return outputFilePath || "";
-    }
-    return "";
-}
-exports.extractOutputJsonFilename = extractOutputJsonFilename;
-// Extract sarif output file path from out json
-function copySarifFileToIntegrationDefaultPath(sarifFilePath) {
-    const sourceDirectory = process.env["BUILD_SOURCESDIRECTORY"] || "";
-    const sarifFileName = path_1.default.basename(sarifFilePath);
-    const isPolarisFile = sarifFileName === constants.POLARIS_OUTPUT_FILE_NAME;
-    const isBlackduckFile = sarifFileName === constants.BD_OUTPUT_FILE_NAME;
-    if (!isPolarisFile && !isBlackduckFile)
-        return;
-    const sarifOutputPath = extractSarifOutputPath(sarifFilePath, sarifFileName);
-    if (!sarifOutputPath)
-        return;
-    const integrationSarifDir = path_1.default.dirname(isPolarisFile
-        ? constants.INTEGRATIONS_POLARIS_DEFAULT_SARIF_FILE_PATH
-        : constants.INTEGRATIONS_BLACKDUCKSCA_DEFAULT_SARIF_FILE_PATH);
-    const integrationSarifDirPath = path_1.default.join(sourceDirectory, integrationSarifDir);
-    const destinationFile = path_1.default.join(integrationSarifDirPath, constants.SARIF_DEFAULT_FILE_NAME);
-    try {
-        fs.mkdirSync(integrationSarifDirPath, { recursive: true });
-        fs.copyFileSync(sarifOutputPath, destinationFile);
-        taskLib.debug(`SARIF file ${fs.existsSync(destinationFile) ? "overwritten" : "copied"} at: ${destinationFile}`);
-    }
-    catch (error) {
-        console.error("Error copying SARIF file:", error);
-    }
-}
-exports.copySarifFileToIntegrationDefaultPath = copySarifFileToIntegrationDefaultPath;
-// Extract the file name from the path
-function extractSarifOutputPath(outputJsonPath, sarifFileName) {
-    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k;
-    try {
-        const config = JSON.parse(fs.readFileSync(outputJsonPath, "utf-8"));
-        const sarifOutputPath = sarifFileName === constants.POLARIS_OUTPUT_FILE_NAME
-            ? (_e = (_d = (_c = (_b = (_a = config === null || config === void 0 ? void 0 : config.data) === null || _a === void 0 ? void 0 : _a.polaris) === null || _b === void 0 ? void 0 : _b.reports) === null || _c === void 0 ? void 0 : _c.sarif) === null || _d === void 0 ? void 0 : _d.file) === null || _e === void 0 ? void 0 : _e.output
-            : (_k = (_j = (_h = (_g = (_f = config === null || config === void 0 ? void 0 : config.data) === null || _f === void 0 ? void 0 : _f.blackducksca) === null || _g === void 0 ? void 0 : _g.reports) === null || _h === void 0 ? void 0 : _h.sarif) === null || _j === void 0 ? void 0 : _j.file) === null || _k === void 0 ? void 0 : _k.output;
-        if (!sarifOutputPath) {
-            return "";
-        }
-        return sarifOutputPath;
-    }
-    catch (error) {
-        console.error("Error reading or parsing output JSON file:", error);
-        return "";
-    }
-}
-exports.extractSarifOutputPath = extractSarifOutputPath;
 // Singleton HTTPS agent cache for downloads (with proper system + custom CA combination)
 let _httpsAgentCache = null;
 let _httpsAgentConfigHash = null;
@@ -3675,6 +3619,135 @@ function clearHttpClientCache() {
     taskLib.debug("HTTP client and HTTPS agent caches cleared");
 }
 exports.clearHttpClientCache = clearHttpClientCache;
+// Extract File name from the formatted command
+function extractInputJsonFilename(command) {
+    const match = command.match(/--input\s+([^\s]+)/);
+    if (match && match[1]) {
+        // Extract just the filename from the full path
+        const fullPath = match[1];
+        return fullPath || "";
+    }
+    return "";
+}
+exports.extractInputJsonFilename = extractInputJsonFilename;
+function updateSarifFilePaths(workSpaceDir, productInputFileName, bridgeVersion, productInputFilPath) {
+    productInputFileName = productInputFileName.replace(/"$/, "");
+    if (productInputFileName === "polaris_input.json") {
+        const sarifPath = bridgeVersion < constants.VERSION
+            ? (0, validator_1.isNullOrEmptyValue)(inputs.POLARIS_REPORTS_SARIF_FILE_PATH)
+                ? path_1.default.join(constants.BRIDGE_CLI_LOCAL_DIRECTORY, constants.DEFAULT_POLARIS_SARIF_GENERATOR_DIRECTORY, constants.SARIF_DEFAULT_FILE_NAME)
+                : inputs.POLARIS_REPORTS_SARIF_FILE_PATH.trim()
+            : (0, validator_1.isNullOrEmptyValue)(inputs.POLARIS_REPORTS_SARIF_FILE_PATH)
+                ? constants.INTEGRATIONS_POLARIS_DEFAULT_SARIF_FILE_PATH
+                : inputs.POLARIS_REPORTS_SARIF_FILE_PATH.trim();
+        taskLib.debug(`sarifPath inside updateSarifFilePaths method :::: ${sarifPath}`);
+        updatePolarisSarifPath(workSpaceDir, productInputFilPath, sarifPath);
+    }
+    productInputFileName = productInputFileName.replace(/"$/, "");
+    if (productInputFileName === "bd_input.json") {
+        const sarifPath = bridgeVersion < constants.VERSION
+            ? (0, validator_1.isNullOrEmptyValue)(inputs.BLACKDUCKSCA_REPORTS_SARIF_FILE_PATH)
+                ? path_1.default.join(constants.BRIDGE_CLI_LOCAL_DIRECTORY, constants.DEFAULT_BLACKDUCK_SARIF_GENERATOR_DIRECTORY, constants.SARIF_DEFAULT_FILE_NAME)
+                : inputs.BLACKDUCKSCA_REPORTS_SARIF_FILE_PATH.trim()
+            : (0, validator_1.isNullOrEmptyValue)(inputs.BLACKDUCKSCA_REPORTS_SARIF_FILE_PATH)
+                ? constants.INTEGRATIONS_BLACKDUCKSCA_DEFAULT_SARIF_FILE_PATH
+                : inputs.BLACKDUCKSCA_REPORTS_SARIF_FILE_PATH.trim();
+        updateBlackDuckSarifPath(workSpaceDir, productInputFilPath, sarifPath);
+    }
+}
+exports.updateSarifFilePaths = updateSarifFilePaths;
+// Update SARIF file path in the input JSON
+function updatePolarisSarifPath(workSpaceDir, productInputFilPath, sarifPath) {
+    try {
+        // Read and parse the JSON file
+        const cleanPath = productInputFilPath.replace(/"/g, "");
+        const jsonContent = (0, fs_1.readFileSync)(cleanPath, "utf-8");
+        const config = JSON.parse(jsonContent);
+        const absolutePath = path_1.default.resolve(path_1.default.join(workSpaceDir, sarifPath));
+        config.data = config.data || {};
+        config.data.polaris = config.data.polaris || {};
+        // Initialize reports with required sarif property
+        if (!config.data.polaris.reports) {
+            config.data.polaris.reports = {
+                sarif: {
+                    file: {
+                        path: "",
+                    },
+                },
+            };
+        }
+        // Ensure sarif exists (it's required by the interface)
+        if (!config.data.polaris.reports.sarif) {
+            config.data.polaris.reports.sarif = {
+                file: {
+                    path: "",
+                },
+            };
+        }
+        // Ensure file object exists within sarif
+        if (!config.data.polaris.reports.sarif.file) {
+            config.data.polaris.reports.sarif.file = {
+                path: "",
+            };
+        }
+        // Now safely update the path
+        config.data.polaris.reports.sarif.file.path = absolutePath;
+        taskLib.debug(`Updated SARIF file path to: ${config.data.polaris.reports.sarif.file.path}`);
+        // Write back the updated JSON with proper formatting
+        (0, fs_1.writeFileSync)(cleanPath, JSON.stringify(config, null, 2));
+        taskLib.debug(`Successfully updated Polaris SARIF file path: ${absolutePath}`);
+    }
+    catch (error) {
+        taskLib.debug(`Error updating SARIF file path: ${error}`);
+    }
+}
+exports.updatePolarisSarifPath = updatePolarisSarifPath;
+// Update SARIF file path in the input JSON
+function updateBlackDuckSarifPath(workSpaceDir, productInputFilPath, sarifPath) {
+    try {
+        // Read and parse the JSON file
+        const cleanPath = productInputFilPath.replace(/"/g, "");
+        const jsonContent = (0, fs_1.readFileSync)(cleanPath, "utf-8");
+        const config = JSON.parse(jsonContent);
+        const absolutePath = path_1.default.resolve(path_1.default.join(workSpaceDir, sarifPath));
+        config.data = config.data || {};
+        config.data.blackducksca = config.data.blackducksca || {};
+        // Initialize reports with required sarif property
+        if (!config.data.blackducksca.reports) {
+            config.data.blackducksca.reports = {
+                sarif: {
+                    file: {
+                        path: "",
+                    },
+                },
+            };
+        }
+        // Ensure sarif exists (it's required by the interface)
+        if (!config.data.blackducksca.reports.sarif) {
+            config.data.blackducksca.reports.sarif = {
+                file: {
+                    path: "",
+                },
+            };
+        }
+        // Ensure file object exists within sarif
+        if (!config.data.blackducksca.reports.sarif.file) {
+            config.data.blackducksca.reports.sarif.file = {
+                path: "",
+            };
+        }
+        // Now safely update the path
+        config.data.blackducksca.reports.sarif.file.path = absolutePath;
+        taskLib.debug(`Updated SARIF file path to: ${config.data.blackducksca.reports.sarif.file.path}`);
+        // Write back the updated JSON with proper formatting
+        (0, fs_1.writeFileSync)(cleanPath, JSON.stringify(config, null, 2));
+        taskLib.debug(`Successfully updated Polaris SARIF file path: ${absolutePath}`);
+    }
+    catch (error) {
+        taskLib.debug(`Error updating SARIF file path: ${error}`);
+    }
+}
+exports.updateBlackDuckSarifPath = updateBlackDuckSarifPath;
 
 
 /***/ }),
@@ -3903,7 +3976,8 @@ function run() {
         taskLib.debug(`workSpaceDir: ${workSpaceDir}`);
         let azurePrResponse;
         let bridgeVersion = "";
-        let productOutputFilPath = "";
+        let productInputFileName = "";
+        let productInputFilPath = "";
         try {
             const bridge = new bridge_cli_1.BridgeCli();
             (0, input_1.showLogForDeprecatedInputs)();
@@ -3920,16 +3994,14 @@ function run() {
             // Get Bridge version from bridge Path
             bridgeVersion = getBridgeVersion(bridgePath);
             taskLib.debug(`bridgePath: ${bridgeVersion}`);
+            //Extract input.json file and update sarif default file path based on bridge version
+            productInputFilPath = util.extractInputJsonFilename(command);
+            // Extract product input file name from the path (cross-platform compatible)
+            productInputFileName = (0, path_1.basename)(productInputFilPath);
+            // Based on bridge version and productInputFileName get the sarif file path
+            util.updateSarifFilePaths(workSpaceDir, productInputFileName, bridgeVersion, productInputFilPath);
             // Execute prepared commands
             const result = yield bridge.executeBridgeCliCommand(bridgePath, (0, utility_1.getWorkSpaceDirectory)(), command);
-            // Extract Sarif file out file from the out.json file
-            productOutputFilPath = util.extractOutputJsonFilename(command);
-            taskLib.debug(`Product out file path: ${productOutputFilPath}`);
-            if (inputs.POLARIS_REPORTS_SARIF_CREATE === "true" ||
-                inputs.BLACKDUCKSCA_REPORTS_SARIF_CREATE === "true") {
-                // Copy Sarif file from out.json to integration default directory
-                util.copySarifFileToIntegrationDefaultPath(productOutputFilPath);
-            }
             // The statement set the exit code in the 'status' variable which can be used in the YAML file
             if ((0, utility_1.parseToBoolean)(inputs.RETURN_STATUS)) {
                 console.log(application_constant_1.TASK_RETURN_STATUS);

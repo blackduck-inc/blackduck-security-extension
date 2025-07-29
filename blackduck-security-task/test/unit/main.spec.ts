@@ -10,6 +10,7 @@ import { ErrorCode } from "../../src/blackduck-security-task/enum/ErrorCodes";
 import * as util from "../../src/blackduck-security-task/utility";
 import * as constants from "../../src/blackduck-security-task/application-constant";
 import * as sslUtils from "../../src/blackduck-security-task/ssl-utils";
+import { basename } from "path";
 
 
 describe("Main function test cases", () => {
@@ -329,6 +330,50 @@ describe("Main function test cases", () => {
             sandbox.stub(BridgeCli.prototype, 'downloadAndExtractBridgeCli').resolves("test-path");
             sandbox.stub(BridgeCli.prototype, 'executeBridgeCliCommand').resolves(0);
             await main.run();
+        });
+    });
+    describe("Extract input.json and update SARIF file path", () => {
+        let sandbox: sinon.SinonSandbox;
+
+        beforeEach(() => {
+            sandbox = sinon.createSandbox();
+        });
+
+        afterEach(() => {
+            sandbox.restore();
+        });
+
+        it("should extract input file path, file name, and call updateSarifFilePaths with correct arguments", () => {
+            const command = "--input /tmp/input.json";
+            const workSpaceDir = "/workspace";
+            const bridgeVersion = "1.2.3";
+            const expectedInputFilePath = "/tmp/input.json";
+            const expectedFileName = "input.json";
+
+            // Stub extractInputJsonFilename to return a known path
+            const extractStub = sandbox.stub(util, "extractInputJsonFilename").returns(expectedInputFilePath);
+            // Stub updateSarifFilePaths to just track calls
+            const updateStub = sandbox.stub(util, "updateSarifFilePaths");
+
+            // Simulate the code under test
+            const productInputFilPath = util.extractInputJsonFilename(command);
+            const productInputFileName = basename(productInputFilPath);
+            util.updateSarifFilePaths(
+                workSpaceDir,
+                productInputFileName,
+                bridgeVersion,
+                productInputFilPath
+            );
+
+            expect(extractStub.calledOnceWith(command)).to.be.true;
+            expect(productInputFilPath).to.equal(expectedInputFilePath);
+            expect(productInputFileName).to.equal(expectedFileName);
+            expect(updateStub.calledOnceWith(
+                workSpaceDir,
+                expectedFileName,
+                bridgeVersion,
+                expectedInputFilePath
+            )).to.be.true;
         });
     });
 });

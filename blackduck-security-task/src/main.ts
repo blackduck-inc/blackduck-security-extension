@@ -31,7 +31,7 @@ import {
   WORKFLOW_FAILED,
 } from "./blackduck-security-task/application-constant";
 import { readFileSync } from "fs";
-import { join } from "path";
+import { basename, join } from "path";
 
 export async function run() {
   console.log("Black Duck Security Scan Task started...");
@@ -41,7 +41,8 @@ export async function run() {
   taskLib.debug(`workSpaceDir: ${workSpaceDir}`);
   let azurePrResponse: AzurePrResponse | undefined;
   let bridgeVersion = "";
-  let productOutputFilPath = "";
+  let productInputFileName = "";
+  let productInputFilPath = "";
   try {
     const bridge = new BridgeCli();
 
@@ -59,23 +60,24 @@ export async function run() {
     bridgeVersion = getBridgeVersion(bridgePath);
     taskLib.debug(`bridgePath: ${bridgeVersion}`);
 
+    //Extract input.json file and update sarif default file path based on bridge version
+    productInputFilPath = util.extractInputJsonFilename(command);
+    // Extract product input file name from the path (cross-platform compatible)
+    productInputFileName = basename(productInputFilPath);
+    // Based on bridge version and productInputFileName get the sarif file path
+    util.updateSarifFilePaths(
+      workSpaceDir,
+      productInputFileName,
+      bridgeVersion,
+      productInputFilPath
+    );
+
     // Execute prepared commands
     const result: number = await bridge.executeBridgeCliCommand(
       bridgePath,
       getWorkSpaceDirectory(),
       command
     );
-    // Extract Sarif file out file from the out.json file
-    productOutputFilPath = util.extractOutputJsonFilename(command);
-    taskLib.debug(`Product out file path: ${productOutputFilPath}`);
-
-    if (
-      inputs.POLARIS_REPORTS_SARIF_CREATE === "true" ||
-      inputs.BLACKDUCKSCA_REPORTS_SARIF_CREATE === "true"
-    ) {
-      // Copy Sarif file from out.json to integration default directory
-      util.copySarifFileToIntegrationDefaultPath(productOutputFilPath);
-    }
     // The statement set the exit code in the 'status' variable which can be used in the YAML file
     if (parseToBoolean(inputs.RETURN_STATUS)) {
       console.log(TASK_RETURN_STATUS);
