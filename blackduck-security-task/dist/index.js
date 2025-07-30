@@ -3769,7 +3769,7 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.isNullOrEmptyValue = exports.validateSrmInputs = exports.validateBlackDuckSCAInputs = exports.validateBlackduckFailureSeverities = exports.validateCoverityInstallDirectoryParam = exports.validateCoverityInputs = exports.validateBridgeUrl = exports.isNullOrEmpty = exports.validateParameters = exports.validatePolarisInputs = exports.validateScanTypes = void 0;
+exports.validateSrmInputs = exports.validateBlackDuckSCAInputs = exports.validateBlackduckFailureSeverities = exports.validateCoverityInstallDirectoryParam = exports.validateCoverityInputs = exports.validateBridgeUrl = exports.isNullOrEmpty = exports.validateParameters = exports.validatePolarisInputs = exports.validateScanTypes = void 0;
 const constants = __importStar(__nccwpck_require__(8673));
 const inputs = __importStar(__nccwpck_require__(264));
 const taskLib = __importStar(__nccwpck_require__(347));
@@ -3893,10 +3893,6 @@ function validateSrmInputs() {
     return errors;
 }
 exports.validateSrmInputs = validateSrmInputs;
-function isNullOrEmptyValue(param) {
-    return param == null || param.length === 0;
-}
-exports.isNullOrEmptyValue = isNullOrEmptyValue;
 
 
 /***/ }),
