@@ -1,6 +1,5 @@
 // Copyright (c) 2024 Black Duck Software Inc. All rights reserved worldwide.
 
-import { HttpClient } from "typed-rest-client/HttpClient";
 import { AzureData, AzurePrResponse } from "./model/azure";
 import * as taskLib from "azure-pipelines-task-lib/task";
 import * as constants from "./application-constant";
@@ -84,26 +83,6 @@ export class AzureService {
     return undefined;
   }
 
-  private async getVersionForAzureServer(
-    httpClient: HttpClient,
-    repoEndpoint: string,
-    encodedToken: string
-  ) {
-    const response = await httpClient.get(repoEndpoint, {
-      Authorization: "Basic ".concat(encodedToken),
-      Accept: "application/json",
-    });
-    const header =
-      response.message.headers["content-type"] ||
-      response.message.headers["Content-Type"];
-    const match =
-      typeof header === "string" && header.match(/api-version=([\d.]+)/);
-    if (match) {
-      return match[1];
-    }
-    return "";
-  }
-
   async fetchAzureServerApiVersion(
     url: string,
     orgName: string,
@@ -117,23 +96,25 @@ export class AzureService {
       projectName,
       repoName
     );
-    const httpClient = getSharedHttpClient();
-    taskLib.debug(`Fetching Azure server API version from: ${repoEndpoint}`);
     const encodedToken = Buffer.from(`:${userToken}`, "utf8").toString(
       "base64"
     );
-    const version = await this.getVersionForAzureServer(
-      httpClient,
-      repoEndpoint,
-      encodedToken
-    );
+    const response = await getSharedHttpClient().get(repoEndpoint, {
+      Authorization: `Basic ${encodedToken}`,
+      Accept: "application/json",
+    });
+    const header =
+      response.message.headers["content-type"] ||
+      response.message.headers["Content-Type"];
+    const version =
+      typeof header === "string"
+        ? header.match(/api-version=([\d.]+)/)?.[1] ?? ""
+        : "";
     taskLib.debug(`Fetched Azure server API version: ${version}`);
-    if (!version) {
+    if (!version)
       throw new Error(
         `Unable to fetch API version for Azure server at ${repoEndpoint}`
       );
-    }
-
     return version;
   }
 }

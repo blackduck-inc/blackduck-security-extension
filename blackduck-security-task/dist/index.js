@@ -623,32 +623,23 @@ class AzureService {
             return undefined;
         });
     }
-    getVersionForAzureServer(httpClient, repoEndpoint, encodedToken) {
+    fetchAzureServerApiVersion(url, orgName, projectName, repoName, userToken) {
+        var _a, _b;
         return __awaiter(this, void 0, void 0, function* () {
-            const response = yield httpClient.get(repoEndpoint, {
-                Authorization: "Basic ".concat(encodedToken),
+            const repoEndpoint = (0, utility_1.stringFormat)(url + this.azureGetRepositoryAPI, orgName, projectName, repoName);
+            const encodedToken = Buffer.from(`:${userToken}`, "utf8").toString("base64");
+            const response = yield (0, utility_1.getSharedHttpClient)().get(repoEndpoint, {
+                Authorization: `Basic ${encodedToken}`,
                 Accept: "application/json",
             });
             const header = response.message.headers["content-type"] ||
                 response.message.headers["Content-Type"];
-            const match = typeof header === "string" && header.match(/api-version=([\d.]+)/);
-            if (match) {
-                return match[1];
-            }
-            return "";
-        });
-    }
-    fetchAzureServerApiVersion(url, orgName, projectName, repoName, userToken) {
-        return __awaiter(this, void 0, void 0, function* () {
-            const repoEndpoint = (0, utility_1.stringFormat)(url + this.azureGetRepositoryAPI, orgName, projectName, repoName);
-            const httpClient = (0, utility_1.getSharedHttpClient)();
-            taskLib.debug(`Fetching Azure server API version from: ${repoEndpoint}`);
-            const encodedToken = Buffer.from(`:${userToken}`, "utf8").toString("base64");
-            const version = yield this.getVersionForAzureServer(httpClient, repoEndpoint, encodedToken);
+            const version = typeof header === "string"
+                ? (_b = (_a = header.match(/api-version=([\d.]+)/)) === null || _a === void 0 ? void 0 : _a[1]) !== null && _b !== void 0 ? _b : ""
+                : "";
             taskLib.debug(`Fetched Azure server API version: ${version}`);
-            if (!version) {
+            if (!version)
                 throw new Error(`Unable to fetch API version for Azure server at ${repoEndpoint}`);
-            }
             return version;
         });
     }
