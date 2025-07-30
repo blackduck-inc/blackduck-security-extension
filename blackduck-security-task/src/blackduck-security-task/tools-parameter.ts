@@ -954,7 +954,7 @@ export class BridgeCliToolsParameter {
             azureToken
           );
           azureData.restAPIVersion = await apiVersion;
-          console.log("Azure REST API Version: ", azureData.restAPIVersion);
+          taskLib.debug(`Azure REST API Version: ${azureData.restAPIVersion}`);
         }
       } catch (error) {
         taskLib.warning(`Failed to fetch Azure API version: ${error}`);
