@@ -10,6 +10,7 @@ import * as ifm from "typed-rest-client/Interfaces";
 import {AzureData} from "../../../src/blackduck-security-task/model/azure";
 import {expect} from "chai";
 import { ErrorCode } from "../../../src/blackduck-security-task/enum/ErrorCodes";
+import * as utility from '../../../src/blackduck-security-task/utility';
 
 
 describe("getPullRequestIdForClassicEditorFlow", () => {
@@ -213,6 +214,31 @@ describe("getPullRequestIdForClassicEditorFlow", () => {
         it('should return undefined if azureData is undefined', async () => {
             const result = await azureService.getAzurePrResponseForManualTriggerFlow(undefined);
             expect(result).to.be.undefined;
+        });
+        it('should mock getSharedHttpClient and return API version from content-type header', async () => {
+            const azureService = new AzureService();
+            // Mock HTTP response with content-type header containing api-version
+            const incomingMessage: IncomingMessage = new IncomingMessage(new Socket());
+            incomingMessage.statusCode = 200;
+            incomingMessage.headers = {
+                'content-type': 'application/json; api-version=9.9'
+            };
+            const response: ifm.IHttpClientResponse = {
+                message: incomingMessage,
+                readBody: sinon.stub().resolves('{}')
+            };
+            // Mock getSharedHttpClient to return an object with get method
+            const getStub = sinon.stub().resolves(response);
+            const mockHttpClient = { get: getStub } as unknown as httpc.HttpClient;
+            sinon.stub(utility, 'getSharedHttpClient').returns(mockHttpClient);
+            const version = await azureService.fetchAzureServerApiVersion(
+                'https://dev.azure.com/',
+                'org',
+                'proj',
+                'repo',
+                'token'
+            );
+            expect(version).to.equal('9.9');
         });
     })
 })
