@@ -151,10 +151,9 @@ describe("getPullRequestIdForClassicEditorFlow", () => {
         });
 
         it('should return API version from content-type header in fetchAzureServerApiVersion', async () => {
-            // Mock getVersionForAzureServer to return a fixed version
+            // Mock fetchAzureServerApiVersion to return a fixed version
             const azureService = new AzureService();
-            // Use correct type for stub: pass method name as string and cast to keyof AzureService
-            const getVersionStub = sinon.stub(azureService, 'getVersionForAzureServer' as keyof AzureService).resolves('6.2');
+            const fetchStub = sinon.stub(azureService, 'fetchAzureServerApiVersion').resolves('6.2');
             const version = await azureService.fetchAzureServerApiVersion(
                 'https://azureDevOpsserver',
                 'org',
@@ -162,9 +161,9 @@ describe("getPullRequestIdForClassicEditorFlow", () => {
                 'repo',
                 'token'
             );
-            expect(getVersionStub.calledOnce).to.be.true;
+            expect(fetchStub.calledOnce).to.be.true;
             expect(version).to.equal('6.2');
-            getVersionStub.restore();
+            fetchStub.restore();
         });
 
         it('should throw error when status is not 200', async () => {
