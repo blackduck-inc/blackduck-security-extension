@@ -130,10 +130,7 @@ export class AzureService {
     taskLib.debug(`Fetched Azure server API version: ${version}`);
     if (!version) {
       throw new Error(
-        stringFormat(
-          "Unable to fetch API version for Azure server at {0}",
-          repoEndpoint
-        )
+        `Unable to fetch API version for Azure server at ${repoEndpoint}`
       );
     }
 

@@ -647,7 +647,7 @@ class AzureService {
             const version = yield this.getVersionForAzureServer(httpClient, repoEndpoint, encodedToken);
             taskLib.debug(`Fetched Azure server API version: ${version}`);
             if (!version) {
-                throw new Error((0, utility_1.stringFormat)("Unable to fetch API version for Azure server at {0}", repoEndpoint));
+                throw new Error(`Unable to fetch API version for Azure server at ${repoEndpoint}`);
             }
             return version;
         });
