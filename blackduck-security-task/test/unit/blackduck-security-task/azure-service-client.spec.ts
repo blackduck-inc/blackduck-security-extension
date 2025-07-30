@@ -160,8 +160,6 @@ describe("getPullRequestIdForClassicEditorFlow", () => {
                 project: { name: 'proj' },
                 repository: { name: 'repo', branch: { name: 'main' }, pull: {} }
             };
-            const StringFormat = (url: string, ...args: string[]) =>
-                url.replace(/\{(\d+)\}/g, (match, index) => encodeURIComponent(args[index]) || "");
             const incomingMessage: IncomingMessage = new IncomingMessage(new Socket());
             incomingMessage.statusCode = 200;
             incomingMessage.headers = { 'content-type': 'application/json; api-version=6.2' };
@@ -172,10 +170,13 @@ describe("getPullRequestIdForClassicEditorFlow", () => {
             (httpClient.get as SinonStub).resolves(response);
             const httpClientCtorStub = sinon.stub(httpc, 'HttpClient').returns(httpClient as any);
             const azureService = new AzureService();
-            const version = await (azureService as any).fetchAzureServerApiVersion({
-                azureData,
-                StringFormat
-            });
+            const version = await (azureService as any).fetchAzureServerApiVersion(
+                azureData.api.url,
+                azureData.organization.name,
+                azureData.project.name,
+                azureData.repository.name,
+                azureData.user.token
+            );
             expect(version).to.equal('6.2');
             httpClientCtorStub.restore();
         });
