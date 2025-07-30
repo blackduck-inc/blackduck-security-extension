@@ -151,7 +151,3 @@ export function validateSrmInputs(): string[] {
   }
   return errors;
 }
-
-export function isNullOrEmptyValue(param: string): boolean {
-  return param == null || param.length === 0;
-}
