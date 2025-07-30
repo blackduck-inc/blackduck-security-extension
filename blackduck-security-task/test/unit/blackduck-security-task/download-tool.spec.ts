@@ -1664,5 +1664,12 @@ describe("Download Tool Tests", () => {
 
             expect(promise).to.be.instanceOf(Promise);
         });
+        
+        it("should resolve if file size is NaN and expectedContentLength is not provided", async () => {
+            _getFileSizeOnDiskStub.returns(NaN);
+            const result = await validateDownloadedFile(testDestPath);
+            expect(result).to.equal(testDestPath);
+        });
     });
 });
+
