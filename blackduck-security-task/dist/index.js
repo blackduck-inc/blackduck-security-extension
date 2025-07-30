@@ -3310,7 +3310,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.stringFormat = exports.clearHttpClientCache = exports.getSharedHttpClient = exports.getSharedHttpsAgent = exports.createSSLConfiguredHttpClient = exports.createSSLConfiguredHttpsAgent = exports.extractSarifOutputPath = exports.copySarifFileToIntegrationDefaultPath = exports.extractOutputJsonFilename = exports.getMappedTaskResult = exports.equalsIgnoreCase = exports.getStatusCode = exports.extractBranchName = exports.isPullRequestEvent = exports.IS_PR_EVENT = exports.filterEmptyData = exports.getIntegrationDefaultSarifReportPath = exports.getDefaultSarifReportPath = exports.sleep = exports.getWorkSpaceDirectory = exports.isBoolean = exports.parseToBoolean = exports.getRemoteFile = exports._getAgentTemp = exports._createExtractFolder = exports.extractZipWithQuiet = exports.extractZipped = exports.getTempDir = exports.cleanUrl = void 0;
+exports.stringFormat = exports.clearHttpClientCache = exports.getSharedHttpClient = exports.createSSLConfiguredHttpClient = exports.createSSLConfiguredHttpsAgent = exports.extractSarifOutputPath = exports.copySarifFileToIntegrationDefaultPath = exports.extractOutputJsonFilename = exports.getMappedTaskResult = exports.equalsIgnoreCase = exports.getStatusCode = exports.extractBranchName = exports.isPullRequestEvent = exports.IS_PR_EVENT = exports.filterEmptyData = exports.getIntegrationDefaultSarifReportPath = exports.getDefaultSarifReportPath = exports.sleep = exports.getWorkSpaceDirectory = exports.isBoolean = exports.parseToBoolean = exports.getRemoteFile = exports._getAgentTemp = exports._createExtractFolder = exports.extractZipWithQuiet = exports.extractZipped = exports.getTempDir = exports.cleanUrl = void 0;
 const path_1 = __importDefault(__nccwpck_require__(1017));
 const fs = __importStar(__nccwpck_require__(7147));
 const utility = __importStar(__nccwpck_require__(8383));
@@ -3698,17 +3698,6 @@ function createSSLConfiguredHttpClient(userAgent = "BlackDuckSecurityTask") {
     return _httpClientCache;
 }
 exports.createSSLConfiguredHttpClient = createSSLConfiguredHttpClient;
-/**
- * Gets a shared HTTPS agent with SSL configuration.
- * This properly combines system CAs with custom CAs for direct HTTPS operations.
- * Use this for file downloads and direct HTTPS requests.
- *
- * @returns HTTPS agent configured with appropriate SSL settings
- */
-function getSharedHttpsAgent() {
-    return createSSLConfiguredHttpsAgent();
-}
-exports.getSharedHttpsAgent = getSharedHttpsAgent;
 /**
  * Gets a shared HttpClient instance with SSL configuration.
  * This is for API operations using typed-rest-client.
