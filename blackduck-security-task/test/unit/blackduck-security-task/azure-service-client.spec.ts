@@ -166,6 +166,33 @@ describe("getPullRequestIdForClassicEditorFlow", () => {
             fetchStub.restore();
         });
 
+        it('should throw error if API version is not found in header', async () => {
+            const azureService = new AzureService();
+            const incomingMessage: IncomingMessage = new IncomingMessage(new Socket());
+            incomingMessage.statusCode = 200;
+            incomingMessage.headers = {
+                'content-type': 'application/json'
+            };
+            const response: ifm.IHttpClientResponse = {
+                message: incomingMessage,
+                readBody: sinon.stub().resolves('{}')
+            };
+            const httpClientGetStub = sinon.stub().resolves(response);
+            sinon.stub(httpc, 'HttpClient').returns({ get: httpClientGetStub } as any);
+            try {
+                await azureService.fetchAzureServerApiVersion(
+                    'https://dev.azure.com/',
+                    'org',
+                    'proj',
+                    'repo',
+                    'token'
+                );
+                throw new Error('Expected error was not thrown');
+            } catch (err: any) {
+                expect(err.message).to.contain('Unable to fetch API version for Azure server');
+            }
+        });
+
         it('should throw error when status is not 200', async () => {
             const incomingMessage: IncomingMessage = new IncomingMessage(new Socket());
             incomingMessage.statusCode = 500;
