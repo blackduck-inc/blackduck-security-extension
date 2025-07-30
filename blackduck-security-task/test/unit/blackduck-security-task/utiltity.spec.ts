@@ -8,7 +8,7 @@ import {
     getWorkSpaceDirectory,
     parseToBoolean,
     createSSLConfiguredHttpClient,
-    clearHttpClientCache, stringFormat
+    clearHttpClientCache
 } from "../../../src/blackduck-security-task/utility";
 import process from "process";
 import * as sinon from "sinon";
@@ -2093,29 +2093,6 @@ describe("Utilities", () => {
             });
         });
     });
-    describe("stringFormat", () => {
-        it("should replace numbered placeholders with encoded arguments", () => {
-            const url = "https://server/{0}/project/{1}/repo/{2}";
-            const result = stringFormat(url, "org name", "proj name", "repo/name");
-            expect(result).to.equal(
-                "https://server/org%20name/project/proj%20name/repo/repo%2Fname"
-            );
-        });
-
-
-        it("should handle no placeholders", () => {
-            const url = "https://server/static/path";
-            const result = stringFormat(url);
-            expect(result).to.equal("https://server/static/path");
-        });
-
-        it("should encode special characters in arguments", () => {
-            const url = "https://server/{0}";
-            const result = stringFormat(url, "a+b/c?d=e&f");
-            expect(result).to.equal("https://server/a%2Bb%2Fc%3Fd%3De%26f");
-        });
-    });
 
 
 });
-
