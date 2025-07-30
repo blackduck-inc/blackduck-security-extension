@@ -8,7 +8,7 @@ import {
     getWorkSpaceDirectory,
     parseToBoolean,
     createSSLConfiguredHttpClient,
-    clearHttpClientCache
+    clearHttpClientCache, FileSystemWrapper, PathWrapper, LoggerWrapper
 } from "../../../src/blackduck-security-task/utility";
 import process from "process";
 import * as toolLibLocal from "../../../src/blackduck-security-task/download-tool";
@@ -33,6 +33,8 @@ import {
     updatePolarisSarifPath,
     updateBlackDuckSarifPath
 } from "../../../src/blackduck-security-task/utility";
+import { describe, it, beforeEach, afterEach } from 'mocha';
+import proxyquire from 'proxyquire';
 
 describe("Utilities", () => {
 
@@ -870,6 +872,776 @@ describe("Utilities", () => {
 
                 expect(updatePolarisSarifPathStub.called).to.be.false;
                 expect(updateBlackDuckSarifPathStub.called).to.be.false;
+            });
+        });
+    });
+    describe('updatePolarisSarifPath', () => {
+        const workSpaceDir = '/workspace';
+        const productInputFilePath = '/path/to/input.json';
+        const sarifPath = 'reports/sarif-output.sarif';
+        const absolutePath = '/workspace/reports/sarif-output.sarif';
+
+        let sandbox: sinon.SinonSandbox;
+        let mockFsWrapper: sinon.SinonStubbedInstance<FileSystemWrapper>;
+        let mockPathWrapper: sinon.SinonStubbedInstance<PathWrapper>;
+        let mockLogger: sinon.SinonStubbedInstance<LoggerWrapper>;
+
+        beforeEach(() => {
+            sandbox = sinon.createSandbox();
+            mockFsWrapper = sandbox.createStubInstance(FileSystemWrapper);
+            mockPathWrapper = sandbox.createStubInstance(PathWrapper);
+            mockLogger = sandbox.createStubInstance(LoggerWrapper);
+
+            // Default path wrapper behavior
+            mockPathWrapper.join.returns('workspace/reports/sarif-output.sarif');
+            mockPathWrapper.resolve.returns(absolutePath);
+        });
+
+        afterEach(() => {
+            sandbox.restore();
+        });
+
+        describe('Successful scenarios', () => {
+            it('should update SARIF path in a complete JSON config', () => {
+                const inputConfig = {
+                    data: {
+                        polaris: {
+                            reports: {
+                                sarif: {
+                                    file: {
+                                        path: '/old/path/sarif.sarif'
+                                    }
+                                }
+                            }
+                        }
+                    }
+                };
+
+                mockFsWrapper.readFileSync.returns(JSON.stringify(inputConfig));
+
+                updatePolarisSarifPath(workSpaceDir, productInputFilePath, sarifPath, mockFsWrapper, mockPathWrapper, mockLogger);
+
+                expect(mockFsWrapper.readFileSync.calledOnceWith(productInputFilePath, 'utf-8')).to.be.true;
+                expect(mockPathWrapper.join.calledOnceWith(workSpaceDir, sarifPath)).to.be.true;
+                expect(mockPathWrapper.resolve.calledOnceWith('workspace/reports/sarif-output.sarif')).to.be.true;
+
+                const expectedConfig = {
+                    ...inputConfig,
+                    data: {
+                        polaris: {
+                            reports: {
+                                sarif: {
+                                    file: {
+                                        path: absolutePath
+                                    }
+                                }
+                            }
+                        }
+                    }
+                };
+
+                expect(mockFsWrapper.writeFileSync.calledOnceWith(
+                    productInputFilePath,
+                    JSON.stringify(expectedConfig, null, 2)
+                )).to.be.true;
+                expect(mockLogger.debug.calledWith(`Updated SARIF file path to: ${absolutePath}`)).to.be.true;
+                expect(mockLogger.debug.calledWith(`Successfully updated Polaris SARIF file path: ${absolutePath}`)).to.be.true;
+                expect(mockLogger.debug.callCount).to.equal(2);
+            });
+
+            it('should handle JSON config with missing data property', () => {
+                const inputConfig = {};
+                mockFsWrapper.readFileSync.returns(JSON.stringify(inputConfig));
+
+                updatePolarisSarifPath(workSpaceDir, productInputFilePath, sarifPath, mockFsWrapper, mockPathWrapper, mockLogger);
+
+                const expectedConfig = {
+                    data: {
+                        polaris: {
+                            reports: {
+                                sarif: {
+                                    file: {
+                                        path: absolutePath
+                                    }
+                                }
+                            }
+                        }
+                    }
+                };
+
+                expect(mockFsWrapper.writeFileSync.calledOnceWith(
+                    productInputFilePath,
+                    JSON.stringify(expectedConfig, null, 2)
+                )).to.be.true;
+                expect(mockLogger.debug.callCount).to.equal(2);
+            });
+
+            it('should handle JSON config with missing polaris property', () => {
+                const inputConfig = { data: {} };
+                mockFsWrapper.readFileSync.returns(JSON.stringify(inputConfig));
+
+                updatePolarisSarifPath(workSpaceDir, productInputFilePath, sarifPath, mockFsWrapper, mockPathWrapper, mockLogger);
+
+                const expectedConfig = {
+                    data: {
+                        polaris: {
+                            reports: {
+                                sarif: {
+                                    file: {
+                                        path: absolutePath
+                                    }
+                                }
+                            }
+                        }
+                    }
+                };
+
+                expect(mockFsWrapper.writeFileSync.calledOnceWith(
+                    productInputFilePath,
+                    JSON.stringify(expectedConfig, null, 2)
+                )).to.be.true;
+                expect(mockLogger.debug.callCount).to.equal(2);
+            });
+
+            it('should handle JSON config with missing reports property', () => {
+                const inputConfig = {
+                    data: {
+                        polaris: {}
+                    }
+                };
+                mockFsWrapper.readFileSync.returns(JSON.stringify(inputConfig));
+
+                updatePolarisSarifPath(workSpaceDir, productInputFilePath, sarifPath, mockFsWrapper, mockPathWrapper, mockLogger);
+
+                const expectedConfig = {
+                    data: {
+                        polaris: {
+                            reports: {
+                                sarif: {
+                                    file: {
+                                        path: absolutePath
+                                    }
+                                }
+                            }
+                        }
+                    }
+                };
+
+                expect(mockFsWrapper.writeFileSync.calledOnceWith(
+                    productInputFilePath,
+                    JSON.stringify(expectedConfig, null, 2)
+                )).to.be.true;
+                expect(mockLogger.debug.callCount).to.equal(2);
+            });
+
+            it('should handle JSON config with missing sarif property', () => {
+                const inputConfig = {
+                    data: {
+                        polaris: {
+                            reports: {}
+                        }
+                    }
+                };
+                mockFsWrapper.readFileSync.returns(JSON.stringify(inputConfig));
+
+                updatePolarisSarifPath(workSpaceDir, productInputFilePath, sarifPath, mockFsWrapper, mockPathWrapper, mockLogger);
+
+                const expectedConfig = {
+                    data: {
+                        polaris: {
+                            reports: {
+                                sarif: {
+                                    file: {
+                                        path: absolutePath
+                                    }
+                                }
+                            }
+                        }
+                    }
+                };
+
+                expect(mockFsWrapper.writeFileSync.calledOnceWith(
+                    productInputFilePath,
+                    JSON.stringify(expectedConfig, null, 2)
+                )).to.be.true;
+                expect(mockLogger.debug.callCount).to.equal(2);
+            });
+
+            it('should handle JSON config with missing file property', () => {
+                const inputConfig = {
+                    data: {
+                        polaris: {
+                            reports: {
+                                sarif: {}
+                            }
+                        }
+                    }
+                };
+                mockFsWrapper.readFileSync.returns(JSON.stringify(inputConfig));
+
+                updatePolarisSarifPath(workSpaceDir, productInputFilePath, sarifPath, mockFsWrapper, mockPathWrapper, mockLogger);
+
+                const expectedConfig = {
+                    data: {
+                        polaris: {
+                            reports: {
+                                sarif: {
+                                    file: {
+                                        path: absolutePath
+                                    }
+                                }
+                            }
+                        }
+                    }
+                };
+
+                expect(mockFsWrapper.writeFileSync.calledOnceWith(
+                    productInputFilePath,
+                    JSON.stringify(expectedConfig, null, 2)
+                )).to.be.true;
+                expect(mockLogger.debug.callCount).to.equal(2);
+            });
+
+            it('should remove quotes from file path', () => {
+                const quotedPath = '"/path/to/quoted/input.json"';
+                const cleanPath = '/path/to/quoted/input.json';
+                const inputConfig = { data: {} };
+
+                mockFsWrapper.readFileSync.returns(JSON.stringify(inputConfig));
+
+                updatePolarisSarifPath(workSpaceDir, quotedPath, sarifPath, mockFsWrapper, mockPathWrapper, mockLogger);
+
+                expect(mockFsWrapper.readFileSync.calledOnceWith(cleanPath, 'utf-8')).to.be.true;
+                expect(mockLogger.debug.callCount).to.equal(2);
+            });
+
+            it('should preserve other properties in the config', () => {
+                const inputConfig = {
+                    version: '1.0',
+                    metadata: {
+                        author: 'test'
+                    },
+                    data: {
+                        polaris: {
+                            apiUrl: 'https://api.example.com',
+                            reports: {
+                                sarif: {
+                                    file: {
+                                        path: '/old/path'
+                                    }
+                                }
+                            }
+                        },
+                        otherTool: {
+                            config: 'value'
+                        }
+                    }
+                };
+
+                mockFsWrapper.readFileSync.returns(JSON.stringify(inputConfig));
+
+                updatePolarisSarifPath(workSpaceDir, productInputFilePath, sarifPath, mockFsWrapper, mockPathWrapper, mockLogger);
+
+                const expectedConfig = {
+                    ...inputConfig,
+                    data: {
+                        ...inputConfig.data,
+                        polaris: {
+                            ...inputConfig.data.polaris,
+                            reports: {
+                                sarif: {
+                                    file: {
+                                        path: absolutePath
+                                    }
+                                }
+                            }
+                        }
+                    }
+                };
+
+                expect(mockFsWrapper.writeFileSync.calledOnceWith(
+                    productInputFilePath,
+                    JSON.stringify(expectedConfig, null, 2)
+                )).to.be.true;
+                expect(mockLogger.debug.callCount).to.equal(2);
+            });
+        });
+
+        describe('Error scenarios', () => {
+            it('should handle file read error gracefully', () => {
+                const error = new Error('File not found');
+                mockFsWrapper.readFileSync.throws(error);
+
+                expect(() => {
+                    updatePolarisSarifPath(workSpaceDir, productInputFilePath, sarifPath, mockFsWrapper, mockPathWrapper, mockLogger);
+                }).to.not.throw();
+
+                expect(mockLogger.debug.calledWith(`Error updating SARIF file path: ${error}`)).to.be.true;
+                expect(mockFsWrapper.writeFileSync.called).to.be.false;
+                expect(mockLogger.debug.callCount).to.equal(1);
+            });
+
+            it('should handle JSON parse error gracefully', () => {
+                mockFsWrapper.readFileSync.returns('invalid json content {');
+
+                expect(() => {
+                    updatePolarisSarifPath(workSpaceDir, productInputFilePath, sarifPath, mockFsWrapper, mockPathWrapper, mockLogger);
+                }).to.not.throw();
+
+                expect(mockLogger.debug.calledWithMatch('Error updating SARIF file path:')).to.be.true;
+                expect(mockFsWrapper.writeFileSync.called).to.be.false;
+                expect(mockLogger.debug.callCount).to.equal(1);
+            });
+
+            it('should handle file write error gracefully', () => {
+                const inputConfig = { data: {} };
+                const writeError = new Error('Permission denied');
+
+                mockFsWrapper.readFileSync.returns(JSON.stringify(inputConfig));
+                mockFsWrapper.writeFileSync.throws(writeError);
+
+                expect(() => {
+                    updatePolarisSarifPath(workSpaceDir, productInputFilePath, sarifPath, mockFsWrapper, mockPathWrapper, mockLogger);
+                }).to.not.throw();
+
+                expect(mockLogger.debug.calledWith(`Error updating SARIF file path: ${writeError}`)).to.be.true;
+                expect(mockLogger.debug.callCount).to.equal(2); // One for update message, one for error
+            });
+
+            it('should handle path resolution error gracefully', () => {
+                const inputConfig = { data: {} };
+                const pathError = new Error('Path resolution failed');
+
+                mockFsWrapper.readFileSync.returns(JSON.stringify(inputConfig));
+                mockPathWrapper.resolve.throws(pathError);
+
+                expect(() => {
+                    updatePolarisSarifPath(workSpaceDir, productInputFilePath, sarifPath, mockFsWrapper, mockPathWrapper, mockLogger);
+                }).to.not.throw();
+
+                expect(mockLogger.debug.calledWith(`Error updating SARIF file path: ${pathError}`)).to.be.true;
+                expect(mockLogger.debug.callCount).to.equal(1);
+            });
+        });
+
+        describe('Edge cases', () => {
+            it('should handle empty strings for parameters', () => {
+                const inputConfig = { data: {} };
+                mockFsWrapper.readFileSync.returns(JSON.stringify(inputConfig));
+                mockPathWrapper.join.returns('');
+                mockPathWrapper.resolve.returns('');
+
+                updatePolarisSarifPath('', '', '', mockFsWrapper, mockPathWrapper, mockLogger);
+
+                expect(mockPathWrapper.join.calledWith('', '')).to.be.true;
+                expect(mockPathWrapper.resolve.calledWith('')).to.be.true;
+                expect(mockLogger.debug.callCount).to.equal(2);
+            });
+
+            it('should handle null data in config', () => {
+                const inputConfig = { data: null };
+                mockFsWrapper.readFileSync.returns(JSON.stringify(inputConfig));
+
+                updatePolarisSarifPath(workSpaceDir, productInputFilePath, sarifPath, mockFsWrapper, mockPathWrapper, mockLogger);
+
+                const expectedConfig = {
+                    data: {
+                        polaris: {
+                            reports: {
+                                sarif: {
+                                    file: {
+                                        path: absolutePath
+                                    }
+                                }
+                            }
+                        }
+                    }
+                };
+
+                expect(mockFsWrapper.writeFileSync.calledOnceWith(
+                    productInputFilePath,
+                    JSON.stringify(expectedConfig, null, 2)
+                )).to.be.true;
+                expect(mockLogger.debug.callCount).to.equal(2);
+            });
+
+            it('should handle special characters in paths', () => {
+                const specialCharPath = 'reports/sárif-output with spaces & symbols!.sarif';
+                const specialAbsolutePath = '/workspace/reports/sárif-output with spaces & symbols!.sarif';
+                const inputConfig = { data: {} };
+
+                mockFsWrapper.readFileSync.returns(JSON.stringify(inputConfig));
+                mockPathWrapper.join.returns(`workspace/${specialCharPath}`);
+                mockPathWrapper.resolve.returns(specialAbsolutePath);
+
+                updatePolarisSarifPath(workSpaceDir, productInputFilePath, specialCharPath, mockFsWrapper, mockPathWrapper, mockLogger);
+
+                expect(mockPathWrapper.join.calledWith(workSpaceDir, specialCharPath)).to.be.true;
+                expect(mockPathWrapper.resolve.calledWith(`workspace/${specialCharPath}`)).to.be.true;
+                expect(mockLogger.debug.callCount).to.equal(2);
+            });
+
+            it('should handle multiple quotes in file path', () => {
+                const multiQuotedPath = '"""/path/to/"quoted"/input.json"""';
+                const expectedCleanPath = '/path/to/quoted/input.json';
+                const inputConfig = { data: {} };
+
+                mockFsWrapper.readFileSync.returns(JSON.stringify(inputConfig));
+
+                updatePolarisSarifPath(workSpaceDir, multiQuotedPath, sarifPath, mockFsWrapper, mockPathWrapper, mockLogger);
+
+                expect(mockFsWrapper.readFileSync.calledWith(expectedCleanPath, 'utf-8')).to.be.true;
+                expect(mockLogger.debug.callCount).to.equal(2);
+            });
+        });
+
+        describe('Integration scenarios', () => {
+            it('should work with realistic Azure DevOps paths', () => {
+                const azureWorkspace = 'D:\\a\\1\\s';
+                const azureInputPath = 'D:\\a\\1\\s\\polaris-input.json';
+                const azureSarifPath = 'polaris-results\\sarif-report.sarif';
+                const expectedAbsolutePath = 'D:\\a\\1\\s\\polaris-results\\sarif-report.sarif';
+
+                const inputConfig = {
+                    data: {
+                        polaris: {
+                            serverUrl: 'https://polaris.example.com',
+                            reports: {
+                                sarif: {
+                                    file: {
+                                        path: ''
+                                    }
+                                }
+                            }
+                        }
+                    }
+                };
+
+                mockFsWrapper.readFileSync.returns(JSON.stringify(inputConfig));
+                mockPathWrapper.join.returns('D:\\a\\1\\s\\polaris-results\\sarif-report.sarif');
+                mockPathWrapper.resolve.returns(expectedAbsolutePath);
+
+                updatePolarisSarifPath(azureWorkspace, azureInputPath, azureSarifPath, mockFsWrapper, mockPathWrapper, mockLogger);
+
+                expect(mockPathWrapper.join.calledWith(azureWorkspace, azureSarifPath)).to.be.true;
+                expect(mockPathWrapper.resolve.calledWith('D:\\a\\1\\s\\polaris-results\\sarif-report.sarif')).to.be.true;
+
+                const expectedConfig = {
+                    ...inputConfig,
+                    data: {
+                        ...inputConfig.data,
+                        polaris: {
+                            ...inputConfig.data.polaris,
+                            reports: {
+                                sarif: {
+                                    file: {
+                                        path: expectedAbsolutePath
+                                    }
+                                }
+                            }
+                        }
+                    }
+                };
+
+                expect(mockFsWrapper.writeFileSync.calledOnceWith(
+                    azureInputPath,
+                    JSON.stringify(expectedConfig, null, 2)
+                )).to.be.true;
+                expect(mockLogger.debug.callCount).to.equal(2);
+            });
+        });
+
+        describe('Wrapper verification tests', () => {
+            it('should call all expected functions in correct order', () => {
+                const inputConfig = { data: {} };
+                mockFsWrapper.readFileSync.returns(JSON.stringify(inputConfig));
+
+                updatePolarisSarifPath(workSpaceDir, productInputFilePath, sarifPath, mockFsWrapper, mockPathWrapper, mockLogger);
+
+                // Verify call order
+                expect(mockFsWrapper.readFileSync.calledBefore(mockPathWrapper.join)).to.be.true;
+                expect(mockPathWrapper.join.calledBefore(mockPathWrapper.resolve)).to.be.true;
+                expect(mockPathWrapper.resolve.calledBefore(mockLogger.debug)).to.be.true;
+                expect(mockLogger.debug.calledBefore(mockFsWrapper.writeFileSync)).to.be.true;
+
+                // Verify call counts
+                expect(mockFsWrapper.readFileSync.callCount).to.equal(1);
+                expect(mockPathWrapper.join.callCount).to.equal(1);
+                expect(mockPathWrapper.resolve.callCount).to.equal(1);
+                expect(mockFsWrapper.writeFileSync.callCount).to.equal(1);
+                expect(mockLogger.debug.callCount).to.equal(2);
+            });
+
+            it('should not call writeFileSync when read fails', () => {
+                mockFsWrapper.readFileSync.throws(new Error('Read failed'));
+
+                updatePolarisSarifPath(workSpaceDir, productInputFilePath, sarifPath, mockFsWrapper, mockPathWrapper, mockLogger);
+
+                expect(mockFsWrapper.readFileSync.callCount).to.equal(1);
+                expect(mockFsWrapper.writeFileSync.callCount).to.equal(0);
+                expect(mockLogger.debug.callCount).to.equal(1);
+            });
+
+            it('should handle logger error gracefully', () => {
+                const inputConfig = { data: {} };
+                mockFsWrapper.readFileSync.returns(JSON.stringify(inputConfig));
+                mockLogger.debug.throws(new Error('Logger failed'));
+
+                // Should still complete the function execution
+                expect(() => {
+                    updatePolarisSarifPath(workSpaceDir, productInputFilePath, sarifPath, mockFsWrapper, mockPathWrapper, mockLogger);
+                }).to.throw('Logger failed');
+
+                // File operations should still have been attempted
+                expect(mockFsWrapper.readFileSync.callCount).to.equal(1);
+                expect(mockPathWrapper.join.callCount).to.equal(1);
+                expect(mockPathWrapper.resolve.callCount).to.equal(1);
+            });
+        });
+    });
+
+    describe('updateBlackDuckSarifPath', () => {
+        const workSpaceDir = '/workspace';
+        const productInputFilePath = '/path/to/input.json';
+        const sarifPath = 'reports/sarif-output.sarif';
+        const absolutePath = '/workspace/reports/sarif-output.sarif';
+
+        let sandbox: sinon.SinonSandbox;
+        let mockFsWrapper: sinon.SinonStubbedInstance<FileSystemWrapper>;
+        let mockPathWrapper: sinon.SinonStubbedInstance<PathWrapper>;
+        let mockLogger: sinon.SinonStubbedInstance<LoggerWrapper>;
+
+        beforeEach(() => {
+            sandbox = sinon.createSandbox();
+            mockFsWrapper = sandbox.createStubInstance(FileSystemWrapper);
+            mockPathWrapper = sandbox.createStubInstance(PathWrapper);
+            mockLogger = sandbox.createStubInstance(LoggerWrapper);
+
+            mockPathWrapper.join.returns('workspace/reports/sarif-output.sarif');
+            mockPathWrapper.resolve.returns(absolutePath);
+        });
+
+        afterEach(() => {
+            sandbox.restore();
+        });
+
+        describe('Successful scenarios', () => {
+
+            it('should handle JSON config with missing data property', () => {
+                const inputConfig = {};
+                mockFsWrapper.readFileSync.returns(JSON.stringify(inputConfig));
+
+                updateBlackDuckSarifPath(workSpaceDir, productInputFilePath, sarifPath, mockFsWrapper, mockPathWrapper, mockLogger);
+
+                const expectedConfig = {
+                    data: {
+                        blackducksca: {
+                            reports: {
+                                sarif: {
+                                    file: {
+                                        path: absolutePath
+                                    }
+                                }
+                            }
+                        }
+                    }
+                };
+
+                expect(mockFsWrapper.writeFileSync.calledOnceWith(
+                    productInputFilePath,
+                    JSON.stringify(expectedConfig, null, 2)
+                )).to.be.true;
+                expect(mockLogger.debug.callCount).to.equal(2);
+            });
+
+            it('should handle JSON config with missing blackducksca property', () => {
+                const inputConfig = { data: {} };
+                mockFsWrapper.readFileSync.returns(JSON.stringify(inputConfig));
+
+                updateBlackDuckSarifPath(workSpaceDir, productInputFilePath, sarifPath, mockFsWrapper, mockPathWrapper, mockLogger);
+
+                const expectedConfig = {
+                    data: {
+                        blackducksca: {
+                            reports: {
+                                sarif: {
+                                    file: {
+                                        path: absolutePath
+                                    }
+                                }
+                            }
+                        }
+                    }
+                };
+
+                expect(mockFsWrapper.writeFileSync.calledOnceWith(
+                    productInputFilePath,
+                    JSON.stringify(expectedConfig, null, 2)
+                )).to.be.true;
+                expect(mockLogger.debug.callCount).to.equal(2);
+            });
+
+            it('should handle JSON config with missing reports property', () => {
+                const inputConfig = {
+                    data: {
+                        blackducksca: {}
+                    }
+                };
+                mockFsWrapper.readFileSync.returns(JSON.stringify(inputConfig));
+
+                updateBlackDuckSarifPath(workSpaceDir, productInputFilePath, sarifPath, mockFsWrapper, mockPathWrapper, mockLogger);
+
+                const expectedConfig = {
+                    data: {
+                        blackducksca: {
+                            reports: {
+                                sarif: {
+                                    file: {
+                                        path: absolutePath
+                                    }
+                                }
+                            }
+                        }
+                    }
+                };
+
+                expect(mockFsWrapper.writeFileSync.calledOnceWith(
+                    productInputFilePath,
+                    JSON.stringify(expectedConfig, null, 2)
+                )).to.be.true;
+                expect(mockLogger.debug.callCount).to.equal(2);
+            });
+
+            it('should handle JSON config with missing sarif property', () => {
+                const inputConfig = {
+                    data: {
+                        blackducksca: {
+                            reports: {}
+                        }
+                    }
+                };
+                mockFsWrapper.readFileSync.returns(JSON.stringify(inputConfig));
+
+                updateBlackDuckSarifPath(workSpaceDir, productInputFilePath, sarifPath, mockFsWrapper, mockPathWrapper, mockLogger);
+
+                const expectedConfig = {
+                    data: {
+                        blackducksca: {
+                            reports: {
+                                sarif: {
+                                    file: {
+                                        path: absolutePath
+                                    }
+                                }
+                            }
+                        }
+                    }
+                };
+
+                expect(mockFsWrapper.writeFileSync.calledOnceWith(
+                    productInputFilePath,
+                    JSON.stringify(expectedConfig, null, 2)
+                )).to.be.true;
+                expect(mockLogger.debug.callCount).to.equal(2);
+            });
+
+            it('should handle JSON config with missing file property', () => {
+                const inputConfig = {
+                    data: {
+                        blackducksca: {
+                            reports: {
+                                sarif: {}
+                            }
+                        }
+                    }
+                };
+                mockFsWrapper.readFileSync.returns(JSON.stringify(inputConfig));
+
+                updateBlackDuckSarifPath(workSpaceDir, productInputFilePath, sarifPath, mockFsWrapper, mockPathWrapper, mockLogger);
+
+                const expectedConfig = {
+                    data: {
+                        blackducksca: {
+                            reports: {
+                                sarif: {
+                                    file: {
+                                        path: absolutePath
+                                    }
+                                }
+                            }
+                        }
+                    }
+                };
+
+                expect(mockFsWrapper.writeFileSync.calledOnceWith(
+                    productInputFilePath,
+                    JSON.stringify(expectedConfig, null, 2)
+                )).to.be.true;
+                expect(mockLogger.debug.callCount).to.equal(2);
+            });
+
+            it('should remove quotes from file path', () => {
+                const quotedPath = '"/path/to/quoted/input.json"';
+                const cleanPath = '/path/to/quoted/input.json';
+                const inputConfig = { data: {} };
+
+                mockFsWrapper.readFileSync.returns(JSON.stringify(inputConfig));
+
+                updateBlackDuckSarifPath(workSpaceDir, quotedPath, sarifPath, mockFsWrapper, mockPathWrapper, mockLogger);
+
+                expect(mockFsWrapper.readFileSync.calledOnceWith(cleanPath, 'utf-8')).to.be.true;
+                expect(mockLogger.debug.callCount).to.equal(2);
+            });
+
+            it('should preserve other properties in the config', () => {
+                const inputConfig = {
+                    version: '1.0',
+                    metadata: {
+                        author: 'test'
+                    },
+                    data: {
+                        blackducksca: {
+                            apiUrl: 'https://api.example.com',
+                            reports: {
+                                sarif: {
+                                    file: {
+                                        path: '/old/path'
+                                    }
+                                }
+                            }
+                        },
+                        otherTool: {
+                            config: 'value'
+                        }
+                    }
+                };
+
+                mockFsWrapper.readFileSync.returns(JSON.stringify(inputConfig));
+
+                updateBlackDuckSarifPath(workSpaceDir, productInputFilePath, sarifPath, mockFsWrapper, mockPathWrapper, mockLogger);
+
+                const expectedConfig = {
+                    ...inputConfig,
+                    data: {
+                        ...inputConfig.data,
+                        blackducksca: {
+                            ...inputConfig.data.blackducksca,
+                            reports: {
+                                sarif: {
+                                    file: {
+                                        path: absolutePath
+                                    }
+                                }
+                            }
+                        }
+                    }
+                };
+
+                expect(mockFsWrapper.writeFileSync.calledOnceWith(
+                    productInputFilePath,
+                    JSON.stringify(expectedConfig, null, 2)
+                )).to.be.true;
+                expect(mockLogger.debug.callCount).to.equal(2);
             });
         });
     });

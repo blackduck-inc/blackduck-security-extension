@@ -1,7 +1,6 @@
 // Copyright (c) 2024 Black Duck Software Inc. All rights reserved worldwide.
 
 import path from "path";
-import * as fs from "fs";
 import * as utility from "./utility";
 import * as constants from "./application-constant";
 import {
@@ -16,9 +15,6 @@ import {
   BRIDGE_CLI_DOWNLOAD_FAILED,
   WORKSPACE_DIR_NOT_FOUND,
   BRIDGE_CLI_DOWNLOAD_FAILED_RETRY,
-  BRIDGE_CLI_LOCAL_DIRECTORY,
-  DEFAULT_POLARIS_SARIF_GENERATOR_DIRECTORY,
-  DEFAULT_BLACKDUCK_SARIF_GENERATOR_DIRECTORY,
 } from "./application-constant";
 
 import * as toolLibLocal from ".//download-tool";
@@ -500,6 +496,34 @@ export function extractInputJsonFilename(command: string): string {
   }
   return "";
 }
+// File system wrapper for testability
+export class FileSystemWrapper {
+  readFileSync(filePath: string, encoding: BufferEncoding): string {
+    return readFileSync(filePath, encoding);
+  }
+
+  writeFileSync(filePath: string, data: string): void {
+    writeFileSync(filePath, data);
+  }
+}
+
+// Path wrapper for testability
+export class PathWrapper {
+  resolve(pathString: string): string {
+    return path.resolve(pathString);
+  }
+
+  join(...paths: string[]): string {
+    return path.join(...paths);
+  }
+}
+
+// Logger wrapper for testability
+export class LoggerWrapper {
+  debug(message: string): void {
+    taskLib.debug(message);
+  }
+}
 export function updateSarifFilePaths(
   workSpaceDir: string,
   productInputFileName: string,
@@ -546,20 +570,23 @@ export function updateSarifFilePaths(
 // Update SARIF file path in the input JSON
 export function updatePolarisSarifPath(
   workSpaceDir: string,
-  productInputFilPath: string,
-  sarifPath: string
+  productInputFilePath: string,
+  sarifPath: string,
+  fsWrapper: FileSystemWrapper = new FileSystemWrapper(),
+  pathWrapper: PathWrapper = new PathWrapper(),
+  logger: LoggerWrapper = new LoggerWrapper()
 ): void {
   try {
     // Read and parse the JSON file
-    const cleanPath = productInputFilPath.replace(/"/g, "");
-    const jsonContent = readFileSync(cleanPath, "utf-8");
-
+    const cleanPath = productInputFilePath.replace(/"/g, "");
+    const jsonContent = fsWrapper.readFileSync(cleanPath, "utf-8");
     const config = JSON.parse(jsonContent) as InputData<Polaris>;
-
-    const absolutePath = path.resolve(path.join(workSpaceDir, sarifPath));
+    const absolutePath = pathWrapper.resolve(
+      pathWrapper.join(workSpaceDir, sarifPath)
+    );
 
     config.data = config.data || {};
-    config.data.polaris = config.data.polaris || ({} as PolarisData);
+    config.data.polaris = config.data.polaris || {};
 
     // Initialize reports with required sarif property
     if (!config.data.polaris.reports) {
@@ -587,41 +614,43 @@ export function updatePolarisSarifPath(
         path: "",
       };
     }
+
     // Now safely update the path
     config.data.polaris.reports.sarif.file.path = absolutePath;
-
-    taskLib.debug(
+    logger.debug(
       `Updated SARIF file path to: ${config.data.polaris.reports.sarif.file.path}`
     );
 
     // Write back the updated JSON with proper formatting
-    writeFileSync(cleanPath, JSON.stringify(config, null, 2));
-
-    taskLib.debug(
+    fsWrapper.writeFileSync(cleanPath, JSON.stringify(config, null, 2));
+    logger.debug(
       `Successfully updated Polaris SARIF file path: ${absolutePath}`
     );
   } catch (error) {
-    taskLib.debug(`Error updating SARIF file path: ${error}`);
+    logger.debug(`Error updating SARIF file path: ${error}`);
   }
 }
 
 // Update SARIF file path in the input JSON
 export function updateBlackDuckSarifPath(
   workSpaceDir: string,
-  productInputFilPath: string,
-  sarifPath: string
+  productInputFilePath: string,
+  sarifPath: string,
+  fsWrapper: FileSystemWrapper = new FileSystemWrapper(),
+  pathWrapper: PathWrapper = new PathWrapper(),
+  logger: LoggerWrapper = new LoggerWrapper()
 ): void {
   try {
     // Read and parse the JSON file
-    const cleanPath = productInputFilPath.replace(/"/g, "");
-    const jsonContent = readFileSync(cleanPath, "utf-8");
-
+    const cleanPath = productInputFilePath.replace(/"/g, "");
+    const jsonContent = fsWrapper.readFileSync(cleanPath, "utf-8");
     const config = JSON.parse(jsonContent) as InputData<BlackduckSCA>;
-
-    const absolutePath = path.resolve(path.join(workSpaceDir, sarifPath));
+    const absolutePath = pathWrapper.resolve(
+      pathWrapper.join(workSpaceDir, sarifPath)
+    );
 
     config.data = config.data || {};
-    config.data.blackducksca = config.data.blackducksca || ({} as PolarisData);
+    config.data.blackducksca = config.data.blackducksca || {};
 
     // Initialize reports with required sarif property
     if (!config.data.blackducksca.reports) {
@@ -652,18 +681,16 @@ export function updateBlackDuckSarifPath(
 
     // Now safely update the path
     config.data.blackducksca.reports.sarif.file.path = absolutePath;
-
-    taskLib.debug(
+    logger.debug(
       `Updated SARIF file path to: ${config.data.blackducksca.reports.sarif.file.path}`
     );
 
     // Write back the updated JSON with proper formatting
-    writeFileSync(cleanPath, JSON.stringify(config, null, 2));
-
-    taskLib.debug(
+    fsWrapper.writeFileSync(cleanPath, JSON.stringify(config, null, 2));
+    logger.debug(
       `Successfully updated Polaris SARIF file path: ${absolutePath}`
     );
   } catch (error) {
-    taskLib.debug(`Error updating SARIF file path: ${error}`);
+    logger.debug(`Error updating SARIF file path: ${error}`);
   }
 }
