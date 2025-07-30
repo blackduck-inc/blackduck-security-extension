@@ -4,9 +4,6 @@ import * as utility from "../../../src/blackduck-security-task/utility";
 import * as input from "../../../src/blackduck-security-task/input";
 import * as sslUtils from "../../../src/blackduck-security-task/ssl-utils";
 import {
-    extractZipped, getStatusCode,
-    getWorkSpaceDirectory,
-    parseToBoolean,
     createSSLConfiguredHttpClient,
     clearHttpClientCache, FileSystemWrapper, PathWrapper, LoggerWrapper
 } from "../../../src/blackduck-security-task/utility";
@@ -21,11 +18,8 @@ import * as trm from "azure-pipelines-task-lib/toolrunner";
 import * as https from "node:https";
 import { expect } from "chai";
 import * as sinon from "sinon";
-import * as fs from "fs";
-import * as path from "path";
 import * as taskLib from "azure-pipelines-task-lib";
 import * as constants from "../../../src/blackduck-security-task/application-constant";
-import * as inputs from "../../../src/blackduck-security-task/input";
 import * as validator from "../../../src/blackduck-security-task/validator";
 import {
     extractInputJsonFilename,
@@ -34,7 +28,6 @@ import {
     updateBlackDuckSarifPath
 } from "../../../src/blackduck-security-task/utility";
 import { describe, it, beforeEach, afterEach } from 'mocha';
-import proxyquire from 'proxyquire';
 
 describe("Utilities", () => {
 
