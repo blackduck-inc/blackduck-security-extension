@@ -526,17 +526,6 @@ export function createSSLConfiguredHttpClient(
 }
 
 /**
- * Gets a shared HTTPS agent with SSL configuration.
- * This properly combines system CAs with custom CAs for direct HTTPS operations.
- * Use this for file downloads and direct HTTPS requests.
- *
- * @returns HTTPS agent configured with appropriate SSL settings
- */
-export function getSharedHttpsAgent(): https.Agent {
-  return createSSLConfiguredHttpsAgent();
-}
-
-/**
  * Gets a shared HttpClient instance with SSL configuration.
  * This is for API operations using typed-rest-client.
  * Use this for structured API operations that need typed responses.
@@ -556,4 +545,11 @@ export function clearHttpClientCache(): void {
   _httpClientCache = null;
   _httpClientConfigHash = null;
   taskLib.debug("HTTP client and HTTPS agent caches cleared");
+}
+
+export function stringFormat(url: string, ...args: string[]): string {
+  return url.replace(
+    /{(\d+)}/g,
+    (match, index) => encodeURIComponent(args[index]) || ""
+  );
 }
