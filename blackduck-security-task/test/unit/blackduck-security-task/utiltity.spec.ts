@@ -4,28 +4,29 @@ import * as utility from "../../../src/blackduck-security-task/utility";
 import * as input from "../../../src/blackduck-security-task/input";
 import * as sslUtils from "../../../src/blackduck-security-task/ssl-utils";
 import {
-    extractZipped, getStatusCode,
-    getWorkSpaceDirectory,
-    parseToBoolean,
     createSSLConfiguredHttpClient,
-    clearHttpClientCache
+    clearHttpClientCache, FileSystemWrapper,
+    PathWrapper, LoggerWrapper,extractInputJsonFilename,
+    updateSarifFilePaths,
+    updatePolarisSarifPath,
+    updateBlackDuckSarifPath
 } from "../../../src/blackduck-security-task/utility";
 import process from "process";
-import * as sinon from "sinon";
-import * as toolLib from "azure-pipelines-tool-lib";
 import * as toolLibLocal from "../../../src/blackduck-security-task/download-tool";
 import {DownloadFileResponse} from "../../../src/blackduck-security-task/model/download-file-response";
-import * as constants from "../../../src/blackduck-security-task/application-constant";
-import * as taskLib from "azure-pipelines-task-lib";
 import {AZURE_BUILD_REASON, AZURE_ENVIRONMENT_VARIABLES} from "../../../src/blackduck-security-task/model/azure";
 import { ErrorCode } from "../../../src/blackduck-security-task/enum/ErrorCodes";
 import {BuildStatus} from "../../../src/blackduck-security-task/enum/BuildStatus";
 import {TaskResult} from "azure-pipelines-task-lib/task";
 import * as trm from "azure-pipelines-task-lib/toolrunner";
-import { expect ,assert} from "chai";
-import * as fs from 'fs';
 import * as https from "node:https";
-import path from "path";
+import { expect } from "chai";
+import * as sinon from "sinon";
+import * as taskLib from "azure-pipelines-task-lib";
+import * as constants from "../../../src/blackduck-security-task/application-constant";
+import * as validator from "../../../src/blackduck-security-task/validator";
+import * as inputs from "../../../src/blackduck-security-task/input";
+import { describe, it, beforeEach, afterEach } from 'mocha';
 
 describe("Utilities", () => {
 
@@ -383,194 +384,6 @@ describe("Utilities", () => {
             expect(utility.getMappedTaskResult(BuildStatus.Succeeded)).equals(TaskResult.Succeeded);
             expect(utility.getMappedTaskResult(BuildStatus.SucceededWithIssues)).equals(TaskResult.SucceededWithIssues);
             expect(utility.getMappedTaskResult("")).equals(undefined);
-        });
-    });
-
-    describe('extractOutputJsonFilename', () => {
-        let debugStub: sinon.SinonStub;
-
-        beforeEach(() => {
-            debugStub = sandbox.stub(taskLib, 'debug');
-        });
-
-        it('should extract output file path when --out flag is present', () => {
-            const command = 'bridge-cli --out /path/to/output.json --other-flag value';
-
-            const result = utility.extractOutputJsonFilename(command);
-
-            expect(result).to.equal('/path/to/output.json');
-            expect(debugStub.calledWith('Extracted Output Path:::: /path/to/output.json')).to.be.true;
-        });
-
-        it('should extract output file path and remove double quotes', () => {
-            const command = 'bridge-cli --out "/path/to/output.json" --other-flag';
-
-            const result = utility.extractOutputJsonFilename(command);
-
-            expect(result).to.equal('/path/to/output.json');
-            expect(debugStub.calledWith('Extracted Output Path:::: /path/to/output.json')).to.be.true;
-        });
-
-        it('should extract output file path and remove single quotes', () => {
-            const command = "bridge-cli --out '/path/to/output.json' --other-flag";
-
-            const result = utility.extractOutputJsonFilename(command);
-
-            expect(result).to.equal('/path/to/output.json');
-            expect(debugStub.calledWith('Extracted Output Path:::: /path/to/output.json')).to.be.true;
-        });
-
-        it('should handle Windows-style paths with backslashes', () => {
-            const command = 'bridge-cli --out C:\\Users\\test\\output.json';
-
-            const result = utility.extractOutputJsonFilename(command);
-
-            expect(result).to.equal('C:\\Users\\test\\output.json');
-            expect(debugStub.calledWith('Extracted Output Path:::: C:\\Users\\test\\output.json')).to.be.true;
-        });
-
-        it('should handle Windows-style paths with quotes', () => {
-            const command = 'bridge-cli --out "C:\\ProgramFiles\\output.json"';
-
-            const result = utility.extractOutputJsonFilename(command);
-
-            expect(result).to.equal('C:\\ProgramFiles\\output.json');
-            expect(debugStub.calledWith('Extracted Output Path:::: C:\\ProgramFiles\\output.json')).to.be.true;
-        });
-
-        it('should handle --out flag with multiple spaces', () => {
-            const command = 'bridge-cli --out    /path/to/output.json --other-flag';
-
-            const result = utility.extractOutputJsonFilename(command);
-
-            expect(result).to.equal('/path/to/output.json');
-            expect(debugStub.calledWith('Extracted Output Path:::: /path/to/output.json')).to.be.true;
-        });
-
-        it('should handle --out flag at the beginning of command', () => {
-            const command = '--out /path/to/output.json bridge-cli --other-flag';
-
-            const result = utility.extractOutputJsonFilename(command);
-
-            expect(result).to.equal('/path/to/output.json');
-            expect(debugStub.calledWith('Extracted Output Path:::: /path/to/output.json')).to.be.true;
-        });
-
-        it('should handle --out flag at the end of command', () => {
-            const command = 'bridge-cli --other-flag value --out /path/to/output.json';
-
-            const result = utility.extractOutputJsonFilename(command);
-
-            expect(result).to.equal('/path/to/output.json');
-            expect(debugStub.calledWith('Extracted Output Path:::: /path/to/output.json')).to.be.true;
-        });
-
-        it('should return empty string when --out flag is not present', () => {
-            const command = 'bridge-cli --other-flag value --another-flag';
-
-            const result = utility.extractOutputJsonFilename(command);
-
-            expect(result).to.equal('');
-            expect(debugStub.called).to.be.false;
-        });
-
-        it('should return empty string when command is empty', () => {
-            const command = '';
-
-            const result = utility.extractOutputJsonFilename(command);
-
-            expect(result).to.equal('');
-            expect(debugStub.called).to.be.false;
-        });
-
-        it('should return empty string when --out flag has no value', () => {
-            const command = 'bridge-cli --out';
-
-            const result = utility.extractOutputJsonFilename(command);
-
-            expect(result).to.equal('');
-            expect(debugStub.called).to.be.false;
-        });
-
-        it('should handle --out flag with relative path', () => {
-            const command = 'bridge-cli --out ./output/results.json';
-
-            const result = utility.extractOutputJsonFilename(command);
-
-            expect(result).to.equal('./output/results.json');
-            expect(debugStub.calledWith('Extracted Output Path:::: ./output/results.json')).to.be.true;
-        });
-
-        it('should handle --out flag with filename only', () => {
-            const command = 'bridge-cli --out output.json';
-
-            const result = utility.extractOutputJsonFilename(command);
-
-            expect(result).to.equal('output.json');
-            expect(debugStub.calledWith('Extracted Output Path:::: output.json')).to.be.true;
-        });
-
-        it('should handle complex paths with special characters', () => {
-            const command = 'bridge-cli --out "/path/withspaces/and-dashes/output_file.json"';
-
-            const result = utility.extractOutputJsonFilename(command);
-
-            expect(result).to.equal('/path/withspaces/and-dashes/output_file.json');
-            expect(debugStub.calledWith('Extracted Output Path:::: /path/withspaces/and-dashes/output_file.json')).to.be.true;
-        });
-
-        it('should handle --out flag with mixed quotes (double at start, single at end)', () => {
-            const command = "bridge-cli --out \"/path/to/output.json'";
-
-            const result = utility.extractOutputJsonFilename(command);
-
-            expect(result).to.equal('/path/to/output.json');
-            expect(debugStub.calledWith('Extracted Output Path:::: /path/to/output.json')).to.be.true;
-        });
-
-        it('should handle --out flag with mixed quotes (single at start, double at end)', () => {
-            const command = 'bridge-cli --out \'/path/to/output.json"';
-
-            const result = utility.extractOutputJsonFilename(command);
-
-            expect(result).to.equal('/path/to/output.json');
-            expect(debugStub.calledWith('Extracted Output Path:::: /path/to/output.json')).to.be.true;
-        });
-
-        it('should handle --out flag with path containing numbers and underscores', () => {
-            const command = 'bridge-cli --out /home/user123/project_2024/output_v1.json';
-
-            const result = utility.extractOutputJsonFilename(command);
-
-            expect(result).to.equal('/home/user123/project_2024/output_v1.json');
-            expect(debugStub.calledWith('Extracted Output Path:::: /home/user123/project_2024/output_v1.json')).to.be.true;
-        });
-
-        it('should handle command with multiple --out-like patterns but match only --out', () => {
-            const command = 'bridge-cli --output /wrong/path --out /correct/path.json --outro value';
-
-            const result = utility.extractOutputJsonFilename(command);
-
-            expect(result).to.equal('/correct/path.json');
-            expect(debugStub.calledWith('Extracted Output Path:::: /correct/path.json')).to.be.true;
-        });
-
-        it('should return empty string for edge case when match exists but captured group is empty', () => {
-            const command = 'bridge-cli --out ""';
-
-            const result = utility.extractOutputJsonFilename(command);
-
-            expect(result).to.equal('');
-            expect(debugStub.calledWith('Extracted Output Path:::: ')).to.be.true;
-        });
-
-        it('should handle path with dots and extensions correctly', () => {
-            const command = 'bridge-cli --out /path/to/file.name.with.dots.json';
-
-            const result = utility.extractOutputJsonFilename(command);
-
-            expect(result).to.equal('/path/to/file.name.with.dots.json');
-            expect(debugStub.calledWith('Extracted Output Path:::: /path/to/file.name.with.dots.json')).to.be.true;
         });
     });
 
@@ -954,8 +767,31 @@ describe("Utilities", () => {
             expect(taskLibDebugStub.callCount).to.be.at.least(3); // 2 creation + 1 cache clear
         });
     });
+    describe("updateSarifFilePaths", () => {
+        let sandbox: sinon.SinonSandbox;
+        let updatePolarisSarifPathStub: sinon.SinonStub;
+        let updateBlackDuckSarifPathStub: sinon.SinonStub;
+        let debugStub: sinon.SinonStub;
 
-    describe("SARIF Output Path Parser Tests", () => {
+        beforeEach(() => {
+            sandbox = sinon.createSandbox();
+            updatePolarisSarifPathStub = sandbox.stub(utility, "updatePolarisSarifPath");
+            updateBlackDuckSarifPathStub = sandbox.stub(utility, "updateBlackDuckSarifPath");
+            debugStub = sandbox.stub(taskLib, "debug");
+            // Stub validator on the module used by utility
+            sandbox.stub(validator, "isNullOrEmptyValue").returns(true);
+        });
+
+        afterEach(() => {
+            sandbox.restore();
+        });
+        it("should not call any update function for unknown file name", () => {
+            utility.updateSarifFilePaths("/workspace", "other.json", "0.0.1", "/input.json");
+            sinon.assert.notCalled(updatePolarisSarifPathStub);
+            sinon.assert.notCalled(updateBlackDuckSarifPathStub);
+        });
+    });
+    describe("SARIF File Path Functions", () => {
         let sandbox: sinon.SinonSandbox;
 
         beforeEach(() => {
@@ -966,1133 +802,610 @@ describe("Utilities", () => {
             sandbox.restore();
         });
 
-        context("getSarifOutputPath function behavior", () => {
-            it("should return Polaris SARIF output path when sarifFileName is POLARIS_OUTPUT_FILE_NAME", () => {
-                const outputJsonPath = "/path/to/output.json";
-                const sarifFileName = constants.POLARIS_OUTPUT_FILE_NAME;
-                const expectedPath = "/path/to/polaris/sarif/output.sarif";
-
-                const mockConfig = {
-                    data: {
-                        polaris: {
-                            reports: {
-                                sarif: {
-                                    file: {
-                                        output: expectedPath
-                                    }
-                                }
-                            }
-                        }
-                    }
-                };
-
-                const fsStub = {
-                    readFileSync: sandbox.stub().returns(JSON.stringify(mockConfig))
-                };
-
-                const consoleStub = {
-                    error: sandbox.stub()
-                };
-
-                // Simulate the function behavior
-                const getSarifOutputPath = (outputJsonPath: string, sarifFileName: string) => {
-                    try {
-                        const config = JSON.parse(fsStub.readFileSync(outputJsonPath, "utf-8"));
-                        const sarifOutputPath =
-                            sarifFileName === constants.POLARIS_OUTPUT_FILE_NAME
-                                ? config?.data?.polaris?.reports?.sarif?.file?.output
-                                : config?.data?.blackducksca?.reports?.sarif?.file?.output;
-
-                        if (!sarifOutputPath) {
-                            return "";
-                        }
-                        return sarifOutputPath;
-                    } catch (error) {
-                        consoleStub.error("Error reading or parsing output JSON file:", error);
-                        return "";
-                    }
-                };
-
-                const result = getSarifOutputPath(outputJsonPath, sarifFileName);
-
-                assert.strictEqual(result, expectedPath);
-                expect(fsStub.readFileSync.calledOnceWith(outputJsonPath, "utf-8")).to.be.true;
-                expect(consoleStub.error.called).to.be.false;
+        context("extractInputJsonFilename", () => {
+            it("should extract filename from command with --input flag", () => {
+                const command = "bridge --input polaris_input.json --stage sast";
+                const result = extractInputJsonFilename(command);
+                expect(result).to.equal("polaris_input.json");
             });
 
-            it("should return BlackDuck SCA SARIF output path when sarifFileName is not POLARIS_OUTPUT_FILE_NAME", () => {
-                const outputJsonPath = "/path/to/output.json";
-                const sarifFileName = "blackduck-output.sarif";
-                const expectedPath = "/path/to/blackduck/sarif/output.sarif";
-
-                const mockConfig = {
-                    data: {
-                        blackducksca: {
-                            reports: {
-                                sarif: {
-                                    file: {
-                                        output: expectedPath
-                                    }
-                                }
-                            }
-                        }
-                    }
-                };
-
-                const fsStub = {
-                    readFileSync: sandbox.stub().returns(JSON.stringify(mockConfig))
-                };
-
-                const consoleStub = {
-                    error: sandbox.stub()
-                };
-
-                const getSarifOutputPath = (outputJsonPath: string, sarifFileName: string) => {
-                    try {
-                        const config = JSON.parse(fsStub.readFileSync(outputJsonPath, "utf-8"));
-                        const sarifOutputPath =
-                            sarifFileName === constants.POLARIS_OUTPUT_FILE_NAME
-                                ? config?.data?.polaris?.reports?.sarif?.file?.output
-                                : config?.data?.blackducksca?.reports?.sarif?.file?.output;
-
-                        if (!sarifOutputPath) {
-                            return "";
-                        }
-                        return sarifOutputPath;
-                    } catch (error) {
-                        consoleStub.error("Error reading or parsing output JSON file:", error);
-                        return "";
-                    }
-                };
-
-                const result = getSarifOutputPath(outputJsonPath, sarifFileName);
-
-                assert.strictEqual(result, expectedPath);
-                expect(fsStub.readFileSync.calledOnceWith(outputJsonPath, "utf-8")).to.be.true;
-                expect(consoleStub.error.called).to.be.false;
+            it("should extract filename with full path from command", () => {
+                const command = "bridge --input /path/to/bd_input.json --stage sca";
+                const result = extractInputJsonFilename(command);
+                expect(result).to.equal("/path/to/bd_input.json");
             });
 
-            it("should return empty string when Polaris SARIF output path is undefined", () => {
-                const outputJsonPath = "/path/to/output.json";
-                const sarifFileName = constants.POLARIS_OUTPUT_FILE_NAME;
-
-                const mockConfig = {
-                    data: {
-                        polaris: {
-                            reports: {
-                                sarif: {
-                                    file: {
-                                        output: undefined
-                                    }
-                                }
-                            }
-                        }
-                    }
-                };
-
-                const fsStub = {
-                    readFileSync: sandbox.stub().returns(JSON.stringify(mockConfig))
-                };
-
-                const consoleStub = {
-                    error: sandbox.stub()
-                };
-
-                const getSarifOutputPath = (outputJsonPath: string, sarifFileName: string) => {
-                    try {
-                        const config = JSON.parse(fsStub.readFileSync(outputJsonPath, "utf-8"));
-                        const sarifOutputPath =
-                            sarifFileName === constants.POLARIS_OUTPUT_FILE_NAME
-                                ? config?.data?.polaris?.reports?.sarif?.file?.output
-                                : config?.data?.blackducksca?.reports?.sarif?.file?.output;
-
-                        if (!sarifOutputPath) {
-                            return "";
-                        }
-                        return sarifOutputPath;
-                    } catch (error) {
-                        consoleStub.error("Error reading or parsing output JSON file:", error);
-                        return "";
-                    }
-                };
-
-                const result = getSarifOutputPath(outputJsonPath, sarifFileName);
-
-                assert.strictEqual(result, "");
-                expect(fsStub.readFileSync.calledOnceWith(outputJsonPath, "utf-8")).to.be.true;
-                expect(consoleStub.error.called).to.be.false;
+            it("should handle command with multiple flags", () => {
+                const command = "bridge --verbose --input config.json --output results";
+                const result = extractInputJsonFilename(command);
+                expect(result).to.equal("config.json");
             });
 
-            it("should return empty string when BlackDuck SCA SARIF output path is null", () => {
-                const outputJsonPath = "/path/to/output.json";
-                const sarifFileName = "blackduck-output.sarif";
-
-                const mockConfig = {
-                    data: {
-                        blackducksca: {
-                            reports: {
-                                sarif: {
-                                    file: {
-                                        output: null
-                                    }
-                                }
-                            }
-                        }
-                    }
-                };
-
-                const fsStub = {
-                    readFileSync: sandbox.stub().returns(JSON.stringify(mockConfig))
-                };
-
-                const consoleStub = {
-                    error: sandbox.stub()
-                };
-
-                const getSarifOutputPath = (outputJsonPath: string, sarifFileName: string) => {
-                    try {
-                        const config = JSON.parse(fsStub.readFileSync(outputJsonPath, "utf-8"));
-                        const sarifOutputPath =
-                            sarifFileName === constants.POLARIS_OUTPUT_FILE_NAME
-                                ? config?.data?.polaris?.reports?.sarif?.file?.output
-                                : config?.data?.blackducksca?.reports?.sarif?.file?.output;
-
-                        if (!sarifOutputPath) {
-                            return "";
-                        }
-                        return sarifOutputPath;
-                    } catch (error) {
-                        consoleStub.error("Error reading or parsing output JSON file:", error);
-                        return "";
-                    }
-                };
-
-                const result = getSarifOutputPath(outputJsonPath, sarifFileName);
-
-                assert.strictEqual(result, "");
-                expect(fsStub.readFileSync.calledOnceWith(outputJsonPath, "utf-8")).to.be.true;
-                expect(consoleStub.error.called).to.be.false;
+            it("should return empty string when no --input flag found", () => {
+                const command = "bridge --stage sast --output results";
+                const result = extractInputJsonFilename(command);
+                expect(result).to.equal("");
             });
 
-            it("should return empty string when SARIF output path is empty string", () => {
-                const outputJsonPath = "/path/to/output.json";
-                const sarifFileName = constants.POLARIS_OUTPUT_FILE_NAME;
-
-                const mockConfig = {
-                    data: {
-                        polaris: {
-                            reports: {
-                                sarif: {
-                                    file: {
-                                        output: ""
-                                    }
-                                }
-                            }
-                        }
-                    }
-                };
-
-                const fsStub = {
-                    readFileSync: sandbox.stub().returns(JSON.stringify(mockConfig))
-                };
-
-                const consoleStub = {
-                    error: sandbox.stub()
-                };
-
-                const getSarifOutputPath = (outputJsonPath: string, sarifFileName: string) => {
-                    try {
-                        const config = JSON.parse(fsStub.readFileSync(outputJsonPath, "utf-8"));
-                        const sarifOutputPath =
-                            sarifFileName === constants.POLARIS_OUTPUT_FILE_NAME
-                                ? config?.data?.polaris?.reports?.sarif?.file?.output
-                                : config?.data?.blackducksca?.reports?.sarif?.file?.output;
-
-                        if (!sarifOutputPath) {
-                            return "";
-                        }
-                        return sarifOutputPath;
-                    } catch (error) {
-                        consoleStub.error("Error reading or parsing output JSON file:", error);
-                        return "";
-                    }
-                };
-
-                const result = getSarifOutputPath(outputJsonPath, sarifFileName);
-
-                assert.strictEqual(result, "");
-                expect(fsStub.readFileSync.calledOnceWith(outputJsonPath, "utf-8")).to.be.true;
-                expect(consoleStub.error.called).to.be.false;
+            it("should return empty string for empty command", () => {
+                const command = "";
+                const result = extractInputJsonFilename(command);
+                expect(result).to.equal("");
             });
 
-            it("should return empty string when nested object structure is missing for Polaris", () => {
-                const outputJsonPath = "/path/to/output.json";
-                const sarifFileName = constants.POLARIS_OUTPUT_FILE_NAME;
+            it("should handle --input flag at the end of command", () => {
+                const command = "bridge --stage sast --input final_config.json";
+                const result = extractInputJsonFilename(command);
+                expect(result).to.equal("final_config.json");
+            });
+        });
 
-                const mockConfig = {
-                    data: {
-                        polaris: {
-                            reports: {
-                                // Missing sarif property
-                            }
-                        }
-                    }
-                };
+        context("updateSarifFilePaths", () => {
 
-                const fsStub = {
-                    readFileSync: sandbox.stub().returns(JSON.stringify(mockConfig))
-                };
+            let updatePolarisSarifPathStub: sinon.SinonStub;
+            let updateBlackDuckSarifPathStub: sinon.SinonStub;
+            let isNullOrEmptyValueStub: sinon.SinonStub;
+            let debugStub: sinon.SinonStub; // <-- Add this line
 
-                const consoleStub = {
-                    error: sandbox.stub()
-                };
-
-                const getSarifOutputPath = (outputJsonPath: string, sarifFileName: string) => {
-                    try {
-                        const config = JSON.parse(fsStub.readFileSync(outputJsonPath, "utf-8"));
-                        const sarifOutputPath =
-                            sarifFileName === constants.POLARIS_OUTPUT_FILE_NAME
-                                ? config?.data?.polaris?.reports?.sarif?.file?.output
-                                : config?.data?.blackducksca?.reports?.sarif?.file?.output;
-
-                        if (!sarifOutputPath) {
-                            return "";
-                        }
-                        return sarifOutputPath;
-                    } catch (error) {
-                        consoleStub.error("Error reading or parsing output JSON file:", error);
-                        return "";
-                    }
-                };
-
-                const result = getSarifOutputPath(outputJsonPath, sarifFileName);
-
-                assert.strictEqual(result, "");
-                expect(fsStub.readFileSync.calledOnceWith(outputJsonPath, "utf-8")).to.be.true;
-                expect(consoleStub.error.called).to.be.false;
+            beforeEach(() => {
+                sandbox = sinon.createSandbox();
+                updatePolarisSarifPathStub = sandbox.stub(utility, "updatePolarisSarifPath");
+                updateBlackDuckSarifPathStub = sandbox.stub(utility, "updateBlackDuckSarifPath");
+                isNullOrEmptyValueStub = sandbox.stub(validator, "isNullOrEmptyValue");
+                debugStub = sandbox.stub(taskLib, "debug"); // <-- Add this line
             });
 
-            it("should return empty string when nested object structure is missing for BlackDuck SCA", () => {
-                const outputJsonPath = "/path/to/output.json";
-                const sarifFileName = "blackduck-output.sarif";
-
-                const mockConfig = {
-                    data: {
-                        blackducksca: {
-                            // Missing reports property
-                        }
-                    }
-                };
-
-                const fsStub = {
-                    readFileSync: sandbox.stub().returns(JSON.stringify(mockConfig))
-                };
-
-                const consoleStub = {
-                    error: sandbox.stub()
-                };
-
-                const getSarifOutputPath = (outputJsonPath: string, sarifFileName: string) => {
-                    try {
-                        const config = JSON.parse(fsStub.readFileSync(outputJsonPath, "utf-8"));
-                        const sarifOutputPath =
-                            sarifFileName === constants.POLARIS_OUTPUT_FILE_NAME
-                                ? config?.data?.polaris?.reports?.sarif?.file?.output
-                                : config?.data?.blackducksca?.reports?.sarif?.file?.output;
-
-                        if (!sarifOutputPath) {
-                            return "";
-                        }
-                        return sarifOutputPath;
-                    } catch (error) {
-                        consoleStub.error("Error reading or parsing output JSON file:", error);
-                        return "";
-                    }
-                };
-
-                const result = getSarifOutputPath(outputJsonPath, sarifFileName);
-
-                assert.strictEqual(result, "");
-                expect(fsStub.readFileSync.calledOnceWith(outputJsonPath, "utf-8")).to.be.true;
-                expect(consoleStub.error.called).to.be.false;
+            afterEach(() => {
+                sandbox.restore();
             });
 
-            it("should handle fs.readFileSync throwing an error", () => {
-                const outputJsonPath = "/path/to/nonexistent.json";
-                const sarifFileName = constants.POLARIS_OUTPUT_FILE_NAME;
-                const error = new Error("ENOENT: no such file or directory");
+            it("should not call any update function for unknown file name", () => {
+                updateSarifFilePaths("/workspace", "other_input.json", "1.0.0", "/input.json");
 
-                const fsStub = {
-                    readFileSync: sandbox.stub().throws(error)
-                };
-
-                const consoleStub = {
-                    error: sandbox.stub()
-                };
-
-                const getSarifOutputPath = (outputJsonPath: string, sarifFileName: string) => {
-                    try {
-                        const config = JSON.parse(fsStub.readFileSync(outputJsonPath, "utf-8"));
-                        const sarifOutputPath =
-                            sarifFileName === constants.POLARIS_OUTPUT_FILE_NAME
-                                ? config?.data?.polaris?.reports?.sarif?.file?.output
-                                : config?.data?.blackducksca?.reports?.sarif?.file?.output;
-
-                        if (!sarifOutputPath) {
-                            return "";
-                        }
-                        return sarifOutputPath;
-                    } catch (error) {
-                        consoleStub.error("Error reading or parsing output JSON file:", error);
-                        return "";
-                    }
-                };
-
-                const result = getSarifOutputPath(outputJsonPath, sarifFileName);
-
-                assert.strictEqual(result, "");
-                expect(fsStub.readFileSync.calledOnceWith(outputJsonPath, "utf-8")).to.be.true;
-                expect(consoleStub.error.calledOnceWith("Error reading or parsing output JSON file:", error)).to.be.true;
-            });
-
-            it("should handle JSON.parse throwing an error for invalid JSON", () => {
-                const outputJsonPath = "/path/to/invalid.json";
-                const sarifFileName = constants.POLARIS_OUTPUT_FILE_NAME;
-                const invalidJson = "{ invalid json content }";
-
-                const fsStub = {
-                    readFileSync: sandbox.stub().returns(invalidJson)
-                };
-
-                const consoleStub = {
-                    error: sandbox.stub()
-                };
-
-                const getSarifOutputPath = (outputJsonPath: string, sarifFileName: string) => {
-                    try {
-                        const config = JSON.parse(fsStub.readFileSync(outputJsonPath, "utf-8"));
-                        const sarifOutputPath =
-                            sarifFileName === constants.POLARIS_OUTPUT_FILE_NAME
-                                ? config?.data?.polaris?.reports?.sarif?.file?.output
-                                : config?.data?.blackducksca?.reports?.sarif?.file?.output;
-
-                        if (!sarifOutputPath) {
-                            return "";
-                        }
-                        return sarifOutputPath;
-                    } catch (error) {
-                        consoleStub.error("Error reading or parsing output JSON file:", error);
-                        return "";
-                    }
-                };
-
-                const result = getSarifOutputPath(outputJsonPath, sarifFileName);
-
-                assert.strictEqual(result, "");
-                expect(fsStub.readFileSync.calledOnceWith(outputJsonPath, "utf-8")).to.be.true;
-                expect(consoleStub.error.calledOnce).to.be.true;
-                expect(consoleStub.error.firstCall.args[0]).to.equal("Error reading or parsing output JSON file:");
-            });
-
-            it("should handle empty JSON file", () => {
-                const outputJsonPath = "/path/to/empty.json";
-                const sarifFileName = constants.POLARIS_OUTPUT_FILE_NAME;
-
-                const fsStub = {
-                    readFileSync: sandbox.stub().returns("{}")
-                };
-
-                const consoleStub = {
-                    error: sandbox.stub()
-                };
-
-                const getSarifOutputPath = (outputJsonPath: string, sarifFileName: string) => {
-                    try {
-                        const config = JSON.parse(fsStub.readFileSync(outputJsonPath, "utf-8"));
-                        const sarifOutputPath =
-                            sarifFileName === constants.POLARIS_OUTPUT_FILE_NAME
-                                ? config?.data?.polaris?.reports?.sarif?.file?.output
-                                : config?.data?.blackducksca?.reports?.sarif?.file?.output;
-
-                        if (!sarifOutputPath) {
-                            return "";
-                        }
-                        return sarifOutputPath;
-                    } catch (error) {
-                        consoleStub.error("Error reading or parsing output JSON file:", error);
-                        return "";
-                    }
-                };
-
-                const result = getSarifOutputPath(outputJsonPath, sarifFileName);
-
-                assert.strictEqual(result, "");
-                expect(fsStub.readFileSync.calledOnceWith(outputJsonPath, "utf-8")).to.be.true;
-                expect(consoleStub.error.called).to.be.false;
-            });
-
-            it("should handle null config object", () => {
-                const outputJsonPath = "/path/to/null.json";
-                const sarifFileName = constants.POLARIS_OUTPUT_FILE_NAME;
-
-                const fsStub = {
-                    readFileSync: sandbox.stub().returns("null")
-                };
-
-                const consoleStub = {
-                    error: sandbox.stub()
-                };
-
-                const getSarifOutputPath = (outputJsonPath: string, sarifFileName: string) => {
-                    try {
-                        const config = JSON.parse(fsStub.readFileSync(outputJsonPath, "utf-8"));
-                        const sarifOutputPath =
-                            sarifFileName === constants.POLARIS_OUTPUT_FILE_NAME
-                                ? config?.data?.polaris?.reports?.sarif?.file?.output
-                                : config?.data?.blackducksca?.reports?.sarif?.file?.output;
-
-                        if (!sarifOutputPath) {
-                            return "";
-                        }
-                        return sarifOutputPath;
-                    } catch (error) {
-                        consoleStub.error("Error reading or parsing output JSON file:", error);
-                        return "";
-                    }
-                };
-
-                const result = getSarifOutputPath(outputJsonPath, sarifFileName);
-
-                assert.strictEqual(result, "");
-                expect(fsStub.readFileSync.calledOnceWith(outputJsonPath, "utf-8")).to.be.true;
-                expect(consoleStub.error.called).to.be.false;
+                expect(updatePolarisSarifPathStub.called).to.be.false;
+                expect(updateBlackDuckSarifPathStub.called).to.be.false;
             });
         });
     });
-    describe("copySarifFileToIntegrationDefaultPath Tests", () => {
+    describe('updateSarifFilePaths', () => {
+        const workSpaceDir = '/workspace';
+        const bridgeVersion = '2.0.0';
+        const productInputFilePath = '/path/to/input.json';
+
         let sandbox: sinon.SinonSandbox;
-        let processEnvStub: any;
-        let basenameStub: sinon.SinonStub;
-        let dirnameStub: sinon.SinonStub;
-        let joinStub: sinon.SinonStub;
-        let mkdirSyncStub: sinon.SinonStub;
-        let copyFileSyncStub: sinon.SinonStub;
-        let existsSyncStub: sinon.SinonStub;
+        let updatePolarisSarifPathStub: sinon.SinonStub;
+        let updateBlackDuckSarifPathStub: sinon.SinonStub;
+        let pathJoinStub: sinon.SinonStub;
         let taskLibDebugStub: sinon.SinonStub;
-        let consoleErrorStub: sinon.SinonStub;
-        let extractSarifOutputPathStub: sinon.SinonStub;
+        let isNullOrEmptyValueStub: sinon.SinonStub;
 
         beforeEach(() => {
             sandbox = sinon.createSandbox();
+            updatePolarisSarifPathStub = sandbox.stub();
+            updateBlackDuckSarifPathStub = sandbox.stub();
+            pathJoinStub = sandbox.stub();
+            taskLibDebugStub = sandbox.stub();
+            isNullOrEmptyValueStub = sandbox.stub();
 
-            // Setup stubs
-            basenameStub = sandbox.stub(path, "basename");
-            dirnameStub = sandbox.stub(path, "dirname");
-            joinStub = sandbox.stub(path, "join");
-            mkdirSyncStub = sandbox.stub(require("fs"), "mkdirSync");
-            copyFileSyncStub = sandbox.stub(require("fs"), "copyFileSync");
-            existsSyncStub = sandbox.stub(require("fs"), "existsSync");
-            taskLibDebugStub = sandbox.stub(taskLib, "debug");
-            consoleErrorStub = sandbox.stub(console, "error");
+            // Mock constants
+            sandbox.stub(constants, 'VERSION').value('2.0.0');
+            sandbox.stub(constants, 'BRIDGE_CLI_LOCAL_DIRECTORY').value('/bridge/cli');
+            sandbox.stub(constants, 'DEFAULT_POLARIS_SARIF_GENERATOR_DIRECTORY').value('polaris-sarif');
+            sandbox.stub(constants, 'DEFAULT_BLACKDUCK_SARIF_GENERATOR_DIRECTORY').value('blackduck-sarif');
+            sandbox.stub(constants, 'SARIF_DEFAULT_FILE_NAME').value('results.sarif');
+            sandbox.stub(constants, 'INTEGRATIONS_POLARIS_DEFAULT_SARIF_FILE_PATH').value('polaris/results.sarif');
+            sandbox.stub(constants, 'INTEGRATIONS_BLACKDUCKSCA_DEFAULT_SARIF_FILE_PATH').value('blackduck/results.sarif');
 
-            // Mock extractSarifOutputPath function
-            extractSarifOutputPathStub = sandbox.stub();
-
-            // Mock process.env
-            processEnvStub = {};
-            sandbox.stub(process, "env").value(processEnvStub);
+            // Replace the actual functions with stubs
+            sandbox.replace(require('../../../src/blackduck-security-task/utility'), 'updatePolarisSarifPath', updatePolarisSarifPathStub);
+            sandbox.replace(require('../../../src/blackduck-security-task/utility'), 'updateBlackDuckSarifPath', updateBlackDuckSarifPathStub);
+            sandbox.replace(require('path'), 'join', pathJoinStub);
+            sandbox.replace(require('azure-pipelines-task-lib'), 'debug', taskLibDebugStub);
+            sandbox.replace(require('../../../src/blackduck-security-task/validator'), 'isNullOrEmptyValue', isNullOrEmptyValueStub);
         });
 
         afterEach(() => {
             sandbox.restore();
         });
 
-        context("copySarifFileToIntegrationDefaultPath", () => {
-            it("should copy Polaris SARIF file when filename matches POLARIS_OUTPUT_FILE_NAME", () => {
-                // Setup
-                const sarifFilePath = "/source/path/polaris-output.sarif";
-                const sourceDirectory = "/build/sources";
-                const sarifOutputPath = "/actual/sarif/output.sarif";
-                const integrationDir = "/integration/polaris";
-                const integrationDirPath = "/build/sources/integration/polaris";
-                const destinationFile = "/build/sources/integration/polaris/sarif-default.sarif";
+        describe('Polaris input file scenarios', () => {
+            it('should handle polaris_input.json with bridge version less than constants.VERSION and custom SARIF path', () => {
+                const fileName = 'polaris_input.json';
+                const lowerBridgeVersion = '1.9.0';
+                const customSarifPath = '/custom/sarif/path.sarif';
 
-                processEnvStub["BUILD_SOURCESDIRECTORY"] = sourceDirectory;
-                basenameStub.returns(constants.POLARIS_OUTPUT_FILE_NAME);
-                extractSarifOutputPathStub.returns(sarifOutputPath);
-                dirnameStub.returns(integrationDir);
-                joinStub.onFirstCall().returns(integrationDirPath);
-                joinStub.onSecondCall().returns(destinationFile);
-                existsSyncStub.returns(false);
+                isNullOrEmptyValueStub.returns(false);
+                sandbox.stub(inputs, 'POLARIS_REPORTS_SARIF_FILE_PATH').value(' ' + customSarifPath + ' ');
 
-                // Simulate the function
-                const copySarifFileToIntegrationDefaultPath = (sarifFilePath: string) => {
-                    const sourceDirectory = process.env["BUILD_SOURCESDIRECTORY"] || "";
-                    const sarifFileName = basenameStub(sarifFilePath);
+                updateSarifFilePaths(workSpaceDir, fileName, lowerBridgeVersion, productInputFilePath);
 
-                    const isPolarisFile = sarifFileName === constants.POLARIS_OUTPUT_FILE_NAME;
-                    const isBlackduckFile = sarifFileName === constants.BD_OUTPUT_FILE_NAME;
-
-                    if (!isPolarisFile && !isBlackduckFile) return;
-
-                    const sarifOutputPath = extractSarifOutputPathStub(sarifFilePath, sarifFileName);
-                    if (!sarifOutputPath) return;
-
-                    const integrationSarifDir = dirnameStub(
-                        isPolarisFile
-                            ? constants.INTEGRATIONS_POLARIS_DEFAULT_SARIF_FILE_PATH
-                            : constants.INTEGRATIONS_BLACKDUCKSCA_DEFAULT_SARIF_FILE_PATH
-                    );
-
-                    const integrationSarifDirPath = joinStub(sourceDirectory, integrationSarifDir);
-                    const destinationFile = joinStub(integrationSarifDirPath, constants.SARIF_DEFAULT_FILE_NAME);
-
-                    try {
-                        require("fs").mkdirSync(integrationSarifDirPath, { recursive: true });
-                        require("fs").copyFileSync(sarifOutputPath, destinationFile);
-                        taskLibDebugStub(
-                            `SARIF file ${existsSyncStub(destinationFile) ? "overwritten" : "copied"} at: ${destinationFile}`
-                        );
-                    } catch (error) {
-                        consoleErrorStub("Error copying SARIF file:", error);
-                    }
-                };
-
-                // Execute
-                copySarifFileToIntegrationDefaultPath(sarifFilePath);
-
-                // Verify
-                expect(basenameStub.calledOnceWith(sarifFilePath)).to.be.true;
-                expect(extractSarifOutputPathStub.calledOnceWith(sarifFilePath, constants.POLARIS_OUTPUT_FILE_NAME)).to.be.true;
-                expect(dirnameStub.calledOnceWith(constants.INTEGRATIONS_POLARIS_DEFAULT_SARIF_FILE_PATH)).to.be.true;
-                expect(joinStub.calledWith(sourceDirectory, integrationDir)).to.be.true;
-                expect(joinStub.calledWith(integrationDirPath, constants.SARIF_DEFAULT_FILE_NAME)).to.be.true;
-                expect(mkdirSyncStub.calledOnceWith(integrationDirPath, { recursive: true })).to.be.true;
-                expect(copyFileSyncStub.calledOnceWith(sarifOutputPath, destinationFile)).to.be.true;
-                expect(taskLibDebugStub.calledOnce).to.be.true;
-                expect(consoleErrorStub.called).to.be.false;
+                expect(isNullOrEmptyValueStub.calledWith(inputs.POLARIS_REPORTS_SARIF_FILE_PATH)).to.be.true;
             });
 
-            it("should copy BlackDuck SCA SARIF file when filename matches BD_OUTPUT_FILE_NAME", () => {
-                // Setup
-                const sarifFilePath = "/source/path/blackduck-output.sarif";
-                const sourceDirectory = "/build/sources";
-                const sarifOutputPath = "/actual/sarif/output.sarif";
-                const integrationDir = "/integration/blackduck";
-                const integrationDirPath = "/build/sources/integration/blackduck";
-                const destinationFile = "/build/sources/integration/blackduck/sarif-default.sarif";
+            it('should handle polaris_input.json with bridge version greater than or equal to constants.VERSION and empty SARIF path', () => {
+                const fileName = 'polaris_input.json';
+                const higherBridgeVersion = '2.1.0';
 
-                processEnvStub["BUILD_SOURCESDIRECTORY"] = sourceDirectory;
-                basenameStub.returns(constants.BD_OUTPUT_FILE_NAME);
-                extractSarifOutputPathStub.returns(sarifOutputPath);
-                dirnameStub.returns(integrationDir);
-                joinStub.onFirstCall().returns(integrationDirPath);
-                joinStub.onSecondCall().returns(destinationFile);
-                existsSyncStub.returns(true); // File exists, so it will be "overwritten"
+                isNullOrEmptyValueStub.returns(true);
+                pathJoinStub.returns('/workspace/polaris/results.sarif');
 
-                const copySarifFileToIntegrationDefaultPath = (sarifFilePath: string) => {
-                    const sourceDirectory = process.env["BUILD_SOURCESDIRECTORY"] || "";
-                    const sarifFileName = basenameStub(sarifFilePath);
+                updateSarifFilePaths(workSpaceDir, fileName, higherBridgeVersion, productInputFilePath);
 
-                    const isPolarisFile = sarifFileName === constants.POLARIS_OUTPUT_FILE_NAME;
-                    const isBlackduckFile = sarifFileName === constants.BD_OUTPUT_FILE_NAME;
-
-                    if (!isPolarisFile && !isBlackduckFile) return;
-
-                    const sarifOutputPath = extractSarifOutputPathStub(sarifFilePath, sarifFileName);
-                    if (!sarifOutputPath) return;
-
-                    const integrationSarifDir = dirnameStub(
-                        isPolarisFile
-                            ? constants.INTEGRATIONS_POLARIS_DEFAULT_SARIF_FILE_PATH
-                            : constants.INTEGRATIONS_BLACKDUCKSCA_DEFAULT_SARIF_FILE_PATH
-                    );
-
-                    const integrationSarifDirPath = joinStub(sourceDirectory, integrationSarifDir);
-                    const destinationFile = joinStub(integrationSarifDirPath, constants.SARIF_DEFAULT_FILE_NAME);
-
-                    try {
-                        require("fs").mkdirSync(integrationSarifDirPath, { recursive: true });
-                        require("fs").copyFileSync(sarifOutputPath, destinationFile);
-                        taskLibDebugStub(
-                            `SARIF file ${require("fs").existsSync(destinationFile) ? "overwritten" : "copied"} at: ${destinationFile}`
-                        );
-                    } catch (error) {
-                        consoleErrorStub("Error copying SARIF file:", error);
-                    }
-                };
-
-                // Execute
-                copySarifFileToIntegrationDefaultPath(sarifFilePath);
-
-                // Verify
-                expect(basenameStub.calledOnceWith(sarifFilePath)).to.be.true;
-                expect(extractSarifOutputPathStub.calledOnceWith(sarifFilePath, constants.BD_OUTPUT_FILE_NAME)).to.be.true;
-                expect(dirnameStub.calledOnceWith(constants.INTEGRATIONS_BLACKDUCKSCA_DEFAULT_SARIF_FILE_PATH)).to.be.true;
-                expect(joinStub.calledWith(sourceDirectory, integrationDir)).to.be.true;
-                expect(joinStub.calledWith(integrationDirPath, constants.SARIF_DEFAULT_FILE_NAME)).to.be.true;
-                expect(mkdirSyncStub.calledOnceWith(integrationDirPath, { recursive: true })).to.be.true;
-                expect(copyFileSyncStub.calledOnceWith(sarifOutputPath, destinationFile)).to.be.true;
-                expect(taskLibDebugStub.calledWith(sinon.match(/SARIF file overwritten at/))).to.be.true;
-                expect(consoleErrorStub.called).to.be.false;
+                expect(isNullOrEmptyValueStub.calledWith(inputs.POLARIS_REPORTS_SARIF_FILE_PATH)).to.be.true;
+                expect(pathJoinStub.calledWith(
+                    workSpaceDir,
+                    constants.INTEGRATIONS_POLARIS_DEFAULT_SARIF_FILE_PATH
+                )).to.be.true;
             });
 
-            it("should return early when sarifFileName is neither Polaris nor BlackDuck", () => {
-                // Setup
-                const sarifFilePath = "/source/path/unknown-output.sarif";
-                const unknownFileName = "unknown-output.sarif";
+            it('should handle polaris_input.json with bridge version greater than or equal to constants.VERSION and custom SARIF path', () => {
+                const fileName = 'polaris_input.json';
+                const higherBridgeVersion = '2.1.0';
+                const customSarifPath = '/custom/polaris/sarif.sarif';
 
-                processEnvStub["BUILD_SOURCESDIRECTORY"] = "/build/sources";
-                basenameStub.returns(unknownFileName);
+                isNullOrEmptyValueStub.returns(false);
+                sandbox.stub(inputs, 'POLARIS_REPORTS_SARIF_FILE_PATH').value(customSarifPath);
 
-                const copySarifFileToIntegrationDefaultPath = (sarifFilePath: string) => {
-                    const sourceDirectory = process.env["BUILD_SOURCESDIRECTORY"] || "";
-                    const sarifFileName = basenameStub(sarifFilePath);
+                updateSarifFilePaths(workSpaceDir, fileName, higherBridgeVersion, productInputFilePath);
 
-                    const isPolarisFile = sarifFileName === constants.POLARIS_OUTPUT_FILE_NAME;
-                    const isBlackduckFile = sarifFileName === constants.BD_OUTPUT_FILE_NAME;
-
-                    if (!isPolarisFile && !isBlackduckFile) return;
-
-                    const sarifOutputPath = extractSarifOutputPathStub(sarifFilePath, sarifFileName);
-                    if (!sarifOutputPath) return;
-
-                    const integrationSarifDir = dirnameStub(
-                        isPolarisFile
-                            ? constants.INTEGRATIONS_POLARIS_DEFAULT_SARIF_FILE_PATH
-                            : constants.INTEGRATIONS_BLACKDUCKSCA_DEFAULT_SARIF_FILE_PATH
-                    );
-
-                    const integrationSarifDirPath = joinStub(sourceDirectory, integrationSarifDir);
-                    const destinationFile = joinStub(integrationSarifDirPath, constants.SARIF_DEFAULT_FILE_NAME);
-
-                    try {
-                        mkdirSyncStub(integrationSarifDirPath, { recursive: true });
-                        copyFileSyncStub(sarifOutputPath, destinationFile);
-                        taskLibDebugStub(
-                            `SARIF file ${existsSyncStub(destinationFile) ? "overwritten" : "copied"} at: ${destinationFile}`
-                        );
-                    } catch (error) {
-                        consoleErrorStub("Error copying SARIF file:", error);
-                    }
-                };
-
-                // Execute
-                copySarifFileToIntegrationDefaultPath(sarifFilePath);
-
-                // Verify - should only call basename, then return early
-                expect(basenameStub.calledOnceWith(sarifFilePath)).to.be.true;
-                expect(extractSarifOutputPathStub.called).to.be.false;
-                expect(dirnameStub.called).to.be.false;
-                expect(joinStub.called).to.be.false;
-                expect(mkdirSyncStub.called).to.be.false;
-                expect(copyFileSyncStub.called).to.be.false;
-                expect(taskLibDebugStub.called).to.be.false;
-                expect(consoleErrorStub.called).to.be.false;
+                expect(isNullOrEmptyValueStub.calledWith(inputs.POLARIS_REPORTS_SARIF_FILE_PATH)).to.be.true;
             });
 
-            it("should return early when extractSarifOutputPath returns empty string", () => {
-                // Setup
-                const sarifFilePath = "/source/path/polaris-output.sarif";
+        });
 
-                processEnvStub["BUILD_SOURCESDIRECTORY"] = "/build/sources";
-                basenameStub.returns(constants.POLARIS_OUTPUT_FILE_NAME);
-                extractSarifOutputPathStub.returns(""); // Empty string
+        describe('BlackDuck input file scenarios', () => {
 
-                const copySarifFileToIntegrationDefaultPath = (sarifFilePath: string) => {
-                    const sourceDirectory = process.env["BUILD_SOURCESDIRECTORY"] || "";
-                    const sarifFileName = basenameStub(sarifFilePath);
+            it('should handle bd_input.json with bridge version less than constants.VERSION and custom SARIF path', () => {
+                const fileName = 'bd_input.json';
+                const lowerBridgeVersion = '1.9.0';
+                const customSarifPath = '/custom/blackduck/sarif.sarif';
 
-                    const isPolarisFile = sarifFileName === constants.POLARIS_OUTPUT_FILE_NAME;
-                    const isBlackduckFile = sarifFileName === constants.BD_OUTPUT_FILE_NAME;
+                isNullOrEmptyValueStub.returns(false);
+                sandbox.stub(inputs, 'BLACKDUCKSCA_REPORTS_SARIF_FILE_PATH').value(' ' + customSarifPath + ' ');
 
-                    if (!isPolarisFile && !isBlackduckFile) return;
+                updateSarifFilePaths(workSpaceDir, fileName, lowerBridgeVersion, productInputFilePath);
 
-                    const sarifOutputPath = extractSarifOutputPathStub(sarifFilePath, sarifFileName);
-                    if (!sarifOutputPath) return;
-
-                    const integrationSarifDir = dirnameStub(
-                        isPolarisFile
-                            ? constants.INTEGRATIONS_POLARIS_DEFAULT_SARIF_FILE_PATH
-                            : constants.INTEGRATIONS_BLACKDUCKSCA_DEFAULT_SARIF_FILE_PATH
-                    );
-
-                    const integrationSarifDirPath = joinStub(sourceDirectory, integrationSarifDir);
-                    const destinationFile = joinStub(integrationSarifDirPath, constants.SARIF_DEFAULT_FILE_NAME);
-
-                    try {
-                        mkdirSyncStub(integrationSarifDirPath, { recursive: true });
-                        copyFileSyncStub(sarifOutputPath, destinationFile);
-                        taskLibDebugStub(
-                            `SARIF file ${existsSyncStub(destinationFile) ? "overwritten" : "copied"} at: ${destinationFile}`
-                        );
-                    } catch (error) {
-                        consoleErrorStub("Error copying SARIF file:", error);
-                    }
-                };
-
-                // Execute
-                copySarifFileToIntegrationDefaultPath(sarifFilePath);
-
-                // Verify - should call basename and extractSarifOutputPath, then return early
-                expect(basenameStub.calledOnceWith(sarifFilePath)).to.be.true;
-                expect(extractSarifOutputPathStub.calledOnceWith(sarifFilePath, constants.POLARIS_OUTPUT_FILE_NAME)).to.be.true;
-                expect(dirnameStub.called).to.be.false;
-                expect(joinStub.called).to.be.false;
-                expect(mkdirSyncStub.called).to.be.false;
-                expect(copyFileSyncStub.called).to.be.false;
-                expect(taskLibDebugStub.called).to.be.false;
-                expect(consoleErrorStub.called).to.be.false;
+                expect(isNullOrEmptyValueStub.calledWith(inputs.BLACKDUCKSCA_REPORTS_SARIF_FILE_PATH)).to.be.true;
             });
 
-            it("should return early when extractSarifOutputPath returns null", () => {
-                // Setup
-                const sarifFilePath = "/source/path/blackduck-output.sarif";
+            it('should handle bd_input.json with bridge version greater than or equal to constants.VERSION and empty SARIF path', () => {
+                const fileName = 'bd_input.json';
+                const higherBridgeVersion = '2.1.0';
 
-                processEnvStub["BUILD_SOURCESDIRECTORY"] = "/build/sources";
-                basenameStub.returns(constants.BD_OUTPUT_FILE_NAME);
-                extractSarifOutputPathStub.returns(null); // Null value
+                isNullOrEmptyValueStub.returns(true);
+                pathJoinStub.returns('/workspace/blackduck/results.sarif');
 
-                const copySarifFileToIntegrationDefaultPath = (sarifFilePath: string) => {
-                    const sourceDirectory = process.env["BUILD_SOURCESDIRECTORY"] || "";
-                    const sarifFileName = basenameStub(sarifFilePath);
+                updateSarifFilePaths(workSpaceDir, fileName, higherBridgeVersion, productInputFilePath);
 
-                    const isPolarisFile = sarifFileName === constants.POLARIS_OUTPUT_FILE_NAME;
-                    const isBlackduckFile = sarifFileName === constants.BD_OUTPUT_FILE_NAME;
-
-                    if (!isPolarisFile && !isBlackduckFile) return;
-
-                    const sarifOutputPath = extractSarifOutputPathStub(sarifFilePath, sarifFileName);
-                    if (!sarifOutputPath) return;
-
-                    const integrationSarifDir = dirnameStub(
-                        isPolarisFile
-                            ? constants.INTEGRATIONS_POLARIS_DEFAULT_SARIF_FILE_PATH
-                            : constants.INTEGRATIONS_BLACKDUCKSCA_DEFAULT_SARIF_FILE_PATH
-                    );
-
-                    const integrationSarifDirPath = joinStub(sourceDirectory, integrationSarifDir);
-                    const destinationFile = joinStub(integrationSarifDirPath, constants.SARIF_DEFAULT_FILE_NAME);
-
-                    try {
-                        mkdirSyncStub(integrationSarifDirPath, { recursive: true });
-                        copyFileSyncStub(sarifOutputPath, destinationFile);
-                        taskLibDebugStub(
-                            `SARIF file ${existsSyncStub(destinationFile) ? "overwritten" : "copied"} at: ${destinationFile}`
-                        );
-                    } catch (error) {
-                        consoleErrorStub("Error copying SARIF file:", error);
-                    }
-                };
-
-                // Execute
-                copySarifFileToIntegrationDefaultPath(sarifFilePath);
-
-                // Verify
-                expect(basenameStub.calledOnceWith(sarifFilePath)).to.be.true;
-                expect(extractSarifOutputPathStub.calledOnceWith(sarifFilePath, constants.BD_OUTPUT_FILE_NAME)).to.be.true;
-                expect(dirnameStub.called).to.be.false;
-                expect(joinStub.called).to.be.false;
-                expect(mkdirSyncStub.called).to.be.false;
-                expect(copyFileSyncStub.called).to.be.false;
-                expect(taskLibDebugStub.called).to.be.false;
-                expect(consoleErrorStub.called).to.be.false;
+                expect(isNullOrEmptyValueStub.calledWith(inputs.BLACKDUCKSCA_REPORTS_SARIF_FILE_PATH)).to.be.true;
+                expect(pathJoinStub.calledWith(
+                    workSpaceDir,
+                    constants.INTEGRATIONS_BLACKDUCKSCA_DEFAULT_SARIF_FILE_PATH
+                )).to.be.true;
             });
 
-            it("should use empty string when BUILD_SOURCESDIRECTORY is not set", () => {
-                // Setup
-                const sarifFilePath = "/source/path/polaris-output.sarif";
-                const sarifOutputPath = "/actual/sarif/output.sarif";
-                const integrationDir = "/integration/polaris";
-                const integrationDirPath = "/integration/polaris"; // No source directory prefix
-                const destinationFile = "/integration/polaris/sarif-default.sarif";
+            it('should handle bd_input.json with bridge version greater than or equal to constants.VERSION and custom SARIF path', () => {
+                const fileName = 'bd_input.json';
+                const higherBridgeVersion = '2.1.0';
+                const customSarifPath = '/custom/blackduck/sarif.sarif';
 
-                // Don't set BUILD_SOURCESDIRECTORY
-                basenameStub.returns(constants.POLARIS_OUTPUT_FILE_NAME);
-                extractSarifOutputPathStub.returns(sarifOutputPath);
-                dirnameStub.returns(integrationDir);
-                joinStub.onFirstCall().returns(integrationDirPath);
-                joinStub.onSecondCall().returns(destinationFile);
-                existsSyncStub.returns(false);
+                isNullOrEmptyValueStub.returns(false);
+                sandbox.stub(inputs, 'BLACKDUCKSCA_REPORTS_SARIF_FILE_PATH').value(customSarifPath);
 
-                const copySarifFileToIntegrationDefaultPath = (sarifFilePath: string) => {
-                    const sourceDirectory = process.env["BUILD_SOURCESDIRECTORY"] || "";
-                    const sarifFileName = basenameStub(sarifFilePath);
+                updateSarifFilePaths(workSpaceDir, fileName, higherBridgeVersion, productInputFilePath);
 
-                    const isPolarisFile = sarifFileName === constants.POLARIS_OUTPUT_FILE_NAME;
-                    const isBlackduckFile = sarifFileName === constants.BD_OUTPUT_FILE_NAME;
-
-                    if (!isPolarisFile && !isBlackduckFile) return;
-
-                    const sarifOutputPath = extractSarifOutputPathStub(sarifFilePath, sarifFileName);
-                    if (!sarifOutputPath) return;
-
-                    const integrationSarifDir = dirnameStub(
-                        isPolarisFile
-                            ? constants.INTEGRATIONS_POLARIS_DEFAULT_SARIF_FILE_PATH
-                            : constants.INTEGRATIONS_BLACKDUCKSCA_DEFAULT_SARIF_FILE_PATH
-                    );
-
-                    const integrationSarifDirPath = joinStub(sourceDirectory, integrationSarifDir);
-                    const destinationFile = joinStub(integrationSarifDirPath, constants.SARIF_DEFAULT_FILE_NAME);
-
-                    try {
-                        mkdirSyncStub(integrationSarifDirPath, { recursive: true });
-                        copyFileSyncStub(sarifOutputPath, destinationFile);
-                        taskLibDebugStub(
-                            `SARIF file ${existsSyncStub(destinationFile) ? "overwritten" : "copied"} at: ${destinationFile}`
-                        );
-                    } catch (error) {
-                        consoleErrorStub("Error copying SARIF file:", error);
-                    }
-                };
-
-                // Execute
-                copySarifFileToIntegrationDefaultPath(sarifFilePath);
-
-                // Verify
-                expect(joinStub.calledWith("", integrationDir)).to.be.true; // Empty string for source directory
-                expect(mkdirSyncStub.calledOnceWith(integrationDirPath, { recursive: true })).to.be.true;
-                expect(copyFileSyncStub.calledOnceWith(sarifOutputPath, destinationFile)).to.be.true;
-                expect(taskLibDebugStub.calledWith(sinon.match(/SARIF file copied at/))).to.be.true;
-                expect(consoleErrorStub.called).to.be.false;
+                expect(isNullOrEmptyValueStub.calledWith(inputs.BLACKDUCKSCA_REPORTS_SARIF_FILE_PATH)).to.be.true;
             });
 
-            it("should handle fs.mkdirSync throwing an error", () => {
-                // Setup
-                const sarifFilePath = "/source/path/polaris-output.sarif";
-                const sourceDirectory = "/build/sources";
-                const sarifOutputPath = "/actual/sarif/output.sarif";
-                const integrationDir = "/integration/polaris";
-                const integrationDirPath = "/build/sources/integration/polaris";
-                const destinationFile = "/build/sources/integration/polaris/sarif-default.sarif";
-                const error = new Error("Permission denied");
+        });
 
-                processEnvStub["BUILD_SOURCESDIRECTORY"] = sourceDirectory;
-                basenameStub.returns(constants.POLARIS_OUTPUT_FILE_NAME);
-                extractSarifOutputPathStub.returns(sarifOutputPath);
-                dirnameStub.returns(integrationDir);
-                joinStub.onFirstCall().returns(integrationDirPath);
-                joinStub.onSecondCall().returns(destinationFile);
-                mkdirSyncStub.throws(error);
+    });
 
-                const copySarifFileToIntegrationDefaultPath = (sarifFilePath: string) => {
-                    const sourceDirectory = process.env["BUILD_SOURCESDIRECTORY"] || "";
-                    const sarifFileName = basenameStub(sarifFilePath);
+// Updated tests for updatePolarisSarifPath (converted ternary to if-else)
+    describe('updatePolarisSarifPath', () => {
+        const productInputFilePath = '/path/to/input.json';
+        const sarifPath = 'reports/sarif-output.sarif';
 
-                    const isPolarisFile = sarifFileName === constants.POLARIS_OUTPUT_FILE_NAME;
-                    const isBlackduckFile = sarifFileName === constants.BD_OUTPUT_FILE_NAME;
+        let sandbox: sinon.SinonSandbox;
+        let mockFsWrapper: sinon.SinonStubbedInstance<FileSystemWrapper>;
+        let mockLogger: sinon.SinonStubbedInstance<LoggerWrapper>;
 
-                    if (!isPolarisFile && !isBlackduckFile) return;
+        beforeEach(() => {
+            sandbox = sinon.createSandbox();
+            mockFsWrapper = sandbox.createStubInstance(FileSystemWrapper);
+            mockLogger = sandbox.createStubInstance(LoggerWrapper);
+        });
 
-                    const sarifOutputPath = extractSarifOutputPathStub(sarifFilePath, sarifFileName);
-                    if (!sarifOutputPath) return;
+        afterEach(() => {
+            sandbox.restore();
+        });
 
-                    const integrationSarifDir = dirnameStub(
-                        isPolarisFile
-                            ? constants.INTEGRATIONS_POLARIS_DEFAULT_SARIF_FILE_PATH
-                            : constants.INTEGRATIONS_BLACKDUCKSCA_DEFAULT_SARIF_FILE_PATH
-                    );
-
-                    const integrationSarifDirPath = joinStub(sourceDirectory, integrationSarifDir);
-                    const destinationFile = joinStub(integrationSarifDirPath, constants.SARIF_DEFAULT_FILE_NAME);
-
-                    try {
-                        mkdirSyncStub(integrationSarifDirPath, { recursive: true });
-                        copyFileSyncStub(sarifOutputPath, destinationFile);
-                        taskLibDebugStub(
-                            `SARIF file ${existsSyncStub(destinationFile) ? "overwritten" : "copied"} at: ${destinationFile}`
-                        );
-                    } catch (error) {
-                        consoleErrorStub("Error copying SARIF file:", error);
+        describe('Successful scenarios', () => {
+            it('should update SARIF path in a complete JSON config', () => {
+                const inputConfig = {
+                    data: {
+                        polaris: {
+                            reports: {
+                                sarif: {
+                                    file: {
+                                        path: '/old/path/sarif.sarif'
+                                    }
+                                }
+                            }
+                        }
                     }
                 };
 
-                // Execute
-                copySarifFileToIntegrationDefaultPath(sarifFilePath);
+                mockFsWrapper.readFileSync.returns(JSON.stringify(inputConfig));
 
-                // Verify
-                expect(mkdirSyncStub.calledOnceWith(integrationDirPath, { recursive: true })).to.be.true;
-                expect(copyFileSyncStub.called).to.be.false; // Should not be called due to error
-                expect(taskLibDebugStub.called).to.be.false; // Should not be called due to error
-                expect(consoleErrorStub.calledOnceWith("Error copying SARIF file:", error)).to.be.true;
+                updatePolarisSarifPath(productInputFilePath, sarifPath, mockFsWrapper, mockLogger);
+
+                expect(mockFsWrapper.readFileSync.calledOnceWith(productInputFilePath, 'utf-8')).to.be.true;
+
+                const expectedConfig = {
+                    ...inputConfig,
+                    data: {
+                        polaris: {
+                            reports: {
+                                sarif: {
+                                    file: {
+                                        path: sarifPath
+                                    }
+                                }
+                            }
+                        }
+                    }
+                };
+
+                expect(mockFsWrapper.writeFileSync.calledOnceWith(
+                    productInputFilePath,
+                    JSON.stringify(expectedConfig, null, 2)
+                )).to.be.true;
+                expect(mockLogger.debug.calledWith(`Updated SARIF file path to: ${sarifPath}`)).to.be.true;
+                expect(mockLogger.debug.calledWith(`Successfully updated Polaris SARIF file path: ${sarifPath}`)).to.be.true;
+                expect(mockLogger.debug.callCount).to.equal(2);
             });
 
-            it("should handle fs.copyFileSync throwing an error", () => {
-                // Setup
-                const sarifFilePath = "/source/path/polaris-output.sarif";
-                const sourceDirectory = "/build/sources";
-                const sarifOutputPath = "/actual/sarif/output.sarif";
-                const integrationDir = "/integration/polaris";
-                const integrationDirPath = "/build/sources/integration/polaris";
-                const destinationFile = "/build/sources/integration/polaris/sarif-default.sarif";
-                const error = new Error("File copy failed");
+            it('should handle JSON config with missing data property', () => {
+                const inputConfig = {};
+                mockFsWrapper.readFileSync.returns(JSON.stringify(inputConfig));
 
-                processEnvStub["BUILD_SOURCESDIRECTORY"] = sourceDirectory;
-                basenameStub.returns(constants.POLARIS_OUTPUT_FILE_NAME);
-                extractSarifOutputPathStub.returns(sarifOutputPath);
-                dirnameStub.returns(integrationDir);
-                joinStub.onFirstCall().returns(integrationDirPath);
-                joinStub.onSecondCall().returns(destinationFile);
-                copyFileSyncStub.throws(error);
+                updatePolarisSarifPath(productInputFilePath, sarifPath, mockFsWrapper, mockLogger);
 
-                const copySarifFileToIntegrationDefaultPath = (sarifFilePath: string) => {
-                    const sourceDirectory = process.env["BUILD_SOURCESDIRECTORY"] || "";
-                    const sarifFileName = basenameStub(sarifFilePath);
-
-                    const isPolarisFile = sarifFileName === constants.POLARIS_OUTPUT_FILE_NAME;
-                    const isBlackduckFile = sarifFileName === constants.BD_OUTPUT_FILE_NAME;
-
-                    if (!isPolarisFile && !isBlackduckFile) return;
-
-                    const sarifOutputPath = extractSarifOutputPathStub(sarifFilePath, sarifFileName);
-                    if (!sarifOutputPath) return;
-
-                    const integrationSarifDir = dirnameStub(
-                        isPolarisFile
-                            ? constants.INTEGRATIONS_POLARIS_DEFAULT_SARIF_FILE_PATH
-                            : constants.INTEGRATIONS_BLACKDUCKSCA_DEFAULT_SARIF_FILE_PATH
-                    );
-
-                    const integrationSarifDirPath = joinStub(sourceDirectory, integrationSarifDir);
-                    const destinationFile = joinStub(integrationSarifDirPath, constants.SARIF_DEFAULT_FILE_NAME);
-
-                    try {
-                        mkdirSyncStub(integrationSarifDirPath, { recursive: true });
-                        copyFileSyncStub(sarifOutputPath, destinationFile);
-                        taskLibDebugStub(
-                            `SARIF file ${existsSyncStub(destinationFile) ? "overwritten" : "copied"} at: ${destinationFile}`
-                        );
-                    } catch (error) {
-                        consoleErrorStub("Error copying SARIF file:", error);
+                const expectedConfig = {
+                    data: {
+                        polaris: {
+                            reports: {
+                                sarif: {
+                                    file: {
+                                        path: sarifPath
+                                    }
+                                }
+                            }
+                        }
                     }
                 };
 
-                // Execute
-                copySarifFileToIntegrationDefaultPath(sarifFilePath);
-
-                // Verify
-                expect(mkdirSyncStub.calledOnceWith(integrationDirPath, { recursive: true })).to.be.true;
-                expect(copyFileSyncStub.calledOnceWith(sarifOutputPath, destinationFile)).to.be.true;
-                expect(taskLibDebugStub.called).to.be.false; // Should not be called due to error
-                expect(consoleErrorStub.calledOnceWith("Error copying SARIF file:", error)).to.be.true;
+                expect(mockFsWrapper.writeFileSync.calledOnceWith(
+                    productInputFilePath,
+                    JSON.stringify(expectedConfig, null, 2)
+                )).to.be.true;
+                expect(mockLogger.debug.callCount).to.equal(2);
             });
 
-            it("should show 'copied' message when destination file does not exist", () => {
-                // Setup
-                const sarifFilePath = "/source/path/polaris-output.sarif";
-                const sourceDirectory = "/build/sources";
-                const sarifOutputPath = "/actual/sarif/output.sarif";
-                const integrationDir = "/integration/polaris";
-                const integrationDirPath = "/build/sources/integration/polaris";
-                const destinationFile = "/build/sources/integration/polaris/sarif-default.sarif";
+            it('should handle JSON config with missing polaris property', () => {
+                const inputConfig = { data: {} };
+                mockFsWrapper.readFileSync.returns(JSON.stringify(inputConfig));
 
-                processEnvStub["BUILD_SOURCESDIRECTORY"] = sourceDirectory;
-                basenameStub.returns(constants.POLARIS_OUTPUT_FILE_NAME);
-                extractSarifOutputPathStub.returns(sarifOutputPath);
-                dirnameStub.returns(integrationDir);
-                joinStub.onFirstCall().returns(integrationDirPath);
-                joinStub.onSecondCall().returns(destinationFile);
-                existsSyncStub.returns(false); // File doesn't exist
+                updatePolarisSarifPath(productInputFilePath, sarifPath, mockFsWrapper, mockLogger);
 
-                const copySarifFileToIntegrationDefaultPath = (sarifFilePath: string) => {
-                    const sourceDirectory = process.env["BUILD_SOURCESDIRECTORY"] || "";
-                    const sarifFileName = basenameStub(sarifFilePath);
-
-                    const isPolarisFile = sarifFileName === constants.POLARIS_OUTPUT_FILE_NAME;
-                    const isBlackduckFile = sarifFileName === constants.BD_OUTPUT_FILE_NAME;
-
-                    if (!isPolarisFile && !isBlackduckFile) return;
-
-                    const sarifOutputPath = extractSarifOutputPathStub(sarifFilePath, sarifFileName);
-                    if (!sarifOutputPath) return;
-
-                    const integrationSarifDir = dirnameStub(
-                        isPolarisFile
-                            ? constants.INTEGRATIONS_POLARIS_DEFAULT_SARIF_FILE_PATH
-                            : constants.INTEGRATIONS_BLACKDUCKSCA_DEFAULT_SARIF_FILE_PATH
-                    );
-
-                    const integrationSarifDirPath = joinStub(sourceDirectory, integrationSarifDir);
-                    const destinationFile = joinStub(integrationSarifDirPath, constants.SARIF_DEFAULT_FILE_NAME);
-
-                    try {
-                        mkdirSyncStub(integrationSarifDirPath, { recursive: true });
-                        copyFileSyncStub(sarifOutputPath, destinationFile);
-                        taskLibDebugStub(
-                            `SARIF file ${existsSyncStub(destinationFile) ? "overwritten" : "copied"} at: ${destinationFile}`
-                        );
-                    } catch (error) {
-                        consoleErrorStub("Error copying SARIF file:", error);
+                const expectedConfig = {
+                    data: {
+                        polaris: {
+                            reports: {
+                                sarif: {
+                                    file: {
+                                        path: sarifPath
+                                    }
+                                }
+                            }
+                        }
                     }
                 };
 
-                // Execute
-                copySarifFileToIntegrationDefaultPath(sarifFilePath);
-
-                // Verify
-                expect(existsSyncStub.calledOnceWith(destinationFile)).to.be.true;
-                expect(taskLibDebugStub.calledWith(`SARIF file copied at: ${destinationFile}`)).to.be.true;
+                expect(mockFsWrapper.writeFileSync.calledOnceWith(
+                    productInputFilePath,
+                    JSON.stringify(expectedConfig, null, 2)
+                )).to.be.true;
+                expect(mockLogger.debug.callCount).to.equal(2);
             });
 
-            it("should show 'overwritten' message when destination file exists", () => {
-                // Setup
-                const sarifFilePath = "/source/path/polaris-output.sarif";
-                const sourceDirectory = "/build/sources";
-                const sarifOutputPath = "/actual/sarif/output.sarif";
-                const integrationDir = "/integration/polaris";
-                const integrationDirPath = "/build/sources/integration/polaris";
-                const destinationFile = "/build/sources/integration/polaris/sarif-default.sarif";
+            it('should handle JSON config with missing reports property', () => {
+                const inputConfig = {
+                    data: {
+                        polaris: {}
+                    }
+                };
+                mockFsWrapper.readFileSync.returns(JSON.stringify(inputConfig));
 
-                processEnvStub["BUILD_SOURCESDIRECTORY"] = sourceDirectory;
-                basenameStub.returns(constants.POLARIS_OUTPUT_FILE_NAME);
-                extractSarifOutputPathStub.returns(sarifOutputPath);
-                dirnameStub.returns(integrationDir);
-                joinStub.onFirstCall().returns(integrationDirPath);
-                joinStub.onSecondCall().returns(destinationFile);
-                existsSyncStub.returns(true); // File exists
+                updatePolarisSarifPath(productInputFilePath, sarifPath, mockFsWrapper, mockLogger);
 
-                const copySarifFileToIntegrationDefaultPath = (sarifFilePath: string) => {
-                    const sourceDirectory = process.env["BUILD_SOURCESDIRECTORY"] || "";
-                    const sarifFileName = basenameStub(sarifFilePath);
-
-                    const isPolarisFile = sarifFileName === constants.POLARIS_OUTPUT_FILE_NAME;
-                    const isBlackduckFile = sarifFileName === constants.BD_OUTPUT_FILE_NAME;
-
-                    if (!isPolarisFile && !isBlackduckFile) return;
-
-                    const sarifOutputPath = extractSarifOutputPathStub(sarifFilePath, sarifFileName);
-                    if (!sarifOutputPath) return;
-
-                    const integrationSarifDir = dirnameStub(
-                        isPolarisFile
-                            ? constants.INTEGRATIONS_POLARIS_DEFAULT_SARIF_FILE_PATH
-                            : constants.INTEGRATIONS_BLACKDUCKSCA_DEFAULT_SARIF_FILE_PATH
-                    );
-
-                    const integrationSarifDirPath = joinStub(sourceDirectory, integrationSarifDir);
-                    const destinationFile = joinStub(integrationSarifDirPath, constants.SARIF_DEFAULT_FILE_NAME);
-
-                    try {
-                        mkdirSyncStub(integrationSarifDirPath, { recursive: true });
-                        copyFileSyncStub(sarifOutputPath, destinationFile);
-                        taskLibDebugStub(
-                            `SARIF file ${existsSyncStub(destinationFile) ? "overwritten" : "copied"} at: ${destinationFile}`
-                        );
-                    } catch (error) {
-                        consoleErrorStub("Error copying SARIF file:", error);
+                const expectedConfig = {
+                    data: {
+                        polaris: {
+                            reports: {
+                                sarif: {
+                                    file: {
+                                        path: sarifPath
+                                    }
+                                }
+                            }
+                        }
                     }
                 };
 
-                // Execute
-                copySarifFileToIntegrationDefaultPath(sarifFilePath);
+                expect(mockFsWrapper.writeFileSync.calledOnceWith(
+                    productInputFilePath,
+                    JSON.stringify(expectedConfig, null, 2)
+                )).to.be.true;
+                expect(mockLogger.debug.callCount).to.equal(2);
+            });
 
-                // Verify
-                expect(existsSyncStub.calledOnceWith(destinationFile)).to.be.true;
-                expect(taskLibDebugStub.calledWith(`SARIF file overwritten at: ${destinationFile}`)).to.be.true;
+            it('should handle JSON config with missing sarif property', () => {
+                const inputConfig = {
+                    data: {
+                        polaris: {
+                            reports: {}
+                        }
+                    }
+                };
+                mockFsWrapper.readFileSync.returns(JSON.stringify(inputConfig));
+
+                updatePolarisSarifPath(productInputFilePath, sarifPath, mockFsWrapper, mockLogger);
+
+                const expectedConfig = {
+                    data: {
+                        polaris: {
+                            reports: {
+                                sarif: {
+                                    file: {
+                                        path: sarifPath
+                                    }
+                                }
+                            }
+                        }
+                    }
+                };
+
+                expect(mockFsWrapper.writeFileSync.calledOnceWith(
+                    productInputFilePath,
+                    JSON.stringify(expectedConfig, null, 2)
+                )).to.be.true;
+                expect(mockLogger.debug.callCount).to.equal(2);
+            });
+
+            it('should handle JSON config with missing file property', () => {
+                const inputConfig = {
+                    data: {
+                        polaris: {
+                            reports: {
+                                sarif: {}
+                            }
+                        }
+                    }
+                };
+                mockFsWrapper.readFileSync.returns(JSON.stringify(inputConfig));
+
+                updatePolarisSarifPath(productInputFilePath, sarifPath, mockFsWrapper, mockLogger);
+
+                const expectedConfig = {
+                    data: {
+                        polaris: {
+                            reports: {
+                                sarif: {
+                                    file: {
+                                        path: sarifPath
+                                    }
+                                }
+                            }
+                        }
+                    }
+                };
+
+                expect(mockFsWrapper.writeFileSync.calledOnceWith(
+                    productInputFilePath,
+                    JSON.stringify(expectedConfig, null, 2)
+                )).to.be.true;
+                expect(mockLogger.debug.callCount).to.equal(2);
+            });
+
+            it('should remove quotes from file path', () => {
+                const quotedPath = '"/path/to/quoted/input.json"';
+                const cleanPath = '/path/to/quoted/input.json';
+                const inputConfig = { data: {} };
+
+                mockFsWrapper.readFileSync.returns(JSON.stringify(inputConfig));
+
+                updatePolarisSarifPath(quotedPath, sarifPath, mockFsWrapper, mockLogger);
+
+                expect(mockFsWrapper.readFileSync.calledOnceWith(cleanPath, 'utf-8')).to.be.true;
+                expect(mockLogger.debug.callCount).to.equal(2);
+            });
+
+            it('should preserve other properties in the config', () => {
+                const inputConfig = {
+                    version: '1.0',
+                    metadata: {
+                        author: 'test'
+                    },
+                    data: {
+                        polaris: {
+                            apiUrl: 'https://api.example.com',
+                            reports: {
+                                sarif: {
+                                    file: {
+                                        path: '/old/path'
+                                    }
+                                }
+                            }
+                        },
+                        otherTool: {
+                            config: 'value'
+                        }
+                    }
+                };
+
+                mockFsWrapper.readFileSync.returns(JSON.stringify(inputConfig));
+
+                updatePolarisSarifPath(productInputFilePath, sarifPath, mockFsWrapper, mockLogger);
+
+                const expectedConfig = {
+                    ...inputConfig,
+                    data: {
+                        ...inputConfig.data,
+                        polaris: {
+                            ...inputConfig.data.polaris,
+                            reports: {
+                                sarif: {
+                                    file: {
+                                        path: sarifPath
+                                    }
+                                }
+                            }
+                        }
+                    }
+                };
+
+                expect(mockFsWrapper.writeFileSync.calledOnceWith(
+                    productInputFilePath,
+                    JSON.stringify(expectedConfig, null, 2)
+                )).to.be.true;
+                expect(mockLogger.debug.callCount).to.equal(2);
+            });
+        });
+
+        describe('Error scenarios', () => {
+            it('should handle file read error gracefully', () => {
+                const error = new Error('File not found');
+                mockFsWrapper.readFileSync.throws(error);
+
+                expect(() => {
+                    updatePolarisSarifPath(productInputFilePath, sarifPath, mockFsWrapper, mockLogger);
+                }).to.not.throw();
+
+                expect(mockLogger.debug.calledWith(`Error updating SARIF file path: ${error}`)).to.be.true;
+                expect(mockFsWrapper.writeFileSync.called).to.be.false;
+                expect(mockLogger.debug.callCount).to.equal(1);
+            });
+
+            it('should handle JSON parse error gracefully', () => {
+                mockFsWrapper.readFileSync.returns('invalid json content {');
+
+                expect(() => {
+                    updatePolarisSarifPath(productInputFilePath, sarifPath, mockFsWrapper, mockLogger);
+                }).to.not.throw();
+
+                expect(mockLogger.debug.calledWithMatch('Error updating SARIF file path:')).to.be.true;
+                expect(mockFsWrapper.writeFileSync.called).to.be.false;
+                expect(mockLogger.debug.callCount).to.equal(1);
+            });
+
+            it('should handle file write error gracefully', () => {
+                const inputConfig = { data: {} };
+                const writeError = new Error('Permission denied');
+
+                mockFsWrapper.readFileSync.returns(JSON.stringify(inputConfig));
+                mockFsWrapper.writeFileSync.throws(writeError);
+
+                expect(() => {
+                    updatePolarisSarifPath(productInputFilePath, sarifPath, mockFsWrapper, mockLogger);
+                }).to.not.throw();
+
+                expect(mockLogger.debug.calledWith(`Error updating SARIF file path: ${writeError}`)).to.be.true;
+                expect(mockLogger.debug.callCount).to.equal(2); // One for update message, one for error
+            });
+        });
+
+        describe('Edge cases', () => {
+            it('should handle empty strings for parameters', () => {
+                const inputConfig = { data: {} };
+                mockFsWrapper.readFileSync.returns(JSON.stringify(inputConfig));
+
+                updatePolarisSarifPath('', '', mockFsWrapper, mockLogger);
+
+                expect(mockLogger.debug.callCount).to.equal(2);
+            });
+
+            it('should handle null data in config', () => {
+                const inputConfig = { data: null };
+                mockFsWrapper.readFileSync.returns(JSON.stringify(inputConfig));
+
+                updatePolarisSarifPath(productInputFilePath, sarifPath, mockFsWrapper, mockLogger);
+
+                const expectedConfig = {
+                    data: {
+                        polaris: {
+                            reports: {
+                                sarif: {
+                                    file: {
+                                        path: sarifPath
+                                    }
+                                }
+                            }
+                        }
+                    }
+                };
+
+                expect(mockFsWrapper.writeFileSync.calledOnceWith(
+                    productInputFilePath,
+                    JSON.stringify(expectedConfig, null, 2)
+                )).to.be.true;
+                expect(mockLogger.debug.callCount).to.equal(2);
+            });
+
+            it('should handle special characters in paths', () => {
+                const specialCharPath = 'reports/sárif-output with spaces & symbols!.sarif';
+                const inputConfig = { data: {} };
+
+                mockFsWrapper.readFileSync.returns(JSON.stringify(inputConfig));
+
+                updatePolarisSarifPath(productInputFilePath, specialCharPath, mockFsWrapper, mockLogger);
+
+                expect(mockLogger.debug.callCount).to.equal(2);
+            });
+
+            it('should handle multiple quotes in file path', () => {
+                const multiQuotedPath = '"""/path/to/"quoted"/input.json"""';
+                const expectedCleanPath = '/path/to/quoted/input.json';
+                const inputConfig = { data: {} };
+
+                mockFsWrapper.readFileSync.returns(JSON.stringify(inputConfig));
+
+                updatePolarisSarifPath(multiQuotedPath, sarifPath, mockFsWrapper, mockLogger);
+
+                expect(mockFsWrapper.readFileSync.calledWith(expectedCleanPath, 'utf-8')).to.be.true;
+                expect(mockLogger.debug.callCount).to.equal(2);
             });
         });
     });
 
+// Updated tests for updateBlackDuckSarifPath (converted ternary to if-else)
+    describe('updateBlackDuckSarifPath', () => {
+        const productInputFilePath = '/path/to/input.json';
+        const sarifPath = 'reports/sarif-output.sarif';
 
+        let sandbox: sinon.SinonSandbox;
+        let mockFsWrapper: sinon.SinonStubbedInstance<FileSystemWrapper>;
+        let mockLogger: sinon.SinonStubbedInstance<LoggerWrapper>;
+
+        beforeEach(() => {
+            sandbox = sinon.createSandbox();
+            mockFsWrapper = sandbox.createStubInstance(FileSystemWrapper);
+            mockLogger = sandbox.createStubInstance(LoggerWrapper);
+        });
+
+        afterEach(() => {
+            sandbox.restore();
+        });
+    });
 });

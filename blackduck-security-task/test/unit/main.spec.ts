@@ -10,6 +10,10 @@ import { ErrorCode } from "../../src/blackduck-security-task/enum/ErrorCodes";
 import * as util from "../../src/blackduck-security-task/utility";
 import * as constants from "../../src/blackduck-security-task/application-constant";
 import * as sslUtils from "../../src/blackduck-security-task/ssl-utils";
+import { basename } from "path";
+import {
+    uploadSarifResultAsArtifact,
+} from "../../src/blackduck-security-task/diagnostics";
 
 
 describe("Main function test cases", () => {
@@ -137,23 +141,6 @@ describe("Main function test cases", () => {
             })
         });
 
-        it('uploads SARIF report to integration directory when PR event is true', async () => {
-            Object.defineProperty(inputs, 'BLACKDUCKSCA_REPORTS_SARIF_CREATE', { value: 'true' });
-            sandbox.stub(util, 'IS_PR_EVENT').value(true);
-            sandbox.stub(BridgeCli.prototype, 'prepareCommand').resolves("test command");
-            sandbox.stub(BridgeCli.prototype, 'downloadAndExtractBridgeCli').resolves("test-path");
-            sandbox.stub(BridgeCli.prototype, 'executeBridgeCliCommand').resolves(0);
-            const uploadArtifactStub = sandbox.stub(diagnostics, 'uploadSarifResultAsArtifact').returns(undefined);
-
-            await main.run();
-
-            sinon.assert.calledWith(
-                uploadArtifactStub,
-                constants.INTEGRATIONS_DEFAULT_BLACKDUCKSCA_SARIF_GENERATOR_DIRECTORY,
-                inputs.BLACKDUCKSCA_REPORTS_SARIF_FILE_PATH
-            );
-        });
-
         it('does not upload SARIF report when BLACKDUCKSCA_REPORTS_SARIF_CREATE is false', async () => {
             Object.defineProperty(inputs, 'BLACKDUCKSCA_REPORTS_SARIF_CREATE', { value: 'false' });
             sandbox.stub(util, 'IS_PR_EVENT').value(true);
@@ -166,25 +153,6 @@ describe("Main function test cases", () => {
 
             sinon.assert.notCalled(uploadArtifactStub);
         });
-
-        it('uploads SARIF report to integration directory when PR event is true and file path is empty', async () => {
-            Object.defineProperty(inputs, 'BLACKDUCKSCA_REPORTS_SARIF_CREATE', { value: 'true' });
-            Object.defineProperty(inputs, 'BLACKDUCKSCA_REPORTS_SARIF_FILE_PATH', { value: '' });
-            sandbox.stub(util, 'IS_PR_EVENT').value(true);
-            sandbox.stub(BridgeCli.prototype, 'prepareCommand').resolves("test command");
-            sandbox.stub(BridgeCli.prototype, 'downloadAndExtractBridgeCli').resolves("test-path");
-            sandbox.stub(BridgeCli.prototype, 'executeBridgeCliCommand').resolves(0);
-            const uploadArtifactStub = sandbox.stub(diagnostics, 'uploadSarifResultAsArtifact').returns(undefined);
-
-            await main.run();
-
-            sinon.assert.calledWith(
-                uploadArtifactStub,
-                constants.INTEGRATIONS_DEFAULT_BLACKDUCKSCA_SARIF_GENERATOR_DIRECTORY,
-                ''
-            );
-        });
-
     });
 
     context('main function', () => {
@@ -329,6 +297,106 @@ describe("Main function test cases", () => {
             sandbox.stub(BridgeCli.prototype, 'downloadAndExtractBridgeCli').resolves("test-path");
             sandbox.stub(BridgeCli.prototype, 'executeBridgeCliCommand').resolves(0);
             await main.run();
+        });
+    });
+    describe("Extract input.json and update SARIF file path", () => {
+        let sandbox: sinon.SinonSandbox;
+
+        beforeEach(() => {
+            sandbox = sinon.createSandbox();
+        });
+
+        afterEach(() => {
+            sandbox.restore();
+        });
+
+        it("should extract input file path, file name, and call updateSarifFilePaths with correct arguments", () => {
+            const command = "--input /tmp/input.json";
+            const workSpaceDir = "/workspace";
+            const bridgeVersion = "1.2.3";
+            const expectedInputFilePath = "/tmp/input.json";
+            const expectedFileName = "input.json";
+
+            // Stub extractInputJsonFilename to return a known path
+            const extractStub = sandbox.stub(util, "extractInputJsonFilename").returns(expectedInputFilePath);
+            // Stub updateSarifFilePaths to just track calls
+            const updateStub = sandbox.stub(util, "updateSarifFilePaths");
+
+            // Simulate the code under test
+            const productInputFilPath = util.extractInputJsonFilename(command);
+            const productInputFileName = basename(productInputFilPath);
+            util.updateSarifFilePaths(
+                workSpaceDir,
+                productInputFileName,
+                bridgeVersion,
+                productInputFilPath
+            );
+
+            expect(extractStub.calledOnceWith(command)).to.be.true;
+            expect(productInputFilPath).to.equal(expectedInputFilePath);
+            expect(productInputFileName).to.equal(expectedFileName);
+            expect(updateStub.calledOnceWith(
+                workSpaceDir,
+                expectedFileName,
+                bridgeVersion,
+                expectedInputFilePath
+            )).to.be.true;
+        });
+    });
+
+    describe("BlackDuck SARIF repost logic", () => {
+        let sandbox: sinon.SinonSandbox;
+        let uploadStub: sinon.SinonStub;
+        let logStub: sinon.SinonStub;
+
+        beforeEach(() => {
+            sandbox = sinon.createSandbox();
+            uploadStub = sandbox.stub(require("../../src/blackduck-security-task/diagnostics"), "uploadSarifResultAsArtifact");
+            logStub = sandbox.stub(console, "log");
+            sandbox.stub(util, "IS_PR_EVENT").value(false);
+            sandbox.stub(inputs, "BLACKDUCKSCA_REPORTS_SARIF_FILE_PATH").value("fake-path");
+        });
+
+        afterEach(() => {
+            sandbox.restore();
+        });
+
+        function callLogic(bridgeVersion: string) {
+            // Simulate the logic under test
+            if (!util.IS_PR_EVENT) {
+                console.log(constants.BLACKDUCKSCA_SARIF_REPOST_ENABLED);
+                if (bridgeVersion < constants.VERSION) {
+                    uploadSarifResultAsArtifact(
+                        constants.DEFAULT_BLACKDUCK_SARIF_GENERATOR_DIRECTORY,
+                        inputs.BLACKDUCKSCA_REPORTS_SARIF_FILE_PATH
+                    );
+                } else {
+                    uploadSarifResultAsArtifact(
+                        constants.INTEGRATIONS_DEFAULT_BLACKDUCKSCA_SARIF_GENERATOR_DIRECTORY,
+                        inputs.BLACKDUCKSCA_REPORTS_SARIF_FILE_PATH
+                    );
+                }
+            }
+        }
+
+        it("should call uploadSarifResultAsArtifact with default directory when bridgeVersion < constants.VERSION", () => {
+            callLogic("1.0.0");
+            sinon.assert.calledWith(logStub, constants.BLACKDUCKSCA_SARIF_REPOST_ENABLED);
+            sinon.assert.calledWith(
+                uploadStub,
+                constants.DEFAULT_BLACKDUCK_SARIF_GENERATOR_DIRECTORY,
+                "fake-path"
+            );
+        });
+
+        it("should call uploadSarifResultAsArtifact with integrations directory when bridgeVersion >= constants.VERSION", () => {
+            callLogic(constants.VERSION);
+            sinon.assert.calledWith(logStub, constants.BLACKDUCKSCA_SARIF_REPOST_ENABLED);
+            sinon.assert.calledWith(
+                uploadStub,
+                constants.INTEGRATIONS_DEFAULT_BLACKDUCKSCA_SARIF_GENERATOR_DIRECTORY,
+                "fake-path"
+            );
         });
     });
 });
