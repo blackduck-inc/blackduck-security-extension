@@ -3658,39 +3658,58 @@ class LoggerWrapper {
 }
 exports.LoggerWrapper = LoggerWrapper;
 function updateSarifFilePaths(workSpaceDir, productInputFileName, bridgeVersion, productInputFilPath) {
-    productInputFileName = productInputFileName.replace(/"$/, "");
-    if (productInputFileName === "polaris_input.json") {
-        const sarifPath = bridgeVersion < constants.VERSION
-            ? (0, validator_1.isNullOrEmptyValue)(inputs.POLARIS_REPORTS_SARIF_FILE_PATH)
-                ? path_1.default.join(constants.BRIDGE_CLI_LOCAL_DIRECTORY, constants.DEFAULT_POLARIS_SARIF_GENERATOR_DIRECTORY, constants.SARIF_DEFAULT_FILE_NAME)
-                : inputs.POLARIS_REPORTS_SARIF_FILE_PATH.trim()
-            : (0, validator_1.isNullOrEmptyValue)(inputs.POLARIS_REPORTS_SARIF_FILE_PATH)
-                ? constants.INTEGRATIONS_POLARIS_DEFAULT_SARIF_FILE_PATH
-                : inputs.POLARIS_REPORTS_SARIF_FILE_PATH.trim();
+    const fileName = productInputFileName.replace(/"$/, "");
+    taskLib.debug(`Sarif file name :::: ${fileName}`);
+    if (fileName === "polaris_input.json") {
+        let sarifPath;
+        if (bridgeVersion < constants.VERSION) {
+            if ((0, validator_1.isNullOrEmptyValue)(inputs.POLARIS_REPORTS_SARIF_FILE_PATH)) {
+                sarifPath = path_1.default.join(constants.BRIDGE_CLI_LOCAL_DIRECTORY, constants.DEFAULT_POLARIS_SARIF_GENERATOR_DIRECTORY, constants.SARIF_DEFAULT_FILE_NAME);
+            }
+            else {
+                sarifPath = inputs.POLARIS_REPORTS_SARIF_FILE_PATH.trim();
+            }
+        }
+        else {
+            if ((0, validator_1.isNullOrEmptyValue)(inputs.POLARIS_REPORTS_SARIF_FILE_PATH)) {
+                sarifPath = path_1.default.join(workSpaceDir, constants.INTEGRATIONS_POLARIS_DEFAULT_SARIF_FILE_PATH);
+            }
+            else {
+                sarifPath = inputs.POLARIS_REPORTS_SARIF_FILE_PATH.trim();
+            }
+        }
         taskLib.debug(`sarifPath inside updateSarifFilePaths method :::: ${sarifPath}`);
-        updatePolarisSarifPath(workSpaceDir, productInputFilPath, sarifPath);
+        updatePolarisSarifPath(productInputFilPath, sarifPath);
     }
-    productInputFileName = productInputFileName.replace(/"$/, "");
-    if (productInputFileName === "bd_input.json") {
-        const sarifPath = bridgeVersion < constants.VERSION
-            ? (0, validator_1.isNullOrEmptyValue)(inputs.BLACKDUCKSCA_REPORTS_SARIF_FILE_PATH)
-                ? path_1.default.join(constants.BRIDGE_CLI_LOCAL_DIRECTORY, constants.DEFAULT_BLACKDUCK_SARIF_GENERATOR_DIRECTORY, constants.SARIF_DEFAULT_FILE_NAME)
-                : inputs.BLACKDUCKSCA_REPORTS_SARIF_FILE_PATH.trim()
-            : (0, validator_1.isNullOrEmptyValue)(inputs.BLACKDUCKSCA_REPORTS_SARIF_FILE_PATH)
-                ? constants.INTEGRATIONS_BLACKDUCKSCA_DEFAULT_SARIF_FILE_PATH
-                : inputs.BLACKDUCKSCA_REPORTS_SARIF_FILE_PATH.trim();
-        updateBlackDuckSarifPath(workSpaceDir, productInputFilPath, sarifPath);
+    if (fileName === "bd_input.json") {
+        let sarifPath;
+        if (bridgeVersion < constants.VERSION) {
+            if ((0, validator_1.isNullOrEmptyValue)(inputs.BLACKDUCKSCA_REPORTS_SARIF_FILE_PATH)) {
+                sarifPath = path_1.default.join(constants.BRIDGE_CLI_LOCAL_DIRECTORY, constants.DEFAULT_BLACKDUCK_SARIF_GENERATOR_DIRECTORY, constants.SARIF_DEFAULT_FILE_NAME);
+            }
+            else {
+                sarifPath = inputs.BLACKDUCKSCA_REPORTS_SARIF_FILE_PATH.trim();
+            }
+        }
+        else {
+            if ((0, validator_1.isNullOrEmptyValue)(inputs.BLACKDUCKSCA_REPORTS_SARIF_FILE_PATH)) {
+                sarifPath = path_1.default.join(workSpaceDir, constants.INTEGRATIONS_BLACKDUCKSCA_DEFAULT_SARIF_FILE_PATH);
+            }
+            else {
+                sarifPath = inputs.BLACKDUCKSCA_REPORTS_SARIF_FILE_PATH.trim();
+            }
+        }
+        updateBlackDuckSarifPath(productInputFilPath, sarifPath);
     }
 }
 exports.updateSarifFilePaths = updateSarifFilePaths;
 // Update SARIF file path in the input JSON
-function updatePolarisSarifPath(workSpaceDir, productInputFilePath, sarifPath, fsWrapper = new FileSystemWrapper(), pathWrapper = new PathWrapper(), logger = new LoggerWrapper()) {
+function updatePolarisSarifPath(productInputFilePath, sarifPath, fsWrapper = new FileSystemWrapper(), logger = new LoggerWrapper()) {
     try {
         // Read and parse the JSON file
         const cleanPath = productInputFilePath.replace(/"/g, "");
         const jsonContent = fsWrapper.readFileSync(cleanPath, "utf-8");
         const config = JSON.parse(jsonContent);
-        const absolutePath = pathWrapper.resolve(pathWrapper.join(workSpaceDir, sarifPath));
         config.data = config.data || {};
         config.data.polaris = config.data.polaris || {};
         // Initialize reports with required sarif property
@@ -3718,11 +3737,11 @@ function updatePolarisSarifPath(workSpaceDir, productInputFilePath, sarifPath, f
             };
         }
         // Now safely update the path
-        config.data.polaris.reports.sarif.file.path = absolutePath;
+        config.data.polaris.reports.sarif.file.path = sarifPath;
         logger.debug(`Updated SARIF file path to: ${config.data.polaris.reports.sarif.file.path}`);
         // Write back the updated JSON with proper formatting
         fsWrapper.writeFileSync(cleanPath, JSON.stringify(config, null, 2));
-        logger.debug(`Successfully updated Polaris SARIF file path: ${absolutePath}`);
+        logger.debug(`Successfully updated Polaris SARIF file path: ${sarifPath}`);
     }
     catch (error) {
         logger.debug(`Error updating SARIF file path: ${error}`);
@@ -3730,13 +3749,12 @@ function updatePolarisSarifPath(workSpaceDir, productInputFilePath, sarifPath, f
 }
 exports.updatePolarisSarifPath = updatePolarisSarifPath;
 // Update SARIF file path in the input JSON
-function updateBlackDuckSarifPath(workSpaceDir, productInputFilePath, sarifPath, fsWrapper = new FileSystemWrapper(), pathWrapper = new PathWrapper(), logger = new LoggerWrapper()) {
+function updateBlackDuckSarifPath(productInputFilePath, sarifPath, fsWrapper = new FileSystemWrapper(), logger = new LoggerWrapper()) {
     try {
         // Read and parse the JSON file
         const cleanPath = productInputFilePath.replace(/"/g, "");
         const jsonContent = fsWrapper.readFileSync(cleanPath, "utf-8");
         const config = JSON.parse(jsonContent);
-        const absolutePath = pathWrapper.resolve(pathWrapper.join(workSpaceDir, sarifPath));
         config.data = config.data || {};
         config.data.blackducksca = config.data.blackducksca || {};
         // Initialize reports with required sarif property
@@ -3764,11 +3782,11 @@ function updateBlackDuckSarifPath(workSpaceDir, productInputFilePath, sarifPath,
             };
         }
         // Now safely update the path
-        config.data.blackducksca.reports.sarif.file.path = absolutePath;
+        config.data.blackducksca.reports.sarif.file.path = sarifPath;
         logger.debug(`Updated SARIF file path to: ${config.data.blackducksca.reports.sarif.file.path}`);
         // Write back the updated JSON with proper formatting
         fsWrapper.writeFileSync(cleanPath, JSON.stringify(config, null, 2));
-        logger.debug(`Successfully updated Polaris SARIF file path: ${absolutePath}`);
+        logger.debug(`Successfully updated Polaris SARIF file path: ${sarifPath}`);
     }
     catch (error) {
         logger.debug(`Error updating SARIF file path: ${error}`);
@@ -4025,6 +4043,7 @@ function run() {
             productInputFilPath = util.extractInputJsonFilename(command);
             // Extract product input file name from the path (cross-platform compatible)
             productInputFileName = (0, path_1.basename)(productInputFilPath);
+            taskLib.debug(`productInputFileName: ${productInputFileName}`);
             // Based on bridge version and productInputFileName get the sarif file path
             util.updateSarifFilePaths(workSpaceDir, productInputFileName, bridgeVersion, productInputFilPath);
             // Execute prepared commands
@@ -4044,9 +4063,9 @@ function run() {
                     if (bridgeVersion < constants.VERSION) {
                         (0, diagnostics_1.uploadSarifResultAsArtifact)(constants.DEFAULT_BLACKDUCK_SARIF_GENERATOR_DIRECTORY, inputs.BLACKDUCKSCA_REPORTS_SARIF_FILE_PATH);
                     }
-                }
-                else {
-                    (0, diagnostics_1.uploadSarifResultAsArtifact)(constants.INTEGRATIONS_DEFAULT_BLACKDUCKSCA_SARIF_GENERATOR_DIRECTORY, inputs.BLACKDUCKSCA_REPORTS_SARIF_FILE_PATH);
+                    else {
+                        (0, diagnostics_1.uploadSarifResultAsArtifact)(constants.INTEGRATIONS_DEFAULT_BLACKDUCKSCA_SARIF_GENERATOR_DIRECTORY, inputs.BLACKDUCKSCA_REPORTS_SARIF_FILE_PATH);
+                    }
                 }
             }
             if ((0, utility_1.parseToBoolean)(inputs.POLARIS_REPORTS_SARIF_CREATE)) {

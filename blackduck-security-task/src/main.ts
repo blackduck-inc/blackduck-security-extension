@@ -64,6 +64,7 @@ export async function run() {
     productInputFilPath = util.extractInputJsonFilename(command);
     // Extract product input file name from the path (cross-platform compatible)
     productInputFileName = basename(productInputFilPath);
+    taskLib.debug(`productInputFileName: ${productInputFileName}`);
     // Based on bridge version and productInputFileName get the sarif file path
     util.updateSarifFilePaths(
       workSpaceDir,
@@ -93,12 +94,12 @@ export async function run() {
             constants.DEFAULT_BLACKDUCK_SARIF_GENERATOR_DIRECTORY,
             inputs.BLACKDUCKSCA_REPORTS_SARIF_FILE_PATH
           );
+        } else {
+          uploadSarifResultAsArtifact(
+            constants.INTEGRATIONS_DEFAULT_BLACKDUCKSCA_SARIF_GENERATOR_DIRECTORY,
+            inputs.BLACKDUCKSCA_REPORTS_SARIF_FILE_PATH
+          );
         }
-      } else {
-        uploadSarifResultAsArtifact(
-          constants.INTEGRATIONS_DEFAULT_BLACKDUCKSCA_SARIF_GENERATOR_DIRECTORY,
-          inputs.BLACKDUCKSCA_REPORTS_SARIF_FILE_PATH
-        );
       }
     }
 
