@@ -79,10 +79,8 @@ polaris_bridge:
 
 pop_blackduck:
   image: us-docker.pkg.dev/cloudops-artifacts-prd/polaris/ember_cli:3.28.5-node_16
-  variables:
-    POP_BLACKDUCK_INPROGRESS: 1
   extends:
-    - .new_pop_blackduck
+    - .new_pop_blackduck_analysis
   before_script:
     - |
       apt-get update -y
