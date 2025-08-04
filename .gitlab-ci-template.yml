@@ -44,16 +44,6 @@
     - npm test
   coverage: /All files[^|]*\|[^|]*\s+([\d\.]+)/
 
-.pop_blackduck_analysis:
-  image: us-docker.pkg.dev/cloudops-artifacts-prd/polaris/ember_cli:3.28.5-node_16
-  extends:
-    - .pop_blackduck
-    - .retry
-  before_script:
-    - |
-      apt-get update -y
-      apt-get install -y rsync make jq
-
 .new_pop_blackduck_analysis:
   image: us-docker.pkg.dev/cloudops-artifacts-prd/polaris/ember_cli:3.28.5-node_16
   extends:
