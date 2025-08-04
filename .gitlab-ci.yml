@@ -80,10 +80,16 @@ polaris_bridge:
 pop_blackduck:
   image: us-docker.pkg.dev/cloudops-artifacts-prd/polaris/ember_cli:3.28.5-node_16
   extends:
-    - .new_pop_blackduck_analysis
+    - .new_pop_blackduck
   before_script:
     - |
+      echo "deb http://archive.debian.org/debian buster main" > /etc/apt/sources.list
+      echo "deb http://archive.debian.org/debian-security buster/updates main" >> /etc/apt/sources.list
+      echo "Acquire::Check-Valid-Until false;" > /etc/apt/apt.conf.d/99archive
       apt-get update -y
       apt-get install -y rsync make jq python3 python3-pip
       pip3 install blackduck requests
       export RELEASE_VERSION=$(cat vss-extension.json | grep version | head -1 | awk -F= "{ print $2 }" | sed 's/[version:,\",]//g' | tr -d '[[:space:]]')
+      echo "deb http://archive.debian.org/debian buster main" > /etc/apt/sources.list
+      echo "deb http://archive.debian.org/debian-security buster/updates main" >> /etc/apt/sources.list
+      echo "Acquire::Check-Valid-Until false;" > /etc/apt/apt.conf.d/99archiveEASE_VERSION=$(cat vss-extension.json | grep version | head -1 | awk -F= "{ print $2 }" | sed 's/[version:,\",]//g' | tr -d '[[:space:]]')
