@@ -1,21 +1,19 @@
 {
   "manifestVersion": 1,
-  "id": "blackduck-security-scan",
-  "name": "Black Duck Security Scan",
+  "id": "blackduck-security-scan-legacy",
+  "name": "Black Duck Security Scan (2019 & 2020)",
   "version": "2.3.0",
-  "publisher": "QATPublisher",
+  "publisher": "blackduck",
+  "public": true,
   "targets": [
     {
-      "id": "Microsoft.VisualStudio.Services"
-    },
-    {
       "id": "Microsoft.TeamFoundation.Server",
-      "version": "[19.0,)"
+      "version": "[17.0,19.0)"
     }
   ],
   "tags": [
     "Polaris",
-    "Black Duck Software Inc.",
+    "Black Duck Software Inc",
     "Coverity",
     "Black Duck",
     "Continuous Integration",
@@ -32,7 +30,7 @@
   },
   "files": [
     {
-      "path": "blackduck-security-task"
+      "path": "blackduck-security-task-legacy"
     }
   ],
   "content": {
@@ -42,13 +40,13 @@
   },
   "contributions": [
     {
-      "id": "blackduck-security-task",
+      "id": "BlackDuckSecurityScan",
       "type": "ms.vss-distributed-task.task",
       "targets": [
         "ms.vss-distributed-task.tasks"
       ],
       "properties": {
-        "name": "blackduck-security-task"
+        "name": "blackduck-security-task-legacy"
       }
     }
   ]

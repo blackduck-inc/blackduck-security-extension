@@ -1,8 +1,8 @@
 {
   "$schema": "https://raw.githubusercontent.com/Microsoft/azure-pipelines-task-lib/master/tasks.schema.json",
-  "id": "ba467646-b723-4aba-a14d-bdbe8d6d5329",
+  "id": "f7ff2fba-fd18-487c-ada1-d3972dfb3241",
   "name": "BlackDuckSecurityScan",
-  "friendlyName": "Black Duck Security Scan",
+  "friendlyName": "Black Duck Security Scan (2019 & 2020)",
   "description": "Run security scans on Polaris, Black Duck SCA, Coverity or Software Risk Manager (SRM) platforms",
   "helpMarkDown": "",
   "category": "Utility",
@@ -12,7 +12,7 @@
     "Minor": 3,
     "Patch": 0
   },
-  "instanceNameFormat": "Black Duck Security Scan",
+  "instanceNameFormat": "Black Duck Security Scan (2019 & 2020)",
   "groups": [
     {
       "name": "scanConfiguration",
@@ -29,13 +29,13 @@
       "name": "polarisPREnable",
       "displayName": "Pull Request Comment Options",
       "isExpanded": false,
-      "visibleRule": "polarisWaitForScan = true"
+      "visibleRule": "scanType = polaris && polarisWaitForScan = true"
     },
     {
       "name": "polarisSarifReport",
       "displayName": "SARIF Report Options",
       "isExpanded": false,
-      "visibleRule": "polarisWaitForScan = true"
+      "visibleRule": "scanType = polaris && polarisWaitForScan = true"
     },
     {
       "name": "blackduckScaScanOptions",
@@ -47,19 +47,19 @@
       "name": "blackduckScaPREnable",
       "displayName": "Pull Request Comment Options",
       "isExpanded": false,
-      "visibleRule": "blackduckScaWaitForScan = true"
+      "visibleRule": "scanType = blackducksca && blackduckScaWaitForScan = true"
     },
     {
       "name": "blackduckScaFixPR",
       "displayName": "Fix Pull Request Options",
       "isExpanded": false,
-      "visibleRule": "blackduckScaWaitForScan = true"
+      "visibleRule": "scanType = blackducksca && blackduckScaWaitForScan = true"
     },
     {
       "name": "blackduckScaSarifReport",
       "displayName": "SARIF Report Options",
       "isExpanded": false,
-      "visibleRule": "blackduckScaWaitForScan = true"
+      "visibleRule": "scanType = blackducksca && blackduckScaWaitForScan = true"
     },
     {
       "name": "blackduckScaToolOptions",
@@ -77,7 +77,7 @@
       "name": "coverityPREnable",
       "displayName": "Pull Request Comment Options",
       "isExpanded": false,
-      "visibleRule": "coverityWaitForScan = true"
+      "visibleRule": "scanType = coverity && coverityWaitForScan = true"
     },
     {
       "name": "coverityToolOptions",
@@ -311,7 +311,6 @@
       "defaultValue": "",
       "required": false,
       "helpMarkDown": "Application name in Polaris Server. If not provided, Azure repository name will be set as default value.",
-      "visibleRule": "scanType = polaris",
       "groupName": "polarisScanOptions"
     },
     {
@@ -321,7 +320,6 @@
       "defaultValue": "",
       "required": false,
       "helpMarkDown": "Project name in Polaris Server. If not provided, Azure repository name will be set as default value.",
-      "visibleRule": "scanType = polaris",
       "groupName": "polarisScanOptions"
     },
     {
@@ -331,7 +329,6 @@
       "defaultValue": "",
       "required": false,
       "helpMarkDown": "Branch name in Polaris Server.",
-      "visibleRule": "scanType = polaris",
       "groupName": "polarisScanOptions"
     },
     {
@@ -341,7 +338,6 @@
       "defaultValue": "",
       "required": false,
       "helpMarkDown": "The test mode type of this scan. Supported values: CI or SOURCE_UPLOAD, Default: CI",
-      "visibleRule": "scanType = polaris",
       "options": {
         "": "Select",
         "CI": "CI",
@@ -386,7 +382,6 @@
       "defaultValue": false,
       "required": false,
       "helpMarkDown": "Add automatic pull request comment based on Polaris scan result. Supported values: true or false. Requires Azure Token.",
-      "visibleRule": "scanType = polaris",
       "groupName": "polarisPREnable"
     },
     {
@@ -416,7 +411,6 @@
       "defaultValue": false,
       "required": false,
       "helpMarkDown": "SARIF report will be uploaded as a Artifact.",
-      "visibleRule": "scanType = polaris",
       "groupName": "polarisSarifReport"
     },
     {
@@ -562,7 +556,6 @@
       "defaultValue": "",
       "required": false,
       "helpMarkDown": "Project name in Coverity. If not provided, Azure repository name will be set as default value.",
-      "visibleRule": "scanType = coverity",
       "groupName": "coverityScanOptions"
     },
     {
@@ -572,7 +565,6 @@
       "defaultValue": "",
       "required": false,
       "helpMarkDown": "Stream name in Coverity. If not provided, for non-PR context Azure repository name concatenated with source branch name (i.e. testRepo-feature1) and for PR context Azure repository name concatenated with target branch name (i.e. testRepo-main) will be set as default value.",
-      "visibleRule": "scanType = coverity",
       "groupName": "coverityScanOptions"
     },
     {
@@ -582,7 +574,6 @@
       "defaultValue": "",
       "required": false,
       "helpMarkDown": "Name/ID number of a saved view to apply as a 'break the build' policy.",
-      "visibleRule": "scanType = coverity",
       "groupName": "coverityScanOptions"
     },
     {
@@ -592,7 +583,6 @@
       "defaultValue": "",
       "required": false,
       "helpMarkDown": "Version of Coverity Thin Client to use.",
-      "visibleRule": "scanType = coverity",
       "groupName": "coverityScanOptions"
     },
     {
@@ -602,7 +592,6 @@
       "defaultValue": false,
       "required": false,
       "helpMarkDown": "Add automatic pull request comment based on Coverity scan result. Supported values: true or false. Requires Azure Token.",
-      "visibleRule": "coverityWaitForScan = true",
       "groupName": "coverityPREnable"
     },
     {
@@ -612,7 +601,6 @@
       "defaultValue": "",
       "required": false,
       "helpMarkDown": "Build command for Coverity",
-      "visibleRule": "scanType = coverity",
       "groupName": "coverityToolOptions"
     },
     {
@@ -622,7 +610,6 @@
       "defaultValue": "",
       "required": false,
       "helpMarkDown": "Clean command for Coverity",
-      "visibleRule": "scanType = coverity",
       "groupName": "coverityToolOptions"
     },
     {
@@ -632,7 +619,6 @@
       "defaultValue": "",
       "required": false,
       "helpMarkDown": "Coverity config file path (.yaml/.yml/.json).",
-      "visibleRule": "scanType = coverity",
       "groupName": "coverityToolOptions"
     },
     {
@@ -642,7 +628,6 @@
       "defaultValue": "",
       "required": false,
       "helpMarkDown": "Additional Coverity Arguments separated by space.",
-      "visibleRule": "scanType = coverity",
       "groupName": "coverityToolOptions"
     },
     {
@@ -652,7 +637,6 @@
       "defaultValue": "",
       "required": false,
       "helpMarkDown": "Provide the Coverity installation directory on the agent where it will be installed during the build.",
-      "visibleRule": "scanType = coverity",
       "groupName": "coverityToolOptions"
     },
     {
@@ -662,7 +646,6 @@
       "defaultValue": "",
       "required": false,
       "helpMarkDown": "Build command for Coverity.",
-      "visibleRule": "scanType = polaris",
       "groupName": "coverityToolOptionsForPolaris"
     },
     {
@@ -672,7 +655,6 @@
       "defaultValue": "",
       "required": false,
       "helpMarkDown": "Clean command for Coverity.",
-      "visibleRule": "scanType = polaris",
       "groupName": "coverityToolOptionsForPolaris"
     },
     {
@@ -682,7 +664,6 @@
       "defaultValue": "",
       "required": false,
       "helpMarkDown": "Coverity config file path (.yaml/.yml/.json).",
-      "visibleRule": "scanType = polaris",
       "groupName": "coverityToolOptionsForPolaris"
     },
     {
@@ -692,7 +673,6 @@
       "defaultValue": "",
       "required": false,
       "helpMarkDown": "Additional Coverity Arguments separated by space.",
-      "visibleRule": "scanType = polaris",
       "groupName": "coverityToolOptionsForPolaris"
     },
     {
@@ -702,7 +682,6 @@
       "defaultValue": "",
       "required": false,
       "helpMarkDown": "Build command for Coverity.",
-      "visibleRule": "scanType = srm",
       "groupName": "coverityToolOptionsForSrm"
     },
     {
@@ -712,7 +691,6 @@
       "defaultValue": "",
       "required": false,
       "helpMarkDown": "Clean command for Coverity.",
-      "visibleRule": "scanType = srm",
       "groupName": "coverityToolOptionsForSrm"
     },
     {
@@ -722,7 +700,6 @@
       "defaultValue": "",
       "required": false,
       "helpMarkDown": "Coverity config file path (.yaml/.yml/.json).",
-      "visibleRule": "scanType = srm",
       "groupName": "coverityToolOptionsForSrm"
     },
     {
@@ -732,7 +709,6 @@
       "defaultValue": "",
       "required": false,
       "helpMarkDown": "Additional Coverity Arguments separated by space.",
-      "visibleRule": "scanType = srm",
       "groupName": "coverityToolOptionsForSrm"
     },
     {
@@ -742,7 +718,6 @@
       "defaultValue": "",
       "required": false,
       "helpMarkDown": "Provide the Coverity execution path on the agent where it will be installed during the build.",
-      "visibleRule": "scanType = srm",
       "groupName": "coverityToolOptionsForSrm"
     },
     {
@@ -828,7 +803,6 @@
       "defaultValue": false,
       "required": false,
       "helpMarkDown": "Add automatic pull request comment based on Black Duck SCA scan result. Supported values: true or false. Requires Azure Token.",
-      "visibleRule": "blackduckScaWaitForScan = true",
       "groupName": "blackduckScaPREnable"
     },
     {
@@ -838,7 +812,6 @@
       "defaultValue": false,
       "required": false,
       "helpMarkDown": "Flag to enable/disable the automatic fix pull request creations for Black Duck SCA.\nDefault value is false",
-      "visibleRule": "scanType = blackducksca",
       "groupName": "blackduckScaFixPR"
     },
     {
@@ -878,7 +851,6 @@
       "defaultValue": false,
       "required": false,
       "helpMarkDown": "SARIF report will be uploaded as a Artifact.",
-      "visibleRule": "scanType = blackducksca",
       "groupName": "blackduckScaSarifReport"
     },
     {
@@ -918,7 +890,6 @@
       "defaultValue": "",
       "required": false,
       "helpMarkDown": "Specifies whether full scan is required or not. Supported values: true or false",
-      "visibleRule": "scanType = blackducksca",
       "groupName": "blackduckScaScanOptions"
     },
     {
@@ -928,7 +899,6 @@
       "defaultValue": "",
       "required": false,
       "helpMarkDown": "Specify scan failure severities of Black Duck SCA. Supported values: ALL, NONE, BLOCKER, CRITICAL, MAJOR, MINOR, OK, TRIVIAL, UNSPECIFIED",
-      "visibleRule": "scanType = blackducksca",
       "groupName": "blackduckScaScanOptions"
     },
     {
@@ -938,7 +908,6 @@
       "defaultValue": "",
       "required": false,
       "helpMarkDown": "Number indicating the search depth in the source directory",
-      "visibleRule": "scanType = blackducksca",
       "groupName": "blackduckScaToolOptions"
     },
     {
@@ -948,7 +917,6 @@
       "defaultValue": "",
       "required": false,
       "helpMarkDown": "Detect config file path (.properties/.yml).",
-      "visibleRule": "scanType = blackducksca",
       "groupName": "blackduckScaToolOptions"
     },
     {
@@ -958,7 +926,6 @@
       "defaultValue": "",
       "required": false,
       "helpMarkDown": "Additional Detect Arguments separated by space.",
-      "visibleRule": "scanType = blackducksca",
       "groupName": "blackduckScaToolOptions"
     },
     {
@@ -968,7 +935,6 @@
       "defaultValue": "",
       "required": false,
       "helpMarkDown": "Provide the Detect installation directory on the agent where it will be installed during the build",
-      "visibleRule": "scanType = blackducksca",
       "groupName": "blackduckScaToolOptions"
     },
     {
@@ -978,7 +944,6 @@
       "defaultValue": "",
       "required": false,
       "helpMarkDown": "Number indicating the search depth in the source directory.",
-      "visibleRule": "scanType = polaris",
       "groupName": "blackduckScaToolOptionsForPolaris"
     },
     {
@@ -988,7 +953,6 @@
       "defaultValue": "",
       "required": false,
       "helpMarkDown": "Detect config file path (.properties/.yml).",
-      "visibleRule": "scanType = polaris",
       "groupName": "blackduckScaToolOptionsForPolaris"
     },
     {
@@ -998,7 +962,6 @@
       "defaultValue": "",
       "required": false,
       "helpMarkDown": "Additional Detect Arguments separated by space.",
-      "visibleRule": "scanType = polaris",
       "groupName": "blackduckScaToolOptionsForPolaris"
     },
     {
@@ -1008,7 +971,6 @@
       "defaultValue": "",
       "required": false,
       "helpMarkDown": "Number indicating the search depth in the source directory.",
-      "visibleRule": "scanType = srm",
       "groupName": "blackduckScaToolOptionsForSrm"
     },
     {
@@ -1018,7 +980,6 @@
       "defaultValue": "",
       "required": false,
       "helpMarkDown": "Detect config file path (.properties/.yml).",
-      "visibleRule": "scanType = srm",
       "groupName": "blackduckScaToolOptionsForSrm"
     },
     {
@@ -1028,7 +989,6 @@
       "defaultValue": "",
       "required": false,
       "helpMarkDown": "Additional Detect Arguments separated by space.",
-      "visibleRule": "scanType = srm",
       "groupName": "blackduckScaToolOptionsForSrm"
     },
     {
@@ -1038,7 +998,6 @@
       "defaultValue": "",
       "required": false,
       "helpMarkDown": "Provide the Detect execution path on the agent where it will be installed during the build.",
-      "visibleRule": "scanType = srm",
       "groupName": "blackduckScaToolOptionsForSrm"
     },
     {
@@ -1124,7 +1083,6 @@
       "defaultValue": "",
       "required": false,
       "helpMarkDown": "Project name in SRM server. If not provided, Azure repository name will be set as default value.",
-      "visibleRule": "scanType = srm",
       "groupName": "srmScanOptions"
     },
     {
@@ -1134,7 +1092,6 @@
       "defaultValue": "",
       "required": false,
       "helpMarkDown": "Project ID in SRM server.",
-      "visibleRule": "scanType = srm",
       "groupName": "srmScanOptions"
     },
     {
@@ -1144,7 +1101,6 @@
       "defaultValue": "",
       "required": false,
       "helpMarkDown": "Branch name in SRM server.",
-      "visibleRule": "scanType = srm",
       "groupName": "srmScanOptions"
     },
     {
@@ -1154,19 +1110,18 @@
       "defaultValue": "",
       "required": false,
       "helpMarkDown": "Parent Branch name in SRM server.",
-      "visibleRule": "scanType = srm",
       "groupName": "srmScanOptions"
     }
   ],
-  "execution": {
-    "Node10": {
-      "target": "dist/index.js"
-    },
-    "Node16": {
-      "target": "dist/index.js"
-    },
-    "Node20_1": {
-      "target": "dist/index.js"
-    }
+    "execution": {
+      "Node10": {
+        "target": "dist/index.js"
+      },
+      "Node16": {
+        "target": "dist/index.js"
+      },
+      "Node20_1": {
+        "target": "dist/index.js"
+      }
   }
 }

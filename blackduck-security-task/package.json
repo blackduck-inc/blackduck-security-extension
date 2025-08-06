@@ -1,6 +1,6 @@
 {
   "name": "blackduck-security-scan",
-  "version": "2.2.0",
+  "version": "2.3.0",
   "main": "lib/main.js",
   "engines": {
     "node": ">=20.0.0"
@@ -10,7 +10,8 @@
     "package": "ncc build --source-map",
     "lint": "eslint src/**/*.ts",
     "test": "nyc --reporter=html --reporter=text mocha --require ts-node/register test/unit/**/*.spec.ts test/unit/*.spec.ts",
-    "all": "npm run format && npm run lint && npm run build && npm run package && npm run test",
+    "sync:legacy": "cp -r lib/ ../blackduck-security-task-legacy/lib/ && cp -r dist/ ../blackduck-security-task-legacy/dist/",
+    "all": "npm run format && npm run lint && npm run build && npm run package && npm run test && npm run sync:legacy",
     "format": "prettier 'src/**/*.ts' --write",
     "integraionTestBuild": "tsc --project tsconfig-int-test.json",
     "integrationTest": "npm run build && npm run integraionTestBuild && mocha test/integration/_suite.js"
