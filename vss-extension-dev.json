@@ -6,10 +6,7 @@
   "publisher": "QATPublisher",
   "targets": [
     {
-      "id": "Microsoft.VisualStudio.Services"
-    },
-    {
-      "id": "Microsoft.TeamFoundation.Server",
+      "id": "Microsoft.VisualStudio.Services",
       "version": "[19.0,)"
     }
   ],

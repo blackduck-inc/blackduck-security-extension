@@ -6,8 +6,8 @@
   "publisher": "QATPublisher",
   "targets": [
     {
-      "id": "Microsoft.TeamFoundation.Server",
-      "version": "[17.0,19.0)"
+      "id": "Microsoft.VisualStudio.Services",
+      "version": "[17.0,)"
     }
   ],
   "tags": [
