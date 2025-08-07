@@ -1,6 +1,7 @@
 /.idea/
 /blackduck-security-task/node_modules/
 /blackduck-security-task/lib/
+/blackduck-security-task-legacy/lib/
 /blackduck-security-task/TEMP
 /blackduck-security-task/.bridge/
 /blackduck-security-task/.taskkey
