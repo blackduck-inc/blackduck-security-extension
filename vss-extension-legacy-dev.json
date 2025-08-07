@@ -1,13 +1,13 @@
 {
   "manifestVersion": 1,
-  "id": "blackduck-security-scan",
+  "id": "blackduck-security-scan-legacy",
   "name": "Black Duck Security Scan (2019 & 2020)",
   "version": "2.3.0",
   "publisher": "QATPublisher",
   "targets": [
     {
-      "id": "Microsoft.VisualStudio.Services",
-      "version": "[17.0,)"
+      "id": "Microsoft.TeamFoundation.Server",
+      "version": "[17.0,19.0)"
     }
   ],
   "tags": [
