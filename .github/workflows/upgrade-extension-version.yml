@@ -9,6 +9,10 @@ on:
         default: ""
         type: string
 
+permissions:
+  contents: write
+  pull-requests: write
+
 jobs:
   upgrade-extension-version:
     runs-on: ubuntu-latest
@@ -44,56 +48,68 @@ jobs:
           extension_name=$(jq -r '.name' < vss-extension.json) 
           echo "EXTENSION_NAME=$extension_name" >> $GITHUB_ENV
           echo "EXTENSION NAME: "$extension_name
-          current_extension_version=${{ github.event.inputs.version }}
-          echo "CURRENT_VERSION=$current_extension_version" >> $GITHUB_ENV
-          echo "CURRENT EXTENSION VERSION: " $current_extension_version
-          current_major=$(echo $current_extension_version | awk -F. '{print $1}')
-          current_minor=$(echo $current_extension_version | awk -F. '{print $2}')
-          current_patch=$(echo $current_extension_version | awk -F. '{print $3}')
+          input_version=${{ github.event.inputs.version }}
+          current_version=$(echo "$input_version" | sed 's/^v//')
+          echo "CURRENT_VERSION=$current_version" >> $GITHUB_ENV
+          echo "CURRENT EXTENSION VERSION: " $current_version
           
-          new_version=$current_extension_version
-          echo "Updating vss-extension.json with the new version: ${new_version}"
-          jq --arg new_version "$new_version" '.version = $new_version' vss-extension.json > vss-extension.json.tmp && mv vss-extension.json.tmp vss-extension.json
-          echo "Updated vss-extension.json file"
-          cat vss-extension.json
-          echo
+          current_major=$(echo $current_version | awk -F. '{print $1}')
+          current_minor=$(echo $current_version | awk -F. '{print $2}')
+          current_patch=$(echo $current_version | awk -F. '{print $3}')
           
-          echo "Updating vss-extension-dev.json with the new version: ${new_version}"
-          jq --arg new_version "$new_version" '.version = $new_version' vss-extension-dev.json > vss-extension-dev.json.tmp && mv vss-extension-dev.json.tmp vss-extension-dev.json
-          echo "Updated vss-extension-dev.json file"
-          cat vss-extension-dev.json
-          echo
-          
-          cd blackduck-security-task
-          echo "Updating package.json with the new version: ${new_version}"
-          jq --arg new_version "$new_version" '.version = $new_version' package.json > package.json.tmp && mv package.json.tmp package.json
-          echo "Updated package.json file"
-          cat package.json
-          echo
-          
-          echo "Updating task.json with the new version: ${new_version}"
-          jq --argjson major "$current_major" --argjson minor "$current_minor"  --argjson patch "$current_patch" '(.version.Major = $major) | (.version.Minor = $minor) | (.version.Patch = $patch)' task.json > task.json.tmp && mv task.json.tmp task.json
-          echo "Updated task.json file"    
-          
+          new_version=$current_version
           echo "NEW_VERSION=$new_version" >> $GITHUB_ENV
+          echo "New version to update: ${new_version}"
 
-      - name: update extension version in file
+      - name: update extension version in files
         id: update-extension-version
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          echo "Updating extension version in vss-extension.json, vss-extension-dev.json, package.json, package-lock.json & task.json file"
+          echo "Updating extension version in vss-extension.json, vss-extension-dev.json, package.json, package-lock.json & task.json files"
           git config --local user.name "$(git log -n 1 --pretty=format:%an)"
           git config --local user.email "$(git log -n 1 --pretty=format:%ae)"
-          git checkout -b extension_version_update
-          git add  vss-extension.json vss-extension-dev.json extension_version.txt
+          git config set advice.addIgnoredFile false
+          
+          BRANCH_NAME="extension_version_update_${{ env.NEW_VERSION }}"
+          git checkout -b "$BRANCH_NAME"
+          
+          echo "Updating vss-extension.json with the new version: ${{ env.NEW_VERSION }}"
+          jq --arg new_version "${{ env.NEW_VERSION }}" '.version = $new_version' vss-extension.json > vss-extension.json.tmp && mv vss-extension.json.tmp vss-extension.json
+          echo "Updated vss-extension.json file"
+          
+          echo "Updating vss-extension-dev.json with the new version: ${{ env.NEW_VERSION }}"
+          jq --arg new_version "${{ env.NEW_VERSION }}" '.version = $new_version' vss-extension-dev.json > vss-extension-dev.json.tmp && mv vss-extension-dev.json.tmp vss-extension-dev.json
+          echo "Updated vss-extension-dev.json file"
+          
           cd blackduck-security-task
+          echo "Updating package.json with the new version: ${{ env.NEW_VERSION }}"
+          jq --arg new_version "${{ env.NEW_VERSION }}" '.version = $new_version' package.json > package.json.tmp && mv package.json.tmp package.json
+          echo "Updated package.json file"
+          
+          current_major=$(echo ${{ env.NEW_VERSION }} | awk -F. '{print $1}')
+          current_minor=$(echo ${{ env.NEW_VERSION }} | awk -F. '{print $2}')
+          current_patch=$(echo ${{ env.NEW_VERSION }} | awk -F. '{print $3}')
+          
+          echo "Updating task.json with the new version: ${{ env.NEW_VERSION }}"
+          jq --argjson major "$current_major" --argjson minor "$current_minor" --argjson patch "$current_patch" '(.version.Major = $major) | (.version.Minor = $minor) | (.version.Patch = $patch)' task.json > task.json.tmp && mv task.json.tmp task.json
+          echo "Updated task.json file"
+          
+          echo "Installing dependencies and rebuilding"
           npm install
-          npm run all
-          git add package.json package-lock.json task.json
-          cd dist
-          git add .
-          git commit -m "upgrade extension version to ${{ env.NEW_VERSION }} [skip ci]"
-          git push origin extension_version_update --force
-          gh pr create --base main --head extension_version_update --title "Extension version upgrade to ${{ env.NEW_VERSION }}" --body "${{ env.EXTENSION_NAME }} version upgrade to ${{ env.NEW_VERSION }}" --fill
-          echo "Successful updated extension version in vss-extension.json, vss-extension-dev.json, package.json, package-lock.json & task.json file..."
+          
+          echo "Rebuilding after version update"
+          export NODE_OPTIONS=--openssl-legacy-provider
+          npm run build && npm run package
+          
+          cd ..
+          echo "Adding updated files to git"
+          git add vss-extension.json vss-extension-dev.json extension_version.txt
+          git add blackduck-security-task/package.json blackduck-security-task/package-lock.json blackduck-security-task/task.json blackduck-security-task/dist/
+          
+          git commit -am "upgrade extension version to ${{ env.NEW_VERSION }} [skip ci]"
+          git push origin "$BRANCH_NAME" --force
+          
+          gh pr create --base ${{ github.event.repository.default_branch }} --head "$BRANCH_NAME" --title "Extension version upgrade to ${{ env.NEW_VERSION }}" --body "${{ env.EXTENSION_NAME }} version upgrade to ${{ env.NEW_VERSION }}" --fill
+          
+          echo "Successfully updated extension version in all files..."
