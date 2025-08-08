@@ -23,11 +23,20 @@ on:
         required: true
         default: true
         type: boolean
+
+permissions:
+  contents: write
+
 jobs:
   create-tag:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+
+      - name: Install GitHub CLI
+        run: |
+          sudo apt update
+          sudo apt install -y gh
 
       - name: Set Node.js 20.x
         uses: actions/setup-node@v4
@@ -50,26 +59,25 @@ jobs:
           fi
         id: diff
 
-      - name: replace \n
+      - name: Process tag body
         id: process_body
         run: |
           tag_body="${{ github.event.inputs.TAG_BODY }}"
           echo "${tag_body}">>processed_body.txt
           sed -i 's/\\n/\n/g' processed_body.txt
           cat processed_body.txt
-          processed_body=$(cat processed_body.txt | tr '\n' '\n')
+          processed_body=$(cat processed_body.txt)
           echo "PROCESSED_BODY<<EOF">>$GITHUB_ENV
           echo "$processed_body">>$GITHUB_ENV
           echo "EOF">>$GITHUB_ENV
 
       - name: Create tag
         id: create_tag
-        uses: actions/create-release@latest
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
-        with:
-          tag_name: ${{ github.event.inputs.TAG }}
-          release_name: "BLACK DUCK EXTENSION ${{ github.event.inputs.TAG }}"
-          body: ${{ env.PROCESSED_BODY }}
-          draft: ${{ github.event.inputs.IS_DRAFT }}
-          prerelease: ${{ github.event.inputs.IS_PRERELEASE }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh release create ${{ github.event.inputs.TAG }} \
+            -t "BLACK DUCK EXTENSION ${{ github.event.inputs.TAG }}" \
+            -n "${{ env.PROCESSED_BODY }}" \
+            --draft=${{ github.event.inputs.IS_DRAFT }} \
+            --prerelease=${{ github.event.inputs.IS_PRERELEASE }}
