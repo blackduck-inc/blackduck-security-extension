@@ -8,15 +8,16 @@ import {
   FAILED_TO_GET_PULL_REQUEST_INFO,
   UNABLE_TO_FIND_PULL_REQUEST_INFO,
 } from "./application-constant";
-import { getSharedHttpClient } from "./utility";
-
+import { formatURLString, getSharedHttpClient } from "./utility";
 export class AzureService {
   azureGetMergeRequestsAPI: string;
   apiVersion: string;
+  azureGetRepositoryAPI: string;
 
   constructor() {
     this.azureGetMergeRequestsAPI =
       "/{0}/{1}/_apis/git/repositories/{2}/pullrequests?searchCriteria.status=active&$top=1&searchCriteria.sourceRefName={3}&api-version={4}";
+    this.azureGetRepositoryAPI = "/{0}/{1}/_apis/git/repositories/{2}";
     this.apiVersion = "7.0";
   }
 
@@ -40,7 +41,7 @@ export class AzureService {
         azureData.project.name,
         azureData.repository.name,
         azureData.repository.branch.name,
-        this.apiVersion
+        azureData.restAPIVersion || this.apiVersion
       );
       taskLib.debug(`Azure check pull request API: ${endpoint}`);
       const token: string = ":".concat(azureData.user.token);
@@ -80,5 +81,40 @@ export class AzureService {
       }
     }
     return undefined;
+  }
+
+  async fetchAzureServerApiVersion(
+    url: string,
+    orgName: string,
+    projectName: string,
+    repoName: string,
+    userToken: string
+  ): Promise<string> {
+    const repoEndpoint = formatURLString(
+      url + this.azureGetRepositoryAPI,
+      orgName,
+      projectName,
+      repoName
+    );
+    const encodedToken = Buffer.from(`:${userToken}`, "utf8").toString(
+      "base64"
+    );
+    const response = await getSharedHttpClient().get(repoEndpoint, {
+      Authorization: `Basic ${encodedToken}`,
+      Accept: "application/json",
+    });
+    const header =
+      response.message.headers["content-type"] ||
+      response.message.headers["Content-Type"];
+    const version =
+      typeof header === "string"
+        ? header.match(/api-version=([\d.]+)/)?.[1] ?? ""
+        : "";
+    taskLib.debug(`Fetched Azure server API version: ${version}`);
+    if (!version)
+      throw new Error(
+        `Unable to fetch API version for Azure server at ${repoEndpoint}`
+      );
+    return version;
   }
 }

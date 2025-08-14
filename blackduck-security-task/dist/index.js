@@ -584,6 +584,7 @@ class AzureService {
     constructor() {
         this.azureGetMergeRequestsAPI =
             "/{0}/{1}/_apis/git/repositories/{2}/pullrequests?searchCriteria.status=active&$top=1&searchCriteria.sourceRefName={3}&api-version={4}";
+        this.azureGetRepositoryAPI = "/{0}/{1}/_apis/git/repositories/{2}";
         this.apiVersion = "7.0";
     }
     getAzurePrResponseForManualTriggerFlow(azureData) {
@@ -592,7 +593,7 @@ class AzureService {
                 process.env["BUILD_REASON"] &&
                 process.env["BUILD_REASON"] !== "PullRequest") {
                 const StringFormat = (url, ...args) => url.replace(/{(\d+)}/g, (match, index) => encodeURIComponent(args[index]) || "");
-                const endpoint = StringFormat(azureData.api.url.concat(this.azureGetMergeRequestsAPI), azureData.organization.name, azureData.project.name, azureData.repository.name, azureData.repository.branch.name, this.apiVersion);
+                const endpoint = StringFormat(azureData.api.url.concat(this.azureGetMergeRequestsAPI), azureData.organization.name, azureData.project.name, azureData.repository.name, azureData.repository.branch.name, azureData.restAPIVersion || this.apiVersion);
                 taskLib.debug(`Azure check pull request API: ${endpoint}`);
                 const token = ":".concat(azureData.user.token);
                 const encodedToken = Buffer.from(token, "utf8").toString("base64");
@@ -620,6 +621,26 @@ class AzureService {
                 }
             }
             return undefined;
+        });
+    }
+    fetchAzureServerApiVersion(url, orgName, projectName, repoName, userToken) {
+        var _a, _b;
+        return __awaiter(this, void 0, void 0, function* () {
+            const repoEndpoint = (0, utility_1.formatURLString)(url + this.azureGetRepositoryAPI, orgName, projectName, repoName);
+            const encodedToken = Buffer.from(`:${userToken}`, "utf8").toString("base64");
+            const response = yield (0, utility_1.getSharedHttpClient)().get(repoEndpoint, {
+                Authorization: `Basic ${encodedToken}`,
+                Accept: "application/json",
+            });
+            const header = response.message.headers["content-type"] ||
+                response.message.headers["Content-Type"];
+            const version = typeof header === "string"
+                ? (_b = (_a = header.match(/api-version=([\d.]+)/)) === null || _a === void 0 ? void 0 : _a[1]) !== null && _b !== void 0 ? _b : ""
+                : "";
+            taskLib.debug(`Fetched Azure server API version: ${version}`);
+            if (!version)
+                throw new Error(`Unable to fetch API version for Azure server at ${repoEndpoint}`);
+            return version;
         });
     }
 }
@@ -2460,7 +2481,8 @@ class BridgeCliToolsParameter {
             // Set Coverity or Blackduck Arbitrary Arguments
             polData.data.coverity = this.setCoverityArbitraryArgs();
             polData.data.detect = this.setDetectArgs();
-            const azureData = this.getAzureRepoInfo();
+            const azureData = yield this.getAzureRepoInfo();
+            const azureRestAPIVersion = azureData === null || azureData === void 0 ? void 0 : azureData.restAPIVersion;
             const isPrCommentEnabled = (0, utility_1.parseToBoolean)(inputs.POLARIS_PR_COMMENT_ENABLED);
             const azurePrResponse = yield this.updateAzurePrNumberForManualTriggerFlow(azureData, isPrCommentEnabled);
             const isPullRequest = (0, utility_1.isPullRequestEvent)(azurePrResponse);
@@ -2493,6 +2515,9 @@ class BridgeCliToolsParameter {
             polData.data.network = this.setNetworkObj();
             // Remove empty data from json object
             polData = (0, utility_1.filterEmptyData)(polData);
+            if (azureRestAPIVersion && polData.data.azure) {
+                polData.data.azure.restAPIVersion = azureRestAPIVersion;
+            }
             const inputJson = JSON.stringify(polData);
             let stateFilePath = path_1.default.join(this.tempDir, BridgeCliToolsParameter.POLARIS_STATE_FILE_NAME);
             taskLib.writeFile(stateFilePath, inputJson);
@@ -2587,7 +2612,8 @@ class BridgeCliToolsParameter {
                     };
                 }
             }
-            const azureData = this.getAzureRepoInfo();
+            const azureData = yield this.getAzureRepoInfo();
+            const azureRestAPIVersion = azureData === null || azureData === void 0 ? void 0 : azureData.restAPIVersion;
             const isPrCommentEnabled = (0, utility_1.parseToBoolean)(inputs.BLACKDUCKSCA_PRCOMMENT_ENABLED);
             const isFixPrEnabled = (0, utility_1.parseToBoolean)(inputs.BLACKDUCKSCA_FIXPR_ENABLED);
             const azurePrResponse = yield this.updateAzurePrNumberForManualTriggerFlow(azureData, isPrCommentEnabled || isFixPrEnabled);
@@ -2627,6 +2653,9 @@ class BridgeCliToolsParameter {
             }
             // Remove empty data from json object
             blackduckData = (0, utility_1.filterEmptyData)(blackduckData);
+            if (azureRestAPIVersion && blackduckData.data.azure) {
+                blackduckData.data.azure.restAPIVersion = azureRestAPIVersion;
+            }
             const inputJson = JSON.stringify(blackduckData);
             let stateFilePath = path_1.default.join(this.tempDir, BridgeCliToolsParameter.BD_STATE_FILE_NAME);
             taskLib.writeFile(stateFilePath, inputJson);
@@ -2663,7 +2692,8 @@ class BridgeCliToolsParameter {
                 coverityProjectName = azureRepositoryName;
                 taskLib.debug(`COVERITY_PROJECT_NAME: ${coverityProjectName}`);
             }
-            const azureData = this.getAzureRepoInfo();
+            const azureData = yield this.getAzureRepoInfo();
+            const azureRestAPIVersion = azureData === null || azureData === void 0 ? void 0 : azureData.restAPIVersion;
             const isPrCommentEnabled = (0, utility_1.parseToBoolean)(inputs.COVERITY_AUTOMATION_PRCOMMENT);
             const azurePrResponse = yield this.updateAzurePrNumberForManualTriggerFlow(azureData, isPrCommentEnabled);
             const isPullRequest = (0, utility_1.isPullRequestEvent)(azurePrResponse);
@@ -2760,6 +2790,9 @@ class BridgeCliToolsParameter {
             covData.data.coverity = Object.assign({}, this.setCoverityArbitraryArgs(), covData.data.coverity);
             // Remove empty data from json object
             covData = (0, utility_1.filterEmptyData)(covData);
+            if (azureRestAPIVersion && covData.data.azure) {
+                covData.data.azure.restAPIVersion = azureRestAPIVersion;
+            }
             const inputJson = JSON.stringify(covData);
             let stateFilePath = path_1.default.join(this.tempDir, BridgeCliToolsParameter.COVERITY_STATE_FILE_NAME);
             taskLib.writeFile(stateFilePath, inputJson);
@@ -2919,44 +2952,67 @@ class BridgeCliToolsParameter {
     }
     getAzureRepoInfo() {
         var _a;
-        let azureOrganization = "";
-        const azureToken = input_1.AZURE_TOKEN;
-        let azureInstanceUrl = "";
-        const collectionUri = taskLib.getVariable(azure_1.AZURE_ENVIRONMENT_VARIABLES.AZURE_ORGANIZATION) || "";
-        taskLib.debug(`Azure API URL, obtained from the environment variable ${azure_1.AZURE_ENVIRONMENT_VARIABLES.AZURE_ORGANIZATION}, is: ${collectionUri}`);
-        if (collectionUri != "") {
-            const parsedUrl = url.parse(collectionUri);
-            azureInstanceUrl = `${parsedUrl.protocol}//${parsedUrl.host}`;
-            azureOrganization = ((_a = parsedUrl.pathname) === null || _a === void 0 ? void 0 : _a.split("/")[1]) || "";
-            if (parsedUrl.host &&
-                !azureOrganization &&
-                parsedUrl.host.indexOf(".visualstudio.com") !== -1) {
-                if (parsedUrl.host.split(".")[0]) {
-                    azureOrganization = parsedUrl.host.split(".")[0];
-                    azureInstanceUrl = constants.DEFAULT_AZURE_API_URL;
+        return __awaiter(this, void 0, void 0, function* () {
+            let azureOrganization = "";
+            const azureToken = input_1.AZURE_TOKEN;
+            let azureInstanceUrl = "";
+            const collectionUri = taskLib.getVariable(azure_1.AZURE_ENVIRONMENT_VARIABLES.AZURE_ORGANIZATION) || "";
+            taskLib.debug(`Azure API URL, obtained from the environment variable ${azure_1.AZURE_ENVIRONMENT_VARIABLES.AZURE_ORGANIZATION}, is: ${collectionUri}`);
+            if (collectionUri != "") {
+                const parsedUrl = url.parse(collectionUri);
+                azureInstanceUrl = `${parsedUrl.protocol}//${parsedUrl.host}`;
+                azureOrganization = ((_a = parsedUrl.pathname) === null || _a === void 0 ? void 0 : _a.split("/")[1]) || "";
+                if (parsedUrl.host &&
+                    !azureOrganization &&
+                    parsedUrl.host.indexOf(".visualstudio.com") !== -1) {
+                    if (parsedUrl.host.split(".")[0]) {
+                        azureOrganization = parsedUrl.host.split(".")[0];
+                        azureInstanceUrl = constants.DEFAULT_AZURE_API_URL;
+                    }
                 }
             }
-        }
-        taskLib.debug("Azure organization name:".concat(azureOrganization));
-        const azureProject = taskLib.getVariable(azure_1.AZURE_ENVIRONMENT_VARIABLES.AZURE_PROJECT) || "";
-        taskLib.debug(`Azure project, obtained from the environment variable ${azure_1.AZURE_ENVIRONMENT_VARIABLES.AZURE_PROJECT}, is: ${azureProject}`);
-        const azureRepo = taskLib.getVariable(azure_1.AZURE_ENVIRONMENT_VARIABLES.AZURE_REPOSITORY) || "";
-        taskLib.debug(`Azure repo, obtained from the environment variable ${azure_1.AZURE_ENVIRONMENT_VARIABLES.AZURE_REPOSITORY}, is: ${azureProject}`);
-        const buildReason = taskLib.getVariable(azure_1.AZURE_ENVIRONMENT_VARIABLES.AZURE_BUILD_REASON) || "";
-        taskLib.debug(`Build Reason: ${buildReason}`);
-        const azureRepoBranchName = buildReason == azure_1.AZURE_BUILD_REASON.PULL_REQUEST
-            ? taskLib.getVariable(azure_1.AZURE_ENVIRONMENT_VARIABLES.AZURE_PULL_REQUEST_SOURCE_BRANCH) || ""
-            : taskLib.getVariable(azure_1.AZURE_ENVIRONMENT_VARIABLES.AZURE_SOURCE_BRANCH) || "";
-        taskLib.debug(`Azure repo branch name: ${azureProject}`);
-        const azurePullRequestNumber = taskLib.getVariable(azure_1.AZURE_ENVIRONMENT_VARIABLES.AZURE_PULL_REQUEST_NUMBER) || "";
-        taskLib.debug(`Azure pull request number, obtained from the environment variable ${azure_1.AZURE_ENVIRONMENT_VARIABLES.AZURE_PULL_REQUEST_NUMBER}, is: ${azurePullRequestNumber}`);
-        taskLib.debug(`Azure Instance Url: ${azureInstanceUrl}`);
-        taskLib.debug(`Azure Organization: ${azureOrganization}`);
-        taskLib.debug(`Azure Project Name: ${azureProject}`);
-        taskLib.debug(`Azure Repository Name: ${azureRepo}`);
-        taskLib.debug(`Azure Repository Branch Name: ${azureRepoBranchName}`);
-        taskLib.debug(`Azure Pull Request Number: ${azurePullRequestNumber}`);
-        return this.setAzureData(azureInstanceUrl, azureToken, azureOrganization, azureProject, azureRepo, azureRepoBranchName, azurePullRequestNumber);
+            taskLib.debug("Azure organization name:".concat(azureOrganization));
+            const azureProject = taskLib.getVariable(azure_1.AZURE_ENVIRONMENT_VARIABLES.AZURE_PROJECT) || "";
+            taskLib.debug(`Azure project, obtained from the environment variable ${azure_1.AZURE_ENVIRONMENT_VARIABLES.AZURE_PROJECT}, is: ${azureProject}`);
+            const azureRepo = taskLib.getVariable(azure_1.AZURE_ENVIRONMENT_VARIABLES.AZURE_REPOSITORY) || "";
+            taskLib.debug(`Azure repo, obtained from the environment variable ${azure_1.AZURE_ENVIRONMENT_VARIABLES.AZURE_REPOSITORY}, is: ${azureProject}`);
+            const buildReason = taskLib.getVariable(azure_1.AZURE_ENVIRONMENT_VARIABLES.AZURE_BUILD_REASON) || "";
+            taskLib.debug(`Build Reason: ${buildReason}`);
+            const azureRepoBranchName = buildReason == azure_1.AZURE_BUILD_REASON.PULL_REQUEST
+                ? taskLib.getVariable(azure_1.AZURE_ENVIRONMENT_VARIABLES.AZURE_PULL_REQUEST_SOURCE_BRANCH) || ""
+                : taskLib.getVariable(azure_1.AZURE_ENVIRONMENT_VARIABLES.AZURE_SOURCE_BRANCH) || "";
+            taskLib.debug(`Azure repo branch name: ${azureProject}`);
+            const azurePullRequestNumber = taskLib.getVariable(azure_1.AZURE_ENVIRONMENT_VARIABLES.AZURE_PULL_REQUEST_NUMBER) || "";
+            taskLib.debug(`Azure pull request number, obtained from the environment variable ${azure_1.AZURE_ENVIRONMENT_VARIABLES.AZURE_PULL_REQUEST_NUMBER}, is: ${azurePullRequestNumber}`);
+            taskLib.debug(`Azure Instance Url: ${azureInstanceUrl}`);
+            taskLib.debug(`Azure Organization: ${azureOrganization}`);
+            taskLib.debug(`Azure Project Name: ${azureProject}`);
+            taskLib.debug(`Azure Repository Name: ${azureRepo}`);
+            taskLib.debug(`Azure Repository Branch Name: ${azureRepoBranchName}`);
+            taskLib.debug(`Azure Pull Request Number: ${azurePullRequestNumber}`);
+            const azureData = this.setAzureData(azureInstanceUrl, azureToken, azureOrganization, azureProject, azureRepo, azureRepoBranchName, azurePullRequestNumber);
+            if (azureData &&
+                azureInstanceUrl &&
+                azureOrganization &&
+                azureProject &&
+                azureRepo &&
+                azureToken) {
+                try {
+                    const urlObj = new URL(azureInstanceUrl);
+                    if (urlObj.hostname !== "dev.azure.com" &&
+                        urlObj.hostname !== "visualstudio.com") {
+                        const azureService = new azure_service_client_1.AzureService();
+                        const apiVersion = azureService.fetchAzureServerApiVersion(azureInstanceUrl, azureOrganization, azureProject, azureRepo, azureToken);
+                        azureData.restAPIVersion = yield apiVersion;
+                        taskLib.debug(`Azure REST API Version: ${azureData.restAPIVersion}`);
+                    }
+                }
+                catch (error) {
+                    taskLib.warning(`Failed to fetch Azure API version: ${error}`);
+                }
+            }
+            return azureData;
+        });
     }
     updateAzurePrNumberForManualTriggerFlow(azureData, isPrCommentOrFixPrEnabled) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -3254,7 +3310,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.updateBlackDuckSarifPath = exports.updatePolarisSarifPath = exports.updateSarifFilePaths = exports.LoggerWrapper = exports.PathWrapper = exports.FileSystemWrapper = exports.extractInputJsonFilename = exports.clearHttpClientCache = exports.getSharedHttpClient = exports.getSharedHttpsAgent = exports.createSSLConfiguredHttpClient = exports.createSSLConfiguredHttpsAgent = exports.getMappedTaskResult = exports.equalsIgnoreCase = exports.getStatusCode = exports.extractBranchName = exports.isPullRequestEvent = exports.IS_PR_EVENT = exports.filterEmptyData = exports.getIntegrationDefaultSarifReportPath = exports.getDefaultSarifReportPath = exports.sleep = exports.getWorkSpaceDirectory = exports.isBoolean = exports.parseToBoolean = exports.getRemoteFile = exports._getAgentTemp = exports._createExtractFolder = exports.extractZipWithQuiet = exports.extractZipped = exports.getTempDir = exports.cleanUrl = void 0;
+exports.formatURLString = exports.updateBlackDuckSarifPath = exports.updatePolarisSarifPath = exports.updateSarifFilePaths = exports.LoggerWrapper = exports.PathWrapper = exports.FileSystemWrapper = exports.extractInputJsonFilename = exports.clearHttpClientCache = exports.getSharedHttpClient = exports.createSSLConfiguredHttpClient = exports.createSSLConfiguredHttpsAgent = exports.getMappedTaskResult = exports.equalsIgnoreCase = exports.getStatusCode = exports.extractBranchName = exports.isPullRequestEvent = exports.IS_PR_EVENT = exports.filterEmptyData = exports.getIntegrationDefaultSarifReportPath = exports.getDefaultSarifReportPath = exports.sleep = exports.getWorkSpaceDirectory = exports.isBoolean = exports.parseToBoolean = exports.getRemoteFile = exports._getAgentTemp = exports._createExtractFolder = exports.extractZipWithQuiet = exports.extractZipped = exports.getTempDir = exports.cleanUrl = void 0;
 const path_1 = __importDefault(__nccwpck_require__(1017));
 const utility = __importStar(__nccwpck_require__(8383));
 const constants = __importStar(__nccwpck_require__(8673));
@@ -3587,17 +3643,6 @@ function createSSLConfiguredHttpClient(userAgent = "BlackDuckSecurityTask") {
 }
 exports.createSSLConfiguredHttpClient = createSSLConfiguredHttpClient;
 /**
- * Gets a shared HTTPS agent with SSL configuration.
- * This properly combines system CAs with custom CAs for direct HTTPS operations.
- * Use this for file downloads and direct HTTPS requests.
- *
- * @returns HTTPS agent configured with appropriate SSL settings
- */
-function getSharedHttpsAgent() {
-    return createSSLConfiguredHttpsAgent();
-}
-exports.getSharedHttpsAgent = getSharedHttpsAgent;
-/**
  * Gets a shared HttpClient instance with SSL configuration.
  * This is for API operations using typed-rest-client.
  * Use this for structured API operations that need typed responses.
@@ -3793,6 +3838,10 @@ function updateBlackDuckSarifPath(productInputFilePath, sarifPath, fsWrapper = n
     }
 }
 exports.updateBlackDuckSarifPath = updateBlackDuckSarifPath;
+function formatURLString(url, ...args) {
+    return url.replace(/{(\d+)}/g, (match, index) => encodeURIComponent(args[index]) || "");
+}
+exports.formatURLString = formatURLString;
 
 
 /***/ }),
