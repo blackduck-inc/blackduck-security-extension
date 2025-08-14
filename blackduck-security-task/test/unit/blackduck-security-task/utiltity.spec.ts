@@ -1390,19 +1390,19 @@ describe("Utilities", () => {
     });
     describe('stringFormat', () => {
         it('should replace a single placeholder', () => {
-            const result = utility.stringFormat('api/{0}/details', 'user');
+            const result = utility.formatURLString('api/{0}/details', 'user');
             expect(result).to.equal('api/user/details');
         });
         it('should replace multiple placeholders', () => {
-            const result = utility.stringFormat('api/{0}/details/{1}', 'user', '42');
+            const result = utility.formatURLString('api/{0}/details/{1}', 'user', '42');
             expect(result).to.equal('api/user/details/42');
         });
         it('should encode special characters', () => {
-            const result = utility.stringFormat('search/{0}', 'a b/c?');
+            const result = utility.formatURLString('search/{0}', 'a b/c?');
             expect(result).to.equal('search/a%20b%2Fc%3F');
         });
         it('should return original string if no placeholders', () => {
-            const result = utility.stringFormat('api/user/details');
+            const result = utility.formatURLString('api/user/details');
             expect(result).to.equal('api/user/details');
         });
     });

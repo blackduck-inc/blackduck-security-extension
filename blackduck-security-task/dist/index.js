@@ -626,7 +626,7 @@ class AzureService {
     fetchAzureServerApiVersion(url, orgName, projectName, repoName, userToken) {
         var _a, _b;
         return __awaiter(this, void 0, void 0, function* () {
-            const repoEndpoint = (0, utility_1.stringFormat)(url + this.azureGetRepositoryAPI, orgName, projectName, repoName);
+            const repoEndpoint = (0, utility_1.formatURLString)(url + this.azureGetRepositoryAPI, orgName, projectName, repoName);
             const encodedToken = Buffer.from(`:${userToken}`, "utf8").toString("base64");
             const response = yield (0, utility_1.getSharedHttpClient)().get(repoEndpoint, {
                 Authorization: `Basic ${encodedToken}`,
@@ -3310,9 +3310,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.stringFormat = exports.clearHttpClientCache = exports.getSharedHttpClient = exports.createSSLConfiguredHttpClient = exports.createSSLConfiguredHttpsAgent = exports.extractSarifOutputPath = exports.copySarifFileToIntegrationDefaultPath = exports.extractOutputJsonFilename = exports.getMappedTaskResult = exports.equalsIgnoreCase = exports.getStatusCode = exports.extractBranchName = exports.isPullRequestEvent = exports.IS_PR_EVENT = exports.filterEmptyData = exports.getIntegrationDefaultSarifReportPath = exports.getDefaultSarifReportPath = exports.sleep = exports.getWorkSpaceDirectory = exports.isBoolean = exports.parseToBoolean = exports.getRemoteFile = exports._getAgentTemp = exports._createExtractFolder = exports.extractZipWithQuiet = exports.extractZipped = exports.getTempDir = exports.cleanUrl = void 0;
+exports.formatURLString = exports.updateBlackDuckSarifPath = exports.updatePolarisSarifPath = exports.updateSarifFilePaths = exports.LoggerWrapper = exports.PathWrapper = exports.FileSystemWrapper = exports.extractInputJsonFilename = exports.clearHttpClientCache = exports.getSharedHttpClient = exports.createSSLConfiguredHttpClient = exports.createSSLConfiguredHttpsAgent = exports.getMappedTaskResult = exports.equalsIgnoreCase = exports.getStatusCode = exports.extractBranchName = exports.isPullRequestEvent = exports.IS_PR_EVENT = exports.filterEmptyData = exports.getIntegrationDefaultSarifReportPath = exports.getDefaultSarifReportPath = exports.sleep = exports.getWorkSpaceDirectory = exports.isBoolean = exports.parseToBoolean = exports.getRemoteFile = exports._getAgentTemp = exports._createExtractFolder = exports.extractZipWithQuiet = exports.extractZipped = exports.getTempDir = exports.cleanUrl = void 0;
 const path_1 = __importDefault(__nccwpck_require__(1017));
-const fs = __importStar(__nccwpck_require__(7147));
 const utility = __importStar(__nccwpck_require__(8383));
 const constants = __importStar(__nccwpck_require__(8673));
 const application_constant_1 = __nccwpck_require__(8673);
@@ -3327,6 +3326,8 @@ const BuildStatus_1 = __nccwpck_require__(6724);
 const HttpClient_1 = __nccwpck_require__(5538);
 const inputs = __importStar(__nccwpck_require__(264));
 const ssl_utils_1 = __nccwpck_require__(6821);
+const validator_1 = __nccwpck_require__(2062);
+const fs_1 = __nccwpck_require__(7147);
 function cleanUrl(url) {
     if (url && url.endsWith("/")) {
         return url.slice(0, url.length - 1);
@@ -3559,63 +3560,6 @@ function getMappedTaskResult(buildStatus) {
     }
 }
 exports.getMappedTaskResult = getMappedTaskResult;
-// Extract File name from the formatted command
-function extractOutputJsonFilename(command) {
-    const match = command.match(/--out\s+([^\s]+)/);
-    if (match && match[1]) {
-        // Extract the full path and remove any quotes
-        const outputFilePath = match[1].replace(/^["']|["']$/g, "");
-        taskLib.debug(`Extracted Output Path:::: ${outputFilePath}`);
-        return outputFilePath || "";
-    }
-    return "";
-}
-exports.extractOutputJsonFilename = extractOutputJsonFilename;
-// Extract sarif output file path from out json
-function copySarifFileToIntegrationDefaultPath(sarifFilePath) {
-    const sourceDirectory = process.env["BUILD_SOURCESDIRECTORY"] || "";
-    const sarifFileName = path_1.default.basename(sarifFilePath);
-    const isPolarisFile = sarifFileName === constants.POLARIS_OUTPUT_FILE_NAME;
-    const isBlackduckFile = sarifFileName === constants.BD_OUTPUT_FILE_NAME;
-    if (!isPolarisFile && !isBlackduckFile)
-        return;
-    const sarifOutputPath = extractSarifOutputPath(sarifFilePath, sarifFileName);
-    if (!sarifOutputPath)
-        return;
-    const integrationSarifDir = path_1.default.dirname(isPolarisFile
-        ? constants.INTEGRATIONS_POLARIS_DEFAULT_SARIF_FILE_PATH
-        : constants.INTEGRATIONS_BLACKDUCKSCA_DEFAULT_SARIF_FILE_PATH);
-    const integrationSarifDirPath = path_1.default.join(sourceDirectory, integrationSarifDir);
-    const destinationFile = path_1.default.join(integrationSarifDirPath, constants.SARIF_DEFAULT_FILE_NAME);
-    try {
-        fs.mkdirSync(integrationSarifDirPath, { recursive: true });
-        fs.copyFileSync(sarifOutputPath, destinationFile);
-        taskLib.debug(`SARIF file ${fs.existsSync(destinationFile) ? "overwritten" : "copied"} at: ${destinationFile}`);
-    }
-    catch (error) {
-        console.error("Error copying SARIF file:", error);
-    }
-}
-exports.copySarifFileToIntegrationDefaultPath = copySarifFileToIntegrationDefaultPath;
-// Extract the file name from the path
-function extractSarifOutputPath(outputJsonPath, sarifFileName) {
-    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k;
-    try {
-        const config = JSON.parse(fs.readFileSync(outputJsonPath, "utf-8"));
-        const sarifOutputPath = sarifFileName === constants.POLARIS_OUTPUT_FILE_NAME
-            ? (_e = (_d = (_c = (_b = (_a = config === null || config === void 0 ? void 0 : config.data) === null || _a === void 0 ? void 0 : _a.polaris) === null || _b === void 0 ? void 0 : _b.reports) === null || _c === void 0 ? void 0 : _c.sarif) === null || _d === void 0 ? void 0 : _d.file) === null || _e === void 0 ? void 0 : _e.output
-            : (_k = (_j = (_h = (_g = (_f = config === null || config === void 0 ? void 0 : config.data) === null || _f === void 0 ? void 0 : _f.blackducksca) === null || _g === void 0 ? void 0 : _g.reports) === null || _h === void 0 ? void 0 : _h.sarif) === null || _j === void 0 ? void 0 : _j.file) === null || _k === void 0 ? void 0 : _k.output;
-        if (!sarifOutputPath) {
-            return "";
-        }
-        return sarifOutputPath;
-    }
-    catch (error) {
-        console.error("Error reading or parsing output JSON file:", error);
-        return "";
-    }
-}
-exports.extractSarifOutputPath = extractSarifOutputPath;
 // Singleton HTTPS agent cache for downloads (with proper system + custom CA combination)
 let _httpsAgentCache = null;
 let _httpsAgentConfigHash = null;
@@ -3720,10 +3664,184 @@ function clearHttpClientCache() {
     taskLib.debug("HTTP client and HTTPS agent caches cleared");
 }
 exports.clearHttpClientCache = clearHttpClientCache;
-function stringFormat(url, ...args) {
+// Extract File name from the formatted command
+function extractInputJsonFilename(command) {
+    const match = command.match(/--input\s+([^\s]+)/);
+    if (match && match[1]) {
+        // Extract just the filename from the full path
+        const fullPath = match[1];
+        return fullPath || "";
+    }
+    return "";
+}
+exports.extractInputJsonFilename = extractInputJsonFilename;
+// File system wrapper for testability
+class FileSystemWrapper {
+    readFileSync(filePath, encoding) {
+        return (0, fs_1.readFileSync)(filePath, encoding);
+    }
+    writeFileSync(filePath, data) {
+        (0, fs_1.writeFileSync)(filePath, data);
+    }
+}
+exports.FileSystemWrapper = FileSystemWrapper;
+// Path wrapper for testability
+class PathWrapper {
+    resolve(pathString) {
+        return path_1.default.resolve(pathString);
+    }
+    join(...paths) {
+        return path_1.default.join(...paths);
+    }
+}
+exports.PathWrapper = PathWrapper;
+// Logger wrapper for testability
+class LoggerWrapper {
+    debug(message) {
+        taskLib.debug(message);
+    }
+}
+exports.LoggerWrapper = LoggerWrapper;
+function updateSarifFilePaths(workSpaceDir, productInputFileName, bridgeVersion, productInputFilPath) {
+    const fileName = productInputFileName.replace(/"$/, "");
+    taskLib.debug(`Sarif file name :::: ${fileName}`);
+    if (fileName === "polaris_input.json") {
+        let sarifPath;
+        if (bridgeVersion < constants.VERSION) {
+            if ((0, validator_1.isNullOrEmptyValue)(inputs.POLARIS_REPORTS_SARIF_FILE_PATH)) {
+                sarifPath = path_1.default.join(constants.BRIDGE_CLI_LOCAL_DIRECTORY, constants.DEFAULT_POLARIS_SARIF_GENERATOR_DIRECTORY, constants.SARIF_DEFAULT_FILE_NAME);
+            }
+            else {
+                sarifPath = inputs.POLARIS_REPORTS_SARIF_FILE_PATH.trim();
+            }
+        }
+        else {
+            if ((0, validator_1.isNullOrEmptyValue)(inputs.POLARIS_REPORTS_SARIF_FILE_PATH)) {
+                sarifPath = path_1.default.join(workSpaceDir, constants.INTEGRATIONS_POLARIS_DEFAULT_SARIF_FILE_PATH);
+            }
+            else {
+                sarifPath = inputs.POLARIS_REPORTS_SARIF_FILE_PATH.trim();
+            }
+        }
+        taskLib.debug(`sarifPath inside updateSarifFilePaths method :::: ${sarifPath}`);
+        updatePolarisSarifPath(productInputFilPath, sarifPath);
+    }
+    if (fileName === "bd_input.json") {
+        let sarifPath;
+        if (bridgeVersion < constants.VERSION) {
+            if ((0, validator_1.isNullOrEmptyValue)(inputs.BLACKDUCKSCA_REPORTS_SARIF_FILE_PATH)) {
+                sarifPath = path_1.default.join(constants.BRIDGE_CLI_LOCAL_DIRECTORY, constants.DEFAULT_BLACKDUCK_SARIF_GENERATOR_DIRECTORY, constants.SARIF_DEFAULT_FILE_NAME);
+            }
+            else {
+                sarifPath = inputs.BLACKDUCKSCA_REPORTS_SARIF_FILE_PATH.trim();
+            }
+        }
+        else {
+            if ((0, validator_1.isNullOrEmptyValue)(inputs.BLACKDUCKSCA_REPORTS_SARIF_FILE_PATH)) {
+                sarifPath = path_1.default.join(workSpaceDir, constants.INTEGRATIONS_BLACKDUCKSCA_DEFAULT_SARIF_FILE_PATH);
+            }
+            else {
+                sarifPath = inputs.BLACKDUCKSCA_REPORTS_SARIF_FILE_PATH.trim();
+            }
+        }
+        updateBlackDuckSarifPath(productInputFilPath, sarifPath);
+    }
+}
+exports.updateSarifFilePaths = updateSarifFilePaths;
+// Update SARIF file path in the input JSON
+function updatePolarisSarifPath(productInputFilePath, sarifPath, fsWrapper = new FileSystemWrapper(), logger = new LoggerWrapper()) {
+    try {
+        // Read and parse the JSON file
+        const cleanPath = productInputFilePath.replace(/"/g, "");
+        const jsonContent = fsWrapper.readFileSync(cleanPath, "utf-8");
+        const config = JSON.parse(jsonContent);
+        config.data = config.data || {};
+        config.data.polaris = config.data.polaris || {};
+        // Initialize reports with required sarif property
+        if (!config.data.polaris.reports) {
+            config.data.polaris.reports = {
+                sarif: {
+                    file: {
+                        path: "",
+                    },
+                },
+            };
+        }
+        // Ensure sarif exists (it's required by the interface)
+        if (!config.data.polaris.reports.sarif) {
+            config.data.polaris.reports.sarif = {
+                file: {
+                    path: "",
+                },
+            };
+        }
+        // Ensure file object exists within sarif
+        if (!config.data.polaris.reports.sarif.file) {
+            config.data.polaris.reports.sarif.file = {
+                path: "",
+            };
+        }
+        // Now safely update the path
+        config.data.polaris.reports.sarif.file.path = sarifPath;
+        logger.debug(`Updated SARIF file path to: ${config.data.polaris.reports.sarif.file.path}`);
+        // Write back the updated JSON with proper formatting
+        fsWrapper.writeFileSync(cleanPath, JSON.stringify(config, null, 2));
+        logger.debug(`Successfully updated Polaris SARIF file path: ${sarifPath}`);
+    }
+    catch (error) {
+        logger.debug(`Error updating SARIF file path: ${error}`);
+    }
+}
+exports.updatePolarisSarifPath = updatePolarisSarifPath;
+// Update SARIF file path in the input JSON
+function updateBlackDuckSarifPath(productInputFilePath, sarifPath, fsWrapper = new FileSystemWrapper(), logger = new LoggerWrapper()) {
+    try {
+        // Read and parse the JSON file
+        const cleanPath = productInputFilePath.replace(/"/g, "");
+        const jsonContent = fsWrapper.readFileSync(cleanPath, "utf-8");
+        const config = JSON.parse(jsonContent);
+        config.data = config.data || {};
+        config.data.blackducksca = config.data.blackducksca || {};
+        // Initialize reports with required sarif property
+        if (!config.data.blackducksca.reports) {
+            config.data.blackducksca.reports = {
+                sarif: {
+                    file: {
+                        path: "",
+                    },
+                },
+            };
+        }
+        // Ensure sarif exists (it's required by the interface)
+        if (!config.data.blackducksca.reports.sarif) {
+            config.data.blackducksca.reports.sarif = {
+                file: {
+                    path: "",
+                },
+            };
+        }
+        // Ensure file object exists within sarif
+        if (!config.data.blackducksca.reports.sarif.file) {
+            config.data.blackducksca.reports.sarif.file = {
+                path: "",
+            };
+        }
+        // Now safely update the path
+        config.data.blackducksca.reports.sarif.file.path = sarifPath;
+        logger.debug(`Updated SARIF file path to: ${config.data.blackducksca.reports.sarif.file.path}`);
+        // Write back the updated JSON with proper formatting
+        fsWrapper.writeFileSync(cleanPath, JSON.stringify(config, null, 2));
+        logger.debug(`Successfully updated Polaris SARIF file path: ${sarifPath}`);
+    }
+    catch (error) {
+        logger.debug(`Error updating SARIF file path: ${error}`);
+    }
+}
+exports.updateBlackDuckSarifPath = updateBlackDuckSarifPath;
+function formatURLString(url, ...args) {
     return url.replace(/{(\d+)}/g, (match, index) => encodeURIComponent(args[index]) || "");
 }
-exports.stringFormat = stringFormat;
+exports.formatURLString = formatURLString;
 
 
 /***/ }),
@@ -3758,7 +3876,7 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.validateSrmInputs = exports.validateBlackDuckSCAInputs = exports.validateBlackduckFailureSeverities = exports.validateCoverityInstallDirectoryParam = exports.validateCoverityInputs = exports.validateBridgeUrl = exports.isNullOrEmpty = exports.validateParameters = exports.validatePolarisInputs = exports.validateScanTypes = void 0;
+exports.isNullOrEmptyValue = exports.validateSrmInputs = exports.validateBlackDuckSCAInputs = exports.validateBlackduckFailureSeverities = exports.validateCoverityInstallDirectoryParam = exports.validateCoverityInputs = exports.validateBridgeUrl = exports.isNullOrEmpty = exports.validateParameters = exports.validatePolarisInputs = exports.validateScanTypes = void 0;
 const constants = __importStar(__nccwpck_require__(8673));
 const inputs = __importStar(__nccwpck_require__(264));
 const taskLib = __importStar(__nccwpck_require__(347));
@@ -3882,6 +4000,10 @@ function validateSrmInputs() {
     return errors;
 }
 exports.validateSrmInputs = validateSrmInputs;
+function isNullOrEmptyValue(param) {
+    return param == null || param.length === 0;
+}
+exports.isNullOrEmptyValue = isNullOrEmptyValue;
 
 
 /***/ }),
@@ -3948,7 +4070,8 @@ function run() {
         taskLib.debug(`workSpaceDir: ${workSpaceDir}`);
         let azurePrResponse;
         let bridgeVersion = "";
-        let productOutputFilPath = "";
+        let productInputFileName = "";
+        let productInputFilPath = "";
         try {
             const bridge = new bridge_cli_1.BridgeCli();
             (0, input_1.showLogForDeprecatedInputs)();
@@ -3965,16 +4088,15 @@ function run() {
             // Get Bridge version from bridge Path
             bridgeVersion = getBridgeVersion(bridgePath);
             taskLib.debug(`bridgePath: ${bridgeVersion}`);
+            //Extract input.json file and update sarif default file path based on bridge version
+            productInputFilPath = util.extractInputJsonFilename(command);
+            // Extract product input file name from the path (cross-platform compatible)
+            productInputFileName = (0, path_1.basename)(productInputFilPath);
+            taskLib.debug(`productInputFileName: ${productInputFileName}`);
+            // Based on bridge version and productInputFileName get the sarif file path
+            util.updateSarifFilePaths(workSpaceDir, productInputFileName, bridgeVersion, productInputFilPath);
             // Execute prepared commands
             const result = yield bridge.executeBridgeCliCommand(bridgePath, (0, utility_1.getWorkSpaceDirectory)(), command);
-            // Extract Sarif file out file from the out.json file
-            productOutputFilPath = util.extractOutputJsonFilename(command);
-            taskLib.debug(`Product out file path: ${productOutputFilPath}`);
-            if (inputs.POLARIS_REPORTS_SARIF_CREATE === "true" ||
-                inputs.BLACKDUCKSCA_REPORTS_SARIF_CREATE === "true") {
-                // Copy Sarif file from out.json to integration default directory
-                util.copySarifFileToIntegrationDefaultPath(productOutputFilPath);
-            }
             // The statement set the exit code in the 'status' variable which can be used in the YAML file
             if ((0, utility_1.parseToBoolean)(inputs.RETURN_STATUS)) {
                 console.log(application_constant_1.TASK_RETURN_STATUS);
@@ -3990,9 +4112,9 @@ function run() {
                     if (bridgeVersion < constants.VERSION) {
                         (0, diagnostics_1.uploadSarifResultAsArtifact)(constants.DEFAULT_BLACKDUCK_SARIF_GENERATOR_DIRECTORY, inputs.BLACKDUCKSCA_REPORTS_SARIF_FILE_PATH);
                     }
-                }
-                else {
-                    (0, diagnostics_1.uploadSarifResultAsArtifact)(constants.INTEGRATIONS_DEFAULT_BLACKDUCKSCA_SARIF_GENERATOR_DIRECTORY, inputs.BLACKDUCKSCA_REPORTS_SARIF_FILE_PATH);
+                    else {
+                        (0, diagnostics_1.uploadSarifResultAsArtifact)(constants.INTEGRATIONS_DEFAULT_BLACKDUCKSCA_SARIF_GENERATOR_DIRECTORY, inputs.BLACKDUCKSCA_REPORTS_SARIF_FILE_PATH);
+                    }
                 }
             }
             if ((0, utility_1.parseToBoolean)(inputs.POLARIS_REPORTS_SARIF_CREATE)) {
@@ -10526,6 +10648,83 @@ function expand(str, isTop) {
 
 /***/ }),
 
+/***/ 9227:
+/***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
+
+"use strict";
+
+
+var bind = __nccwpck_require__(8334);
+
+var $apply = __nccwpck_require__(4177);
+var $call = __nccwpck_require__(2808);
+var $reflectApply = __nccwpck_require__(8309);
+
+/** @type {import('./actualApply')} */
+module.exports = $reflectApply || bind.call($call, $apply);
+
+
+/***/ }),
+
+/***/ 4177:
+/***/ ((module) => {
+
+"use strict";
+
+
+/** @type {import('./functionApply')} */
+module.exports = Function.prototype.apply;
+
+
+/***/ }),
+
+/***/ 2808:
+/***/ ((module) => {
+
+"use strict";
+
+
+/** @type {import('./functionCall')} */
+module.exports = Function.prototype.call;
+
+
+/***/ }),
+
+/***/ 6815:
+/***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
+
+"use strict";
+
+
+var bind = __nccwpck_require__(8334);
+var $TypeError = __nccwpck_require__(6361);
+
+var $call = __nccwpck_require__(2808);
+var $actualApply = __nccwpck_require__(9227);
+
+/** @type {(args: [Function, thisArg?: unknown, ...args: unknown[]]) => Function} TODO FIXME, find a way to use import('.') */
+module.exports = function callBindBasic(args) {
+	if (args.length < 1 || typeof args[0] !== 'function') {
+		throw new $TypeError('a function is required');
+	}
+	return $actualApply(bind, $call, args);
+};
+
+
+/***/ }),
+
+/***/ 8309:
+/***/ ((module) => {
+
+"use strict";
+
+
+/** @type {import('./reflectApply')} */
+module.exports = typeof Reflect !== 'undefined' && Reflect && Reflect.apply;
+
+
+/***/ }),
+
 /***/ 8803:
 /***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
 
@@ -10949,6 +11148,162 @@ module.exports = Node;
 
 /***/ }),
 
+/***/ 2693:
+/***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
+
+"use strict";
+
+
+var callBind = __nccwpck_require__(6815);
+var gOPD = __nccwpck_require__(8501);
+
+var hasProtoAccessor;
+try {
+	// eslint-disable-next-line no-extra-parens, no-proto
+	hasProtoAccessor = /** @type {{ __proto__?: typeof Array.prototype }} */ ([]).__proto__ === Array.prototype;
+} catch (e) {
+	if (!e || typeof e !== 'object' || !('code' in e) || e.code !== 'ERR_PROTO_ACCESS') {
+		throw e;
+	}
+}
+
+// eslint-disable-next-line no-extra-parens
+var desc = !!hasProtoAccessor && gOPD && gOPD(Object.prototype, /** @type {keyof typeof Object.prototype} */ ('__proto__'));
+
+var $Object = Object;
+var $getPrototypeOf = $Object.getPrototypeOf;
+
+/** @type {import('./get')} */
+module.exports = desc && typeof desc.get === 'function'
+	? callBind([desc.get])
+	: typeof $getPrototypeOf === 'function'
+		? /** @type {import('./get')} */ function getDunder(value) {
+			// eslint-disable-next-line eqeqeq
+			return $getPrototypeOf(value == null ? value : $Object(value));
+		}
+		: false;
+
+
+/***/ }),
+
+/***/ 6123:
+/***/ ((module) => {
+
+"use strict";
+
+
+/** @type {import('.')} */
+var $defineProperty = Object.defineProperty || false;
+if ($defineProperty) {
+	try {
+		$defineProperty({}, 'a', { value: 1 });
+	} catch (e) {
+		// IE 8 has a broken defineProperty
+		$defineProperty = false;
+	}
+}
+
+module.exports = $defineProperty;
+
+
+/***/ }),
+
+/***/ 1933:
+/***/ ((module) => {
+
+"use strict";
+
+
+/** @type {import('./eval')} */
+module.exports = EvalError;
+
+
+/***/ }),
+
+/***/ 8015:
+/***/ ((module) => {
+
+"use strict";
+
+
+/** @type {import('.')} */
+module.exports = Error;
+
+
+/***/ }),
+
+/***/ 4415:
+/***/ ((module) => {
+
+"use strict";
+
+
+/** @type {import('./range')} */
+module.exports = RangeError;
+
+
+/***/ }),
+
+/***/ 6279:
+/***/ ((module) => {
+
+"use strict";
+
+
+/** @type {import('./ref')} */
+module.exports = ReferenceError;
+
+
+/***/ }),
+
+/***/ 5474:
+/***/ ((module) => {
+
+"use strict";
+
+
+/** @type {import('./syntax')} */
+module.exports = SyntaxError;
+
+
+/***/ }),
+
+/***/ 6361:
+/***/ ((module) => {
+
+"use strict";
+
+
+/** @type {import('./type')} */
+module.exports = TypeError;
+
+
+/***/ }),
+
+/***/ 5065:
+/***/ ((module) => {
+
+"use strict";
+
+
+/** @type {import('./uri')} */
+module.exports = URIError;
+
+
+/***/ }),
+
+/***/ 8308:
+/***/ ((module) => {
+
+"use strict";
+
+
+/** @type {import('.')} */
+module.exports = Object;
+
+
+/***/ }),
+
 /***/ 6863:
 /***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
 
@@ -11341,43 +11696,75 @@ exports.realpath = function realpath(p, cache, cb) {
 /* eslint no-invalid-this: 1 */
 
 var ERROR_MESSAGE = 'Function.prototype.bind called on incompatible ';
-var slice = Array.prototype.slice;
 var toStr = Object.prototype.toString;
+var max = Math.max;
 var funcType = '[object Function]';
+
+var concatty = function concatty(a, b) {
+    var arr = [];
+
+    for (var i = 0; i < a.length; i += 1) {
+        arr[i] = a[i];
+    }
+    for (var j = 0; j < b.length; j += 1) {
+        arr[j + a.length] = b[j];
+    }
+
+    return arr;
+};
+
+var slicy = function slicy(arrLike, offset) {
+    var arr = [];
+    for (var i = offset || 0, j = 0; i < arrLike.length; i += 1, j += 1) {
+        arr[j] = arrLike[i];
+    }
+    return arr;
+};
+
+var joiny = function (arr, joiner) {
+    var str = '';
+    for (var i = 0; i < arr.length; i += 1) {
+        str += arr[i];
+        if (i + 1 < arr.length) {
+            str += joiner;
+        }
+    }
+    return str;
+};
 
 module.exports = function bind(that) {
     var target = this;
-    if (typeof target !== 'function' || toStr.call(target) !== funcType) {
+    if (typeof target !== 'function' || toStr.apply(target) !== funcType) {
         throw new TypeError(ERROR_MESSAGE + target);
     }
-    var args = slice.call(arguments, 1);
+    var args = slicy(arguments, 1);
 
     var bound;
     var binder = function () {
         if (this instanceof bound) {
             var result = target.apply(
                 this,
-                args.concat(slice.call(arguments))
+                concatty(args, arguments)
             );
             if (Object(result) === result) {
                 return result;
             }
             return this;
-        } else {
-            return target.apply(
-                that,
-                args.concat(slice.call(arguments))
-            );
         }
+        return target.apply(
+            that,
+            concatty(args, arguments)
+        );
+
     };
 
-    var boundLength = Math.max(0, target.length - args.length);
+    var boundLength = max(0, target.length - args.length);
     var boundArgs = [];
     for (var i = 0; i < boundLength; i++) {
-        boundArgs.push('$' + i);
+        boundArgs[i] = '$' + i;
     }
 
-    bound = Function('binder', 'return function (' + boundArgs.join(',') + '){ return binder.apply(this,arguments); }')(binder);
+    bound = Function('binder', 'return function (' + joiny(boundArgs, ',') + '){ return binder.apply(this,arguments); }')(binder);
 
     if (target.prototype) {
         var Empty = function Empty() {};
@@ -11413,9 +11800,25 @@ module.exports = Function.prototype.bind || implementation;
 
 var undefined;
 
-var $SyntaxError = SyntaxError;
+var $Object = __nccwpck_require__(8308);
+
+var $Error = __nccwpck_require__(8015);
+var $EvalError = __nccwpck_require__(1933);
+var $RangeError = __nccwpck_require__(4415);
+var $ReferenceError = __nccwpck_require__(6279);
+var $SyntaxError = __nccwpck_require__(5474);
+var $TypeError = __nccwpck_require__(6361);
+var $URIError = __nccwpck_require__(5065);
+
+var abs = __nccwpck_require__(9775);
+var floor = __nccwpck_require__(924);
+var max = __nccwpck_require__(2419);
+var min = __nccwpck_require__(3373);
+var pow = __nccwpck_require__(8029);
+var round = __nccwpck_require__(9396);
+var sign = __nccwpck_require__(9091);
+
 var $Function = Function;
-var $TypeError = TypeError;
 
 // eslint-disable-next-line consistent-return
 var getEvalledConstructor = function (expressionSyntax) {
@@ -11424,14 +11827,8 @@ var getEvalledConstructor = function (expressionSyntax) {
 	} catch (e) {}
 };
 
-var $gOPD = Object.getOwnPropertyDescriptor;
-if ($gOPD) {
-	try {
-		$gOPD({}, '');
-	} catch (e) {
-		$gOPD = null; // this is IE 8, which has a broken gOPD
-	}
-}
+var $gOPD = __nccwpck_require__(8501);
+var $defineProperty = __nccwpck_require__(6123);
 
 var throwTypeError = function () {
 	throw new $TypeError();
@@ -11455,17 +11852,23 @@ var ThrowTypeError = $gOPD
 
 var hasSymbols = __nccwpck_require__(587)();
 
-var getProto = Object.getPrototypeOf || function (x) { return x.__proto__; }; // eslint-disable-line no-proto
+var getProto = __nccwpck_require__(3592);
+var $ObjectGPO = __nccwpck_require__(5045);
+var $ReflectGPO = __nccwpck_require__(8859);
+
+var $apply = __nccwpck_require__(4177);
+var $call = __nccwpck_require__(2808);
 
 var needsEval = {};
 
-var TypedArray = typeof Uint8Array === 'undefined' ? undefined : getProto(Uint8Array);
+var TypedArray = typeof Uint8Array === 'undefined' || !getProto ? undefined : getProto(Uint8Array);
 
 var INTRINSICS = {
+	__proto__: null,
 	'%AggregateError%': typeof AggregateError === 'undefined' ? undefined : AggregateError,
 	'%Array%': Array,
 	'%ArrayBuffer%': typeof ArrayBuffer === 'undefined' ? undefined : ArrayBuffer,
-	'%ArrayIteratorPrototype%': hasSymbols ? getProto([][Symbol.iterator]()) : undefined,
+	'%ArrayIteratorPrototype%': hasSymbols && getProto ? getProto([][Symbol.iterator]()) : undefined,
 	'%AsyncFromSyncIteratorPrototype%': undefined,
 	'%AsyncFunction%': needsEval,
 	'%AsyncGenerator%': needsEval,
@@ -11482,9 +11885,10 @@ var INTRINSICS = {
 	'%decodeURIComponent%': decodeURIComponent,
 	'%encodeURI%': encodeURI,
 	'%encodeURIComponent%': encodeURIComponent,
-	'%Error%': Error,
+	'%Error%': $Error,
 	'%eval%': eval, // eslint-disable-line no-eval
-	'%EvalError%': EvalError,
+	'%EvalError%': $EvalError,
+	'%Float16Array%': typeof Float16Array === 'undefined' ? undefined : Float16Array,
 	'%Float32Array%': typeof Float32Array === 'undefined' ? undefined : Float32Array,
 	'%Float64Array%': typeof Float64Array === 'undefined' ? undefined : Float64Array,
 	'%FinalizationRegistry%': typeof FinalizationRegistry === 'undefined' ? undefined : FinalizationRegistry,
@@ -11495,26 +11899,27 @@ var INTRINSICS = {
 	'%Int32Array%': typeof Int32Array === 'undefined' ? undefined : Int32Array,
 	'%isFinite%': isFinite,
 	'%isNaN%': isNaN,
-	'%IteratorPrototype%': hasSymbols ? getProto(getProto([][Symbol.iterator]())) : undefined,
+	'%IteratorPrototype%': hasSymbols && getProto ? getProto(getProto([][Symbol.iterator]())) : undefined,
 	'%JSON%': typeof JSON === 'object' ? JSON : undefined,
 	'%Map%': typeof Map === 'undefined' ? undefined : Map,
-	'%MapIteratorPrototype%': typeof Map === 'undefined' || !hasSymbols ? undefined : getProto(new Map()[Symbol.iterator]()),
+	'%MapIteratorPrototype%': typeof Map === 'undefined' || !hasSymbols || !getProto ? undefined : getProto(new Map()[Symbol.iterator]()),
 	'%Math%': Math,
 	'%Number%': Number,
-	'%Object%': Object,
+	'%Object%': $Object,
+	'%Object.getOwnPropertyDescriptor%': $gOPD,
 	'%parseFloat%': parseFloat,
 	'%parseInt%': parseInt,
 	'%Promise%': typeof Promise === 'undefined' ? undefined : Promise,
 	'%Proxy%': typeof Proxy === 'undefined' ? undefined : Proxy,
-	'%RangeError%': RangeError,
-	'%ReferenceError%': ReferenceError,
+	'%RangeError%': $RangeError,
+	'%ReferenceError%': $ReferenceError,
 	'%Reflect%': typeof Reflect === 'undefined' ? undefined : Reflect,
 	'%RegExp%': RegExp,
 	'%Set%': typeof Set === 'undefined' ? undefined : Set,
-	'%SetIteratorPrototype%': typeof Set === 'undefined' || !hasSymbols ? undefined : getProto(new Set()[Symbol.iterator]()),
+	'%SetIteratorPrototype%': typeof Set === 'undefined' || !hasSymbols || !getProto ? undefined : getProto(new Set()[Symbol.iterator]()),
 	'%SharedArrayBuffer%': typeof SharedArrayBuffer === 'undefined' ? undefined : SharedArrayBuffer,
 	'%String%': String,
-	'%StringIteratorPrototype%': hasSymbols ? getProto(''[Symbol.iterator]()) : undefined,
+	'%StringIteratorPrototype%': hasSymbols && getProto ? getProto(''[Symbol.iterator]()) : undefined,
 	'%Symbol%': hasSymbols ? Symbol : undefined,
 	'%SyntaxError%': $SyntaxError,
 	'%ThrowTypeError%': ThrowTypeError,
@@ -11524,18 +11929,33 @@ var INTRINSICS = {
 	'%Uint8ClampedArray%': typeof Uint8ClampedArray === 'undefined' ? undefined : Uint8ClampedArray,
 	'%Uint16Array%': typeof Uint16Array === 'undefined' ? undefined : Uint16Array,
 	'%Uint32Array%': typeof Uint32Array === 'undefined' ? undefined : Uint32Array,
-	'%URIError%': URIError,
+	'%URIError%': $URIError,
 	'%WeakMap%': typeof WeakMap === 'undefined' ? undefined : WeakMap,
 	'%WeakRef%': typeof WeakRef === 'undefined' ? undefined : WeakRef,
-	'%WeakSet%': typeof WeakSet === 'undefined' ? undefined : WeakSet
+	'%WeakSet%': typeof WeakSet === 'undefined' ? undefined : WeakSet,
+
+	'%Function.prototype.call%': $call,
+	'%Function.prototype.apply%': $apply,
+	'%Object.defineProperty%': $defineProperty,
+	'%Object.getPrototypeOf%': $ObjectGPO,
+	'%Math.abs%': abs,
+	'%Math.floor%': floor,
+	'%Math.max%': max,
+	'%Math.min%': min,
+	'%Math.pow%': pow,
+	'%Math.round%': round,
+	'%Math.sign%': sign,
+	'%Reflect.getPrototypeOf%': $ReflectGPO
 };
 
-try {
-	null.error; // eslint-disable-line no-unused-expressions
-} catch (e) {
-	// https://github.com/tc39/proposal-shadowrealm/pull/384#issuecomment-1364264229
-	var errorProto = getProto(getProto(e));
-	INTRINSICS['%Error.prototype%'] = errorProto;
+if (getProto) {
+	try {
+		null.error; // eslint-disable-line no-unused-expressions
+	} catch (e) {
+		// https://github.com/tc39/proposal-shadowrealm/pull/384#issuecomment-1364264229
+		var errorProto = getProto(getProto(e));
+		INTRINSICS['%Error.prototype%'] = errorProto;
+	}
 }
 
 var doEval = function doEval(name) {
@@ -11553,7 +11973,7 @@ var doEval = function doEval(name) {
 		}
 	} else if (name === '%AsyncIteratorPrototype%') {
 		var gen = doEval('%AsyncGenerator%');
-		if (gen) {
+		if (gen && getProto) {
 			value = getProto(gen.prototype);
 		}
 	}
@@ -11564,6 +11984,7 @@ var doEval = function doEval(name) {
 };
 
 var LEGACY_ALIASES = {
+	__proto__: null,
 	'%ArrayBufferPrototype%': ['ArrayBuffer', 'prototype'],
 	'%ArrayPrototype%': ['Array', 'prototype'],
 	'%ArrayProto_entries%': ['Array', 'prototype', 'entries'],
@@ -11618,12 +12039,12 @@ var LEGACY_ALIASES = {
 };
 
 var bind = __nccwpck_require__(8334);
-var hasOwn = __nccwpck_require__(6339);
-var $concat = bind.call(Function.call, Array.prototype.concat);
-var $spliceApply = bind.call(Function.apply, Array.prototype.splice);
-var $replace = bind.call(Function.call, String.prototype.replace);
-var $strSlice = bind.call(Function.call, String.prototype.slice);
-var $exec = bind.call(Function.call, RegExp.prototype.exec);
+var hasOwn = __nccwpck_require__(2157);
+var $concat = bind.call($call, Array.prototype.concat);
+var $spliceApply = bind.call($apply, Array.prototype.splice);
+var $replace = bind.call($call, String.prototype.replace);
+var $strSlice = bind.call($call, String.prototype.slice);
+var $exec = bind.call($call, RegExp.prototype.exec);
 
 /* adapted from https://github.com/lodash/lodash/blob/4.17.15/dist/lodash.js#L6735-L6744 */
 var rePropName = /[^%.[\]]+|\[(?:(-?\d+(?:\.\d+)?)|(["'])((?:(?!\2)[^\\]|\\.)*?)\2)\]|(?=(?:\.|\[\])(?:\.|\[\]|%$))/g;
@@ -11753,6 +12174,67 @@ module.exports = function GetIntrinsic(name, allowMissing) {
 	}
 	return value;
 };
+
+
+/***/ }),
+
+/***/ 5045:
+/***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
+
+"use strict";
+
+
+var $Object = __nccwpck_require__(8308);
+
+/** @type {import('./Object.getPrototypeOf')} */
+module.exports = $Object.getPrototypeOf || null;
+
+
+/***/ }),
+
+/***/ 8859:
+/***/ ((module) => {
+
+"use strict";
+
+
+/** @type {import('./Reflect.getPrototypeOf')} */
+module.exports = (typeof Reflect !== 'undefined' && Reflect.getPrototypeOf) || null;
+
+
+/***/ }),
+
+/***/ 3592:
+/***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
+
+"use strict";
+
+
+var reflectGetProto = __nccwpck_require__(8859);
+var originalGetProto = __nccwpck_require__(5045);
+
+var getDunderProto = __nccwpck_require__(2693);
+
+/** @type {import('.')} */
+module.exports = reflectGetProto
+	? function getProto(O) {
+		// @ts-expect-error TS can't narrow inside a closure, for some reason
+		return reflectGetProto(O);
+	}
+	: originalGetProto
+		? function getProto(O) {
+			if (!O || (typeof O !== 'object' && typeof O !== 'function')) {
+				throw new TypeError('getProto: not an object');
+			}
+			// @ts-expect-error TS can't narrow inside a closure, for some reason
+			return originalGetProto(O);
+		}
+		: getDunderProto
+			? function getProto(O) {
+				// @ts-expect-error TS can't narrow inside a closure, for some reason
+				return getDunderProto(O);
+			}
+			: null;
 
 
 /***/ }),
@@ -14246,6 +14728,41 @@ GlobSync.prototype._makeAbs = function (f) {
 
 /***/ }),
 
+/***/ 7087:
+/***/ ((module) => {
+
+"use strict";
+
+
+/** @type {import('./gOPD')} */
+module.exports = Object.getOwnPropertyDescriptor;
+
+
+/***/ }),
+
+/***/ 8501:
+/***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
+
+"use strict";
+
+
+/** @type {import('.')} */
+var $gOPD = __nccwpck_require__(7087);
+
+if ($gOPD) {
+	try {
+		$gOPD([], 'length');
+	} catch (e) {
+		// IE 8 has a broken gOPD
+		$gOPD = null;
+	}
+}
+
+module.exports = $gOPD;
+
+
+/***/ }),
+
 /***/ 587:
 /***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
 
@@ -14255,6 +14772,7 @@ GlobSync.prototype._makeAbs = function (f) {
 var origSymbol = typeof Symbol !== 'undefined' && Symbol;
 var hasSymbolSham = __nccwpck_require__(7747);
 
+/** @type {import('.')} */
 module.exports = function hasNativeSymbols() {
 	if (typeof origSymbol !== 'function') { return false; }
 	if (typeof Symbol !== 'function') { return false; }
@@ -14273,11 +14791,13 @@ module.exports = function hasNativeSymbols() {
 "use strict";
 
 
+/** @type {import('./shams')} */
 /* eslint complexity: [2, 18], max-statements: [2, 33] */
 module.exports = function hasSymbols() {
 	if (typeof Symbol !== 'function' || typeof Object.getOwnPropertySymbols !== 'function') { return false; }
 	if (typeof Symbol.iterator === 'symbol') { return true; }
 
+	/** @type {{ [k in symbol]?: unknown }} */
 	var obj = {};
 	var sym = Symbol('test');
 	var symObj = Object(sym);
@@ -14296,7 +14816,7 @@ module.exports = function hasSymbols() {
 
 	var symVal = 42;
 	obj[sym] = symVal;
-	for (sym in obj) { return false; } // eslint-disable-line no-restricted-syntax, no-unreachable-loop
+	for (var _ in obj) { return false; } // eslint-disable-line no-restricted-syntax, no-unreachable-loop
 	if (typeof Object.keys === 'function' && Object.keys(obj).length !== 0) { return false; }
 
 	if (typeof Object.getOwnPropertyNames === 'function' && Object.getOwnPropertyNames(obj).length !== 0) { return false; }
@@ -14307,7 +14827,8 @@ module.exports = function hasSymbols() {
 	if (!Object.prototype.propertyIsEnumerable.call(obj, sym)) { return false; }
 
 	if (typeof Object.getOwnPropertyDescriptor === 'function') {
-		var descriptor = Object.getOwnPropertyDescriptor(obj, sym);
+		// eslint-disable-next-line no-extra-parens
+		var descriptor = /** @type {PropertyDescriptor} */ (Object.getOwnPropertyDescriptor(obj, sym));
 		if (descriptor.value !== symVal || descriptor.enumerable !== true) { return false; }
 	}
 
@@ -14317,15 +14838,18 @@ module.exports = function hasSymbols() {
 
 /***/ }),
 
-/***/ 6339:
+/***/ 2157:
 /***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
 
 "use strict";
 
 
+var call = Function.prototype.call;
+var $hasOwn = Object.prototype.hasOwnProperty;
 var bind = __nccwpck_require__(8334);
 
-module.exports = bind.call(Function.call, Object.prototype.hasOwnProperty);
+/** @type {import('.')} */
+module.exports = bind.call(call, $hasOwn);
 
 
 /***/ }),
@@ -14779,6 +15303,111 @@ const forEachStep = (self, fn, node, thisp) => {
 }
 
 module.exports = LRUCache
+
+
+/***/ }),
+
+/***/ 9775:
+/***/ ((module) => {
+
+"use strict";
+
+
+/** @type {import('./abs')} */
+module.exports = Math.abs;
+
+
+/***/ }),
+
+/***/ 924:
+/***/ ((module) => {
+
+"use strict";
+
+
+/** @type {import('./floor')} */
+module.exports = Math.floor;
+
+
+/***/ }),
+
+/***/ 7661:
+/***/ ((module) => {
+
+"use strict";
+
+
+/** @type {import('./isNaN')} */
+module.exports = Number.isNaN || function isNaN(a) {
+	return a !== a;
+};
+
+
+/***/ }),
+
+/***/ 2419:
+/***/ ((module) => {
+
+"use strict";
+
+
+/** @type {import('./max')} */
+module.exports = Math.max;
+
+
+/***/ }),
+
+/***/ 3373:
+/***/ ((module) => {
+
+"use strict";
+
+
+/** @type {import('./min')} */
+module.exports = Math.min;
+
+
+/***/ }),
+
+/***/ 8029:
+/***/ ((module) => {
+
+"use strict";
+
+
+/** @type {import('./pow')} */
+module.exports = Math.pow;
+
+
+/***/ }),
+
+/***/ 9396:
+/***/ ((module) => {
+
+"use strict";
+
+
+/** @type {import('./round')} */
+module.exports = Math.round;
+
+
+/***/ }),
+
+/***/ 9091:
+/***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
+
+"use strict";
+
+
+var $isNaN = __nccwpck_require__(7661);
+
+/** @type {import('./sign')} */
+module.exports = function sign(number) {
+	if ($isNaN(number) || number === 0) {
+		return number;
+	}
+	return number < 0 ? -1 : +1;
+};
 
 
 /***/ }),
@@ -21851,7 +22480,7 @@ function __ncc_wildcard$0 (arg) {
   else if (arg === "mkdir.js" || arg === "mkdir") return __nccwpck_require__(2695);
   else if (arg === "mv.js" || arg === "mv") return __nccwpck_require__(9849);
   else if (arg === "popd.js" || arg === "popd") return __nccwpck_require__(227);
-  else if (arg === "pushd.js" || arg === "pushd") return __nccwpck_require__(4177);
+  else if (arg === "pushd.js" || arg === "pushd") return __nccwpck_require__(3424);
   else if (arg === "pwd.js" || arg === "pwd") return __nccwpck_require__(8553);
   else if (arg === "rm.js" || arg === "rm") return __nccwpck_require__(2830);
   else if (arg === "sed.js" || arg === "sed") return __nccwpck_require__(5899);
@@ -24478,7 +25107,7 @@ module.exports = _mv;
 
 /***/ }),
 
-/***/ 4177:
+/***/ 3424:
 /***/ (() => {
 
 // see dirs.js
