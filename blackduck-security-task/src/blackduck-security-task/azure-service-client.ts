@@ -8,7 +8,7 @@ import {
   FAILED_TO_GET_PULL_REQUEST_INFO,
   UNABLE_TO_FIND_PULL_REQUEST_INFO,
 } from "./application-constant";
-import { stringFormat, getSharedHttpClient } from "./utility";
+import { formatURLString, getSharedHttpClient } from "./utility";
 export class AzureService {
   azureGetMergeRequestsAPI: string;
   apiVersion: string;
@@ -90,7 +90,7 @@ export class AzureService {
     repoName: string,
     userToken: string
   ): Promise<string> {
-    const repoEndpoint = stringFormat(
+    const repoEndpoint = formatURLString(
       url + this.azureGetRepositoryAPI,
       orgName,
       projectName,
