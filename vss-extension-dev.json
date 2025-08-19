@@ -7,7 +7,7 @@
   "targets": [
     {
       "id": "Microsoft.VisualStudio.Services",
-      "version": "[16.131,)"
+      "version": "[17.0,)"
     }
   ],
   "tags": [
