@@ -102,7 +102,6 @@
       "displayName": "Scan Options",
       "isExpanded": false,
       "visibleRule": "scanType = srm"
-
     },
     {
       "name": "coverityToolOptionsForSrm",
@@ -311,7 +310,6 @@
       "defaultValue": "",
       "required": false,
       "helpMarkDown": "Application name in Polaris Server. If not provided, Azure repository name will be set as default value.",
-
       "groupName": "polarisScanOptions"
     },
     {
@@ -321,7 +319,6 @@
       "defaultValue": "",
       "required": false,
       "helpMarkDown": "Project name in Polaris Server. If not provided, Azure repository name will be set as default value.",
-
       "groupName": "polarisScanOptions"
     },
     {
@@ -331,7 +328,6 @@
       "defaultValue": "",
       "required": false,
       "helpMarkDown": "Branch name in Polaris Server.",
-
       "groupName": "polarisScanOptions"
     },
     {
@@ -341,7 +337,6 @@
       "defaultValue": "",
       "required": false,
       "helpMarkDown": "The test mode type of this scan. Supported values: CI or SOURCE_UPLOAD, Default: CI",
-
       "options": {
         "": "Select",
         "CI": "CI",
