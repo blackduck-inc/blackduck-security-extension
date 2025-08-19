@@ -2036,8 +2036,44 @@ describe("Bridge CLI Tools Parameter test", () => {
                 expect(jsonData.data.network.ssl).to.be.undefined;
                 expect(formattedCommand).contains('--stage polaris');
             });
+            it('should include SCA location in Polaris test configuration when POLARIS_TEST_SCA_LOCATION is provided', async function () {
+                Object.defineProperty(inputs, 'POLARIS_TEST_SCA_LOCATION', { value: 'hybrid' });
+
+                const formattedCommand = await bridgeToolsParameter.getFormattedCommandForPolaris();
+                const jsonString = fs.readFileSync(polarisStateFile, 'utf-8');
+                const jsonData = JSON.parse(jsonString);
+
+                expect(jsonData.data.polaris.test).to.exist;
+                expect(jsonData.data.polaris.test.sca).to.exist;
+                expect(jsonData.data.polaris.test.sca.location).to.equal('hybrid');
+            });
+
+            it('should include SAST location in Polaris test configuration when POLARIS_TEST_SAST_LOCATION is provided', async function () {
+                Object.defineProperty(inputs, 'POLARIS_TEST_SAST_LOCATION', { value: 'local' });
+
+                const formattedCommand = await bridgeToolsParameter.getFormattedCommandForPolaris();
+                const jsonString = fs.readFileSync(polarisStateFile, 'utf-8');
+                const jsonData = JSON.parse(jsonString);
+
+                expect(jsonData.data.polaris.test).to.exist;
+                expect(jsonData.data.polaris.test.sast).to.exist;
+                expect(jsonData.data.polaris.test.sast.location).to.equal('local');
+            });
+
+            it('should include both SCA and SAST locations in Polaris test configuration when both are provided', async function () {
+                Object.defineProperty(inputs, 'POLARIS_TEST_SCA_LOCATION', { value: 'hybrid' });
+                Object.defineProperty(inputs, 'POLARIS_TEST_SAST_LOCATION', { value: 'local' });
+
+                const formattedCommand = await bridgeToolsParameter.getFormattedCommandForPolaris();
+                const jsonString = fs.readFileSync(polarisStateFile, 'utf-8');
+                const jsonData = JSON.parse(jsonString);
+
+                expect(jsonData.data.polaris.test).to.exist;
+                expect(jsonData.data.polaris.test.sca).to.exist;
+                expect(jsonData.data.polaris.test.sca.location).to.equal('hybrid');
+                expect(jsonData.data.polaris.test.sast).to.exist;
+                expect(jsonData.data.polaris.test.sast.location).to.equal('local');
+            });
         });
     });
-    
-    
 });

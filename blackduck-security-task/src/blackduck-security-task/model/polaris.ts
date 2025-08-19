@@ -31,9 +31,14 @@ export interface PolarisData extends AsyncMode {
   test?: Test;
 }
 
+export interface TestTypeLocation {
+  type?: string | string[];
+  location?: string;
+}
+
 export interface Test {
-  sca?: { type: string };
-  sast?: { type: string[] };
+  sca?: TestTypeLocation;
+  sast?: TestTypeLocation;
 }
 
 export interface Branch {
