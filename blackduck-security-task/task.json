@@ -888,7 +888,7 @@
       "label": "Scan Mode",
       "defaultValue": "",
       "required": false,
-      "helpMarkDown": "Specifies the scan mode to run. Auto mode runs full scan for non-PR context and rapid scan for PR context. If Full or Rapid is selected, it will run the respective scan mode for both PR and non-PR context.<br/> **Note:** Automatic scan mode is recommended for PR Comment.",
+      "helpMarkDown": "Specify the scan mode to use. Recommended auto mode uses Rapid scan for PR scans and full scans for non-PR scans. All post scan features such as PR comments are only supported in this mode. Use Full or Rapid scan modes only if you want to set the scan type for both PR and non-PR contexts but note that post scan features such as PR comments are not supported.",
       "options": {
         "": "Auto (Recommended)",
         "true": "Full",
