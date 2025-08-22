@@ -731,5 +731,9 @@ export const ADO_SERVICES_URL = "https://dev.azure.com";
 export const INTEGRATIONS_ADO_CLOUD = "Integrations-ado-cloud";
 export const INTEGRATIONS_ADO_EE = "Integrations-ado-ee";
 export const VERSION = "3.5.0";
-export const POLARIS_OUTPUT_FILE_NAME = "polaris_output.json";
-export const BD_OUTPUT_FILE_NAME = "bd_output.json";
+export const POLARIS_TEST_SCA_LOCATION_KEY = "polaris_test_sca_location";
+export const POLARIS_TEST_SCA_LOCATION_KEY_CLASSIC_EDITOR =
+  "polarisTestScaLocation";
+export const POLARIS_TEST_SAST_LOCATION_KEY = "polaris_test_sast_location";
+export const POLARIS_TEST_SAST_LOCATION_KEY_CLASSIC_EDITOR =
+  "polarisTestSastLocation";
