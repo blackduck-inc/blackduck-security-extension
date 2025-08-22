@@ -396,7 +396,9 @@ export class BridgeCli {
         );
       }
       // To check whether bridge already exists with same version mentioned in bridge url
-      const versionsArray = bridgeUrl.match(".*bridge-cli-bundle-([0-9.]*).*");
+      const versionsArray = bridgeUrl.match(
+        /.*bridge-cli-bundle-([0-9.]+[a-zA-Z0-9]*).*/
+      );
       if (versionsArray) {
         version = versionsArray[1];
         if (!version) {
