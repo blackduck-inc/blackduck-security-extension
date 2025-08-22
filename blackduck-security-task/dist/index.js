@@ -930,7 +930,7 @@ class BridgeCli {
                     return Promise.reject(new Error(application_constant_1.INVALID_BRIDGE_CLI_URL.concat(constants.SPACE).concat(ErrorCodes_1.ErrorCode.INVALID_URL.toString())));
                 }
                 // To check whether bridge already exists with same version mentioned in bridge url
-                const versionsArray = bridgeUrl.match(".*bridge-cli-bundle-([0-9.]*).*");
+                const versionsArray = bridgeUrl.match(".*bridge-cli-bundle-([0-9.]+(?:rc[0-9]+)?");
                 if (versionsArray) {
                     version = versionsArray[1];
                     if (!version) {
