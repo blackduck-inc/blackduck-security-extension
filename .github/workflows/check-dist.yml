@@ -53,6 +53,47 @@ jobs:
           name: dist
           path: blackduck-security-task/dist/
 
+      - name: Run tests and collect results
+        id: results
+        run: |
+          cd blackduck-security-task
+          npm test -- --json --outputFile=test.json || true
+          npm test -- --coverage --collectCoverageFrom='src/**/*.{ts,jxs}' --coverageReporters=json-summary || true
+          echo "passed=$(jq '.numPassedTests' test.json)" >> $GITHUB_OUTPUT
+          echo "failed=$(jq '.numFailedTests' test.json)" >> $GITHUB_OUTPUT
+          echo "total=$(jq '.numTotalTests' test.json)" >> $GITHUB_OUTPUT
+          echo "lines=$(jq '.total.lines.pct' coverage/coverage-summary.json)" >> $GITHUB_OUTPUT
+
+      - name: Comment results on PR
+        run: |
+          PR=$(jq -r .pull_request.number $GITHUB_EVENT_PATH)
+          LINES=$(jq '.total.lines.pct' coverage/coverage-summary.json)
+          {
+            echo "| File | % Stmts | % Branch | % Funcs | % Lines |"
+            echo "|------|---------|----------|---------|---------|"
+            jq -r '.total as $t | ["All files", ($t.statements.pct | tostring), ($t.branches.pct | tostring), ($t.functions.pct | tostring), ($t.lines.pct | tostring)] | "| " + join(" | ") + " |"' coverage/coverage-summary.json
+            jq -r 'to_entries[] | select(.key != "total") | [(.key | gsub("^.*/src/"; "src/")), (.value.statements.pct | tostring), (.value.branches.pct | tostring), (.value.functions.pct | tostring), (.value.lines.pct | tostring)] | "| " + join(" | ") + " |"' coverage/coverage-summary.json
+          } > coverage-table.md
+          BODY="## 🧪 Test & Coverage Results
+
+          ![ Tests ](https://img.shields.io/badge/tests-${{ steps.results.outputs.passed }}_passed_${{ steps.results.outputs.failed }}_failed-blue)
+          ![Coverage](https://img.shields.io/badge/coverage-${LINES}%25-brightgreen)
+
+          <details>
+          <summary><strong>Full Coverage Details</strong></summary>
+
+          $(cat coverage-table.md)
+
+          </details>"
+          CID=$(gh api repos/${{ github.repository }}/issues/$PR/comments --jq '.[] | select(.body|contains("## 🧪 Test & Coverage Results")) | .id' | head -n1)
+          if [ -n "$CID" ]; then
+            gh api repos/${{ github.repository }}/issues/comments/$CID -X PATCH -f body="$BODY"
+          else
+            gh api repos/${{ github.repository }}/issues/$PR/comments -f body="$BODY"
+          fi
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
   polaris:
     uses: blackduck-inc/common-repo-ci/.github/workflows/polaris.yml@main
     with:
