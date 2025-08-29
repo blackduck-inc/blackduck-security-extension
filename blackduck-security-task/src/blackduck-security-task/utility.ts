@@ -520,7 +520,6 @@ export function updateSarifFilePaths(
   productInputFilPath: string
 ): void {
   const fileName = productInputFileName.replace(/"$/, "");
-  taskLib.debug(`Sarif file name :::: ${fileName}`);
   if (fileName === "polaris_input.json") {
     let sarifPath: string;
     if (bridgeVersion < constants.VERSION) {
@@ -543,9 +542,6 @@ export function updateSarifFilePaths(
         sarifPath = inputs.POLARIS_REPORTS_SARIF_FILE_PATH.trim();
       }
     }
-    taskLib.debug(
-      `sarifPath inside updateSarifFilePaths method :::: ${sarifPath}`
-    );
     updatePolarisSarifPath(productInputFilPath, sarifPath);
   }
 
@@ -693,4 +689,17 @@ export function formatURLString(url: string, ...args: string[]): string {
     /{(\d+)}/g,
     (match, index) => encodeURIComponent(args[index]) || ""
   );
+}
+export function validateSourceUploadValue(bridgeVersion: string): void {
+  if (
+    bridgeVersion >= constants.BRIDGE_VERSION &&
+    inputs.POLARIS_ASSESSMENT_MODE === "SOURCE_UPLOAD"
+  ) {
+    taskLib.warning(
+      "The 'SOURCE_UPLOAD' assessment mode for Polaris is deprecated and will be removed in future releases. Please use the polaris.test.sast.location='remote' to get this feature."
+    );
+    console.warn(
+      "The 'SOURCE_UPLOAD' assessment mode for Polaris is deprecated and will be removed in future releases. Please use the polaris.test.sast.location='remote' to get this feature."
+    );
+  }
 }

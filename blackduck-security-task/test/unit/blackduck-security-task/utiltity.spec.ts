@@ -1427,3 +1427,67 @@ describe("Utilities", () => {
         });
     });
 });
+
+describe('validateSourceUploadValue', () => {
+    let sandbox: sinon.SinonSandbox;
+
+    beforeEach(() => {
+        sandbox = sinon.createSandbox();
+    });
+
+    afterEach(() => {
+        sandbox.restore();
+    });
+
+    it('should show warning when bridge version is >= BRIDGE_VERSION and assessment mode is SOURCE_UPLOAD', () => {
+        const warningStub = sandbox.stub(taskLib, 'warning');
+        sandbox.stub(inputs, 'POLARIS_ASSESSMENT_MODE').value('SOURCE_UPLOAD');
+        sandbox.stub(constants, 'BRIDGE_VERSION').value('3.7.8');
+
+        utility.validateSourceUploadValue('3.7.8');
+
+        expect(warningStub.calledOnce).to.be.true;
+        expect(warningStub.calledWith("The 'SOURCE_UPLOAD' assessment mode for Polaris is deprecated and will be removed in future releases. Please use the polaris.test.sast.location='remote' to get this feature.")).to.be.true;
+    });
+
+    it('should show warning when bridge version is higher than BRIDGE_VERSION and assessment mode is SOURCE_UPLOAD', () => {
+        const warningStub = sandbox.stub(taskLib, 'warning');
+        sandbox.stub(inputs, 'POLARIS_ASSESSMENT_MODE').value('SOURCE_UPLOAD');
+        sandbox.stub(constants, 'BRIDGE_VERSION').value('3.7.8');
+
+        utility.validateSourceUploadValue('3.8.0');
+
+        expect(warningStub.calledOnce).to.be.true;
+        expect(warningStub.calledWith("The 'SOURCE_UPLOAD' assessment mode for Polaris is deprecated and will be removed in future releases. Please use the polaris.test.sast.location='remote' to get this feature.")).to.be.true;
+    });
+
+    it('should not show warning when bridge version is < BRIDGE_VERSION', () => {
+        const warningStub = sandbox.stub(taskLib, 'warning');
+        sandbox.stub(inputs, 'POLARIS_ASSESSMENT_MODE').value('SOURCE_UPLOAD');
+        sandbox.stub(constants, 'BRIDGE_VERSION').value('3.7.8');
+
+        utility.validateSourceUploadValue('3.7.7');
+
+        expect(warningStub.called).to.be.false;
+    });
+
+    it('should not show warning when assessment mode is not SOURCE_UPLOAD', () => {
+        const warningStub = sandbox.stub(taskLib, 'warning');
+        sandbox.stub(inputs, 'POLARIS_ASSESSMENT_MODE').value('CI');
+        sandbox.stub(constants, 'BRIDGE_VERSION').value('3.7.8');
+
+        utility.validateSourceUploadValue('3.7.8');
+
+        expect(warningStub.called).to.be.false;
+    });
+
+    it('should not show warning when assessment mode is undefined', () => {
+        const warningStub = sandbox.stub(taskLib, 'warning');
+        sandbox.stub(inputs, 'POLARIS_ASSESSMENT_MODE').value(undefined);
+        sandbox.stub(constants, 'BRIDGE_VERSION').value('3.7.8');
+
+        utility.validateSourceUploadValue('3.7.8');
+
+        expect(warningStub.called).to.be.false;
+    });
+});

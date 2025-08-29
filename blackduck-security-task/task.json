@@ -20,11 +20,6 @@
       "isExpanded": true
     },
     {
-      "name": "testOptions",
-      "displayName": "Test Options",
-      "isExpanded": true
-    },
-    {
       "name": "polarisScanOptions",
       "displayName": "Scan Options",
       "isExpanded": false,
@@ -240,17 +235,7 @@
       "required": false,
       "helpMarkDown": "Polaris test type to trigger signature scan or package manager scan. Default value: SCA-PACKAGE. Supported values: SCA-PACKAGE or SCA-SIGNATURE",
       "visibleRule": "scanType = polaris",
-      "groupName": "testOptions"
-    },
-    {
-      "name": "polarisTestScaLocation",
-      "type": "string",
-      "label": "SCA Test Location",
-      "defaultValue": "",
-      "required": false,
-      "helpMarkDown": "Polaris test location. Default value: hybrid. Supported values: local or hybrid or remote",
-      "visibleRule": "scanType = polaris",
-      "groupName": "testOptions"
+      "groupName": "scanConfiguration"
     },
     {
       "name": "polarisTestSastType",
@@ -260,17 +245,7 @@
       "required": false,
       "helpMarkDown": "Polaris test type to trigger sigma rapid scan or full scan. Supported values: SAST_RAPID or SAST_FULL",
       "visibleRule": "scanType = polaris",
-      "groupName": "testOptions"
-    },
-    {
-      "name": "polarisTestSastLocation",
-      "type": "string",
-      "label": "SAST Test Location",
-      "defaultValue": "",
-      "required": false,
-      "helpMarkDown": "Polaris test location. Default value: hybrid. Supported values: local or hybrid or remote",
-      "visibleRule": "scanType = polaris",
-      "groupName": "testOptions"
+      "groupName": "scanConfiguration"
     },
     {
       "name": "polarisProjectDirectory",
@@ -361,11 +336,43 @@
       "label": "Assessment Mode",
       "defaultValue": "",
       "required": false,
-      "helpMarkDown": "The test mode type of this scan. Supported values: CI or SOURCE_UPLOAD, Default: CI",
+      "helpMarkDown": "The test mode type of this scan. Supported values: CI or SOURCE_UPLOAD, Default: CI NOTE: SOURCE_UPLOAD will be deprecated in the future. To use the SOURCE_UPLOAD feature, set Polaris Test SAST Location to remote.",
       "options": {
         "": "Select",
         "CI": "CI",
-        "SOURCEUPLOAD": "SOURCE_UPLOAD"
+        "SOURCEUPLOAD": "⚠️ SOURCE_UPLOAD (The 'SOURCE_UPLOAD' assessment mode for Polaris is deprecated and will be removed in future releases. Please use the polaris.test.sast.location='remote' to get this feature.)"
+      },
+      "groupName": "polarisScanOptions"
+    },
+    {
+      "name": "polarisTestScaLocation",
+      "type": "pickList",
+      "label": "SCA Test Location",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Polaris SCA test location. Default value: HYBRID. Supported values: LOCAL or HYBRID or REMOTE",
+      "visibleRule": "scanType = polaris",
+      "options": {
+        "": "Select",
+        "local": "LOCAL",
+        "hybrid": "HYBRID",
+        "remote": "REMOTE"
+      },
+      "groupName": "polarisScanOptions"
+    },
+    {
+      "name": "polarisTestSastLocation",
+      "type": "pickList",
+      "label": "SAST Test Location",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Polaris SAST test location. Default value: HYBRID. Supported values: LOCAL or HYBRID or REMOTE",
+      "visibleRule": "scanType = polaris",
+      "options": {
+        "": "Select",
+        "local": "LOCAL",
+        "hybrid": "HYBRID",
+        "remote": "REMOTE"
       },
       "groupName": "polarisScanOptions"
     },
@@ -376,7 +383,7 @@
       "defaultValue": "",
       "required": false,
       "helpMarkDown": "The zipped source file path. It overrides the project directory setting above",
-      "visibleRule": "polarisAssessmentMode = SOURCEUPLOAD",
+      "visibleRule": "polarisAssessmentMode = SOURCEUPLOAD || polarisTestSastLocation = remote",
       "groupName": "polarisScanOptions"
     },
     {
@@ -386,7 +393,7 @@
       "defaultValue": "",
       "required": false,
       "helpMarkDown": "A list of git ignore pattern strings that indicate the files need to be excluded from the zip file.",
-      "visibleRule": "polarisAssessmentMode = SOURCEUPLOAD",
+      "visibleRule": "polarisAssessmentMode = SOURCEUPLOAD || polarisTestSastLocation = remote",
       "groupName": "polarisScanOptions"
     },
     {
@@ -396,7 +403,7 @@
       "defaultValue": false,
       "required": false,
       "helpMarkDown": "Flag indicating whether to preserve symlinks in the source zip",
-      "visibleRule": "polarisAssessmentMode = SOURCEUPLOAD",
+      "visibleRule": "polarisAssessmentMode = SOURCEUPLOAD || polarisTestSastLocation = remote",
       "groupName": "polarisScanOptions"
     },
     {

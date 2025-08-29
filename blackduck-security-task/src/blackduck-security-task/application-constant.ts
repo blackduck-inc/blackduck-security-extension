@@ -731,6 +731,7 @@ export const ADO_SERVICES_URL = "https://dev.azure.com";
 export const INTEGRATIONS_ADO_CLOUD = "Integrations-ado-cloud";
 export const INTEGRATIONS_ADO_EE = "Integrations-ado-ee";
 export const VERSION = "3.5.0";
+export const BRIDGE_VERSION = "3.7.8";
 export const POLARIS_TEST_SCA_LOCATION_KEY = "polaris_test_sca_location";
 export const POLARIS_TEST_SCA_LOCATION_KEY_CLASSIC_EDITOR =
   "polarisTestScaLocation";
