@@ -61,7 +61,7 @@ jobs:
       - name: Comment results on PR
         run: |
           PR=$(jq -r .pull_request.number $GITHUB_EVENT_PATH)
-          LINES=$(jq '.total.lines.pct' coverage/coverage-summary.json)
+          LINES=$(jq '.total.lines.pct' blackduck-security-task/coverage/coverage-summary.json)
           {
             echo "| File | % Stmts | % Branch | % Funcs | % Lines |"
             echo "|------|---------|----------|---------|---------|"
