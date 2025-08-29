@@ -52,7 +52,8 @@ jobs:
         id: results
         run: |
           cd blackduck-security-task
-          npx nyc --reporter=html --reporter=json-summary --reporter=text mocha --require ts-node/register test/unit/**/*.spec.ts test/unit/*.spec.ts || true          echo "passed=$(jq '.numPassedTests' test.json)" >> $GITHUB_OUTPUT
+          npx nyc --reporter=html --reporter=json-summary --reporter=text mocha --require ts-node/register test/unit/**/*.spec.ts test/unit/*.spec.ts        
+          echo "passed=$(jq '.numPassedTests' test.json)" >> $GITHUB_OUTPUT
           echo "failed=$(jq '.numFailedTests' test.json)" >> $GITHUB_OUTPUT
           echo "total=$(jq '.numTotalTests' test.json)" >> $GITHUB_OUTPUT
           echo "lines=$(jq '.total.lines.pct' coverage/coverage-summary.json)" >> $GITHUB_OUTPUT
