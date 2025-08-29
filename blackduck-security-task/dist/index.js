@@ -3862,7 +3862,6 @@ function validateSourceUploadValue(bridgeVersion) {
     if (bridgeVersion >= constants.BRIDGE_VERSION &&
         inputs.POLARIS_ASSESSMENT_MODE === "SOURCE_UPLOAD") {
         taskLib.warning("The 'SOURCE_UPLOAD' assessment mode for Polaris is deprecated and will be removed in future releases. Please use the polaris.test.sast.location='remote' to get this feature.");
-        console.warn("The 'SOURCE_UPLOAD' assessment mode for Polaris is deprecated and will be removed in future releases. Please use the polaris.test.sast.location='remote' to get this feature.");
     }
 }
 exports.validateSourceUploadValue = validateSourceUploadValue;
