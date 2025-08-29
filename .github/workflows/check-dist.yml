@@ -65,8 +65,8 @@ jobs:
           {
             echo "| File | % Stmts | % Branch | % Funcs | % Lines |"
             echo "|------|---------|----------|---------|---------|"
-            jq -r '.total as $t | ["All files", ($t.statements.pct | tostring), ($t.branches.pct | tostring), ($t.functions.pct | tostring), ($t.lines.pct | tostring)] | "| " + join(" | ") + " |"' coverage/coverage-summary.json
-            jq -r 'to_entries[] | select(.key != "total") | [(.key | gsub("^.*/src/"; "src/")), (.value.statements.pct | tostring), (.value.branches.pct | tostring), (.value.functions.pct | tostring), (.value.lines.pct | tostring)] | "| " + join(" | ") + " |"' coverage/coverage-summary.json
+            jq -r '.total as $t | ["All files", ($t.statements.pct | tostring), ($t.branches.pct | tostring), ($t.functions.pct | tostring), ($t.lines.pct | tostring)] | "| " + join(" | ") + " |"' blackduck-security-task/coverage/coverage-summary.json
+            jq -r 'to_entries[] | select(.key != "total") | [(.key | gsub("^.*/src/"; "src/")), (.value.statements.pct | tostring), (.value.branches.pct | tostring), (.value.functions.pct | tostring), (.value.lines.pct | tostring)] | "| " + join(" | ") + " |"' blackduck-security-task/coverage/coverage-summary.json
           } > coverage-table.md
           BODY="## 🧪 Test & Coverage Results
 
