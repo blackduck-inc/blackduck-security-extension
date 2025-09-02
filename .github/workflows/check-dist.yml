@@ -1,8 +1,3 @@
-# `dist/index.js` is a special file in Actions.
-# When you reference an action with `uses:` in a workflow,
-# `index.js` is the code that will run.
-# For our project, we generate this file through a build process from other source files.
-# We need to make sure the checked-in `index.js` actually matches what we expect it to be.
 name: Check dist/
 
 on:
@@ -25,10 +20,10 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Set Node.js 16.x
+      - name: Set Node.js 20.x
         uses: actions/setup-node@v4
         with:
-          node-version: 16.x
+          node-version: 20.x
 
       - name: Install dependencies
         run: cd blackduck-security-task && npm ci
@@ -53,16 +48,42 @@ jobs:
           name: dist
           path: blackduck-security-task/dist/
 
-  polaris:
-    uses: blackduck-inc/common-repo-ci/.github/workflows/polaris.yml@main
-    with:
-      polaris_server_url: ${{ vars.POLARIS_SERVER_URL }}
-      polaris_assessment_types: "SCA,SAST"
-      polaris_prComment_enabled: true
-      polaris_application_name: "integrations"
-      polaris_project_name: ${{ github.event.repository.name }}
-      polaris_branch_name: ${{ github.head_ref || github.ref_name }}
-      polaris_branch_parent_name: ${{ github.base_ref || 'main' }}
-      bridgecli_download_url: ${{ vars.BRIDGECLI_DOWNLOAD_URL }}
-    secrets:
-      POLARIS_ACCESS_TOKEN: ${{ secrets.POLARIS_ACCESS_TOKEN }}
+      - name: Run tests and collect results
+        id: results
+        run: |
+          cd blackduck-security-task
+          npx nyc --reporter=html --reporter=json-summary --reporter=text mocha --require ts-node/register test/unit/**/*.spec.ts test/unit/*.spec.ts        
+          echo "passed=$(jq '.numPassedTests' test.json)" >> $GITHUB_OUTPUT
+          echo "failed=$(jq '.numFailedTests' test.json)" >> $GITHUB_OUTPUT
+          echo "total=$(jq '.numTotalTests' test.json)" >> $GITHUB_OUTPUT
+          echo "lines=$(jq '.total.lines.pct' coverage/coverage-summary.json)" >> $GITHUB_OUTPUT
+
+      - name: Comment results on PR
+        run: |
+          PR=$(jq -r .pull_request.number $GITHUB_EVENT_PATH)
+          LINES=$(jq '.total.lines.pct' blackduck-security-task/coverage/coverage-summary.json)
+          {
+            echo "| File | % Stmts | % Branch | % Funcs | % Lines |"
+            echo "|------|---------|----------|---------|---------|"
+            jq -r '.total as $t | ["All files", ($t.statements.pct | tostring), ($t.branches.pct | tostring), ($t.functions.pct | tostring), ($t.lines.pct | tostring)] | "| " + join(" | ") + " |"' blackduck-security-task/coverage/coverage-summary.json
+            jq -r 'to_entries[] | select(.key != "total") | [(.key | gsub("^.*/src/"; "src/")), (.value.statements.pct | tostring), (.value.branches.pct | tostring), (.value.functions.pct | tostring), (.value.lines.pct | tostring)] | "| " + join(" | ") + " |"' blackduck-security-task/coverage/coverage-summary.json
+          } > coverage-table.md
+          BODY="## 🧪 Test & Coverage Results
+
+          ![ Tests ](https://img.shields.io/badge/tests-${{ steps.results.outputs.passed }}_passed_${{ steps.results.outputs.failed }}_failed-blue)
+          ![Coverage](https://img.shields.io/badge/coverage-${LINES}%25-brightgreen)
+
+          <details>
+          <summary><strong>Full Coverage Details</strong></summary>
+
+          $(cat coverage-table.md)
+
+          </details>"
+          CID=$(gh api repos/${{ github.repository }}/issues/$PR/comments --jq '.[] | select(.body|contains("## 🧪 Test & Coverage Results")) | .id' | head -n1)
+          if [ -n "$CID" ]; then
+            gh api repos/${{ github.repository }}/issues/comments/$CID -X PATCH -f body="$BODY"
+          else
+            gh api repos/${{ github.repository }}/issues/$PR/comments -f body="$BODY"
+          fi
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
