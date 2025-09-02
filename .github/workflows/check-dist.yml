@@ -52,11 +52,9 @@ jobs:
         id: results
         run: |
           cd blackduck-security-task
-          npx nyc --reporter=html --reporter=json-summary --reporter=text mocha --require ts-node/register test/unit/**/*.spec.ts test/unit/*.spec.ts        
-          echo "passed=$(jq '.numPassedTests' test.json)" >> $GITHUB_OUTPUT
-          echo "failed=$(jq '.numFailedTests' test.json)" >> $GITHUB_OUTPUT
-          echo "total=$(jq '.numTotalTests' test.json)" >> $GITHUB_OUTPUT
-          echo "lines=$(jq '.total.lines.pct' coverage/coverage-summary.json)" >> $GITHUB_OUTPUT
+          npx nyc --reporter=json-summary mocha --reporter json --require ts-node/register "test/unit/**/*.spec.ts" > test.json 2> mocha.log
+          for k in passes failures tests; do echo "$k=$(sed -n '/^{/,$p' test.json | jq -r ".stats.$k")" >> $GITHUB_OUTPUT; done
+          echo "lines=$(jq -r '.total.lines.pct' coverage/coverage-summary.json)" >> $GITHUB_OUTPUT
 
       - name: Comment results on PR
         run: |
@@ -68,9 +66,9 @@ jobs:
             jq -r '.total as $t | ["All files", ($t.statements.pct | tostring), ($t.branches.pct | tostring), ($t.functions.pct | tostring), ($t.lines.pct | tostring)] | "| " + join(" | ") + " |"' blackduck-security-task/coverage/coverage-summary.json
             jq -r 'to_entries[] | select(.key != "total") | [(.key | gsub("^.*/src/"; "src/")), (.value.statements.pct | tostring), (.value.branches.pct | tostring), (.value.functions.pct | tostring), (.value.lines.pct | tostring)] | "| " + join(" | ") + " |"' blackduck-security-task/coverage/coverage-summary.json
           } > coverage-table.md
-          BODY="## 🧪 Test & Coverage Results
+          BODY="## Test & Coverage Results
 
-          ![ Tests ](https://img.shields.io/badge/tests-${{ steps.results.outputs.passed }}_passed_${{ steps.results.outputs.failed }}_failed-blue)
+          ![ Tests ](https://img.shields.io/badge/tests-${{ steps.results.outputs.passes }}_passed_${{ steps.results.outputs.failures }}_failed-blue)
           ![Coverage](https://img.shields.io/badge/coverage-${LINES}%25-brightgreen)
 
           <details>
