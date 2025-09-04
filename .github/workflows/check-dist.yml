@@ -1,29 +1,34 @@
+# `dist/index.js` is a special file in Actions.
+# When you reference an action with `uses:` in a workflow,
+# `index.js` is the code that will run.
+# For our project, we generate this file through a build process from other source files.
+# We need to make sure the checked-in `index.js` actually matches what we expect it to be.
+# Workflow: Checks if the checked-in dist/index.js matches the expected build output. Ensures the dist/ directory is up-to-date and committed.
 name: Check dist/
 
 on:
-  push:
-    branches:
-      - main
-    paths-ignore:
-      - '**.md'
-  pull_request:
-    branches:
-      - main
-    paths-ignore:
-      - '**.md'
+  workflow_call:
   workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: dist-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   check-dist:
+    name: Check dist/
     runs-on: ubuntu-latest
 
     steps:
       - uses: actions/checkout@v4
 
-      - name: Set Node.js 16.x
+      - name: Set Node.js 20.x
         uses: actions/setup-node@v4
         with:
-          node-version: 16.x
+          node-version: 20.x
 
       - name: Install dependencies
         run: cd blackduck-security-task && npm ci
@@ -41,61 +46,14 @@ jobs:
           fi
         id: diff
 
-      # If index.js was different than expected, upload the expected version as an artifact
+  # If index.js was different than expected, upload the expected version as an artifact
+  upload-artifact:
+    needs: check-dist
+    runs-on: ubuntu-latest
+    if: ${{ needs.check-dist.result == 'failure' }}
+    steps:
+      - uses: actions/checkout@v4
       - uses: actions/upload-artifact@v4
-        if: ${{ failure() && steps.diff.conclusion == 'failure' }}
         with:
           name: dist
           path: blackduck-security-task/dist/
-
-      - name: Run tests and collect results
-        id: results
-        run: |
-          cd blackduck-security-task
-          npx nyc --reporter=json-summary mocha --reporter json --require ts-node/register "test/unit/**/*.spec.ts" > test.json 2> mocha.log
-          for k in passes failures tests; do echo "$k=$(sed -n '/^{/,$p' test.json | jq -r ".stats.$k")" >> $GITHUB_OUTPUT; done
-          echo "lines=$(jq -r '.total.lines.pct' coverage/coverage-summary.json)" >> $GITHUB_OUTPUT
-
-      - name: Comment results on PR
-        run: |
-          PR=$(jq -r .pull_request.number $GITHUB_EVENT_PATH)
-          LINES=$(jq '.total.lines.pct' blackduck-security-task/coverage/coverage-summary.json)
-          {
-            echo "| File | % Stmts | % Branch | % Funcs | % Lines |"
-            echo "|------|---------|----------|---------|---------|"
-            jq -r '.total as $t | ["All files", ($t.statements.pct | tostring), ($t.branches.pct | tostring), ($t.functions.pct | tostring), ($t.lines.pct | tostring)] | "| " + join(" | ") + " |"' blackduck-security-task/coverage/coverage-summary.json
-            jq -r 'to_entries[] | select(.key != "total") | [(.key | gsub("^.*/src/"; "src/")), (.value.statements.pct | tostring), (.value.branches.pct | tostring), (.value.functions.pct | tostring), (.value.lines.pct | tostring)] | "| " + join(" | ") + " |"' blackduck-security-task/coverage/coverage-summary.json
-          } > coverage-table.md
-          BODY="## Test & Coverage Results
-
-          ![ Tests ](https://img.shields.io/badge/tests-${{ steps.results.outputs.passes }}_passed_${{ steps.results.outputs.failures }}_failed-blue)
-          ![Coverage](https://img.shields.io/badge/coverage-${LINES}%25-brightgreen)
-
-          <details>
-          <summary><strong>Full Coverage Details</strong></summary>
-
-          $(cat coverage-table.md)
-
-          </details>"
-          CID=$(gh api repos/${{ github.repository }}/issues/$PR/comments --jq '.[] | select(.body|contains("## 🧪 Test & Coverage Results")) | .id' | head -n1)
-          if [ -n "$CID" ]; then
-            gh api repos/${{ github.repository }}/issues/comments/$CID -X PATCH -f body="$BODY"
-          else
-            gh api repos/${{ github.repository }}/issues/$PR/comments -f body="$BODY"
-          fi
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-  polaris:
-    uses: blackduck-inc/common-repo-ci/.github/workflows/polaris.yml@main
-    with:
-      polaris_server_url: ${{ vars.POLARIS_SERVER_URL }}
-      polaris_assessment_types: "SCA,SAST"
-      polaris_prComment_enabled: true
-      polaris_application_name: "integrations"
-      polaris_project_name: ${{ github.event.repository.name }}
-      polaris_branch_name: ${{ github.head_ref || github.ref_name }}
-      polaris_branch_parent_name: ${{ github.base_ref || 'main' }}
-      bridgecli_download_url: ${{ vars.BRIDGECLI_DOWNLOAD_URL }}
-    secrets:
-      POLARIS_ACCESS_TOKEN: ${{ secrets.POLARIS_ACCESS_TOKEN }}
