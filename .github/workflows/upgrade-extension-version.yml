@@ -64,7 +64,7 @@ jobs:
       - name: update extension version in files
         id: update-extension-version
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.PAT_TOKEN }}
         run: |
           echo "Updating extension version in vss-extension.json, vss-extension-dev.json, package.json, package-lock.json & task.json files"
           git config --local user.name "$(git log -n 1 --pretty=format:%an)"
