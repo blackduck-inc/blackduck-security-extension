@@ -336,11 +336,10 @@
       "label": "SCA Test Location",
       "defaultValue": "",
       "required": false,
-      "helpMarkDown": "Polaris SCA test location. Default value: HYBRID. Supported values: LOCAL or HYBRID or REMOTE.\nNOTE: polaris_assessment_mode is deprecated. Use polaris_test_sca_location=remote for source upload scans instead",
+      "helpMarkDown": "Polaris SCA test location. Default value: HYBRID. Supported values: HYBRID or REMOTE.\nNOTE: polaris_assessment_mode is deprecated. Use polaris_test_sca_location=remote for source upload scans instead",
       "visibleRule": "scanType = polaris",
       "options": {
         "": "Select",
-        "local": "LOCAL",
         "hybrid": "HYBRID",
         "remote": "REMOTE"
       },
