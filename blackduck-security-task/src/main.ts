@@ -58,8 +58,8 @@ export async function run() {
     }
     // Get Bridge version from bridge Path
     bridgeVersion = getBridgeVersion(bridgePath);
-    taskLib.debug(`bridgePath: ${bridgeVersion}`);
-
+    // Validate Source upload value
+    util.validateSourceUploadValue(bridgeVersion);
     //Extract input.json file and update sarif default file path based on bridge version
     productInputFilPath = util.extractInputJsonFilename(command);
     // Extract product input file name from the path (cross-platform compatible)

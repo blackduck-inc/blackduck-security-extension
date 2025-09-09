@@ -294,12 +294,23 @@ export const POLARIS_TEST_SAST_TYPE = getInput(
   constants.POLARIS_TEST_SAST_TYPE_KEY_CLASSIC_EDITOR,
   null
 );
+
+export const POLARIS_TEST_SCA_LOCATION = getInput(
+  constants.POLARIS_TEST_SCA_LOCATION_KEY,
+  constants.POLARIS_TEST_SCA_LOCATION_KEY_CLASSIC_EDITOR,
+  null
+);
+export const POLARIS_TEST_SAST_LOCATION = getInput(
+  constants.POLARIS_TEST_SAST_LOCATION_KEY,
+  constants.POLARIS_TEST_SAST_LOCATION_KEY_CLASSIC_EDITOR,
+  null
+);
+
 export const POLARIS_WAITFORSCAN = getInput(
   constants.POLARIS_WAITFORSCAN_KEY,
   constants.POLARIS_WAITFORSCAN_KEY_CLASSIC_EDITOR,
   null
 );
-
 export const POLARIS_ASSESSMENT_MODE = getInputForPolarisAssessmentMode();
 
 export const POLARIS_PROJECT_DIRECTORY = getInput(
