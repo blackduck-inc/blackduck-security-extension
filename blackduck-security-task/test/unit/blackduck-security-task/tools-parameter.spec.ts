@@ -2036,8 +2036,31 @@ describe("Bridge CLI Tools Parameter test", () => {
                 expect(jsonData.data.network.ssl).to.be.undefined;
                 expect(formattedCommand).contains('--stage polaris');
             });
+
+            it('should include both SCA and SAST locations in Polaris test configuration when both are provided', async function () {
+                Object.defineProperty(inputs, 'POLARIS_TEST_SCA_LOCATION', { value: 'hybrid' });
+                Object.defineProperty(inputs, 'POLARIS_TEST_SAST_LOCATION', { value: 'local' });
+
+                const formattedCommand = await bridgeToolsParameter.getFormattedCommandForPolaris();
+                const jsonString = fs.readFileSync(polarisStateFile, 'utf-8');
+                const jsonData = JSON.parse(jsonString);
+
+                expect(jsonData.data.polaris.test).to.exist;
+                expect(jsonData.data.polaris.test.sca).to.exist;
+                expect(jsonData.data.polaris.test.sca.location).to.equal('hybrid');
+                expect(jsonData.data.polaris.test.sast).to.exist;
+                expect(jsonData.data.polaris.test.sast.location).to.equal('local');
+            });
+            it('should not include test configuration in Polaris when POLARIS_TEST_SCA_LOCATION and POLARIS_TEST_SAST_LOCATION are not provided', async function () {
+                Object.defineProperty(inputs, 'POLARIS_TEST_SCA_LOCATION', { value: '' });
+                Object.defineProperty(inputs, 'POLARIS_TEST_SAST_LOCATION', { value: '' });
+
+                const formattedCommand = await bridgeToolsParameter.getFormattedCommandForPolaris();
+                const jsonString = fs.readFileSync(polarisStateFile, 'utf-8');
+                const jsonData = JSON.parse(jsonString);
+
+                expect(jsonData.data.polaris?.test).to.be.undefined;
+            });
         });
     });
-    
-    
 });

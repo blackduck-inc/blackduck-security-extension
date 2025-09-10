@@ -1426,4 +1426,78 @@ describe("Utilities", () => {
             sandbox.restore();
         });
     });
+
+    describe('validateSourceUploadValue', () => {
+        let sandbox: sinon.SinonSandbox;
+
+        beforeEach(() => {
+            sandbox = sinon.createSandbox();
+        });
+
+        afterEach(() => {
+            sandbox.restore();
+        });
+
+        it('should show info message when bridge version is >= ASSESSMENT_MODE_UNSUPPORTED_BRIDGE_VERSION and assessment mode is not null/empty', () => {
+            const infoStub = sandbox.stub(console, 'info');
+            sandbox.stub(inputs, 'POLARIS_ASSESSMENT_MODE').value('SOURCE_UPLOAD');
+            sandbox.stub(constants, 'ASSESSMENT_MODE_UNSUPPORTED_BRIDGE_VERSION').value('3.8.0');
+
+            utility.validateSourceUploadValue('3.8.0');
+
+            expect(infoStub.calledOnce).to.be.true;
+            expect(infoStub.calledWith("INFO: polaris_assessment_mode is deprecated. Use polaris_test_sast_location=remote and/or polaris_test_sca_location=remote for source upload scans instead.")).to.be.true;
+        });
+
+        it('should show info message when bridge version is higher than ASSESSMENT_MODE_UNSUPPORTED_BRIDGE_VERSION and assessment mode is not null/empty', () => {
+            const infoStub = sandbox.stub(console, 'info');
+            sandbox.stub(inputs, 'POLARIS_ASSESSMENT_MODE').value('CI');
+            sandbox.stub(constants, 'ASSESSMENT_MODE_UNSUPPORTED_BRIDGE_VERSION').value('3.8.0');
+
+            utility.validateSourceUploadValue('3.9.0');
+
+            expect(infoStub.calledOnce).to.be.true;
+            expect(infoStub.calledWith("INFO: polaris_assessment_mode is deprecated. Use polaris_test_sast_location=remote and/or polaris_test_sca_location=remote for source upload scans instead.")).to.be.true;
+        });
+
+        it('should not show info message when bridge version is < ASSESSMENT_MODE_UNSUPPORTED_BRIDGE_VERSION', () => {
+            const infoStub = sandbox.stub(console, 'info');
+            sandbox.stub(inputs, 'POLARIS_ASSESSMENT_MODE').value('SOURCE_UPLOAD');
+            sandbox.stub(constants, 'ASSESSMENT_MODE_UNSUPPORTED_BRIDGE_VERSION').value('3.8.0');
+
+            utility.validateSourceUploadValue('3.7.9');
+
+            expect(infoStub.called).to.be.false;
+        });
+
+        it('should not show info message when assessment mode is null', () => {
+            const infoStub = sandbox.stub(console, 'info');
+            sandbox.stub(inputs, 'POLARIS_ASSESSMENT_MODE').value(null);
+            sandbox.stub(constants, 'ASSESSMENT_MODE_UNSUPPORTED_BRIDGE_VERSION').value('3.8.0');
+
+            utility.validateSourceUploadValue('3.8.0');
+
+            expect(infoStub.called).to.be.false;
+        });
+
+        it('should not show info message when assessment mode is undefined', () => {
+            const infoStub = sandbox.stub(console, 'info');
+            sandbox.stub(inputs, 'POLARIS_ASSESSMENT_MODE').value(undefined);
+            sandbox.stub(constants, 'ASSESSMENT_MODE_UNSUPPORTED_BRIDGE_VERSION').value('3.8.0');
+
+            utility.validateSourceUploadValue('3.8.0');
+
+            expect(infoStub.called).to.be.false;
+        });
+
+        it('should not show info message when assessment mode is empty string', () => {
+            const infoStub = sandbox.stub(console, 'info');
+            sandbox.stub(inputs, 'POLARIS_ASSESSMENT_MODE').value('');
+            sandbox.stub(constants, 'ASSESSMENT_MODE_UNSUPPORTED_BRIDGE_VERSION').value('3.8.0');
+
+            utility.validateSourceUploadValue('3.8.0');
+
+            expect(infoStub.called).to.be.false;
+        });
+    });
 });

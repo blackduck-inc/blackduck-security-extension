@@ -92,6 +92,13 @@ export const POLARIS_TEST_SCA_TYPE_KEY_CLASSIC_EDITOR = "polarisTestScaType";
 export const POLARIS_TEST_SAST_TYPE_KEY = "polaris_test_sast_type";
 export const POLARIS_TEST_SAST_TYPE_KEY_CLASSIC_EDITOR = "polarisTestSastType";
 
+export const POLARIS_TEST_SCA_LOCATION_KEY = "polaris_test_sca_location";
+export const POLARIS_TEST_SCA_LOCATION_KEY_CLASSIC_EDITOR =
+  "polarisTestScaLocation";
+export const POLARIS_TEST_SAST_LOCATION_KEY = "polaris_test_sast_location";
+export const POLARIS_TEST_SAST_LOCATION_KEY_CLASSIC_EDITOR =
+  "polarisTestSastLocation";
+
 export const PROJECT_DIRECTORY_KEY = "project_directory";
 export const POLARIS_PROJECT_DIRECTORY_KEY_CLASSIC_EDITOR =
   "polarisProjectDirectory";
@@ -731,5 +738,4 @@ export const ADO_SERVICES_URL = "https://dev.azure.com";
 export const INTEGRATIONS_ADO_CLOUD = "Integrations-ado-cloud";
 export const INTEGRATIONS_ADO_EE = "Integrations-ado-ee";
 export const VERSION = "3.5.0";
-export const POLARIS_OUTPUT_FILE_NAME = "polaris_output.json";
-export const BD_OUTPUT_FILE_NAME = "bd_output.json";
+export const ASSESSMENT_MODE_UNSUPPORTED_BRIDGE_VERSION = "3.8.0";

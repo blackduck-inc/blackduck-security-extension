@@ -520,7 +520,6 @@ export function updateSarifFilePaths(
   productInputFilPath: string
 ): void {
   const fileName = productInputFileName.replace(/"$/, "");
-  taskLib.debug(`Sarif file name :::: ${fileName}`);
   if (fileName === "polaris_input.json") {
     let sarifPath: string;
     if (bridgeVersion < constants.VERSION) {
@@ -543,9 +542,6 @@ export function updateSarifFilePaths(
         sarifPath = inputs.POLARIS_REPORTS_SARIF_FILE_PATH.trim();
       }
     }
-    taskLib.debug(
-      `sarifPath inside updateSarifFilePaths method :::: ${sarifPath}`
-    );
     updatePolarisSarifPath(productInputFilPath, sarifPath);
   }
 
@@ -693,4 +689,14 @@ export function formatURLString(url: string, ...args: string[]): string {
     /{(\d+)}/g,
     (match, index) => encodeURIComponent(args[index]) || ""
   );
+}
+export function validateSourceUploadValue(bridgeVersion: string): void {
+  if (
+    bridgeVersion >= constants.ASSESSMENT_MODE_UNSUPPORTED_BRIDGE_VERSION &&
+    !isNullOrEmptyValue(inputs.POLARIS_ASSESSMENT_MODE)
+  ) {
+    console.info(
+      "INFO: polaris_assessment_mode is deprecated. Use polaris_test_sast_location=remote and/or polaris_test_sca_location=remote for source upload scans instead."
+    );
+  }
 }
