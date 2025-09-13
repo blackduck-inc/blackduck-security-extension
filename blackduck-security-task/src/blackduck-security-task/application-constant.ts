@@ -154,6 +154,10 @@ export const COVERITY_PRCOMMENT_ENABLED_KEY = "coverity_prComment_enabled";
 export const COVERITY_PRCOMMENT_ENABLED_KEY_CLASSIC_EDITOR =
   "coverityPrCommentEnabled";
 
+export const COVERITY_PRCOMMENT_IMPACTS_KEY = "coverity_prComment_impacts";
+export const COVERITY_PRCOMMENT_IMPACTS_KEY_CLASSIC_EDITOR =
+  "coverityPrCommentImpacts";
+
 export const COVERITY_LOCAL_KEY = "coverity_local";
 export const COVERITY_LOCAL_KEY_CLASSIC_EDITOR = "coverityLocal";
 
@@ -739,3 +743,4 @@ export const INTEGRATIONS_ADO_CLOUD = "Integrations-ado-cloud";
 export const INTEGRATIONS_ADO_EE = "Integrations-ado-ee";
 export const VERSION = "3.5.0";
 export const ASSESSMENT_MODE_UNSUPPORTED_BRIDGE_VERSION = "3.8.0";
+export const COVERITY_PRCOMMENT_NEW_FORMAT_VERSION = "3.9.0";

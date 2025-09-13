@@ -611,6 +611,16 @@
       "groupName": "coverityPREnable"
     },
     {
+      "name": "coverityPrCommentImpacts",
+      "type": "string",
+      "label": "Coverity PR Comment Impacts",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Coverity provides four possible comma separated list of impact values. Comments are created for issues where the issue impact matches one of the values specified using this option.Default value: HIGH. Supported values: HIGH,MEDIUM,LOW,AUDIT",
+      "visibleRule": "coverityPrCommentEnabled = true",
+      "groupName": "coverityPREnable"
+    },
+    {
       "name": "coverityBuildCommand",
       "type": "string",
       "label": "Build Command",

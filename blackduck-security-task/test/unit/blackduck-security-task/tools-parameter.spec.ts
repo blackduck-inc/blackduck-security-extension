@@ -562,8 +562,40 @@ describe("Bridge CLI Tools Parameter test", () => {
             expect(jsonData.data.coverity.connect.url).to.be.equals('https://test.com');
             expect(jsonData.data.coverity.connect.user.name).to.be.equals('test-user');
             expect(jsonData.data.coverity.connect.user.password).to.be.equals('password');
-            expect(jsonData.data.coverity.automation.prcomment).to.be.equals(true)
+            expect(jsonData.data.coverity.prcomment.enabled).to.be.equals(true)
 
+            expect(formattedCommand).contains('--stage connect');
+
+            coverityStateFile = '"'.concat(coverityStateFile).concat('"');
+            expect(formattedCommand).contains('--input '.concat(coverityStateFile));
+        });
+
+        it('should success for coverity command formation with mandatory and optional parameters', async function () {
+            Object.defineProperty(inputs, 'COVERITY_URL', {value: 'https://test.com'});
+            Object.defineProperty(inputs, 'COVERITY_USER', {value: 'test-user'});
+            Object.defineProperty(inputs, 'COVERITY_USER_PASSWORD', {value: 'password'});
+            Object.defineProperty(inputs, 'COVERITY_PROJECT_NAME', {value: 'test'});
+            Object.defineProperty(inputs, 'COVERITY_STREAM_NAME', {value: 'test'});
+            Object.defineProperty(inputs, 'COVERITY_INSTALL_DIRECTORY', {value: process.cwd()});
+            Object.defineProperty(inputs, 'COVERITY_POLICY_VIEW', {value: 'test'});
+            Object.defineProperty(inputs, 'COVERITY_LOCAL', {value: true});
+            Object.defineProperty(inputs, 'COVERITY_VERSION', {value: '2022.12.0'});
+
+            sandbox.stub(validator, "validateCoverityInstallDirectoryParam").returns(true);
+
+            const formattedCommand = await bridgeToolsParameter.getFormattedCommandForCoverity();
+            const jsonString = fs.readFileSync(coverityStateFile, 'utf-8');
+            const jsonData = JSON.parse(jsonString);
+
+            expect(jsonData.data.coverity.connect.url).to.be.equals('https://test.com');
+            expect(jsonData.data.coverity.connect.user.name).to.be.equals('test-user');
+            expect(jsonData.data.coverity.connect.user.password).to.be.equals('password');
+            expect(jsonData.data.coverity.connect.policy.view).to.be.equals('test');
+            expect(jsonData.data.coverity.connect.stream.name).to.be.equals('test');
+            expect(jsonData.data.coverity.connect.project.name).to.be.equals('test');
+            expect(jsonData.data.coverity.install.directory).to.be.equals(process.cwd());
+            expect(jsonData.data.coverity.local).to.be.equals(true);
+            expect(jsonData.data.coverity.version).to.be.equals('2022.12.0');
             expect(formattedCommand).contains('--stage connect');
 
             coverityStateFile = '"'.concat(coverityStateFile).concat('"');
@@ -645,7 +677,7 @@ describe("Bridge CLI Tools Parameter test", () => {
             expect(jsonData.data.coverity.connect.user.password).to.be.equals('password');
             expect(jsonData.data.coverity.connect.stream.name).to.be.equals('test');
             expect(jsonData.data.coverity.connect.project.name).to.be.equals('test');
-            expect(jsonData.data.coverity.automation.prcomment).to.be.equals(true);
+            expect(jsonData.data.coverity.prcomment.enabled).to.be.equals(true);
             expect(jsonData.data.azure.api.url).to.be.equals('https://dev.azure.com');
             expect(jsonData.data.azure.organization.name).to.be.equals('bdorg');
             expect(jsonData.data.azure.project.name).to.be.equals('test-project');
@@ -687,7 +719,7 @@ describe("Bridge CLI Tools Parameter test", () => {
             expect(jsonData.data.coverity.connect.user.password).to.be.equals('password');
             expect(jsonData.data.coverity.connect.stream.name).to.be.equals('test');
             expect(jsonData.data.coverity.connect.project.name).to.be.equals('test');
-            expect(jsonData.data.coverity.automation.prcomment).to.be.equals(true);
+            expect(jsonData.data.coverity.prcomment.enabled).to.be.equals(true);
             expect(jsonData.data.azure.api.url).to.be.equals('https://dev.azure.com');
             expect(jsonData.data.azure.organization.name).to.be.equals('bdorg');
             expect(jsonData.data.azure.project.name).to.be.equals('test-project');
@@ -733,7 +765,7 @@ describe("Bridge CLI Tools Parameter test", () => {
             expect(jsonData.data.coverity.connect.user.password).to.be.equals('password');
             expect(jsonData.data.coverity.connect.stream.name).to.be.equals('test');
             expect(jsonData.data.coverity.connect.project.name).to.be.equals('test');
-            expect(jsonData.data.coverity.automation.prcomment).to.be.equals(true);
+            expect(jsonData.data.coverity.prcomment.enabled).to.be.equals(true);
             expect(jsonData.data.azure.api.url).to.be.equals('https://dev.azure.com');
             expect(jsonData.data.azure.organization.name).to.be.equals('bdorg');
             expect(jsonData.data.azure.project.name).to.be.equals('test-project');
@@ -779,7 +811,7 @@ describe("Bridge CLI Tools Parameter test", () => {
             expect(jsonData.data.coverity.connect.user.password).to.be.equals('password');
             expect(jsonData.data.coverity.connect.stream.name).to.be.equals('test');
             expect(jsonData.data.coverity.connect.project.name).to.be.equals('test');
-            expect(jsonData.data.coverity.automation.prcomment).to.be.equals(true);
+            expect(jsonData.data.coverity.prcomment.enabled).to.be.equals(true);
             expect(jsonData.data.azure.api.url).to.be.equals('https://dev.azure.com');
             expect(jsonData.data.azure.organization.name).to.be.equals('bdorg');
             expect(jsonData.data.azure.project.name).to.be.equals('test-project');

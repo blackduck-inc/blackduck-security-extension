@@ -72,7 +72,12 @@ export async function run() {
       bridgeVersion,
       productInputFilPath
     );
-
+    // Based on bridge version update Coverity configuration for backward compatibility
+    util.updateCoverityConfigForBridgeVersion(
+      productInputFileName,
+      bridgeVersion,
+      productInputFilPath
+    );
     // Execute prepared commands
     const result: number = await bridge.executeBridgeCliCommand(
       bridgePath,

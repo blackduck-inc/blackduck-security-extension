@@ -9,7 +9,8 @@ import {
     PathWrapper, LoggerWrapper,extractInputJsonFilename,
     updateSarifFilePaths,
     updatePolarisSarifPath,
-    updateBlackDuckSarifPath
+    updateBlackDuckSarifPath,
+    updateCoverityConfigForBridgeVersion
 } from "../../../src/blackduck-security-task/utility";
 import process from "process";
 import * as toolLibLocal from "../../../src/blackduck-security-task/download-tool";
@@ -1498,6 +1499,67 @@ describe("Utilities", () => {
             utility.validateSourceUploadValue('3.8.0');
 
             expect(infoStub.called).to.be.false;
+        });
+    });
+
+    describe('updateCoverityConfigForBridgeVersion', () => {
+        // eslint-disable-next-line @typescript-eslint/no-var-requires
+        const fs = require('fs');
+        let tempFile: string;
+
+        afterEach(() => {
+            if (tempFile && fs.existsSync(tempFile)) {
+                fs.unlinkSync(tempFile);
+            }
+        });
+
+        it('should convert new format to legacy for Bridge CLI < 3.9.0', function () {
+            tempFile = '/tmp/test_coverity_input.json';
+            const testData = {
+                data: {
+                    coverity: {
+                        prcomment: {
+                            enabled: true,
+                            impacts: ['HIGH', 'MEDIUM']
+                        }
+                    }
+                }
+            };
+
+            fs.writeFileSync(tempFile, JSON.stringify(testData, null, 2));
+
+            updateCoverityConfigForBridgeVersion('coverity_input.json', '3.8.0', tempFile);
+
+            const updatedData = JSON.parse(fs.readFileSync(tempFile, 'utf-8'));
+
+            expect(updatedData.data.coverity.automation).to.deep.equal({ prcomment: true });
+            expect(updatedData.data.coverity.prcomment).to.be.undefined;
+        });
+
+        it('should preserve new format for Bridge CLI >= 3.9.0', function () {
+            tempFile = '/tmp/test_coverity_input2.json';
+            const testData = {
+                data: {
+                    coverity: {
+                        prcomment: {
+                            enabled: true,
+                            impacts: ['HIGH', 'MEDIUM']
+                        }
+                    }
+                }
+            };
+
+            fs.writeFileSync(tempFile, JSON.stringify(testData, null, 2));
+
+            updateCoverityConfigForBridgeVersion('coverity_input.json', '3.9.0', tempFile);
+
+            const updatedData = JSON.parse(fs.readFileSync(tempFile, 'utf-8'));
+
+            expect(updatedData.data.coverity.prcomment).to.deep.equal({
+                enabled: true,
+                impacts: ['HIGH', 'MEDIUM']
+            });
+            expect(updatedData.data.coverity.automation).to.be.undefined;
         });
     });
 });
