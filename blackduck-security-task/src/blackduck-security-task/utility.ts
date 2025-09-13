@@ -114,7 +114,11 @@ export async function extractZipWithQuiet(
       .arg(command);
     await powershell.exec();
   } else {
-    const unzip: trm.ToolRunner = taskLib.tool("unzip").arg("-q").arg(file);
+    const unzip: trm.ToolRunner = taskLib
+      .tool("unzip")
+      .arg("-q")
+      .arg("-o")
+      .arg(file);
     await unzip.exec(<trm.IExecOptions>{ cwd: dest });
   }
   return dest;

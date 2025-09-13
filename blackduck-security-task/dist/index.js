@@ -3391,7 +3391,11 @@ function extractZipWithQuiet(file, destination) {
             yield powershell.exec();
         }
         else {
-            const unzip = taskLib.tool("unzip").arg("-q").arg(file);
+            const unzip = taskLib
+                .tool("unzip")
+                .arg("-q")
+                .arg("-o")
+                .arg(file);
             yield unzip.exec({ cwd: dest });
         }
         return dest;
