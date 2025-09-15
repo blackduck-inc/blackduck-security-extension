@@ -2037,30 +2037,142 @@ describe("Bridge CLI Tools Parameter test", () => {
                 expect(formattedCommand).contains('--stage polaris');
             });
 
-            it('should include both SCA and SAST locations in Polaris test configuration when both are provided', async function () {
-                Object.defineProperty(inputs, 'POLARIS_TEST_SCA_LOCATION', { value: 'hybrid' });
-                Object.defineProperty(inputs, 'POLARIS_TEST_SAST_LOCATION', { value: 'local' });
 
-                const formattedCommand = await bridgeToolsParameter.getFormattedCommandForPolaris();
-                const jsonString = fs.readFileSync(polarisStateFile, 'utf-8');
-                const jsonData = JSON.parse(jsonString);
+        });
 
-                expect(jsonData.data.polaris.test).to.exist;
-                expect(jsonData.data.polaris.test.sca).to.exist;
-                expect(jsonData.data.polaris.test.sca.location).to.equal('hybrid');
-                expect(jsonData.data.polaris.test.sast).to.exist;
-                expect(jsonData.data.polaris.test.sast.location).to.equal('local');
-            });
-            it('should not include test configuration in Polaris when POLARIS_TEST_SCA_LOCATION and POLARIS_TEST_SAST_LOCATION are not provided', async function () {
-                Object.defineProperty(inputs, 'POLARIS_TEST_SCA_LOCATION', { value: '' });
-                Object.defineProperty(inputs, 'POLARIS_TEST_SAST_LOCATION', { value: '' });
+        it('should include SCA type in Polaris test configuration when POLARIS_TEST_SCA_TYPE is provided', async function () {
+            Object.defineProperty(inputs, 'POLARIS_SERVER_URL', {value: 'server_url'});
+            Object.defineProperty(inputs, 'POLARIS_ACCESS_TOKEN', {value: 'access_token'});
+            Object.defineProperty(inputs, 'POLARIS_ASSESSMENT_TYPES', {value: ['SCA']});
+            Object.defineProperty(inputs, 'POLARIS_TEST_SCA_TYPE', { value: 'full' });
 
-                const formattedCommand = await bridgeToolsParameter.getFormattedCommandForPolaris();
-                const jsonString = fs.readFileSync(polarisStateFile, 'utf-8');
-                const jsonData = JSON.parse(jsonString);
+            const formattedCommand = await bridgeToolsParameter.getFormattedCommandForPolaris();
+            const jsonString = fs.readFileSync(polarisStateFile, 'utf-8');
+            const jsonData = JSON.parse(jsonString);
 
-                expect(jsonData.data.polaris?.test).to.be.undefined;
-            });
+            expect(jsonData.data.polaris.test).to.exist;
+            expect(jsonData.data.polaris.test.sca).to.exist;
+            expect(jsonData.data.polaris.test.sca.type).to.equal('full');
+            expect(jsonData.data.polaris.test.sca.location).to.be.undefined;
+        });
+
+        it('should include SAST type in Polaris test configuration when POLARIS_TEST_SAST_TYPE is provided', async function () {
+            Object.defineProperty(inputs, 'POLARIS_SERVER_URL', {value: 'server_url'});
+            Object.defineProperty(inputs, 'POLARIS_ACCESS_TOKEN', {value: 'access_token'});
+            Object.defineProperty(inputs, 'POLARIS_ASSESSMENT_TYPES', {value: ['SAST']});
+            Object.defineProperty(inputs, 'POLARIS_TEST_SAST_TYPE', { value: 'quick' });
+
+            const formattedCommand = await bridgeToolsParameter.getFormattedCommandForPolaris();
+            const jsonString = fs.readFileSync(polarisStateFile, 'utf-8');
+            const jsonData = JSON.parse(jsonString);
+
+            expect(jsonData.data.polaris.test).to.exist;
+            expect(jsonData.data.polaris.test.sast).to.exist;
+            expect(jsonData.data.polaris.test.sast.type).to.deep.equal(['quick']);
+            expect(jsonData.data.polaris.test.sast.location).to.be.undefined;
+        });
+
+        it('should handle multiple SAST types separated by comma when POLARIS_TEST_SAST_TYPE is provided', async function () {
+            Object.defineProperty(inputs, 'POLARIS_SERVER_URL', {value: 'server_url'});
+            Object.defineProperty(inputs, 'POLARIS_ACCESS_TOKEN', {value: 'access_token'});
+            Object.defineProperty(inputs, 'POLARIS_ASSESSMENT_TYPES', {value: ['SAST']});
+            Object.defineProperty(inputs, 'POLARIS_TEST_SAST_TYPE', { value: 'quick, full, targeted' });
+
+            const formattedCommand = await bridgeToolsParameter.getFormattedCommandForPolaris();
+            const jsonString = fs.readFileSync(polarisStateFile, 'utf-8');
+            const jsonData = JSON.parse(jsonString);
+
+            expect(jsonData.data.polaris.test).to.exist;
+            expect(jsonData.data.polaris.test.sast).to.exist;
+            expect(jsonData.data.polaris.test.sast.type).to.deep.equal(['quick', 'full', 'targeted']);
+        });
+
+        it('should include both SCA type and location when both POLARIS_TEST_SCA_TYPE and POLARIS_TEST_SCA_LOCATION are provided', async function () {
+            Object.defineProperty(inputs, 'POLARIS_SERVER_URL', {value: 'server_url'});
+            Object.defineProperty(inputs, 'POLARIS_ACCESS_TOKEN', {value: 'access_token'});
+            Object.defineProperty(inputs, 'POLARIS_ASSESSMENT_TYPES', {value: ['SCA']});
+            Object.defineProperty(inputs, 'POLARIS_TEST_SCA_TYPE', { value: 'full' });
+            Object.defineProperty(inputs, 'POLARIS_TEST_SCA_LOCATION', { value: 'hybrid' });
+
+            const formattedCommand = await bridgeToolsParameter.getFormattedCommandForPolaris();
+            const jsonString = fs.readFileSync(polarisStateFile, 'utf-8');
+            const jsonData = JSON.parse(jsonString);
+
+            expect(jsonData.data.polaris.test).to.exist;
+            expect(jsonData.data.polaris.test.sca).to.exist;
+            expect(jsonData.data.polaris.test.sca.type).to.equal('full');
+            expect(jsonData.data.polaris.test.sca.location).to.equal('hybrid');
+        });
+
+        it('should include both SAST type and location when both POLARIS_TEST_SAST_TYPE and POLARIS_TEST_SAST_LOCATION are provided', async function () {
+            Object.defineProperty(inputs, 'POLARIS_SERVER_URL', {value: 'server_url'});
+            Object.defineProperty(inputs, 'POLARIS_ACCESS_TOKEN', {value: 'access_token'});
+            Object.defineProperty(inputs, 'POLARIS_ASSESSMENT_TYPES', {value: ['SAST']});
+            Object.defineProperty(inputs, 'POLARIS_TEST_SAST_TYPE', { value: 'quick, full' });
+            Object.defineProperty(inputs, 'POLARIS_TEST_SAST_LOCATION', { value: 'local' });
+
+            const formattedCommand = await bridgeToolsParameter.getFormattedCommandForPolaris();
+            const jsonString = fs.readFileSync(polarisStateFile, 'utf-8');
+            const jsonData = JSON.parse(jsonString);
+
+            expect(jsonData.data.polaris.test).to.exist;
+            expect(jsonData.data.polaris.test.sast).to.exist;
+            expect(jsonData.data.polaris.test.sast.type).to.deep.equal(['quick', 'full']);
+            expect(jsonData.data.polaris.test.sast.location).to.equal('local');
+        });
+
+        it('should include complete test configuration when all SCA and SAST parameters are provided', async function () {
+            Object.defineProperty(inputs, 'POLARIS_SERVER_URL', {value: 'server_url'});
+            Object.defineProperty(inputs, 'POLARIS_ACCESS_TOKEN', {value: 'access_token'});
+            Object.defineProperty(inputs, 'POLARIS_ASSESSMENT_TYPES', {value: ['SCA', 'SAST']});
+            Object.defineProperty(inputs, 'POLARIS_TEST_SCA_TYPE', { value: 'full' });
+            Object.defineProperty(inputs, 'POLARIS_TEST_SCA_LOCATION', { value: 'hybrid' });
+            Object.defineProperty(inputs, 'POLARIS_TEST_SAST_TYPE', { value: 'quick, targeted' });
+            Object.defineProperty(inputs, 'POLARIS_TEST_SAST_LOCATION', { value: 'local' });
+
+            const formattedCommand = await bridgeToolsParameter.getFormattedCommandForPolaris();
+            const jsonString = fs.readFileSync(polarisStateFile, 'utf-8');
+            const jsonData = JSON.parse(jsonString);
+
+            expect(jsonData.data.polaris.test).to.exist;
+            expect(jsonData.data.polaris.test.sca).to.exist;
+            expect(jsonData.data.polaris.test.sca.type).to.equal('full');
+            expect(jsonData.data.polaris.test.sca.location).to.equal('hybrid');
+            expect(jsonData.data.polaris.test.sast).to.exist;
+            expect(jsonData.data.polaris.test.sast.type).to.deep.equal(['quick', 'targeted']);
+            expect(jsonData.data.polaris.test.sast.location).to.equal('local');
+        });
+
+        it('should handle whitespace in SAST type values correctly', async function () {
+            Object.defineProperty(inputs, 'POLARIS_SERVER_URL', {value: 'server_url'});
+            Object.defineProperty(inputs, 'POLARIS_ACCESS_TOKEN', {value: 'access_token'});
+            Object.defineProperty(inputs, 'POLARIS_ASSESSMENT_TYPES', {value: ['SAST']});
+            Object.defineProperty(inputs, 'POLARIS_TEST_SAST_TYPE', { value: '  quick  ,  full  ,  targeted  ' });
+
+            const formattedCommand = await bridgeToolsParameter.getFormattedCommandForPolaris();
+            const jsonString = fs.readFileSync(polarisStateFile, 'utf-8');
+            const jsonData = JSON.parse(jsonString);
+
+            expect(jsonData.data.polaris.test).to.exist;
+            expect(jsonData.data.polaris.test.sast).to.exist;
+            expect(jsonData.data.polaris.test.sast.type).to.deep.equal(['quick', 'full', 'targeted']);
+        });
+
+        it('should not include test configuration when all four Polaris test parameters are not provided', async function () {
+            Object.defineProperty(inputs, 'POLARIS_SERVER_URL', {value: 'server_url'});
+            Object.defineProperty(inputs, 'POLARIS_ACCESS_TOKEN', {value: 'access_token'});
+            Object.defineProperty(inputs, 'POLARIS_ASSESSMENT_TYPES', {value: ['SCA', 'SAST']});
+            Object.defineProperty(inputs, 'POLARIS_TEST_SCA_TYPE', {value: ''});
+            Object.defineProperty(inputs, 'POLARIS_TEST_SAST_TYPE', {value: ''});
+            Object.defineProperty(inputs, 'POLARIS_TEST_SCA_LOCATION', {value: ''});
+            Object.defineProperty(inputs, 'POLARIS_TEST_SAST_LOCATION', {value: ''});
+
+            const formattedCommand = await bridgeToolsParameter.getFormattedCommandForPolaris();
+            const jsonString = fs.readFileSync(polarisStateFile, 'utf-8');
+            const jsonData = JSON.parse(jsonString);
+
+            expect(jsonData.data.polaris?.test).to.be.undefined;
+            expect(formattedCommand).contains('--stage polaris');
         });
     });
 });
