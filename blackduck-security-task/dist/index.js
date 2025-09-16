@@ -2440,31 +2440,24 @@ class BridgeCliToolsParameter {
             if (inputs.POLARIS_BRANCH_NAME) {
                 polData.data.polaris.branch.name = inputs.POLARIS_BRANCH_NAME;
             }
-            if (inputs.POLARIS_TEST_SCA_TYPE || inputs.POLARIS_TEST_SAST_TYPE) {
+            if (inputs.POLARIS_TEST_SCA_TYPE ||
+                inputs.POLARIS_TEST_SAST_TYPE ||
+                inputs.POLARIS_TEST_SCA_LOCATION ||
+                inputs.POLARIS_TEST_SAST_LOCATION) {
                 polData.data.polaris.test = {};
-                if (inputs.POLARIS_TEST_SCA_TYPE) {
-                    polData.data.polaris.test.sca = {
+                if (inputs.POLARIS_TEST_SCA_TYPE || inputs.POLARIS_TEST_SCA_LOCATION) {
+                    polData.data.polaris.test.sca = Object.assign(Object.assign({}, (inputs.POLARIS_TEST_SCA_TYPE && {
                         type: inputs.POLARIS_TEST_SCA_TYPE,
-                    };
-                }
-                if (inputs.POLARIS_TEST_SAST_TYPE) {
-                    const polarisTestSastTypeList = inputs.POLARIS_TEST_SAST_TYPE.split(",").map((polarisTestSastType) => polarisTestSastType.trim());
-                    polData.data.polaris.test.sast = {
-                        type: polarisTestSastTypeList,
-                    };
-                }
-            }
-            if (inputs.POLARIS_TEST_SCA_LOCATION || inputs.POLARIS_TEST_SAST_LOCATION) {
-                polData.data.polaris.test = {};
-                if (inputs.POLARIS_TEST_SCA_LOCATION) {
-                    polData.data.polaris.test.sca = {
+                    })), (inputs.POLARIS_TEST_SCA_LOCATION && {
                         location: inputs.POLARIS_TEST_SCA_LOCATION,
-                    };
+                    }));
                 }
-                if (inputs.POLARIS_TEST_SAST_LOCATION) {
-                    polData.data.polaris.test.sast = {
+                if (inputs.POLARIS_TEST_SAST_TYPE || inputs.POLARIS_TEST_SAST_LOCATION) {
+                    polData.data.polaris.test.sast = Object.assign(Object.assign({}, (inputs.POLARIS_TEST_SAST_TYPE && {
+                        type: inputs.POLARIS_TEST_SAST_TYPE.split(",").map((polarisTestSastType) => polarisTestSastType.trim()),
+                    })), (inputs.POLARIS_TEST_SAST_LOCATION && {
                         location: inputs.POLARIS_TEST_SAST_LOCATION,
-                    };
+                    }));
                 }
             }
             if ((0, utility_1.isBoolean)(inputs.POLARIS_WAITFORSCAN)) {
@@ -3398,7 +3391,11 @@ function extractZipWithQuiet(file, destination) {
             yield powershell.exec();
         }
         else {
-            const unzip = taskLib.tool("unzip").arg("-q").arg(file);
+            const unzip = taskLib
+                .tool("unzip")
+                .arg("-q")
+                .arg("-o")
+                .arg(file);
             yield unzip.exec({ cwd: dest });
         }
         return dest;
