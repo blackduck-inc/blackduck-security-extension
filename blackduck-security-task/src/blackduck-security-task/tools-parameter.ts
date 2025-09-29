@@ -885,7 +885,7 @@ export class BridgeCliToolsParameter {
     if (collectionUri != "") {
       const parsedUrl = url.parse(collectionUri);
       azureInstanceUrl = `${parsedUrl.protocol}//${parsedUrl.host}`;
-      azureOrganization = parsedUrl.pathname?.split("/")[1] || "";
+      azureOrganization = parsedUrl.pathname?.substring(1) || "";
       if (
         parsedUrl.host &&
         !azureOrganization &&
