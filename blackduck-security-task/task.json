@@ -9,8 +9,8 @@
   "author": "Black Duck Software Inc.",
   "version": {
     "Major": 2,
-    "Minor": 3,
-    "Patch": 1
+    "Minor": 4,
+    "Patch": 0
   },
   "instanceNameFormat": "Black Duck Security Scan",
   "groups": [
@@ -368,7 +368,7 @@
       "defaultValue": "",
       "required": false,
       "helpMarkDown": "The zipped source file path. It overrides the project directory setting above",
-      "visibleRule": "polarisTestSastLocation = remote",
+      "visibleRule": "polarisTestSastLocation = remote || polarisTestScaLocation = remote ",
       "groupName": "polarisScanOptions"
     },
     {
@@ -378,7 +378,7 @@
       "defaultValue": "",
       "required": false,
       "helpMarkDown": "A list of git ignore pattern strings that indicate the files need to be excluded from the zip file.",
-      "visibleRule": "polarisTestSastLocation = remote",
+      "visibleRule": "polarisTestSastLocation = remote || polarisTestScaLocation = remote ",
       "groupName": "polarisScanOptions"
     },
     {
@@ -388,7 +388,7 @@
       "defaultValue": false,
       "required": false,
       "helpMarkDown": "Flag indicating whether to preserve symlinks in the source zip",
-      "visibleRule": "polarisTestSastLocation = remote",
+      "visibleRule": "polarisTestSastLocation = remote || polarisTestScaLocation = remote ",
       "groupName": "polarisScanOptions"
     },
     {
