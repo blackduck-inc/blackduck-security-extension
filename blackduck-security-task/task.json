@@ -613,7 +613,7 @@
     {
       "name": "coverityPrCommentImpacts",
       "type": "string",
-      "label": "PR Comment Impacts Values",
+      "label": "PR Comment Impact Values",
       "defaultValue": "",
       "required": false,
       "helpMarkDown": "Comments are created for issues whose impact matches one of the values specified in the PR Comment Severities field.The default value is HIGH. Supported values are HIGH, MEDIUM, LOW, and AUDIT.",
