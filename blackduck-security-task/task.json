@@ -613,10 +613,10 @@
     {
       "name": "coverityPrCommentImpacts",
       "type": "string",
-      "label": "Coverity PR Comment Impacts",
+      "label": "PR Comment Impacts Values",
       "defaultValue": "",
       "required": false,
-      "helpMarkDown": "Coverity provides four possible comma separated list of impact values. Comments are created for issues where the issue impact matches one of the values specified using this option.Default value: HIGH. Supported values: HIGH,MEDIUM,LOW,AUDIT",
+      "helpMarkDown": "Comments are created for issues whose impact matches one of the values specified in the PR Comment Severities field.The default value is HIGH. Supported values are HIGH, MEDIUM, LOW, and AUDIT.",
       "visibleRule": "coverityPrCommentEnabled = true",
       "groupName": "coverityPREnable"
     },

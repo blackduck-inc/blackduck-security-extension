@@ -551,7 +551,7 @@ describe("Bridge CLI Tools Parameter test", () => {
             Object.defineProperty(inputs, 'COVERITY_URL', {value: 'https://test.com'})
             Object.defineProperty(inputs, 'COVERITY_USER', {value: 'test-user'})
             Object.defineProperty(inputs, 'COVERITY_USER_PASSWORD', {value: 'password'})
-            Object.defineProperty(inputs, 'COVERITY_AUTOMATION_PRCOMMENT', {value: 'true'})
+            Object.defineProperty(inputs, 'COVERITY_PRCOMMENT_ENABLED', {value: 'true'})
             Object.defineProperty(inputs, 'AZURE_TOKEN', {value: 'token'})
             sandbox.stub(validator, "validateCoverityInstallDirectoryParam").returns(true);
             sandbox.stub(taskLib, "getVariable").returns(AZURE_BUILD_REASON.PULL_REQUEST);
@@ -654,7 +654,7 @@ describe("Bridge CLI Tools Parameter test", () => {
             Object.defineProperty(inputs, 'COVERITY_USER_PASSWORD', {value: 'password'})
             Object.defineProperty(inputs, 'COVERITY_PROJECT_NAME', {value: 'test'})
             Object.defineProperty(inputs, 'COVERITY_STREAM_NAME', {value: 'test'})
-            Object.defineProperty(inputs, 'COVERITY_AUTOMATION_PRCOMMENT', {value: 'true'})
+            Object.defineProperty(inputs, 'COVERITY_PRCOMMENT_ENABLED', {value: 'true'})
             Object.defineProperty(inputs, 'AZURE_TOKEN', {value: 'token'})
 
             sandbox.stub(validator, "validateCoverityInstallDirectoryParam").returns(true);
@@ -696,7 +696,7 @@ describe("Bridge CLI Tools Parameter test", () => {
             Object.defineProperty(inputs, 'COVERITY_USER_PASSWORD', {value: 'password'})
             Object.defineProperty(inputs, 'COVERITY_PROJECT_NAME', {value: 'test'})
             Object.defineProperty(inputs, 'COVERITY_STREAM_NAME', {value: 'test'})
-            Object.defineProperty(inputs, 'COVERITY_AUTOMATION_PRCOMMENT', {value: 'true'})
+            Object.defineProperty(inputs, 'COVERITY_PRCOMMENT_ENABLED', {value: 'true'})
             Object.defineProperty(inputs, 'AZURE_TOKEN', {value: 'token'})
 
             sandbox.stub(validator, "validateCoverityInstallDirectoryParam").returns(true);
@@ -738,7 +738,7 @@ describe("Bridge CLI Tools Parameter test", () => {
             Object.defineProperty(inputs, 'COVERITY_USER_PASSWORD', {value: 'password'})
             Object.defineProperty(inputs, 'COVERITY_PROJECT_NAME', {value: 'test'})
             Object.defineProperty(inputs, 'COVERITY_STREAM_NAME', {value: 'test'})
-            Object.defineProperty(inputs, 'COVERITY_AUTOMATION_PRCOMMENT', {value: 'true'})
+            Object.defineProperty(inputs, 'COVERITY_PRCOMMENT_ENABLED', {value: 'true'})
             Object.defineProperty(inputs, 'AZURE_TOKEN', {value: 'token'})
 
             sandbox.stub(validator, "validateCoverityInstallDirectoryParam").returns(true);
@@ -784,7 +784,7 @@ describe("Bridge CLI Tools Parameter test", () => {
             Object.defineProperty(inputs, 'COVERITY_USER_PASSWORD', {value: 'password'})
             Object.defineProperty(inputs, 'COVERITY_PROJECT_NAME', {value: 'test'})
             Object.defineProperty(inputs, 'COVERITY_STREAM_NAME', {value: 'test'})
-            Object.defineProperty(inputs, 'COVERITY_AUTOMATION_PRCOMMENT', {value: 'true'})
+            Object.defineProperty(inputs, 'COVERITY_PRCOMMENT_ENABLED', {value: 'true'})
             Object.defineProperty(inputs, 'AZURE_TOKEN', {value: 'token'})
 
             sandbox.stub(validator, "validateCoverityInstallDirectoryParam").returns(true);

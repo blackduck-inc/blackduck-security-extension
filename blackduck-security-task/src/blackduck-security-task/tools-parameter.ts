@@ -526,7 +526,7 @@ export class BridgeCliToolsParameter {
     const azureRestAPIVersion = azureData?.restAPIVersion;
 
     const isPrCommentEnabled = parseToBoolean(
-      inputs.COVERITY_AUTOMATION_PRCOMMENT
+      inputs.COVERITY_PRCOMMENT_ENABLED
     );
 
     const azurePrResponse = await this.updateAzurePrNumberForManualTriggerFlow(

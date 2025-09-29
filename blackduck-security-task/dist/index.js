@@ -936,7 +936,7 @@ class BridgeCli {
                     return Promise.reject(new Error(application_constant_1.INVALID_BRIDGE_CLI_URL.concat(constants.SPACE).concat(ErrorCodes_1.ErrorCode.INVALID_URL.toString())));
                 }
                 // To check whether bridge already exists with same version mentioned in bridge url
-                const versionsArray = bridgeUrl.match(/.*bridge-cli-bundle-([0-9.]+[a-zA-Z0-9]*).*/);
+                const versionsArray = bridgeUrl.match(".*bridge-cli-bundle-([0-9.]+[a-zA-Z0-9]*).*");
                 if (versionsArray) {
                     version = versionsArray[1];
                     if (!version) {
@@ -1883,8 +1883,8 @@ var __importStar = (this && this.__importStar) || function (mod) {
 };
 var _a, _b;
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.COVERITY_PRCOMMENT_ENABLED = exports.COVERITY_AUTOMATION_PRCOMMENT = exports.COVERITY_LOCAL = exports.COVERITY_POLICY_VIEW = exports.COVERITY_EXECUTION_PATH = exports.COVERITY_INSTALL_DIRECTORY = exports.COVERITY_STREAM_NAME = exports.COVERITY_PROJECT_NAME = exports.COVERITY_USER_PASSWORD = exports.COVERITY_USER = exports.COVERITY_URL = exports.POLARIS_REPORTS_SARIF_ISSUE_TYPES = exports.POLARIS_REPORTS_SARIF_GROUP_SCA_ISSUES = exports.POLARIS_REPORTS_SARIF_SEVERITIES = exports.POLARIS_REPORTS_SARIF_FILE_PATH = exports.POLARIS_REPORTS_SARIF_CREATE = exports.POLARIS_PR_COMMENT_SEVERITIES = exports.POLARIS_PR_COMMENT_ENABLED = exports.PROJECT_SOURCE_EXCLUDES = exports.PROJECT_SOURCE_PRESERVE_SYM_LINKS = exports.PROJECT_SOURCE_ARCHIVE = exports.POLARIS_PROJECT_DIRECTORY = exports.POLARIS_ASSESSMENT_MODE = exports.POLARIS_WAITFORSCAN = exports.POLARIS_TEST_SAST_LOCATION = exports.POLARIS_TEST_SCA_LOCATION = exports.POLARIS_TEST_SAST_TYPE = exports.POLARIS_TEST_SCA_TYPE = exports.POLARIS_BRANCH_PARENT_NAME = exports.POLARIS_BRANCH_NAME = exports.POLARIS_ASSESSMENT_TYPES = exports.POLARIS_PROJECT_NAME = exports.POLARIS_APPLICATION_NAME = exports.POLARIS_ACCESS_TOKEN = exports.POLARIS_SERVER_URL = exports.SCAN_TYPE = exports.AZURE_TOKEN = exports.INCLUDE_DIAGNOSTICS = exports.BRIDGECLI_DOWNLOAD_VERSION = exports.BRIDGECLI_INSTALL_DIRECTORY_KEY = exports.ENABLE_NETWORK_AIRGAP = exports.BRIDGECLI_DOWNLOAD_URL = exports.showLogForDeprecatedInputs = exports.getDelimitedInput = exports.getPathInput = exports.getBoolInput = exports.getInputForYMLAndDeprecatedKey = exports.getArbitraryInputs = exports.getInputForMultipleClassicEditor = exports.getInput = void 0;
-exports.NETWORK_SSL_TRUST_ALL = exports.NETWORK_SSL_CERT_FILE = exports.MARK_BUILD_STATUS = exports.RETURN_STATUS = exports.SRM_PROJECT_DIRECTORY = exports.SRM_WAITFORSCAN = exports.SRM_BRANCH_PARENT = exports.SRM_BRANCH_NAME = exports.SRM_PROJECT_ID = exports.SRM_PROJECT_NAME = exports.SRM_ASSESSMENT_TYPES = exports.SRM_APIKEY = exports.SRM_URL = exports.DETECT_ARGS = exports.DETECT_CONFIG_PATH = exports.DETECT_SEARCH_DEPTH = exports.BLACKDUCKSCA_REPORTS_SARIF_GROUP_SCA_ISSUES = exports.BLACKDUCKSCA_REPORTS_SARIF_SEVERITIES = exports.BLACKDUCKSCA_WAITFORSCAN = exports.BLACKDUCKSCA_PROJECT_DIRECTORY = exports.BLACKDUCKSCA_REPORTS_SARIF_FILE_PATH = exports.BLACKDUCKSCA_REPORTS_SARIF_CREATE = exports.BLACKDUCKSCA_FIXPR_UPGRADE_GUIDANCE = exports.BLACKDUCKSCA_FIXPR_FILTER_SEVERITIES = exports.BLACKDUCKSCA_FIXPR_CREATE_SINGLE_PR = exports.BLACKDUCKSCA_FIXPR_MAXCOUNT = exports.BLACKDUCKSCA_PRCOMMENT_ENABLED = exports.BLACKDUCKSCA_FIXPR_ENABLED = exports.BLACKDUCKSCA_SCAN_FAILURE_SEVERITIES = exports.BLACKDUCKSCA_SCAN_FULL = exports.DETECT_EXECUTION_PATH = exports.DETECT_INSTALL_DIRECTORY = exports.BLACKDUCKSCA_API_TOKEN = exports.BLACKDUCKSCA_URL = exports.COVERITY_ARGS = exports.COVERITY_CONFIG_PATH = exports.COVERITY_CLEAN_COMMAND = exports.COVERITY_BUILD_COMMAND = exports.COVERITY_PROJECT_DIRECTORY = exports.COVERITY_WAITFORSCAN = exports.COVERITY_VERSION = exports.COVERITY_PRCOMMENT_IMPACTS = void 0;
+exports.COVERITY_PRCOMMENT_IMPACTS = exports.COVERITY_PRCOMMENT_ENABLED = exports.COVERITY_LOCAL = exports.COVERITY_POLICY_VIEW = exports.COVERITY_EXECUTION_PATH = exports.COVERITY_INSTALL_DIRECTORY = exports.COVERITY_STREAM_NAME = exports.COVERITY_PROJECT_NAME = exports.COVERITY_USER_PASSWORD = exports.COVERITY_USER = exports.COVERITY_URL = exports.POLARIS_REPORTS_SARIF_ISSUE_TYPES = exports.POLARIS_REPORTS_SARIF_GROUP_SCA_ISSUES = exports.POLARIS_REPORTS_SARIF_SEVERITIES = exports.POLARIS_REPORTS_SARIF_FILE_PATH = exports.POLARIS_REPORTS_SARIF_CREATE = exports.POLARIS_PR_COMMENT_SEVERITIES = exports.POLARIS_PR_COMMENT_ENABLED = exports.PROJECT_SOURCE_EXCLUDES = exports.PROJECT_SOURCE_PRESERVE_SYM_LINKS = exports.PROJECT_SOURCE_ARCHIVE = exports.POLARIS_PROJECT_DIRECTORY = exports.POLARIS_ASSESSMENT_MODE = exports.POLARIS_WAITFORSCAN = exports.POLARIS_TEST_SAST_LOCATION = exports.POLARIS_TEST_SCA_LOCATION = exports.POLARIS_TEST_SAST_TYPE = exports.POLARIS_TEST_SCA_TYPE = exports.POLARIS_BRANCH_PARENT_NAME = exports.POLARIS_BRANCH_NAME = exports.POLARIS_ASSESSMENT_TYPES = exports.POLARIS_PROJECT_NAME = exports.POLARIS_APPLICATION_NAME = exports.POLARIS_ACCESS_TOKEN = exports.POLARIS_SERVER_URL = exports.SCAN_TYPE = exports.AZURE_TOKEN = exports.INCLUDE_DIAGNOSTICS = exports.BRIDGECLI_DOWNLOAD_VERSION = exports.BRIDGECLI_INSTALL_DIRECTORY_KEY = exports.ENABLE_NETWORK_AIRGAP = exports.BRIDGECLI_DOWNLOAD_URL = exports.showLogForDeprecatedInputs = exports.getDelimitedInput = exports.getPathInput = exports.getBoolInput = exports.getInputForYMLAndDeprecatedKey = exports.getArbitraryInputs = exports.getInputForMultipleClassicEditor = exports.getInput = void 0;
+exports.NETWORK_SSL_TRUST_ALL = exports.NETWORK_SSL_CERT_FILE = exports.MARK_BUILD_STATUS = exports.RETURN_STATUS = exports.SRM_PROJECT_DIRECTORY = exports.SRM_WAITFORSCAN = exports.SRM_BRANCH_PARENT = exports.SRM_BRANCH_NAME = exports.SRM_PROJECT_ID = exports.SRM_PROJECT_NAME = exports.SRM_ASSESSMENT_TYPES = exports.SRM_APIKEY = exports.SRM_URL = exports.DETECT_ARGS = exports.DETECT_CONFIG_PATH = exports.DETECT_SEARCH_DEPTH = exports.BLACKDUCKSCA_REPORTS_SARIF_GROUP_SCA_ISSUES = exports.BLACKDUCKSCA_REPORTS_SARIF_SEVERITIES = exports.BLACKDUCKSCA_WAITFORSCAN = exports.BLACKDUCKSCA_PROJECT_DIRECTORY = exports.BLACKDUCKSCA_REPORTS_SARIF_FILE_PATH = exports.BLACKDUCKSCA_REPORTS_SARIF_CREATE = exports.BLACKDUCKSCA_FIXPR_UPGRADE_GUIDANCE = exports.BLACKDUCKSCA_FIXPR_FILTER_SEVERITIES = exports.BLACKDUCKSCA_FIXPR_CREATE_SINGLE_PR = exports.BLACKDUCKSCA_FIXPR_MAXCOUNT = exports.BLACKDUCKSCA_PRCOMMENT_ENABLED = exports.BLACKDUCKSCA_FIXPR_ENABLED = exports.BLACKDUCKSCA_SCAN_FAILURE_SEVERITIES = exports.BLACKDUCKSCA_SCAN_FULL = exports.DETECT_EXECUTION_PATH = exports.DETECT_INSTALL_DIRECTORY = exports.BLACKDUCKSCA_API_TOKEN = exports.BLACKDUCKSCA_URL = exports.COVERITY_ARGS = exports.COVERITY_CONFIG_PATH = exports.COVERITY_CLEAN_COMMAND = exports.COVERITY_BUILD_COMMAND = exports.COVERITY_PROJECT_DIRECTORY = exports.COVERITY_WAITFORSCAN = exports.COVERITY_VERSION = void 0;
 const taskLib = __importStar(__nccwpck_require__(347));
 const constants = __importStar(__nccwpck_require__(8673));
 const polaris_1 = __nccwpck_require__(8173);
@@ -2068,7 +2068,6 @@ exports.COVERITY_INSTALL_DIRECTORY = getPathInput(constants.COVERITY_INSTALL_DIR
 exports.COVERITY_EXECUTION_PATH = getPathInput(constants.COVERITY_EXECUTION_PATH_KEY, constants.COVERITY_EXECUTION_PATH_KEY_CLASSIC_EDITOR, null);
 exports.COVERITY_POLICY_VIEW = getInput(constants.COVERITY_POLICY_VIEW_KEY, constants.COVERITY_POLICY_VIEW_KEY_CLASSIC_EDITOR, null);
 exports.COVERITY_LOCAL = getInput(constants.COVERITY_LOCAL_KEY, constants.COVERITY_LOCAL_KEY_CLASSIC_EDITOR, null);
-exports.COVERITY_AUTOMATION_PRCOMMENT = getBoolInput(constants.COVERITY_PRCOMMENT_ENABLED_KEY, constants.COVERITY_PRCOMMENT_ENABLED_KEY_CLASSIC_EDITOR, null);
 exports.COVERITY_PRCOMMENT_ENABLED = getBoolInput(constants.COVERITY_PRCOMMENT_ENABLED_KEY, constants.COVERITY_PRCOMMENT_ENABLED_KEY_CLASSIC_EDITOR, null);
 exports.COVERITY_PRCOMMENT_IMPACTS = getInput(constants.COVERITY_PRCOMMENT_IMPACTS_KEY, constants.COVERITY_PRCOMMENT_IMPACTS_KEY_CLASSIC_EDITOR, null);
 exports.COVERITY_VERSION = getInput(constants.COVERITY_VERSION_KEY, constants.COVERITY_VERSION_KEY_CLASSIC_EDITOR, null);
@@ -2717,7 +2716,7 @@ class BridgeCliToolsParameter {
             }
             const azureData = yield this.getAzureRepoInfo();
             const azureRestAPIVersion = azureData === null || azureData === void 0 ? void 0 : azureData.restAPIVersion;
-            const isPrCommentEnabled = (0, utility_1.parseToBoolean)(inputs.COVERITY_AUTOMATION_PRCOMMENT);
+            const isPrCommentEnabled = (0, utility_1.parseToBoolean)(inputs.COVERITY_PRCOMMENT_ENABLED);
             const azurePrResponse = yield this.updateAzurePrNumberForManualTriggerFlow(azureData, isPrCommentEnabled);
             const isPullRequest = (0, utility_1.isPullRequestEvent)(azurePrResponse);
             let coverityStreamName = inputs.COVERITY_STREAM_NAME;
@@ -3883,21 +3882,24 @@ function validateSourceUploadValue(bridgeVersion) {
 exports.validateSourceUploadValue = validateSourceUploadValue;
 function updateCoverityConfigForBridgeVersion(productInputFileName, bridgeVersion, productInputFilePath) {
     var _a, _b;
-    if (productInputFileName === "coverity_input.json") {
+    const inputFileName = productInputFileName.replace(/"/g, "");
+    if (inputFileName === "coverity_input.json") {
         try {
-            const inputFileContent = (0, fs_1.readFileSync)(productInputFilePath, "utf-8");
+            // Remove quotes from the file path
+            const cleanFilePath = productInputFilePath.replace(/"/g, "");
+            const inputFileContent = (0, fs_1.readFileSync)(cleanFilePath, "utf-8");
             const covData = JSON.parse(inputFileContent);
             // Use simple version comparison like updateSarifFilePaths
             if (((_b = (_a = covData.data) === null || _a === void 0 ? void 0 : _a.coverity) === null || _b === void 0 ? void 0 : _b.prcomment) &&
                 bridgeVersion < constants.COVERITY_PRCOMMENT_NEW_FORMAT_VERSION) {
                 // Convert new format to legacy format for Bridge CLI < 3.9.0
-                console.debug(`Bridge CLI version ${bridgeVersion} < 3.9.0, converting to legacy automation format`);
+                console.info(`Bridge CLI version ${bridgeVersion} < 3.9.0, converting to legacy automation format`);
                 // Move prcomment to automation and remove prcomment
                 covData.data.coverity.automation = { prcomment: true };
                 delete covData.data.coverity.prcomment;
                 // Write the updated content back to the file
-                (0, fs_1.writeFileSync)(productInputFilePath, JSON.stringify(covData, null, 2));
-                console.debug("Converted Coverity PR comment configuration to legacy format for compatibility with Bridge CLI < 3.9.0");
+                (0, fs_1.writeFileSync)(cleanFilePath, JSON.stringify(covData, null, 2));
+                console.info("Converted Coverity PR comment configuration to legacy format for compatibility with Bridge CLI < 3.9.0");
             }
         }
         catch (error) {

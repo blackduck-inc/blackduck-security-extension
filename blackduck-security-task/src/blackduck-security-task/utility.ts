@@ -705,9 +705,12 @@ export function updateCoverityConfigForBridgeVersion(
   bridgeVersion: string,
   productInputFilePath: string
 ): void {
-  if (productInputFileName === "coverity_input.json") {
+  const inputFileName = productInputFileName.replace(/"/g, "");
+  if (inputFileName === "coverity_input.json") {
     try {
-      const inputFileContent = readFileSync(productInputFilePath, "utf-8");
+      // Remove quotes from the file path
+      const cleanFilePath = productInputFilePath.replace(/"/g, "");
+      const inputFileContent = readFileSync(cleanFilePath, "utf-8");
       const covData = JSON.parse(inputFileContent);
 
       // Use simple version comparison like updateSarifFilePaths
@@ -725,9 +728,8 @@ export function updateCoverityConfigForBridgeVersion(
         delete covData.data.coverity.prcomment;
 
         // Write the updated content back to the file
-        writeFileSync(productInputFilePath, JSON.stringify(covData, null, 2));
-
-        console.debug(
+        writeFileSync(cleanFilePath, JSON.stringify(covData, null, 2));
+        console.info(
           "Converted Coverity PR comment configuration to legacy format for compatibility with Bridge CLI < 3.9.0"
         );
       }
