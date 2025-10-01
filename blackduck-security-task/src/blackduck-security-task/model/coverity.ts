@@ -24,11 +24,16 @@ export interface ProjectData {
 export interface AutomationData {
   prcomment?: boolean;
 }
+export interface PrCommentData {
+  enabled?: boolean;
+  impacts?: string[];
+}
 
 export interface CoverityConnect extends CoverityArbitrary, AsyncMode {
   connect: CoverityData;
   install?: { directory: string };
   automation?: AutomationData;
+  prcomment?: PrCommentData;
   network?: Network;
   local?: boolean;
   version?: string;

@@ -527,7 +527,7 @@ export class BridgeCliToolsParameter {
     const azureRestAPIVersion = azureData?.restAPIVersion;
 
     const isPrCommentEnabled = parseToBoolean(
-      inputs.COVERITY_AUTOMATION_PRCOMMENT
+      inputs.COVERITY_PRCOMMENT_ENABLED
     );
 
     const azurePrResponse = await this.updateAzurePrNumberForManualTriggerFlow(
@@ -642,7 +642,24 @@ export class BridgeCliToolsParameter {
         console.info("Coverity PR comment is enabled");
         covData.data.azure = azureData;
         covData.data.environment = this.setEnvironmentScanPullData();
-        covData.data.coverity.automation = { prcomment: true };
+        // Always use new format initially - version detection will convert if needed
+        const prCommentImpacts: string[] = [];
+        if (
+          inputs.COVERITY_PRCOMMENT_IMPACTS &&
+          inputs.COVERITY_PRCOMMENT_IMPACTS.length > 0
+        ) {
+          const impactValues = inputs.COVERITY_PRCOMMENT_IMPACTS.split(",");
+          for (const impact of impactValues) {
+            if (impact.trim()) {
+              prCommentImpacts.push(impact.trim().toUpperCase());
+            }
+          }
+        }
+
+        covData.data.coverity.prcomment = {
+          enabled: true,
+          ...(prCommentImpacts.length > 0 && { impacts: prCommentImpacts }),
+        };
       }
     }
 

@@ -417,9 +417,16 @@ export const COVERITY_LOCAL = getInput(
   constants.COVERITY_LOCAL_KEY_CLASSIC_EDITOR,
   null
 );
-export const COVERITY_AUTOMATION_PRCOMMENT = getBoolInput(
+
+export const COVERITY_PRCOMMENT_ENABLED = getBoolInput(
   constants.COVERITY_PRCOMMENT_ENABLED_KEY,
   constants.COVERITY_PRCOMMENT_ENABLED_KEY_CLASSIC_EDITOR,
+  null
+);
+
+export const COVERITY_PRCOMMENT_IMPACTS = getInput(
+  constants.COVERITY_PRCOMMENT_IMPACTS_KEY,
+  constants.COVERITY_PRCOMMENT_IMPACTS_KEY_CLASSIC_EDITOR,
   null
 );
 export const COVERITY_VERSION = getInput(
