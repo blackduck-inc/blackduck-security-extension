@@ -918,7 +918,7 @@
       "helpMarkDown": "Specify the scan mode to use. Recommended auto mode uses Rapid scan for PR scans and full scans for non-PR scans. All post scan features such as PR comments are only supported in this mode. Use Full or Rapid scan modes only if you want to set the scan type for both PR and non-PR contexts but note that post scan features such as PR comments are not supported.",
       "options": {
         "": "Auto (Recommended)",
-        "true": "Full",
+        "true": "Intelligent",
         "false": "Rapid"
       },
       "groupName": "blackduckScaScanOptions"
