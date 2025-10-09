@@ -337,7 +337,6 @@
       "defaultValue": "",
       "required": false,
       "helpMarkDown": "Polaris SCA test location. Default value: HYBRID. Supported values: HYBRID or REMOTE.\nNOTE: Polaris Assessment Mode is deprecated. Use Polaris SCA Test Location as REMOTE for source upload scans instead",
-      "visibleRule": "scanType = polaris",
       "options": {
         "": "Select",
         "hybrid": "HYBRID",
@@ -352,7 +351,6 @@
       "defaultValue": "",
       "required": false,
       "helpMarkDown": "Polaris SAST test location. Default value: HYBRID. Supported values: LOCAL or HYBRID or REMOTE.\nNOTE: Polaris Assessment Mode is deprecated. Use Polaris SAST Test Location as REMOTE for source upload scans instead",
-      "visibleRule": "scanType = polaris",
       "options": {
         "": "Select",
         "local": "LOCAL",
