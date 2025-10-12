@@ -646,6 +646,15 @@
       "groupName": "coverityToolOptions"
     },
     {
+      "name": "coverityVersion",
+      "type": "string",
+      "label": "Coverity Version",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Version of Coverity Thin Client to use.",
+      "groupName": "coverityToolOptions"
+    },
+    {
       "name": "coverityArgs",
       "type": "string",
       "label": "Additional Arguments",
@@ -688,6 +697,15 @@
       "defaultValue": "",
       "required": false,
       "helpMarkDown": "Coverity config file path (.yaml/.yml/.json).",
+      "groupName": "coverityToolOptionsForPolaris"
+    },
+    {
+      "name": "coverityVersionForPolaris",
+      "type": "string",
+      "label": "Coverity Version",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Version of Coverity Thin Client to use.",
       "groupName": "coverityToolOptionsForPolaris"
     },
     {

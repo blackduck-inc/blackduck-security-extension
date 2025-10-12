@@ -219,6 +219,11 @@ export class BridgeCliToolsParameter {
     polData.data.coverity = this.setCoverityArbitraryArgs();
     polData.data.detect = this.setDetectArgs();
 
+    // Set Coverity version if provided
+    if (inputs.COVERITY_VERSION) {
+      polData.data.coverity.version = inputs.COVERITY_VERSION;
+    }
+
     const azureData = await this.getAzureRepoInfo();
     const azureRestAPIVersion = azureData?.restAPIVersion;
 
