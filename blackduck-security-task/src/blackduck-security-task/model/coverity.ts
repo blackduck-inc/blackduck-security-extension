@@ -43,6 +43,7 @@ export interface CoverityArbitrary {
   build?: Command;
   clean?: Command;
   config?: Config;
+  version?: string;
   args?: string;
 }
 
