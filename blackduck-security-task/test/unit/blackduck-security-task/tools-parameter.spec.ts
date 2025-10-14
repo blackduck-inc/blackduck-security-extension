@@ -702,7 +702,7 @@ describe("Bridge CLI Tools Parameter test", () => {
             sandbox.stub(validator, "validateCoverityInstallDirectoryParam").returns(true);
             const getStubVariable = sandbox.stub(taskLib, "getVariable")
 
-            getStubVariable.withArgs("System.TeamFoundationCollectionUri").returns("https://dev.azure.com/bdorg")
+            getStubVariable.withArgs("System.TeamFoundationCollectionUri").returns("https://dev.azure.com/bdorg/")
             getStubVariable.withArgs("System.TeamProject").returns("test-project")
             getStubVariable.withArgs("Build.Repository.Name").returns("test-repo")
             getStubVariable.withArgs("Build.Reason").returns("PullRequest")
@@ -744,7 +744,7 @@ describe("Bridge CLI Tools Parameter test", () => {
             sandbox.stub(validator, "validateCoverityInstallDirectoryParam").returns(true);
             const getStubVariable = sandbox.stub(taskLib, "getVariable")
 
-            getStubVariable.withArgs("System.TeamFoundationCollectionUri").returns("https://dev.azure.com/bdorg")
+            getStubVariable.withArgs("System.TeamFoundationCollectionUri").returns("https://dev.azure.com/bdorg/")
             getStubVariable.withArgs("System.TeamProject").returns("test-project")
             getStubVariable.withArgs("Build.Repository.Name").returns("test-repo")
             getStubVariable.withArgs("Build.Reason").returns("IndividualCI")
@@ -1035,7 +1035,7 @@ describe("Bridge CLI Tools Parameter test", () => {
             sandbox.stub(validator, "validateBlackduckFailureSeverities").returns(true);
             const getStubVariable = sandbox.stub(taskLib, "getVariable")
 
-            getStubVariable.withArgs("System.TeamFoundationCollectionUri").returns("https://azureorg.com/bdorg")
+            getStubVariable.withArgs("System.TeamFoundationCollectionUri").returns("https://azureorg.com/bdorg/")
             getStubVariable.withArgs("System.TeamProject").returns("test-project")
             getStubVariable.withArgs("Build.Repository.Name").returns("test-repo")
             getStubVariable.withArgs("Build.Reason").returns("PullRequest")
@@ -1072,7 +1072,7 @@ describe("Bridge CLI Tools Parameter test", () => {
             sandbox.stub(validator, "validateBlackduckFailureSeverities").returns(true);
             const getStubVariable = sandbox.stub(taskLib, "getVariable")
 
-            getStubVariable.withArgs("System.TeamFoundationCollectionUri").returns("https://dev.azure.com/bdorg")
+            getStubVariable.withArgs("System.CollectionUri").returns("https://dev.azure.com/bdorg/")
             getStubVariable.withArgs("System.TeamProject").returns("test-project")
             getStubVariable.withArgs("Build.Repository.Name").returns("test-repo")
             getStubVariable.withArgs("Build.Reason").returns("PullRequest")
@@ -1108,7 +1108,7 @@ describe("Bridge CLI Tools Parameter test", () => {
             sandbox.stub(validator, "validateBlackduckFailureSeverities").returns(true);
             const getStubVariable = sandbox.stub(taskLib, "getVariable")
 
-            getStubVariable.withArgs("System.TeamFoundationCollectionUri").returns("https://dev.azure.com/tfc/dev/bdorg")
+            getStubVariable.withArgs("System.TeamFoundationCollectionUri").returns("https://dev.azure.com/tfc/dev/bdorg/")
             getStubVariable.withArgs("System.TeamProject").returns("test-project")
             getStubVariable.withArgs("Build.Repository.Name").returns("test-repo")
             getStubVariable.withArgs("Build.Reason").returns("PullRequest")
@@ -1144,7 +1144,7 @@ describe("Bridge CLI Tools Parameter test", () => {
             sandbox.stub(validator, "validateBlackduckFailureSeverities").returns(true);
             const getStubVariable = sandbox.stub(taskLib, "getVariable")
 
-            getStubVariable.withArgs("System.TeamFoundationCollectionUri").returns("https://dev.azure.com/bdorg")
+            getStubVariable.withArgs("System.TeamFoundationCollectionUri").returns("https://dev.azure.com/bdorg/")
             getStubVariable.withArgs("System.TeamProject").returns("test-project")
             getStubVariable.withArgs("Build.Repository.Name").returns("test-repo")
             getStubVariable.withArgs("Build.Reason").returns("IndividualCI")

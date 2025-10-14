@@ -1,6 +1,6 @@
 {
   "$schema": "https://raw.githubusercontent.com/Microsoft/azure-pipelines-task-lib/master/tasks.schema.json",
-  "id": "ba467646-b723-4aba-a14d-bdbe8d6d5329",
+  "id": "ba467646-b723-4aba-a14d-bdbe8d6d5321",
   "name": "BlackDuckSecurityScan",
   "friendlyName": "Black Duck Security Scan",
   "description": "Run security scans on Polaris, Black Duck SCA, Coverity or Software Risk Manager (SRM) platforms",
@@ -10,7 +10,7 @@
   "version": {
     "Major": 2,
     "Minor": 4,
-    "Patch": 0
+    "Patch": 10
   },
   "instanceNameFormat": "Black Duck Security Scan",
   "groups": [

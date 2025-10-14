@@ -37,7 +37,7 @@ export interface Branch {
 
 export const AZURE_ENVIRONMENT_VARIABLES = {
   AZURE_TEAM_FOUNDATION_URI: "System.TeamFoundationCollectionUri",
-  AZURE_COLLECTION_URI: "System.TeamFoundationCollectionUri",
+  AZURE_COLLECTION_URI: "System.CollectionUri",
   AZURE_PROJECT: "System.TeamProject",
   AZURE_REPOSITORY: "Build.Repository.Name",
   AZURE_SOURCE_BRANCH: "Build.SourceBranch",
