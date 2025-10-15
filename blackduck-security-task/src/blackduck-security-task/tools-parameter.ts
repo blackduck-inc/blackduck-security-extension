@@ -897,7 +897,9 @@ export class BridgeCliToolsParameter {
     const collectionUri =
       taskLib.getVariable(AZURE_ENVIRONMENT_VARIABLES.AZURE_COLLECTION_URI) ||
       taskLib.getVariable(
-        AZURE_ENVIRONMENT_VARIABLES.AZURE_TEAM_FOUNDATION_URI) || "";
+        AZURE_ENVIRONMENT_VARIABLES.AZURE_TEAM_FOUNDATION_URI
+      ) ||
+      "";
     taskLib.debug(
       `Azure API URL, obtained from the environment variable is: ${collectionUri}`
     );
@@ -1269,7 +1271,11 @@ export class BridgeCliToolsParameter {
     let azureInstanceUrl = "";
     let azureOrganization = "";
     const collectionUri =
-      taskLib.getVariable(AZURE_ENVIRONMENT_VARIABLES.AZURE_COLLECTION_URI) || taskLib.getVariable(AZURE_ENVIRONMENT_VARIABLES.AZURE_TEAM_FOUNDATION_URI) || "";
+      taskLib.getVariable(AZURE_ENVIRONMENT_VARIABLES.AZURE_COLLECTION_URI) ||
+      taskLib.getVariable(
+        AZURE_ENVIRONMENT_VARIABLES.AZURE_TEAM_FOUNDATION_URI
+      ) ||
+      "";
 
     if (collectionUri !== "") {
       const parsedUrl = url.parse(collectionUri);

@@ -2991,7 +2991,7 @@ class BridgeCliToolsParameter {
                 const parsedUrl = url.parse(collectionUri);
                 const urlParts = ((_a = parsedUrl.path) !== null && _a !== void 0 ? _a : "").split("/");
                 azureOrganization = urlParts[urlParts.length - 2] || "";
-                azureInstanceUrl = parsedUrl.protocol + "//" + parsedUrl.host || "";
+                azureInstanceUrl = collectionUri.split("/").slice(0, -2).join("/");
                 if (parsedUrl.host &&
                     !azureOrganization &&
                     parsedUrl.host.indexOf(".visualstudio.com") !== -1) {
