@@ -895,14 +895,19 @@ export class BridgeCliToolsParameter {
     const azureToken = AZURE_TOKEN;
     let azureInstanceUrl = "";
     const collectionUri =
-      taskLib.getVariable(AZURE_ENVIRONMENT_VARIABLES.AZURE_ORGANIZATION) || "";
+      taskLib.getVariable(AZURE_ENVIRONMENT_VARIABLES.AZURE_COLLECTION_URI) ||
+      taskLib.getVariable(
+        AZURE_ENVIRONMENT_VARIABLES.AZURE_TEAM_FOUNDATION_URI
+      ) ||
+      "";
     taskLib.debug(
-      `Azure API URL, obtained from the environment variable ${AZURE_ENVIRONMENT_VARIABLES.AZURE_ORGANIZATION}, is: ${collectionUri}`
+      `Azure API URL, obtained from the environment variable is: ${collectionUri}`
     );
     if (collectionUri != "") {
       const parsedUrl = url.parse(collectionUri);
-      azureInstanceUrl = `${parsedUrl.protocol}//${parsedUrl.host}`;
-      azureOrganization = parsedUrl.pathname?.split("/")[1] || "";
+      const urlParts = (parsedUrl.path ?? "").split("/");
+      azureOrganization = urlParts[urlParts.length - 2] || "";
+      azureInstanceUrl = collectionUri.split("/").slice(0, -2).join("/");
       if (
         parsedUrl.host &&
         !azureOrganization &&
@@ -1266,7 +1271,11 @@ export class BridgeCliToolsParameter {
     let azureInstanceUrl = "";
     let azureOrganization = "";
     const collectionUri =
-      taskLib.getVariable(AZURE_ENVIRONMENT_VARIABLES.AZURE_ORGANIZATION) || "";
+      taskLib.getVariable(AZURE_ENVIRONMENT_VARIABLES.AZURE_COLLECTION_URI) ||
+      taskLib.getVariable(
+        AZURE_ENVIRONMENT_VARIABLES.AZURE_TEAM_FOUNDATION_URI
+      ) ||
+      "";
 
     if (collectionUri !== "") {
       const parsedUrl = url.parse(collectionUri);

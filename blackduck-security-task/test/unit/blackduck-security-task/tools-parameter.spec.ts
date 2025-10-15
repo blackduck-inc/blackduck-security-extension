@@ -702,7 +702,7 @@ describe("Bridge CLI Tools Parameter test", () => {
             sandbox.stub(validator, "validateCoverityInstallDirectoryParam").returns(true);
             const getStubVariable = sandbox.stub(taskLib, "getVariable")
 
-            getStubVariable.withArgs("System.TeamFoundationCollectionUri").returns("https://dev.azure.com/bdorg")
+            getStubVariable.withArgs("System.TeamFoundationCollectionUri").returns("https://dev.azure.com/bdorg/")
             getStubVariable.withArgs("System.TeamProject").returns("test-project")
             getStubVariable.withArgs("Build.Repository.Name").returns("test-repo")
             getStubVariable.withArgs("Build.Reason").returns("PullRequest")
@@ -744,7 +744,7 @@ describe("Bridge CLI Tools Parameter test", () => {
             sandbox.stub(validator, "validateCoverityInstallDirectoryParam").returns(true);
             const getStubVariable = sandbox.stub(taskLib, "getVariable")
 
-            getStubVariable.withArgs("System.TeamFoundationCollectionUri").returns("https://dev.azure.com/bdorg")
+            getStubVariable.withArgs("System.TeamFoundationCollectionUri").returns("https://dev.azure.com/bdorg/")
             getStubVariable.withArgs("System.TeamProject").returns("test-project")
             getStubVariable.withArgs("Build.Repository.Name").returns("test-repo")
             getStubVariable.withArgs("Build.Reason").returns("IndividualCI")
@@ -1035,7 +1035,7 @@ describe("Bridge CLI Tools Parameter test", () => {
             sandbox.stub(validator, "validateBlackduckFailureSeverities").returns(true);
             const getStubVariable = sandbox.stub(taskLib, "getVariable")
 
-            getStubVariable.withArgs("System.TeamFoundationCollectionUri").returns("https://azureorg.com/bdorg")
+            getStubVariable.withArgs("System.TeamFoundationCollectionUri").returns("https://azureorg.com/bdorg/")
             getStubVariable.withArgs("System.TeamProject").returns("test-project")
             getStubVariable.withArgs("Build.Repository.Name").returns("test-repo")
             getStubVariable.withArgs("Build.Reason").returns("PullRequest")
@@ -1072,7 +1072,7 @@ describe("Bridge CLI Tools Parameter test", () => {
             sandbox.stub(validator, "validateBlackduckFailureSeverities").returns(true);
             const getStubVariable = sandbox.stub(taskLib, "getVariable")
 
-            getStubVariable.withArgs("System.TeamFoundationCollectionUri").returns("https://dev.azure.com/bdorg")
+            getStubVariable.withArgs("System.CollectionUri").returns("https://dev.azure.com/bdorg/")
             getStubVariable.withArgs("System.TeamProject").returns("test-project")
             getStubVariable.withArgs("Build.Repository.Name").returns("test-repo")
             getStubVariable.withArgs("Build.Reason").returns("PullRequest")
@@ -1099,6 +1099,42 @@ describe("Bridge CLI Tools Parameter test", () => {
             expect(formattedCommand).contains('--input '.concat(blackduckStateFile));
         });
 
+        it('PR Context(yml): Black Duck command formation with pr comment - multi path organization', async function () {
+            Object.defineProperty(inputs, 'BLACKDUCKSCA_URL', {value: 'https://test.com'})
+            Object.defineProperty(inputs, 'BLACKDUCKSCA_API_TOKEN', {value: 'token'})
+            Object.defineProperty(inputs, 'BLACKDUCKSCA_PRCOMMENT_ENABLED', {value: 'true'})
+            Object.defineProperty(inputs, 'AZURE_TOKEN', {value: 'token'})
+
+            sandbox.stub(validator, "validateBlackduckFailureSeverities").returns(true);
+            const getStubVariable = sandbox.stub(taskLib, "getVariable")
+
+            getStubVariable.withArgs("System.TeamFoundationCollectionUri").returns("https://dev.azure.com/tfc/dev/bdorg/")
+            getStubVariable.withArgs("System.TeamProject").returns("test-project")
+            getStubVariable.withArgs("Build.Repository.Name").returns("test-repo")
+            getStubVariable.withArgs("Build.Reason").returns("PullRequest")
+            getStubVariable.withArgs("Build.SourceBranch").returns("refs/pull/95/merge")
+            getStubVariable.withArgs("System.PullRequest.PullRequestId").returns("95")
+            getStubVariable.withArgs("System.PullRequest.SourceBranch").returns("refs/heads/feature/test-branch")
+
+            const formattedCommand = await bridgeToolsParameter.getFormattedCommandForBlackduck();
+            const jsonString = fs.readFileSync(blackduckStateFile, 'utf-8');
+            const jsonData = JSON.parse(jsonString);
+
+            expect(jsonData.data.blackducksca.url).to.be.equals('https://test.com');
+            expect(jsonData.data.blackducksca.token).to.be.equals('token');
+            expect(jsonData.data.blackducksca.automation.prcomment).to.be.equals(true)
+            expect(jsonData.data.azure.api.url).to.be.equals('https://dev.azure.com/tfc/dev');
+            expect(jsonData.data.azure.organization.name).to.be.equals('bdorg');
+            expect(jsonData.data.azure.project.name).to.be.equals('test-project');
+            expect(jsonData.data.azure.repository.name).to.be.equals('test-repo');
+            expect(jsonData.data.azure.repository.branch.name).to.be.equals('refs/heads/feature/test-branch');
+            expect(jsonData.data.azure.repository.pull.number).to.be.equals(95);
+            expect(formattedCommand).contains('--stage blackducksca');
+
+            blackduckStateFile = '"'.concat(blackduckStateFile).concat('"');
+            expect(formattedCommand).contains('--input '.concat(blackduckStateFile));
+        });
+
         it('PR Context(Classic editor): Black Duck command formation with pr comment', async function () {
             Object.defineProperty(inputs, 'BLACKDUCKSCA_URL', {value: 'https://test.com'})
             Object.defineProperty(inputs, 'BLACKDUCKSCA_API_TOKEN', {value: 'token'})
@@ -1108,7 +1144,7 @@ describe("Bridge CLI Tools Parameter test", () => {
             sandbox.stub(validator, "validateBlackduckFailureSeverities").returns(true);
             const getStubVariable = sandbox.stub(taskLib, "getVariable")
 
-            getStubVariable.withArgs("System.TeamFoundationCollectionUri").returns("https://dev.azure.com/bdorg")
+            getStubVariable.withArgs("System.TeamFoundationCollectionUri").returns("https://dev.azure.com/bdorg/")
             getStubVariable.withArgs("System.TeamProject").returns("test-project")
             getStubVariable.withArgs("Build.Repository.Name").returns("test-repo")
             getStubVariable.withArgs("Build.Reason").returns("IndividualCI")

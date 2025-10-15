@@ -2126,7 +2126,8 @@ exports.NETWORK_SSL_TRUST_ALL = getBoolInput(constants.NETWORK_SSL_TRUST_ALL_KEY
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.AZURE_BUILD_REASON = exports.AZURE_ENVIRONMENT_VARIABLES = void 0;
 exports.AZURE_ENVIRONMENT_VARIABLES = {
-    AZURE_ORGANIZATION: "System.TeamFoundationCollectionUri",
+    AZURE_TEAM_FOUNDATION_URI: "System.TeamFoundationCollectionUri",
+    AZURE_COLLECTION_URI: "System.CollectionUri",
     AZURE_PROJECT: "System.TeamProject",
     AZURE_REPOSITORY: "Build.Repository.Name",
     AZURE_SOURCE_BRANCH: "Build.SourceBranch",
@@ -2982,12 +2983,15 @@ class BridgeCliToolsParameter {
             let azureOrganization = "";
             const azureToken = input_1.AZURE_TOKEN;
             let azureInstanceUrl = "";
-            const collectionUri = taskLib.getVariable(azure_1.AZURE_ENVIRONMENT_VARIABLES.AZURE_ORGANIZATION) || "";
-            taskLib.debug(`Azure API URL, obtained from the environment variable ${azure_1.AZURE_ENVIRONMENT_VARIABLES.AZURE_ORGANIZATION}, is: ${collectionUri}`);
+            const collectionUri = taskLib.getVariable(azure_1.AZURE_ENVIRONMENT_VARIABLES.AZURE_COLLECTION_URI) ||
+                taskLib.getVariable(azure_1.AZURE_ENVIRONMENT_VARIABLES.AZURE_TEAM_FOUNDATION_URI) ||
+                "";
+            taskLib.debug(`Azure API URL, obtained from the environment variable is: ${collectionUri}`);
             if (collectionUri != "") {
                 const parsedUrl = url.parse(collectionUri);
-                azureInstanceUrl = `${parsedUrl.protocol}//${parsedUrl.host}`;
-                azureOrganization = ((_a = parsedUrl.pathname) === null || _a === void 0 ? void 0 : _a.split("/")[1]) || "";
+                const urlParts = ((_a = parsedUrl.path) !== null && _a !== void 0 ? _a : "").split("/");
+                azureOrganization = urlParts[urlParts.length - 2] || "";
+                azureInstanceUrl = collectionUri.split("/").slice(0, -2).join("/");
                 if (parsedUrl.host &&
                     !azureOrganization &&
                     parsedUrl.host.indexOf(".visualstudio.com") !== -1) {
@@ -3241,7 +3245,9 @@ class BridgeCliToolsParameter {
         var _a;
         let azureInstanceUrl = "";
         let azureOrganization = "";
-        const collectionUri = taskLib.getVariable(azure_1.AZURE_ENVIRONMENT_VARIABLES.AZURE_ORGANIZATION) || "";
+        const collectionUri = taskLib.getVariable(azure_1.AZURE_ENVIRONMENT_VARIABLES.AZURE_COLLECTION_URI) ||
+            taskLib.getVariable(azure_1.AZURE_ENVIRONMENT_VARIABLES.AZURE_TEAM_FOUNDATION_URI) ||
+            "";
         if (collectionUri !== "") {
             const parsedUrl = url.parse(collectionUri);
             azureInstanceUrl = `${parsedUrl.protocol}//${parsedUrl.host}`;
