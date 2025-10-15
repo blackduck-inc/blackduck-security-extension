@@ -23,11 +23,8 @@ import { ErrorCode } from "./blackduck-security-task/enum/ErrorCodes";
 import {
   BLACKDUCKSCA_SARIF_REPOST_ENABLED,
   BLACKDUCKSCA_SECURITY_SCAN_COMPLETED,
-  MARK_THE_BUILD_ON_BRIDGE_BREAK,
-  MARK_THE_BUILD_STATUS,
   NETWORK_AIR_GAP_ENABLED_SKIP_DOWNLOAD_BRIDGE_CLI,
   POLARISSCA_SARIF_REPORT_ENABLED,
-  TASK_RETURN_STATUS,
   WORKFLOW_FAILED,
 } from "./blackduck-security-task/application-constant";
 import { readFileSync } from "fs";
@@ -86,7 +83,10 @@ export async function run() {
     );
     // The statement set the exit code in the 'status' variable which can be used in the YAML file
     if (parseToBoolean(inputs.RETURN_STATUS)) {
-      console.log(TASK_RETURN_STATUS);
+      // Do not move to application constants
+      console.log(
+        `##vso[task.setvariable variable=status;isoutput=true]${result}`
+      );
     }
   } catch (error: any) {
     throw error;
@@ -159,11 +159,15 @@ function markBuildStatusIfIssuesArePresent(
     if (taskResult === TaskResult.Succeeded) {
       console.log(exitMessage);
     }
-    console.log(MARK_THE_BUILD_ON_BRIDGE_BREAK);
+    console.log(
+      `Marking the build ${TaskResult[taskResult]} as configured in the task`
+    );
     taskLib.setResult(taskResult, exitMessage);
   } else {
     taskLib.error(errorMessage);
-    console.log(MARK_THE_BUILD_STATUS);
+    console.log(
+      `Marking build status ${TaskResult[taskResult]} is ignored since exit code is: ${status}`
+    );
     taskLib.setResult(
       taskLib.TaskResult.Failed,
       WORKFLOW_FAILED.concat(exitMessage)
@@ -192,7 +196,9 @@ run().catch((error) => {
 
     // The statement set the exit code in the 'status' variable which can be used in the YAML file
     if (isReturnStatusEnabled) {
-      console.log(TASK_RETURN_STATUS);
+      console.log(
+        `##vso[task.setvariable variable=status;isoutput=true]${status}`
+      );
     }
 
     const taskResult: TaskResult | undefined = getMappedTaskResult(
