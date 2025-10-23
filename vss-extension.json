@@ -2,7 +2,7 @@
   "manifestVersion": 1,
   "id": "blackduck-security-scan",
   "name": "Black Duck Security Scan",
-  "version": "2.4.0",
+  "version": "2.4.1",
   "publisher": "blackduck",
   "public": true,
   "targets": [
