@@ -19,7 +19,11 @@ import { readFileSync, renameSync } from "fs";
 import { DownloadFileResponse } from "./model/download-file-response";
 import DomParser from "dom-parser";
 import * as https from "https";
-import { getSSLConfig, createHTTPSRequestOptions } from "./ssl-utils";
+import {
+  getSSLConfig,
+  createHTTPSRequestOptions,
+  createHTTPSAgent,
+} from "./ssl-utils";
 import {
   ENABLE_NETWORK_AIRGAP,
   SCAN_TYPE,
@@ -495,6 +499,9 @@ export class BridgeCli {
             sslConfig,
             headers
           );
+
+          // Create HTTPS agent with SSL and proxy support
+          requestOptions.agent = createHTTPSAgent(sslConfig, fetchUrl);
 
           const request = https.request(requestOptions, (response) => {
             const statusCode = response.statusCode || 0;

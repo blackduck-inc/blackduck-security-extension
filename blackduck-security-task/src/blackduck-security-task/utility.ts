@@ -362,14 +362,15 @@ let _httpClientCache: HttpClient | null = null;
 let _httpClientConfigHash: string | null = null;
 
 /**
- * Creates an HTTPS agent with SSL configuration based on task inputs.
+ * Creates an HTTPS agent with SSL and Proxy configuration based on task inputs.
  * Uses singleton pattern to reuse the same agent instance when configuration hasn't changed.
  * This properly combines system CAs with custom CAs unlike typed-rest-client.
  * Use this for direct HTTPS operations like file downloads.
  *
- * @returns HTTPS agent configured with appropriate SSL settings
+ * @param targetUrl The target URL for the HTTPS request (used for proxy configuration)
+ * @returns HTTPS agent configured with appropriate SSL and proxy settings
  */
-export function createSSLConfiguredHttpsAgent(): https.Agent {
+export function createSSLConfiguredHttpsAgent(targetUrl: string): https.Agent {
   const currentConfigHash = getSSLConfigHash();
 
   // Return cached agent if configuration hasn't changed
@@ -380,11 +381,13 @@ export function createSSLConfiguredHttpsAgent(): https.Agent {
 
   // Get SSL configuration and create agent
   const sslConfig = getSSLConfig();
-  _httpsAgentCache = createHTTPSAgent(sslConfig);
+  _httpsAgentCache = createHTTPSAgent(sslConfig, targetUrl);
 
   // Cache the configuration hash
   _httpsAgentConfigHash = currentConfigHash;
-  taskLib.debug("Created new HTTPS agent instance with SSL configuration");
+  taskLib.debug(
+    "Created new HTTPS agent instance with SSL and proxy configuration"
+  );
 
   return _httpsAgentCache;
 }

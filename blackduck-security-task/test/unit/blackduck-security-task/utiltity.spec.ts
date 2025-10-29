@@ -649,13 +649,13 @@ describe("Utilities", () => {
             getSSLConfigHashStub.returns(configHash);
             getSSLConfigStub.returns(mockConfig);
 
-            const result = utility.createSSLConfiguredHttpsAgent();
+            const result = utility.createSSLConfiguredHttpsAgent('https://example.com');
 
             expect(result).to.equal(mockAgent);
             expect(getSSLConfigHashStub.calledOnce).to.be.true;
             expect(getSSLConfigStub.calledOnce).to.be.true;
-            expect(createHTTPSAgentStub.calledOnceWith(mockConfig)).to.be.true;
-            expect(taskLibDebugStub.calledWith('Created new HTTPS agent instance with SSL configuration')).to.be.true;
+            expect(createHTTPSAgentStub.calledWith(mockConfig, 'https://example.com')).to.be.true;
+            expect(taskLibDebugStub.calledWith('Created new HTTPS agent instance with SSL and proxy configuration')).to.be.true;
         });
 
         it('should return cached HTTPS agent when configuration hash unchanged', () => {
@@ -666,10 +666,10 @@ describe("Utilities", () => {
             getSSLConfigStub.returns(mockConfig);
 
             // First call creates the agent
-            const result1 = utility.createSSLConfiguredHttpsAgent();
+            const result1 = utility.createSSLConfiguredHttpsAgent('https://example.com');
 
             // Second call should return cached agent
-            const result2 = utility.createSSLConfiguredHttpsAgent();
+            const result2 = utility.createSSLConfiguredHttpsAgent('https://example.com');
 
             expect(result1).to.equal(mockAgent);
             expect(result2).to.equal(mockAgent);
@@ -681,7 +681,7 @@ describe("Utilities", () => {
             expect(createHTTPSAgentStub.calledOnce).to.be.true;
 
             // Verify debug messages
-            expect(taskLibDebugStub.calledWith('Created new HTTPS agent instance with SSL configuration')).to.be.true;
+            expect(taskLibDebugStub.calledWith('Created new HTTPS agent instance with SSL and proxy configuration')).to.be.true;
             expect(taskLibDebugStub.calledWith('Reusing existing HTTPS agent instance')).to.be.true;
         });
 
@@ -695,7 +695,7 @@ describe("Utilities", () => {
             // First call with old configuration
             getSSLConfigHashStub.returns(oldConfigHash);
             getSSLConfigStub.returns(oldConfig);
-            const result1 = utility.createSSLConfiguredHttpsAgent();
+            const result1 = utility.createSSLConfiguredHttpsAgent('https://example.com');
 
             // Setup new configuration
             getSSLConfigHashStub.returns(newConfigHash);
@@ -703,7 +703,7 @@ describe("Utilities", () => {
             createHTTPSAgentStub.returns(newMockAgent);
 
             // Second call with new configuration
-            const result2 = utility.createSSLConfiguredHttpsAgent();
+            const result2 = utility.createSSLConfiguredHttpsAgent('https://example.com');
 
             expect(result1).to.equal(mockAgent);
             expect(result2).to.equal(newMockAgent);
@@ -713,11 +713,11 @@ describe("Utilities", () => {
             expect(getSSLConfigHashStub.calledTwice).to.be.true;
             expect(getSSLConfigStub.calledTwice).to.be.true;
             expect(createHTTPSAgentStub.calledTwice).to.be.true;
-            expect(createHTTPSAgentStub.firstCall.calledWith(oldConfig)).to.be.true;
-            expect(createHTTPSAgentStub.secondCall.calledWith(newConfig)).to.be.true;
+            expect(createHTTPSAgentStub.firstCall.calledWith(oldConfig, 'https://example.com')).to.be.true;
+            expect(createHTTPSAgentStub.secondCall.calledWith(newConfig, 'https://example.com')).to.be.true;
 
             // Verify debug messages for both creations
-            expect(taskLibDebugStub.calledWith('Created new HTTPS agent instance with SSL configuration')).to.be.true;
+            expect(taskLibDebugStub.calledWith('Created new HTTPS agent instance with SSL and proxy configuration')).to.be.true;
             expect(taskLibDebugStub.callCount).to.be.at.least(2);
         });
 
@@ -732,11 +732,11 @@ describe("Utilities", () => {
             getSSLConfigHashStub.returns(configHash);
             getSSLConfigStub.returns(sslConfig);
 
-            const result = utility.createSSLConfiguredHttpsAgent();
+            const result = utility.createSSLConfiguredHttpsAgent('https://example.com');
 
             expect(result).to.equal(mockAgent);
-            expect(createHTTPSAgentStub.calledOnceWith(sslConfig)).to.be.true;
-            expect(taskLibDebugStub.calledWith('Created new HTTPS agent instance with SSL configuration')).to.be.true;
+            expect(createHTTPSAgentStub.calledWith(sslConfig, 'https://example.com')).to.be.true;
+            expect(taskLibDebugStub.calledWith('Created new HTTPS agent instance with SSL and proxy configuration')).to.be.true;
         });
 
         it('should handle cache invalidation after clearHttpClientCache', () => {
@@ -747,13 +747,13 @@ describe("Utilities", () => {
             getSSLConfigStub.returns(mockConfig);
 
             // First call creates agent
-            const result1 = utility.createSSLConfiguredHttpsAgent();
+            const result1 = utility.createSSLConfiguredHttpsAgent('https://example.com');
 
             // Clear cache
             utility.clearHttpClientCache();
 
             // Second call should create new agent even with same config
-            const result2 = utility.createSSLConfiguredHttpsAgent();
+            const result2 = utility.createSSLConfiguredHttpsAgent('https://example.com');
 
             expect(result1).to.equal(mockAgent);
             expect(result2).to.equal(mockAgent);
@@ -764,7 +764,7 @@ describe("Utilities", () => {
             expect(createHTTPSAgentStub.calledTwice).to.be.true;
 
             // Should have two creation debug messages
-            expect(taskLibDebugStub.calledWith('Created new HTTPS agent instance with SSL configuration')).to.be.true;
+            expect(taskLibDebugStub.calledWith('Created new HTTPS agent instance with SSL and proxy configuration')).to.be.true;
             expect(taskLibDebugStub.callCount).to.be.at.least(3); // 2 creation + 1 cache clear
         });
     });

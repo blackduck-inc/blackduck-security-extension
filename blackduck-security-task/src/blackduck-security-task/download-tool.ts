@@ -10,7 +10,11 @@ import * as constants from "./application-constant";
 import { ErrorCode } from "./enum/ErrorCodes";
 import * as inputs from "./input";
 import { parseToBoolean, createSSLConfiguredHttpClient } from "./utility";
-import { getSSLConfig, createHTTPSRequestOptions } from "./ssl-utils";
+import {
+  getSSLConfig,
+  createHTTPSRequestOptions,
+  createHTTPSAgent,
+} from "./ssl-utils";
 
 const userAgent = "BlackDuckSecurityScan";
 
@@ -131,6 +135,9 @@ export async function downloadWithCustomSSL(
         sslConfig,
         additionalHeaders
       );
+
+      // Create HTTPS agent with SSL and proxy support
+      requestOptions.agent = createHTTPSAgent(sslConfig, downloadUrl);
 
       tl.debug(`Starting direct HTTPS download from: ${downloadUrl}`);
       tl.debug(`Destination: ${destPath}`);

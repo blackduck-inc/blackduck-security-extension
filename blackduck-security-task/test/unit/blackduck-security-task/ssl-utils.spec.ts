@@ -2,6 +2,8 @@ import {assert, expect} from "chai";
 import * as sinon from "sinon";
 import * as https from "https";
 import {after, before} from "mocha";
+import { createRequire } from 'module';
+const require = createRequire(import.meta.url);
 
 describe('SSL Utils Unit Tests', () => {
     let sslUtils: any;
@@ -398,6 +400,185 @@ describe('SSL Utils Unit Tests', () => {
             const result = sslUtils.getSSLConfigHash();
 
             expect(result).to.equal('trustAll:false|certFile:');
+        });
+    });
+
+    describe('createHTTPSAgent with Proxy Support', () => {
+        let originalEnv: NodeJS.ProcessEnv;
+        let mockProxyUtils: any;
+
+        beforeEach(() => {
+            // Save original environment
+            originalEnv = {...process.env};
+
+            // Clear proxy environment variables
+            delete process.env.HTTPS_PROXY;
+            delete process.env.https_proxy;
+            delete process.env.HTTP_PROXY;
+            delete process.env.http_proxy;
+            delete process.env.NO_PROXY;
+            delete process.env.no_proxy;
+
+            // Mock proxy-utils
+            mockProxyUtils = {
+                getProxyConfig: sandbox.stub()
+            };
+
+            // Clear module cache for proxy-utils
+            delete require.cache[require.resolve('../../../src/blackduck-security-task/proxy-utils')];
+        });
+
+        afterEach(() => {
+            // Restore environment
+            process.env = originalEnv;
+        });
+
+        it('should create HttpsProxyAgent when proxy is configured', () => {
+            const targetUrl = 'https://repo.blackduck.com/api';
+            const proxyUrl = new URL('http://proxy.company.com:8080');
+
+            mockProxyUtils.getProxyConfig.returns({
+                useProxy: true,
+                proxyUrl: proxyUrl
+            });
+
+            // Mock the proxy-utils module
+            const Module = require('module');
+            const originalRequire = Module.prototype.require;
+            Module.prototype.require = function(id: string, ...args: any[]) {
+                if (id === './proxy-utils') return mockProxyUtils;
+                if (id === 'fs') return mockFs;
+                if (id === 'tls') return mockTls;
+                if (id === './input') return mockInputs;
+                if (id === 'azure-pipelines-task-lib') return mockTaskLib;
+                return originalRequire.apply(this, [id, ...args]);
+            };
+
+            // Reload ssl-utils with mocked proxy-utils
+            delete require.cache[require.resolve('../../../src/blackduck-security-task/ssl-utils')];
+            sslUtils = require('../../../src/blackduck-security-task/ssl-utils');
+
+            const sslConfig = {trustAllCerts: false};
+            const agent = sslUtils.createHTTPSAgent(sslConfig, targetUrl);
+
+            // Verify getProxyConfig was called with correct URL
+            sinon.assert.calledOnce(mockProxyUtils.getProxyConfig);
+            sinon.assert.calledWith(mockProxyUtils.getProxyConfig, targetUrl);
+
+            // Verify agent was created (we can't easily test HttpsProxyAgent type without importing it)
+            expect(agent).to.exist;
+
+            Module.prototype.require = originalRequire;
+        });
+
+        it('should create regular Agent when no proxy is configured', () => {
+            const targetUrl = 'https://repo.blackduck.com/api';
+
+            mockProxyUtils.getProxyConfig.returns({
+                useProxy: false
+            });
+
+            // Mock the proxy-utils module
+            const Module = require('module');
+            const originalRequire = Module.prototype.require;
+            Module.prototype.require = function(id: string, ...args: any[]) {
+                if (id === './proxy-utils') return mockProxyUtils;
+                if (id === 'fs') return mockFs;
+                if (id === 'tls') return mockTls;
+                if (id === './input') return mockInputs;
+                if (id === 'azure-pipelines-task-lib') return mockTaskLib;
+                return originalRequire.apply(this, [id, ...args]);
+            };
+
+            // Reload ssl-utils with mocked proxy-utils
+            delete require.cache[require.resolve('../../../src/blackduck-security-task/ssl-utils')];
+            sslUtils = require('../../../src/blackduck-security-task/ssl-utils');
+
+            const sslConfig = {trustAllCerts: false};
+            const agent = sslUtils.createHTTPSAgent(sslConfig, targetUrl);
+
+            sinon.assert.calledOnce(mockProxyUtils.getProxyConfig);
+            expect(agent).to.be.instanceOf(https.Agent);
+
+            Module.prototype.require = originalRequire;
+        });
+
+        it('should merge SSL options with proxy configuration', () => {
+            const targetUrl = 'https://repo.blackduck.com/api';
+            const proxyUrl = new URL('http://proxy.company.com:8080');
+            const customCA = '-----BEGIN CERTIFICATE-----\nCustomCA\n-----END CERTIFICATE-----';
+
+            mockProxyUtils.getProxyConfig.returns({
+                useProxy: true,
+                proxyUrl: proxyUrl
+            });
+
+            mockFs.readFileSync.returns(customCA);
+            mockInputs.NETWORK_SSL_CERT_FILE = '/path/to/cert.pem';
+
+            // Mock the proxy-utils module
+            const Module = require('module');
+            const originalRequire = Module.prototype.require;
+            Module.prototype.require = function(id: string, ...args: any[]) {
+                if (id === './proxy-utils') return mockProxyUtils;
+                if (id === 'fs') return mockFs;
+                if (id === 'tls') return mockTls;
+                if (id === './input') return mockInputs;
+                if (id === 'azure-pipelines-task-lib') return mockTaskLib;
+                return originalRequire.apply(this, [id, ...args]);
+            };
+
+            // Reload ssl-utils with mocked proxy-utils
+            delete require.cache[require.resolve('../../../src/blackduck-security-task/ssl-utils')];
+            sslUtils = require('../../../src/blackduck-security-task/ssl-utils');
+
+            const sslConfig = sslUtils.getSSLConfig();
+            const agent = sslUtils.createHTTPSAgent(sslConfig, targetUrl);
+
+            // Verify proxy config was obtained
+            sinon.assert.calledOnce(mockProxyUtils.getProxyConfig);
+            sinon.assert.calledWith(mockProxyUtils.getProxyConfig, targetUrl);
+
+            // Verify agent was created with both SSL and proxy support
+            expect(agent).to.exist;
+
+            Module.prototype.require = originalRequire;
+        });
+
+        it('should handle trustAllCerts with proxy', () => {
+            const targetUrl = 'https://repo.blackduck.com/api';
+            const proxyUrl = new URL('http://proxy.company.com:8080');
+
+            mockProxyUtils.getProxyConfig.returns({
+                useProxy: true,
+                proxyUrl: proxyUrl
+            });
+
+            mockInputs.NETWORK_SSL_TRUST_ALL = 'true';
+
+            // Mock the proxy-utils module
+            const Module = require('module');
+            const originalRequire = Module.prototype.require;
+            Module.prototype.require = function(id: string, ...args: any[]) {
+                if (id === './proxy-utils') return mockProxyUtils;
+                if (id === 'fs') return mockFs;
+                if (id === 'tls') return mockTls;
+                if (id === './input') return mockInputs;
+                if (id === 'azure-pipelines-task-lib') return mockTaskLib;
+                return originalRequire.apply(this, [id, ...args]);
+            };
+
+            // Reload ssl-utils with mocked proxy-utils
+            delete require.cache[require.resolve('../../../src/blackduck-security-task/ssl-utils')];
+            sslUtils = require('../../../src/blackduck-security-task/ssl-utils');
+
+            const sslConfig = sslUtils.getSSLConfig();
+            const agent = sslUtils.createHTTPSAgent(sslConfig, targetUrl);
+
+            sinon.assert.calledOnce(mockProxyUtils.getProxyConfig);
+            expect(agent).to.exist;
+
+            Module.prototype.require = originalRequire;
         });
     });
 });
