@@ -537,8 +537,6 @@ export const UNABLE_TO_FIND_PULL_REQUEST_INFO =
   "Unable to find pull request info for the current source build with branch: ";
 export const NETWORK_AIR_GAP_ENABLED_SKIP_DOWNLOAD_BRIDGE_CLI =
   "Network air gap is enabled, skipping Bridge CLI download.";
-export const TASK_RETURN_STATUS =
-  "`##vso[task.setvariable variable=status;isoutput=true]${result}`";
 export const BLACKDUCKSCA_SARIF_REPOST_ENABLED =
   "BLACKDUCKSCA_REPORTS_SARIF_CREATE is enabled";
 export const POLARISSCA_SARIF_REPORT_ENABLED =
@@ -548,12 +546,6 @@ export const BLACKDUCKSCA_SECURITY_SCAN_COMPLETED =
 
 export const AZURE_PULL_REQUEST_NUMBER_IS_EMPTY =
   "azurePullRequestNumber is empty, setting environment.scan.pull as true";
-
-export const MARK_THE_BUILD_ON_BRIDGE_BREAK =
-  "`Marking the build ${TaskResult[taskResult]} as configured in the task`";
-
-export const MARK_THE_BUILD_STATUS =
-  "`Marking build status ${TaskResult[taskResult]} is ignored since exit code is: ${status}`";
 
 //export const BRIDGE_VERSION_NOT_FOUND_ERROR = 'Skipping download as same Bridge CLI version found'
 
