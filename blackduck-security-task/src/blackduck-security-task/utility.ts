@@ -408,11 +408,7 @@ export function createSSLConfiguredHttpClient(
 
   // Return cached client if configuration hasn't changed
   // Note: We don't cache per-URL since proxy config can change per target
-  if (
-    _httpClientCache &&
-    _httpClientConfigHash === currentConfigHash &&
-    !targetUrl
-  ) {
+  if (_httpClientCache && _httpClientConfigHash === currentConfigHash && !targetUrl) {
     taskLib.debug(
       `Reusing existing HttpClient instance with user agent: ${userAgent}`
     );
