@@ -11,6 +11,7 @@ import { ErrorCode } from "./enum/ErrorCodes";
 import * as inputs from "./input";
 import { parseToBoolean, createSSLConfiguredHttpClient } from "./utility";
 import { getSSLConfig, createHTTPSRequestOptions } from "./ssl-utils";
+import { createProxyAgent } from "./proxy-utils";
 
 const userAgent = "BlackDuckSecurityScan";
 
@@ -109,8 +110,8 @@ export function debug(message: string): void {
 }
 
 /**
- * Download a file using direct HTTPS with enhanced SSL support.
- * This properly combines system CAs with custom CAs, unlike typed-rest-client.
+ * Download a file using direct HTTPS with enhanced SSL and proxy support.
+ * This properly combines system CAs with custom CAs and supports proxy configuration, unlike typed-rest-client.
  *
  * @param downloadUrl URL to download from
  * @param destPath Destination file path
@@ -131,6 +132,13 @@ export async function downloadWithCustomSSL(
         sslConfig,
         additionalHeaders
       );
+
+      // Add proxy agent if proxy is configured
+      const proxyAgent = createProxyAgent(downloadUrl, sslConfig);
+      if (proxyAgent) {
+        requestOptions.agent = proxyAgent;
+        tl.debug("Using proxy for direct HTTPS download");
+      }
 
       tl.debug(`Starting direct HTTPS download from: ${downloadUrl}`);
       tl.debug(`Destination: ${destPath}`);
@@ -289,7 +297,7 @@ export async function downloadTool(
       const http: httm.HttpClient =
         isTestEnvironment || hasHandlers
           ? new httm.HttpClient(userAgent, handlers, getRequestOptions())
-          : createSSLConfiguredHttpClient(userAgent);
+          : createSSLConfiguredHttpClient(userAgent, url);
 
       // Make sure that the folder exists
       tl.mkdirP(path.dirname(destPath));

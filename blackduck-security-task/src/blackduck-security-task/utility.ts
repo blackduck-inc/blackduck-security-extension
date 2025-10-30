@@ -36,6 +36,7 @@ import * as https from "https";
 import * as inputs from "./input";
 import { getSSLConfig, getSSLConfigHash, createHTTPSAgent } from "./ssl-utils";
 import { isNullOrEmptyValue } from "./validator";
+import { getProxyConfig } from "./proxy-utils";
 import { readFileSync, writeFileSync } from "fs";
 import { InputData } from "./model/input-data";
 import { Polaris } from "./model/polaris";
@@ -390,21 +391,28 @@ export function createSSLConfiguredHttpsAgent(): https.Agent {
 }
 
 /**
- * Creates an HttpClient instance with SSL configuration based on task inputs.
+ * Creates an HttpClient instance with SSL and proxy configuration based on task inputs.
  * Uses singleton pattern to reuse the same client instance when configuration hasn't changed.
  * This uses typed-rest-client for structured API operations.
  * Note: typed-rest-client has limitations with combining system CAs + custom CAs.
  *
  * @param userAgent The user agent string to use for the HTTP client (default: "BlackDuckSecurityTask")
- * @returns HttpClient instance configured with appropriate SSL settings
+ * @param targetUrl Optional target URL for explicit proxy configuration. When provided, uses proxy-utils logic for NO_PROXY patterns.
+ * @returns HttpClient instance configured with appropriate SSL and proxy settings
  */
 export function createSSLConfiguredHttpClient(
-  userAgent = "BlackDuckSecurityTask"
+  userAgent = "BlackDuckSecurityTask",
+  targetUrl?: string
 ): HttpClient {
   const currentConfigHash = getSSLConfigHash();
 
   // Return cached client if configuration hasn't changed
-  if (_httpClientCache && _httpClientConfigHash === currentConfigHash) {
+  // Note: We don't cache per-URL since proxy config can change per target
+  if (
+    _httpClientCache &&
+    _httpClientConfigHash === currentConfigHash &&
+    !targetUrl
+  ) {
     taskLib.debug(
       `Reusing existing HttpClient instance with user agent: ${userAgent}`
     );
@@ -414,11 +422,19 @@ export function createSSLConfiguredHttpClient(
   // Get SSL configuration
   const sslConfig = getSSLConfig();
 
+  // Build request options with SSL configuration
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const requestOptions: any = {
+    allowRetries: true,
+    maxRetries: 3,
+  };
+
+  // Configure SSL options
   if (sslConfig.trustAllCerts) {
     taskLib.debug(
       "SSL certificate verification disabled for HttpClient (NETWORK_SSL_TRUST_ALL=true)"
     );
-    _httpClientCache = new HttpClient(userAgent, [], { ignoreSslError: true });
+    requestOptions.ignoreSslError = true;
   } else if (sslConfig.customCA) {
     taskLib.debug(
       `Using custom CA certificate for HttpClient: ${inputs.NETWORK_SSL_CERT_FILE}`
@@ -427,34 +443,65 @@ export function createSSLConfiguredHttpClient(
       // Note: typed-rest-client has limitations with combining system CAs + custom CAs
       // For downloads, use createSSLConfiguredHttpsAgent() which properly combines CAs
       // For API operations, this fallback to caFile option (custom CA only) is acceptable
-      _httpClientCache = new HttpClient(userAgent, [], {
-        allowRetries: true,
-        maxRetries: 3,
-        cert: {
-          caFile: inputs.NETWORK_SSL_CERT_FILE,
-        },
-      });
+      requestOptions.cert = {
+        caFile: inputs.NETWORK_SSL_CERT_FILE,
+      };
       taskLib.debug(
         "HttpClient configured with custom CA certificate (Note: typed-rest-client limitation - system CAs not combined)"
       );
     } catch (err) {
       taskLib.warning(
-        `Failed to configure custom CA certificate, using default HttpClient: ${err}`
+        `Failed to configure custom CA certificate, using default SSL settings: ${err}`
       );
-      _httpClientCache = new HttpClient(userAgent);
     }
   } else {
-    taskLib.debug("Using default HttpClient with system SSL certificates");
-    _httpClientCache = new HttpClient(userAgent);
+    taskLib.debug("Using default SSL configuration for HttpClient");
   }
 
-  // Cache the configuration hash
-  _httpClientConfigHash = currentConfigHash;
-  taskLib.debug(
-    `Created new HttpClient instance with user agent: ${userAgent}`
-  );
+  // Configure explicit proxy if target URL is provided
+  if (targetUrl) {
+    const proxyConfig = getProxyConfig(targetUrl);
 
-  return _httpClientCache;
+    if (proxyConfig.useProxy && proxyConfig.proxyUrl) {
+      // Build IProxyConfiguration object for typed-rest-client
+      requestOptions.proxy = {
+        proxyUrl: proxyConfig.proxyUrl.href,
+        proxyUsername: proxyConfig.proxyUrl.username || undefined,
+        proxyPassword: proxyConfig.proxyUrl.password || undefined,
+        proxyBypassHosts: [], // NO_PROXY already handled by getProxyConfig
+      };
+      taskLib.debug(
+        `Explicit proxy configured for HttpClient: ${proxyConfig.proxyUrl.origin}`
+      );
+    } else {
+      taskLib.debug(
+        `No proxy needed for target URL: ${targetUrl} (either no proxy configured or bypassed via NO_PROXY)`
+      );
+    }
+  } else {
+    // Fallback to environment variable detection (typed-rest-client's automatic behavior)
+    taskLib.debug(
+      "No target URL provided - typed-rest-client will auto-detect proxy from environment variables"
+    );
+  }
+
+  // Create HttpClient with configuration
+  const httpClient = new HttpClient(userAgent, [], requestOptions);
+
+  // Cache only if no target URL (URL-specific clients are not cached)
+  if (!targetUrl) {
+    _httpClientCache = httpClient;
+    _httpClientConfigHash = currentConfigHash;
+    taskLib.debug(
+      `Created and cached new HttpClient instance with user agent: ${userAgent}`
+    );
+  } else {
+    taskLib.debug(
+      `Created new URL-specific HttpClient instance (not cached) for: ${targetUrl}`
+    );
+  }
+
+  return httpClient;
 }
 
 /**
@@ -462,10 +509,11 @@ export function createSSLConfiguredHttpClient(
  * This is for API operations using typed-rest-client.
  * Use this for structured API operations that need typed responses.
  *
- * @returns HttpClient instance configured with appropriate SSL settings
+ * @param targetUrl Optional target URL for explicit proxy configuration
+ * @returns HttpClient instance configured with appropriate SSL and proxy settings
  */
-export function getSharedHttpClient(): HttpClient {
-  return createSSLConfiguredHttpClient("BlackDuckSecurityTask");
+export function getSharedHttpClient(targetUrl?: string): HttpClient {
+  return createSSLConfiguredHttpClient("BlackDuckSecurityTask", targetUrl);
 }
 
 /**
