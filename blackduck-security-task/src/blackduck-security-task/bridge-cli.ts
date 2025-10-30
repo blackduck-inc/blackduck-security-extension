@@ -20,6 +20,7 @@ import { DownloadFileResponse } from "./model/download-file-response";
 import DomParser from "dom-parser";
 import * as https from "https";
 import { getSSLConfig, createHTTPSRequestOptions } from "./ssl-utils";
+import { createProxyAgent } from "./proxy-utils";
 import {
   ENABLE_NETWORK_AIRGAP,
   SCAN_TYPE,
@@ -472,7 +473,7 @@ export class BridgeCli {
   }
 
   /**
-   * Fetch content using direct HTTPS with enhanced SSL support.
+   * Fetch content using direct HTTPS with enhanced SSL and proxy support.
    * Falls back to typed-rest-client if direct HTTPS fails.
    */
   private async fetchWithDirectHTTPS(
@@ -495,6 +496,13 @@ export class BridgeCli {
             sslConfig,
             headers
           );
+
+          // Add proxy agent if proxy is configured
+          const proxyAgent = createProxyAgent(fetchUrl, sslConfig);
+          if (proxyAgent) {
+            requestOptions.agent = proxyAgent;
+            taskLib.debug("Using proxy for Bridge CLI metadata fetch");
+          }
 
           const request = https.request(requestOptions, (response) => {
             const statusCode = response.statusCode || 0;
@@ -535,9 +543,11 @@ export class BridgeCli {
       }
     }
 
-    // Fallback to typed-rest-client
-    taskLib.debug("Using typed-rest-client for Bridge CLI metadata fetch");
-    const httpClient = getSharedHttpClient();
+    // Fallback to typed-rest-client (which automatically handles proxy from environment variables)
+    taskLib.debug(
+      "Using typed-rest-client for Bridge CLI metadata fetch (with explicit proxy configuration)"
+    );
+    const httpClient = getSharedHttpClient(fetchUrl);
     const response = await httpClient.get(fetchUrl, headers);
 
     if (response.message.statusCode !== 200) {
