@@ -12,8 +12,9 @@ export interface SSLConfig {
 
 /**
  * Parse string to boolean
+ * Exported for testing purposes
  */
-function parseToBoolean(value: string | boolean | undefined): boolean {
+export function parseToBoolean(value: string | boolean | undefined): boolean {
   if (
     value !== null &&
     value !== "" &&
@@ -30,8 +31,9 @@ function parseToBoolean(value: string | boolean | undefined): boolean {
 export function getSSLConfig(): SSLConfig {
   // Check if we're in test environment - if so, return minimal config to avoid interfering with mocks
   if (
-    process.env.NODE_ENV === "test" ||
-    process.env.npm_lifecycle_event === "test"
+    (process.env.NODE_ENV === "test" ||
+      process.env.npm_lifecycle_event === "test") &&
+    process.env.SSL_CONFIG_TEST_MODE !== "production"
   ) {
     taskLib.debug(
       "Running in test environment - using minimal SSL config to preserve mocks"

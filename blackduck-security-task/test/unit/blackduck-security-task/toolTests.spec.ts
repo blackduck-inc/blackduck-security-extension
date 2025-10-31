@@ -1,13 +1,13 @@
 // Copyright (c) 2024 Black Duck Software Inc. All rights reserved worldwide.
 
-import assert = require('assert');
-import path = require('path');
-import fs = require('fs');
+import assert from 'assert';
+import * as path from 'path';
+import * as fs from 'fs';
 import * as toolLib from '../../../src/blackduck-security-task/download-tool';
 import * as tl from "azure-pipelines-task-lib/task";
 import * as sinon from "sinon";
 import process from "process";
-import nock = require ('nock');
+import nock from 'nock';
 
 let tempPath = path.join(process.cwd(), 'TEMP');
 
