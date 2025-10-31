@@ -2,7 +2,6 @@
 
 import * as https from "https";
 import * as taskLib from "azure-pipelines-task-lib/task";
-import type { SSLConfig } from "./ssl-utils";
 
 // Dynamic imports for proxy agents - will be installed separately
 // eslint-disable-next-line @typescript-eslint/no-var-requires
@@ -112,13 +111,10 @@ export function shouldBypassProxy(targetUrl: string, noProxy: string): boolean {
 }
 
 /**
- * Creates an appropriate proxy agent based on the protocol and proxy configuration
- * Integrates with SSL configuration for secure proxy connections
+ * Creates an appropriate proxy agent based on the protocol and proxy configuration.
+ * SSL configuration for the target connection is handled by createHTTPSRequestOptions.
  */
-export function createProxyAgent(
-  url: string,
-  sslConfig: SSLConfig
-): https.Agent | undefined {
+export function createProxyAgent(url: string): https.Agent | undefined {
   const proxyConfig = getProxyConfig(url);
 
   // Check if proxy should be used
@@ -136,39 +132,47 @@ export function createProxyAgent(
       }`
     );
 
-    // Configure agent options based on SSL config
-    const agentOptions: https.AgentOptions = {};
-
-    if (sslConfig.trustAllCerts) {
-      agentOptions.rejectUnauthorized = false;
-      taskLib.debug("Proxy agent configured with SSL verification disabled");
-    } else if (sslConfig.combinedCAs) {
-      agentOptions.ca = sslConfig.combinedCAs;
-      taskLib.debug("Proxy agent configured with custom CA certificates");
-    }
-
-    // Create appropriate proxy agent
-    // Compatible with both v5/6 (two params) and v7 (options object with proxy)
+    // Create appropriate proxy agent by passing the proxy URL directly
+    // The proxy agent libraries handle URL parsing and connection details
+    // SSL configuration for the target connection is handled in createHTTPSRequestOptions
     if (isHttps) {
-      // For HTTPS proxy agent, combine proxy URL with SSL options
-      const httpsProxyOptions = {
-        ...agentOptions,
-        host: proxyConfig.proxyUrl.hostname,
-        port: proxyConfig.proxyUrl.port || "443",
-        protocol: proxyConfig.proxyUrl.protocol,
-      };
-      return new HttpsProxyAgent(httpsProxyOptions);
+      return new HttpsProxyAgent(proxyConfig.proxyUrl);
     } else {
-      // For HTTP proxy agent
-      const httpProxyOptions = {
-        host: proxyConfig.proxyUrl.hostname,
-        port: proxyConfig.proxyUrl.port || "80",
-        protocol: proxyConfig.proxyUrl.protocol,
-      };
-      return new HttpProxyAgent(httpProxyOptions);
+      return new HttpProxyAgent(proxyConfig.proxyUrl);
     }
   } catch (error) {
     taskLib.warning(`Failed to create proxy agent: ${error}`);
     return undefined;
   }
+}
+
+/**
+ * Creates proxy configuration for typed-rest-client HttpClient.
+ * This is used with typed-rest-client's IRequestOptions interface.
+ * Returns undefined if no proxy should be used for the target URL.
+ */
+export function createProxyConfigForHttpClient(
+  targetUrl: string
+): // eslint-disable-next-line @typescript-eslint/no-explicit-any
+any | undefined {
+  const proxyConfig = getProxyConfig(targetUrl);
+
+  if (!proxyConfig.useProxy || !proxyConfig.proxyUrl) {
+    taskLib.debug(
+      `No proxy needed for target URL: ${targetUrl} (either no proxy configured or bypassed via NO_PROXY)`
+    );
+    return undefined;
+  }
+
+  // Build IProxyConfiguration object for typed-rest-client
+  // Using full URL with credentials (if present) - typed-rest-client will parse them
+  const proxyConfiguration = {
+    proxyUrl: proxyConfig.proxyUrl.href, // Includes credentials in URL format
+  };
+
+  taskLib.debug(
+    `Explicit proxy configured for HttpClient: ${proxyConfig.proxyUrl.origin}`
+  );
+
+  return proxyConfiguration;
 }

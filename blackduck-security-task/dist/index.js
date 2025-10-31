@@ -709,7 +709,6 @@ const fs_1 = __nccwpck_require__(7147);
 const dom_parser_1 = __importDefault(__nccwpck_require__(9592));
 const https = __importStar(__nccwpck_require__(5687));
 const ssl_utils_1 = __nccwpck_require__(6821);
-const proxy_utils_1 = __nccwpck_require__(5435);
 const input_1 = __nccwpck_require__(264);
 const application_constant_1 = __nccwpck_require__(8673);
 const os_1 = __importDefault(__nccwpck_require__(2037));
@@ -1012,12 +1011,6 @@ class BridgeCli {
                     return yield new Promise((resolve, reject) => {
                         const parsedUrl = new URL(fetchUrl);
                         const requestOptions = (0, ssl_utils_1.createHTTPSRequestOptions)(parsedUrl, sslConfig, headers);
-                        // Add proxy agent if proxy is configured
-                        const proxyAgent = (0, proxy_utils_1.createProxyAgent)(fetchUrl, sslConfig);
-                        if (proxyAgent) {
-                            requestOptions.agent = proxyAgent;
-                            taskLib.debug("Using proxy for Bridge CLI metadata fetch");
-                        }
                         const request = https.request(requestOptions, (response) => {
                             const statusCode = response.statusCode || 0;
                             if (statusCode !== 200) {
@@ -1467,7 +1460,6 @@ const ErrorCodes_1 = __nccwpck_require__(8936);
 const inputs = __importStar(__nccwpck_require__(264));
 const utility_1 = __nccwpck_require__(8383);
 const ssl_utils_1 = __nccwpck_require__(6821);
-const proxy_utils_1 = __nccwpck_require__(5435);
 const userAgent = "BlackDuckSecurityScan";
 /**
  * Validates downloaded file and checks content length match
@@ -1556,12 +1548,6 @@ function downloadWithCustomSSL(downloadUrl, destPath, additionalHeaders) {
                 const parsedUrl = new URL(downloadUrl);
                 const sslConfig = (0, ssl_utils_1.getSSLConfig)();
                 const requestOptions = (0, ssl_utils_1.createHTTPSRequestOptions)(parsedUrl, sslConfig, additionalHeaders);
-                // Add proxy agent if proxy is configured
-                const proxyAgent = (0, proxy_utils_1.createProxyAgent)(downloadUrl, sslConfig);
-                if (proxyAgent) {
-                    requestOptions.agent = proxyAgent;
-                    tl.debug("Using proxy for direct HTTPS download");
-                }
                 tl.debug(`Starting direct HTTPS download from: ${downloadUrl}`);
                 tl.debug(`Destination: ${destPath}`);
                 // Ensure destination directory exists
@@ -2231,7 +2217,7 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.createProxyAgent = exports.shouldBypassProxy = exports.getProxyConfig = void 0;
+exports.createProxyConfigForHttpClient = exports.createProxyAgent = exports.shouldBypassProxy = exports.getProxyConfig = void 0;
 const taskLib = __importStar(__nccwpck_require__(347));
 // Dynamic imports for proxy agents - will be installed separately
 // eslint-disable-next-line @typescript-eslint/no-var-requires
@@ -2319,10 +2305,10 @@ function shouldBypassProxy(targetUrl, noProxy) {
 }
 exports.shouldBypassProxy = shouldBypassProxy;
 /**
- * Creates an appropriate proxy agent based on the protocol and proxy configuration
- * Integrates with SSL configuration for secure proxy connections
+ * Creates an appropriate proxy agent based on the protocol and proxy configuration.
+ * SSL configuration for the target connection is handled by createHTTPSRequestOptions.
  */
-function createProxyAgent(url, sslConfig) {
+function createProxyAgent(url) {
     const proxyConfig = getProxyConfig(url);
     // Check if proxy should be used
     if (!proxyConfig.useProxy || !proxyConfig.proxyUrl) {
@@ -2332,31 +2318,14 @@ function createProxyAgent(url, sslConfig) {
         const parsedUrl = new URL(url);
         const isHttps = parsedUrl.protocol === "https:";
         taskLib.debug(`Creating ${isHttps ? "HTTPS" : "HTTP"} proxy agent for: ${proxyConfig.proxyUrl.origin}`);
-        // Configure agent options based on SSL config
-        const agentOptions = {};
-        if (sslConfig.trustAllCerts) {
-            agentOptions.rejectUnauthorized = false;
-            taskLib.debug("Proxy agent configured with SSL verification disabled");
-        }
-        else if (sslConfig.combinedCAs) {
-            agentOptions.ca = sslConfig.combinedCAs;
-            taskLib.debug("Proxy agent configured with custom CA certificates");
-        }
-        // Create appropriate proxy agent
-        // Compatible with both v5/6 (two params) and v7 (options object with proxy)
+        // Create appropriate proxy agent by passing the proxy URL directly
+        // The proxy agent libraries handle URL parsing and connection details
+        // SSL configuration for the target connection is handled in createHTTPSRequestOptions
         if (isHttps) {
-            // For HTTPS proxy agent, combine proxy URL with SSL options
-            const httpsProxyOptions = Object.assign(Object.assign({}, agentOptions), { host: proxyConfig.proxyUrl.hostname, port: proxyConfig.proxyUrl.port || "443", protocol: proxyConfig.proxyUrl.protocol });
-            return new HttpsProxyAgent(httpsProxyOptions);
+            return new HttpsProxyAgent(proxyConfig.proxyUrl);
         }
         else {
-            // For HTTP proxy agent
-            const httpProxyOptions = {
-                host: proxyConfig.proxyUrl.hostname,
-                port: proxyConfig.proxyUrl.port || "80",
-                protocol: proxyConfig.proxyUrl.protocol,
-            };
-            return new HttpProxyAgent(httpProxyOptions);
+            return new HttpProxyAgent(proxyConfig.proxyUrl);
         }
     }
     catch (error) {
@@ -2365,6 +2334,26 @@ function createProxyAgent(url, sslConfig) {
     }
 }
 exports.createProxyAgent = createProxyAgent;
+/**
+ * Creates proxy configuration for typed-rest-client HttpClient.
+ * This is used with typed-rest-client's IRequestOptions interface.
+ * Returns undefined if no proxy should be used for the target URL.
+ */
+function createProxyConfigForHttpClient(targetUrl) {
+    const proxyConfig = getProxyConfig(targetUrl);
+    if (!proxyConfig.useProxy || !proxyConfig.proxyUrl) {
+        taskLib.debug(`No proxy needed for target URL: ${targetUrl} (either no proxy configured or bypassed via NO_PROXY)`);
+        return undefined;
+    }
+    // Build IProxyConfiguration object for typed-rest-client
+    // Using full URL with credentials (if present) - typed-rest-client will parse them
+    const proxyConfiguration = {
+        proxyUrl: proxyConfig.proxyUrl.href, // Includes credentials in URL format
+    };
+    taskLib.debug(`Explicit proxy configured for HttpClient: ${proxyConfig.proxyUrl.origin}`);
+    return proxyConfiguration;
+}
+exports.createProxyConfigForHttpClient = createProxyConfigForHttpClient;
 
 
 /***/ }),
@@ -2404,6 +2393,7 @@ const tls = __importStar(__nccwpck_require__(4404));
 const https = __importStar(__nccwpck_require__(5687));
 const taskLib = __importStar(__nccwpck_require__(347));
 const inputs = __importStar(__nccwpck_require__(264));
+const proxy_utils_1 = __nccwpck_require__(5435);
 /**
  * Parse string to boolean
  * Exported for testing purposes
@@ -2477,7 +2467,7 @@ function createHTTPSAgent(sslConfig) {
 }
 exports.createHTTPSAgent = createHTTPSAgent;
 /**
- * Creates HTTPS request options with SSL configuration
+ * Creates HTTPS request options with SSL configuration and proxy agent
  */
 function createHTTPSRequestOptions(parsedUrl, sslConfig, headers) {
     const requestOptions = {
@@ -2495,6 +2485,12 @@ function createHTTPSRequestOptions(parsedUrl, sslConfig, headers) {
     else if (sslConfig.combinedCAs) {
         requestOptions.ca = sslConfig.combinedCAs;
         taskLib.debug(`Using combined CA certificates for SSL verification`);
+    }
+    // Add proxy agent if proxy is configured
+    const proxyAgent = (0, proxy_utils_1.createProxyAgent)(parsedUrl.href);
+    if (proxyAgent) {
+        requestOptions.agent = proxyAgent;
+        taskLib.debug("Using proxy for HTTPS request");
     }
     return requestOptions;
 }
@@ -3865,19 +3861,9 @@ function createSSLConfiguredHttpClient(userAgent = "BlackDuckSecurityTask", targ
     }
     // Configure explicit proxy if target URL is provided
     if (targetUrl) {
-        const proxyConfig = (0, proxy_utils_1.getProxyConfig)(targetUrl);
-        if (proxyConfig.useProxy && proxyConfig.proxyUrl) {
-            // Build IProxyConfiguration object for typed-rest-client
-            requestOptions.proxy = {
-                proxyUrl: proxyConfig.proxyUrl.href,
-                proxyUsername: proxyConfig.proxyUrl.username || undefined,
-                proxyPassword: proxyConfig.proxyUrl.password || undefined,
-                proxyBypassHosts: [], // NO_PROXY already handled by getProxyConfig
-            };
-            taskLib.debug(`Explicit proxy configured for HttpClient: ${proxyConfig.proxyUrl.origin}`);
-        }
-        else {
-            taskLib.debug(`No proxy needed for target URL: ${targetUrl} (either no proxy configured or bypassed via NO_PROXY)`);
+        const proxyConfiguration = (0, proxy_utils_1.createProxyConfigForHttpClient)(targetUrl);
+        if (proxyConfiguration) {
+            requestOptions.proxy = proxyConfiguration;
         }
     }
     else {

@@ -36,7 +36,7 @@ import * as https from "https";
 import * as inputs from "./input";
 import { getSSLConfig, getSSLConfigHash, createHTTPSAgent } from "./ssl-utils";
 import { isNullOrEmptyValue } from "./validator";
-import { getProxyConfig } from "./proxy-utils";
+import { createProxyConfigForHttpClient } from "./proxy-utils";
 import { readFileSync, writeFileSync } from "fs";
 import { InputData } from "./model/input-data";
 import { Polaris } from "./model/polaris";
@@ -460,23 +460,9 @@ export function createSSLConfiguredHttpClient(
 
   // Configure explicit proxy if target URL is provided
   if (targetUrl) {
-    const proxyConfig = getProxyConfig(targetUrl);
-
-    if (proxyConfig.useProxy && proxyConfig.proxyUrl) {
-      // Build IProxyConfiguration object for typed-rest-client
-      requestOptions.proxy = {
-        proxyUrl: proxyConfig.proxyUrl.href,
-        proxyUsername: proxyConfig.proxyUrl.username || undefined,
-        proxyPassword: proxyConfig.proxyUrl.password || undefined,
-        proxyBypassHosts: [], // NO_PROXY already handled by getProxyConfig
-      };
-      taskLib.debug(
-        `Explicit proxy configured for HttpClient: ${proxyConfig.proxyUrl.origin}`
-      );
-    } else {
-      taskLib.debug(
-        `No proxy needed for target URL: ${targetUrl} (either no proxy configured or bypassed via NO_PROXY)`
-      );
+    const proxyConfiguration = createProxyConfigForHttpClient(targetUrl);
+    if (proxyConfiguration) {
+      requestOptions.proxy = proxyConfiguration;
     }
   } else {
     // Fallback to environment variable detection (typed-rest-client's automatic behavior)
