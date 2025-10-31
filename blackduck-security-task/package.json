@@ -23,7 +23,9 @@
     "azure-pipelines-tool-lib": "2.0.7",
     "dom-parser": "0.1.6",
     "axios": "1.6.0",
-    "vss-web-extension-sdk": "5.141.0"
+    "vss-web-extension-sdk": "5.141.0",
+    "http-proxy-agent": "7.0.2",
+    "https-proxy-agent": "7.0.5"
   },
   "devDependencies": {
     "@types/chai": "4.3.4",

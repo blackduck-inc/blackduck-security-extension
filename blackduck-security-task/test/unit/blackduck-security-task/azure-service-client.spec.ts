@@ -208,7 +208,7 @@ describe("getPullRequestIdForClassicEditorFlow", () => {
             } as any);
             await azureService.getAzurePrResponseForManualTriggerFlow(azureData).catch(errorObj => {
                 expect(errorObj.message).contains('Failed to get pull request info for current build from source branch: feature/xyz');
-                expect(errorObj.message).contains('1001'); // ErrorCode.FAILED_TO_GET_PULL_REQUEST_INFO_FROM_SOURCE_BRANCH
+                expect(errorObj.message).contains('120'); // ErrorCode.FAILED_TO_GET_PULL_REQUEST_INFO_FROM_SOURCE_BRANCH
             });
         });
         it('should return undefined if azureData is undefined', async () => {

@@ -472,7 +472,7 @@ export class BridgeCli {
   }
 
   /**
-   * Fetch content using direct HTTPS with enhanced SSL support.
+   * Fetch content using direct HTTPS with enhanced SSL and proxy support.
    * Falls back to typed-rest-client if direct HTTPS fails.
    */
   private async fetchWithDirectHTTPS(
@@ -535,9 +535,11 @@ export class BridgeCli {
       }
     }
 
-    // Fallback to typed-rest-client
-    taskLib.debug("Using typed-rest-client for Bridge CLI metadata fetch");
-    const httpClient = getSharedHttpClient();
+    // Fallback to typed-rest-client (which automatically handles proxy from environment variables)
+    taskLib.debug(
+      "Using typed-rest-client for Bridge CLI metadata fetch (with explicit proxy configuration)"
+    );
+    const httpClient = getSharedHttpClient(fetchUrl);
     const response = await httpClient.get(fetchUrl, headers);
 
     if (response.message.statusCode !== 200) {

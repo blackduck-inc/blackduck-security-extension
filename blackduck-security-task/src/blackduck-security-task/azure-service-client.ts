@@ -49,7 +49,7 @@ export class AzureService {
         "base64"
       );
 
-      const httpClient = getSharedHttpClient();
+      const httpClient = getSharedHttpClient(endpoint);
       const httpResponse = await httpClient.get(endpoint, {
         Authorization: "Basic ".concat(encodedToken),
         Accept: "application/json",
@@ -99,7 +99,7 @@ export class AzureService {
     const encodedToken = Buffer.from(`:${userToken}`, "utf8").toString(
       "base64"
     );
-    const response = await getSharedHttpClient().get(repoEndpoint, {
+    const response = await getSharedHttpClient(repoEndpoint).get(repoEndpoint, {
       Authorization: `Basic ${encodedToken}`,
       Accept: "application/json",
     });
