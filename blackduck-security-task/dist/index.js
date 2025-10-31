@@ -2398,7 +2398,7 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.getSSLConfigHash = exports.createHTTPSRequestOptions = exports.createHTTPSAgent = exports.getSSLConfig = void 0;
+exports.getSSLConfigHash = exports.createHTTPSRequestOptions = exports.createHTTPSAgent = exports.getSSLConfig = exports.parseToBoolean = void 0;
 const fs = __importStar(__nccwpck_require__(7147));
 const tls = __importStar(__nccwpck_require__(4404));
 const https = __importStar(__nccwpck_require__(5687));
@@ -2406,6 +2406,7 @@ const taskLib = __importStar(__nccwpck_require__(347));
 const inputs = __importStar(__nccwpck_require__(264));
 /**
  * Parse string to boolean
+ * Exported for testing purposes
  */
 function parseToBoolean(value) {
     if (value !== null &&
@@ -2415,13 +2416,15 @@ function parseToBoolean(value) {
     }
     return false;
 }
+exports.parseToBoolean = parseToBoolean;
 /**
  * Reads and validates SSL configuration from inputs
  */
 function getSSLConfig() {
     // Check if we're in test environment - if so, return minimal config to avoid interfering with mocks
-    if (process.env.NODE_ENV === "test" ||
-        process.env.npm_lifecycle_event === "test") {
+    if ((process.env.NODE_ENV === "test" ||
+        process.env.npm_lifecycle_event === "test") &&
+        process.env.SSL_CONFIG_TEST_MODE !== "production") {
         taskLib.debug("Running in test environment - using minimal SSL config to preserve mocks");
         return { trustAllCerts: false };
     }

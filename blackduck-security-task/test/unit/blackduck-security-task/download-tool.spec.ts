@@ -14,7 +14,8 @@ import {
     downloadTool,
     debug,
     _getFileSizeOnDisk,
-    validateDownloadedFile
+    validateDownloadedFile,
+    downloadWithCustomSSL
 } from "../../../src/blackduck-security-task/download-tool";
 import { _getContentLengthOfDownloadedFile } from "../../../src/blackduck-security-task/download-tool";
 import { _deleteFile } from "../../../src/blackduck-security-task/download-tool";
@@ -1669,6 +1670,487 @@ describe("Download Tool Tests", () => {
             _getFileSizeOnDiskStub.returns(NaN);
             const result = await validateDownloadedFile(testDestPath);
             expect(result).to.equal(testDestPath);
+        });
+    });
+
+    describe("downloadWithCustomSSL Function Tests", () => {
+        let sandbox: sinon.SinonSandbox;
+        let getSSLConfigStub: sinon.SinonStub;
+        let createHTTPSRequestOptionsStub: sinon.SinonStub;
+        let createProxyAgentStub: sinon.SinonStub;
+        let httpsRequestStub: sinon.SinonStub;
+        let tlDebugStub: sinon.SinonStub;
+        let tlMkdirPStub: sinon.SinonStub;
+        let fsExistsSyncStub: sinon.SinonStub;
+        let _deleteFileStub: sinon.SinonStub;
+        let pathDirnameStub: sinon.SinonStub;
+        let fsCreateWriteStreamStub: sinon.SinonStub;
+        let validateDownloadedFileStub: sinon.SinonStub;
+
+        beforeEach(() => {
+            sandbox = sinon.createSandbox();
+
+            // Stub SSL and proxy utilities
+            getSSLConfigStub = sandbox.stub(require("../../../src/blackduck-security-task/ssl-utils"), "getSSLConfig");
+            createHTTPSRequestOptionsStub = sandbox.stub(require("../../../src/blackduck-security-task/ssl-utils"), "createHTTPSRequestOptions");
+            createProxyAgentStub = sandbox.stub(require("../../../src/blackduck-security-task/proxy-utils"), "createProxyAgent");
+
+            // Stub taskLib functions
+            tlDebugStub = sandbox.stub(tl, "debug");
+            tlMkdirPStub = sandbox.stub(tl, "mkdirP");
+
+            // Stub fs functions
+            fsExistsSyncStub = sandbox.stub(require("fs"), "existsSync");
+            _deleteFileStub = sandbox.stub(require("../../../src/blackduck-security-task/download-tool"), "_deleteFile");
+            fsCreateWriteStreamStub = sandbox.stub(require("fs"), "createWriteStream");
+            validateDownloadedFileStub = sandbox.stub(require("../../../src/blackduck-security-task/download-tool"), "validateDownloadedFile");
+
+            // Stub path functions
+            pathDirnameStub = sandbox.stub(require("path"), "dirname");
+
+            // Stub https.request
+            httpsRequestStub = sandbox.stub(require("https"), "request");
+
+            // Default returns
+            getSSLConfigStub.returns({ trustAllCerts: false });
+            createHTTPSRequestOptionsStub.returns({});
+            createProxyAgentStub.returns(undefined);
+            fsExistsSyncStub.returns(false);
+            pathDirnameStub.returns("/tmp");
+        });
+
+        afterEach(() => {
+            sandbox.restore();
+        });
+
+        it("should handle successful download with HTTP 200 status", async () => {
+            const downloadUrl = "https://example.com/file.zip";
+            const destPath = "/tmp/file.zip";
+
+            // Create mock response
+            const mockResponse: any = {
+                statusCode: 200,
+                statusMessage: "OK",
+                headers: { "content-length": "1024" },
+                on: sandbox.stub(),
+                pipe: sandbox.stub()
+            };
+
+            // Create mock file stream
+            const mockFileStream: any = {
+                on: sandbox.stub(),
+                end: sandbox.stub()
+            };
+
+            // Setup stubs
+            fsCreateWriteStreamStub.returns(mockFileStream);
+
+            // Setup fileStream.on to call the close handler
+            mockFileStream.on.withArgs("close").callsFake((event: string, handler: () => void) => {
+                // Stub validateDownloadedFile to resolve
+                validateDownloadedFileStub.resolves(destPath);
+
+                // Call the close handler immediately
+                setTimeout(() => handler(), 0);
+                return mockFileStream;
+            });
+
+            mockFileStream.on.withArgs("error").returns(mockFileStream);
+            mockResponse.on.withArgs("error").returns(mockResponse);
+
+            // Setup https.request to call the response handler
+            httpsRequestStub.callsFake((options: any, responseHandler: (response: any) => void) => {
+                const mockRequest: any = {
+                    on: sandbox.stub().returnsThis(),
+                    setTimeout: sandbox.stub().returnsThis(),
+                    end: sandbox.stub().callsFake(() => {
+                        // Call the response handler
+                        setTimeout(() => responseHandler(mockResponse), 0);
+                    }),
+                    destroy: sandbox.stub()
+                };
+                return mockRequest;
+            });
+
+            const result = await downloadWithCustomSSL(downloadUrl, destPath);
+
+            expect(result).to.equal(destPath);
+            expect(getSSLConfigStub.calledOnce).to.be.true;
+            expect(createHTTPSRequestOptionsStub.calledOnce).to.be.true;
+            expect(httpsRequestStub.calledOnce).to.be.true;
+        });
+
+        it("should reject with error for HTTP 404 status", async () => {
+            const downloadUrl = "https://example.com/notfound.zip";
+            const destPath = "/tmp/notfound.zip";
+
+            const mockResponse: any = {
+                statusCode: 404,
+                statusMessage: "Not Found",
+                headers: {}
+            };
+
+            httpsRequestStub.callsFake((options: any, responseHandler: (response: any) => void) => {
+                const mockRequest: any = {
+                    on: sandbox.stub().returnsThis(),
+                    setTimeout: sandbox.stub().returnsThis(),
+                    end: sandbox.stub().callsFake(() => {
+                        responseHandler(mockResponse);
+                    }),
+                    destroy: sandbox.stub()
+                };
+                return mockRequest;
+            });
+
+            try {
+                await downloadWithCustomSSL(downloadUrl, destPath);
+                expect.fail("Should have rejected");
+            } catch (error: any) {
+                expect(error.message).to.include("Failed to download Bridge CLI zip");
+                expect(error.message).to.include("404");
+                expect(tlDebugStub.calledWith(`Failed to download file from "${downloadUrl}". Code(404) Message(Not Found)`)).to.be.true;
+            }
+        });
+
+        it("should use proxy agent when proxy is configured", async () => {
+            const downloadUrl = "https://example.com/file.zip";
+            const destPath = "/tmp/file.zip";
+            const mockProxyAgent: any = { type: "proxy-agent" };
+
+            createProxyAgentStub.returns(mockProxyAgent);
+
+            const requestOptions: any = { hostname: "example.com" };
+            createHTTPSRequestOptionsStub.returns(requestOptions);
+
+            const mockFileStream: any = {
+                on: sandbox.stub().returns({ on: sandbox.stub() }),
+                end: sandbox.stub()
+            };
+            fsCreateWriteStreamStub.returns(mockFileStream);
+
+            const mockResponse: any = {
+                statusCode: 200,
+                headers: { "content-length": "1024" },
+                on: sandbox.stub().returnsThis(),
+                pipe: sandbox.stub()
+            };
+
+            mockFileStream.on.withArgs("close").callsFake((event: string, handler: () => void) => {
+                validateDownloadedFileStub.resolves(destPath);
+                setTimeout(() => handler(), 0);
+                return mockFileStream;
+            });
+
+            httpsRequestStub.callsFake((options: any, responseHandler: (response: any) => void) => {
+                expect(options.agent).to.equal(mockProxyAgent);
+
+                const mockRequest: any = {
+                    on: sandbox.stub().returnsThis(),
+                    setTimeout: sandbox.stub().returnsThis(),
+                    end: sandbox.stub().callsFake(() => setTimeout(() => responseHandler(mockResponse), 0)),
+                    destroy: sandbox.stub()
+                };
+                return mockRequest;
+            });
+
+            await downloadWithCustomSSL(downloadUrl, destPath);
+
+            expect(tlDebugStub.calledWith("Using proxy for direct HTTPS download")).to.be.true;
+        });
+
+        it("should handle request timeout", async () => {
+            const downloadUrl = "https://example.com/file.zip";
+            const destPath = "/tmp/file.zip";
+
+            httpsRequestStub.callsFake(() => {
+                const mockRequest: any = {
+                    on: sandbox.stub().returnsThis(),
+                    setTimeout: sandbox.stub().callsFake((timeout: number, handler: () => void) => {
+                        // Trigger timeout
+                        setTimeout(handler, 0);
+                        return mockRequest;
+                    }),
+                    end: sandbox.stub(),
+                    destroy: sandbox.stub()
+                };
+                return mockRequest;
+            });
+
+            try {
+                await downloadWithCustomSSL(downloadUrl, destPath);
+                expect.fail("Should have rejected due to timeout");
+            } catch (error: any) {
+                expect(error.message).to.equal("Download request timeout");
+                expect(tlDebugStub.calledWith("Request timeout")).to.be.true;
+            }
+        });
+
+        it("should handle request error", async () => {
+            const downloadUrl = "https://example.com/file.zip";
+            const destPath = "/tmp/file.zip";
+            const requestError = new Error("Network error");
+
+            let errorHandler: ((err: Error) => void) | undefined;
+
+            httpsRequestStub.callsFake(() => {
+                const mockRequest: any = {
+                    on: sandbox.stub().callsFake((event: string, handler: (err: Error) => void) => {
+                        if (event === "error") {
+                            errorHandler = handler;
+                        }
+                        return mockRequest;
+                    }),
+                    setTimeout: sandbox.stub().returnsThis(),
+                    end: sandbox.stub().callsFake(() => {
+                        // Trigger the error after end() is called
+                        if (errorHandler) {
+                            setImmediate(() => errorHandler!(requestError));
+                        }
+                    }),
+                    destroy: sandbox.stub()
+                };
+                return mockRequest;
+            });
+
+            try {
+                await downloadWithCustomSSL(downloadUrl, destPath);
+                expect.fail("Should have rejected");
+            } catch (error: any) {
+                expect(error).to.equal(requestError);
+                expect(tlDebugStub.calledWith(`Request error: ${requestError}`)).to.be.true;
+            }
+        });
+
+        it("should remove existing file before download", async () => {
+            const downloadUrl = "https://example.com/file.zip";
+            const destPath = "/tmp/existing.zip";
+
+            fsExistsSyncStub.returns(true);
+
+            const mockFileStream: any = {
+                on: sandbox.stub().returnsThis(),
+                end: sandbox.stub()
+            };
+            fsCreateWriteStreamStub.returns(mockFileStream);
+
+            const mockResponse: any = {
+                statusCode: 200,
+                headers: { "content-length": "1024" },
+                on: sandbox.stub().returnsThis(),
+                pipe: sandbox.stub()
+            };
+
+            mockFileStream.on.withArgs("close").callsFake((event: string, handler: () => void) => {
+                validateDownloadedFileStub.resolves(destPath);
+                setTimeout(() => handler(), 0);
+                return mockFileStream;
+            });
+
+            httpsRequestStub.callsFake((options: any, responseHandler: (response: any) => void) => {
+                const mockRequest: any = {
+                    on: sandbox.stub().returnsThis(),
+                    setTimeout: sandbox.stub().returnsThis(),
+                    end: sandbox.stub().callsFake(() => setTimeout(() => responseHandler(mockResponse), 0)),
+                    destroy: sandbox.stub()
+                };
+                return mockRequest;
+            });
+
+            await downloadWithCustomSSL(downloadUrl, destPath);
+
+            expect(fsExistsSyncStub.calledWith(destPath)).to.be.true;
+            expect(tlDebugStub.calledWith("Destination file path already exists, removing")).to.be.true;
+        });
+
+        it("should handle file stream error", async () => {
+            const downloadUrl = "https://example.com/file.zip";
+            const destPath = "/tmp/file.zip";
+            const streamError = new Error("Write error");
+
+            let fileErrorHandler: ((err?: Error) => void) | undefined;
+
+            const mockFileStream: any = {
+                on: sandbox.stub().callsFake((event: string, handler: (err?: Error) => void) => {
+                    if (event === "error") {
+                        fileErrorHandler = handler;
+                    }
+                    return mockFileStream;
+                }),
+                end: sandbox.stub()
+            };
+            fsCreateWriteStreamStub.returns(mockFileStream);
+
+            const mockResponse: any = {
+                statusCode: 200,
+                headers: { "content-length": "1024" },
+                on: sandbox.stub().returnsThis(),
+                pipe: sandbox.stub().callsFake(() => {
+                    // Trigger file stream error after pipe is called
+                    if (fileErrorHandler) {
+                        setImmediate(() => fileErrorHandler!(streamError));
+                    }
+                })
+            };
+
+            httpsRequestStub.callsFake((options: any, responseHandler: (response: any) => void) => {
+                const mockRequest: any = {
+                    on: sandbox.stub().returnsThis(),
+                    setTimeout: sandbox.stub().returnsThis(),
+                    end: sandbox.stub().callsFake(() => setTimeout(() => responseHandler(mockResponse), 0)),
+                    destroy: sandbox.stub()
+                };
+                return mockRequest;
+            });
+
+            try {
+                await downloadWithCustomSSL(downloadUrl, destPath);
+                expect.fail("Should have rejected");
+            } catch (error: any) {
+                expect(error).to.equal(streamError);
+                expect(tlDebugStub.calledWith(`File stream error: ${streamError}`)).to.be.true;
+            }
+        });
+
+        it("should handle response stream error", async () => {
+            const downloadUrl = "https://example.com/file.zip";
+            const destPath = "/tmp/file.zip";
+            const streamError = new Error("Response stream error");
+
+            let responseErrorHandler: ((err: Error) => void) | undefined;
+
+            const mockFileStream: any = {
+                on: sandbox.stub().returnsThis(),
+                end: sandbox.stub()
+            };
+            fsCreateWriteStreamStub.returns(mockFileStream);
+
+            const mockResponse: any = {
+                statusCode: 200,
+                headers: { "content-length": "1024" },
+                on: sandbox.stub().callsFake((event: string, handler: (err: Error) => void) => {
+                    if (event === "error") {
+                        responseErrorHandler = handler;
+                    }
+                    return mockResponse;
+                }),
+                pipe: sandbox.stub().callsFake(() => {
+                    // Trigger response stream error after pipe is called
+                    if (responseErrorHandler) {
+                        setImmediate(() => responseErrorHandler!(streamError));
+                    }
+                })
+            };
+
+            httpsRequestStub.callsFake((options: any, responseHandler: (response: any) => void) => {
+                const mockRequest: any = {
+                    on: sandbox.stub().returnsThis(),
+                    setTimeout: sandbox.stub().returnsThis(),
+                    end: sandbox.stub().callsFake(() => setTimeout(() => responseHandler(mockResponse), 0)),
+                    destroy: sandbox.stub()
+                };
+                return mockRequest;
+            });
+
+            try {
+                await downloadWithCustomSSL(downloadUrl, destPath);
+                expect.fail("Should have rejected");
+            } catch (error: any) {
+                expect(error).to.equal(streamError);
+                expect(tlDebugStub.calledWith(`Response stream error: ${streamError}`)).to.be.true;
+            }
+        });
+
+        it("should handle general error in try-catch", async () => {
+            const downloadUrl = "https://example.com/file.zip";
+            const destPath = "/tmp/file.zip";
+
+            // Force getSSLConfig to throw an error
+            getSSLConfigStub.throws(new Error("SSL configuration error"));
+
+            try {
+                await downloadWithCustomSSL(downloadUrl, destPath);
+                expect.fail("Should have rejected");
+            } catch (error: any) {
+                expect(tlDebugStub.calledWith(sinon.match(/Error in downloadWithCustomSSL/))).to.be.true;
+            }
+        });
+
+        it("should log content-length when header is missing", async () => {
+            const downloadUrl = "https://example.com/file.zip";
+            const destPath = "/tmp/file.zip";
+
+            const mockFileStream: any = {
+                on: sandbox.stub().returnsThis(),
+                end: sandbox.stub()
+            };
+            fsCreateWriteStreamStub.returns(mockFileStream);
+
+            const mockResponse: any = {
+                statusCode: 200,
+                headers: {}, // No content-length header
+                on: sandbox.stub().returnsThis(),
+                pipe: sandbox.stub()
+            };
+
+            mockFileStream.on.withArgs("close").callsFake((event: string, handler: () => void) => {
+                validateDownloadedFileStub.resolves(destPath);
+                setTimeout(() => handler(), 0);
+                return mockFileStream;
+            });
+
+            httpsRequestStub.callsFake((options: any, responseHandler: (response: any) => void) => {
+                const mockRequest: any = {
+                    on: sandbox.stub().returnsThis(),
+                    setTimeout: sandbox.stub().returnsThis(),
+                    end: sandbox.stub().callsFake(() => setTimeout(() => responseHandler(mockResponse), 0)),
+                    destroy: sandbox.stub()
+                };
+                return mockRequest;
+            });
+
+            await downloadWithCustomSSL(downloadUrl, destPath);
+
+            expect(tlDebugStub.calledWith("Content-Length header missing")).to.be.true;
+        });
+
+        it("should create destination directory if it doesn't exist", async () => {
+            const downloadUrl = "https://example.com/file.zip";
+            const destPath = "/tmp/subdir/file.zip";
+
+            pathDirnameStub.returns("/tmp/subdir");
+
+            const mockFileStream: any = {
+                on: sandbox.stub().returnsThis(),
+                end: sandbox.stub()
+            };
+            fsCreateWriteStreamStub.returns(mockFileStream);
+
+            const mockResponse: any = {
+                statusCode: 200,
+                headers: { "content-length": "1024" },
+                on: sandbox.stub().returnsThis(),
+                pipe: sandbox.stub()
+            };
+
+            mockFileStream.on.withArgs("close").callsFake((event: string, handler: () => void) => {
+                validateDownloadedFileStub.resolves(destPath);
+                setTimeout(() => handler(), 0);
+                return mockFileStream;
+            });
+
+            httpsRequestStub.callsFake((options: any, responseHandler: (response: any) => void) => {
+                const mockRequest: any = {
+                    on: sandbox.stub().returnsThis(),
+                    setTimeout: sandbox.stub().returnsThis(),
+                    end: sandbox.stub().callsFake(() => setTimeout(() => responseHandler(mockResponse), 0)),
+                    destroy: sandbox.stub()
+                };
+                return mockRequest;
+            });
+
+            await downloadWithCustomSSL(downloadUrl, destPath);
+
+            expect(tlMkdirPStub.calledWith("/tmp/subdir")).to.be.true;
         });
     });
 });
