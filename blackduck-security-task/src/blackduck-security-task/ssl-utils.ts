@@ -3,6 +3,7 @@ import * as tls from "tls";
 import * as https from "https";
 import * as taskLib from "azure-pipelines-task-lib/task";
 import * as inputs from "./input";
+import { createProxyAgent } from "./proxy-utils";
 
 export interface SSLConfig {
   trustAllCerts: boolean;
@@ -12,8 +13,9 @@ export interface SSLConfig {
 
 /**
  * Parse string to boolean
+ * Exported for testing purposes
  */
-function parseToBoolean(value: string | boolean | undefined): boolean {
+export function parseToBoolean(value: string | boolean | undefined): boolean {
   if (
     value !== null &&
     value !== "" &&
@@ -30,8 +32,9 @@ function parseToBoolean(value: string | boolean | undefined): boolean {
 export function getSSLConfig(): SSLConfig {
   // Check if we're in test environment - if so, return minimal config to avoid interfering with mocks
   if (
-    process.env.NODE_ENV === "test" ||
-    process.env.npm_lifecycle_event === "test"
+    (process.env.NODE_ENV === "test" ||
+      process.env.npm_lifecycle_event === "test") &&
+    process.env.SSL_CONFIG_TEST_MODE !== "production"
   ) {
     taskLib.debug(
       "Running in test environment - using minimal SSL config to preserve mocks"
@@ -98,7 +101,7 @@ export function createHTTPSAgent(sslConfig: SSLConfig): https.Agent {
 }
 
 /**
- * Creates HTTPS request options with SSL configuration
+ * Creates HTTPS request options with SSL configuration and proxy agent
  */
 export function createHTTPSRequestOptions(
   parsedUrl: URL,
@@ -123,6 +126,13 @@ export function createHTTPSRequestOptions(
   } else if (sslConfig.combinedCAs) {
     requestOptions.ca = sslConfig.combinedCAs;
     taskLib.debug(`Using combined CA certificates for SSL verification`);
+  }
+
+  // Add proxy agent if proxy is configured
+  const proxyAgent = createProxyAgent(parsedUrl.href);
+  if (proxyAgent) {
+    requestOptions.agent = proxyAgent;
+    taskLib.debug("Using proxy for HTTPS request");
   }
 
   return requestOptions;
