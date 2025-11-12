@@ -2345,7 +2345,10 @@ function createProxyConfigForHttpClient(targetUrl) {
     // Build IProxyConfiguration object for typed-rest-client
     // Using full URL with credentials (if present) - typed-rest-client will parse them
     const proxyConfiguration = {
-        proxyUrl: proxyConfig.proxyUrl.href, // Includes credentials in URL format
+        proxyUrl: proxyConfig.proxyUrl.href,
+        proxyUsername: proxyConfig.proxyUrl.username || undefined,
+        proxyPassword: proxyConfig.proxyUrl.password || undefined,
+        proxyBypassHosts: [], // NO_PROXY already handled by getProxyConfig
     };
     taskLib.debug(`Explicit proxy configured for HttpClient: ${proxyConfig.proxyUrl.origin}`);
     return proxyConfiguration;
