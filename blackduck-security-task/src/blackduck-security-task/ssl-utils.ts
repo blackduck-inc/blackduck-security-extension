@@ -3,6 +3,7 @@ import * as tls from "tls";
 import * as https from "https";
 import * as taskLib from "azure-pipelines-task-lib/task";
 import * as inputs from "./input";
+import { createProxyAgent } from "./proxy-utils";
 
 export interface SSLConfig {
   trustAllCerts: boolean;
@@ -100,7 +101,7 @@ export function createHTTPSAgent(sslConfig: SSLConfig): https.Agent {
 }
 
 /**
- * Creates HTTPS request options with SSL configuration
+ * Creates HTTPS request options with SSL configuration and proxy agent
  */
 export function createHTTPSRequestOptions(
   parsedUrl: URL,
@@ -125,6 +126,13 @@ export function createHTTPSRequestOptions(
   } else if (sslConfig.combinedCAs) {
     requestOptions.ca = sslConfig.combinedCAs;
     taskLib.debug(`Using combined CA certificates for SSL verification`);
+  }
+
+  // Add proxy agent if proxy is configured
+  const proxyAgent = createProxyAgent(parsedUrl.href);
+  if (proxyAgent) {
+    requestOptions.agent = proxyAgent;
+    taskLib.debug("Using proxy for HTTPS request");
   }
 
   return requestOptions;

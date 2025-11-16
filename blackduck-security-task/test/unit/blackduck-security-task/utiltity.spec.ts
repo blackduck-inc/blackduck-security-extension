@@ -615,14 +615,14 @@ describe("Utilities", () => {
         });
 
         describe('URL-aware proxy configuration', () => {
-            let getProxyConfigStub: sinon.SinonStub;
+            let createProxyConfigForHttpClientStub: sinon.SinonStub;
             let originalEnv: NodeJS.ProcessEnv;
 
             beforeEach(() => {
                 originalEnv = { ...process.env };
-                // Import proxy-utils and stub getProxyConfig
+                // Import proxy-utils and stub createProxyConfigForHttpClient
                 const proxyUtils = require('../../../src/blackduck-security-task/proxy-utils');
-                getProxyConfigStub = sandbox.stub(proxyUtils, 'getProxyConfig');
+                createProxyConfigForHttpClientStub = sandbox.stub(proxyUtils, 'createProxyConfigForHttpClient');
             });
 
             afterEach(() => {
@@ -637,7 +637,7 @@ describe("Utilities", () => {
                 utility.clearHttpClientCache();
                 getSSLConfigHashStub.returns(configHash);
                 getSSLConfigStub.returns({ trustAllCerts: false, customCA: false });
-                getProxyConfigStub.returns({ useProxy: false });
+                createProxyConfigForHttpClientStub.returns(undefined);
 
                 const client1 = utility.createSSLConfiguredHttpClient(userAgent, targetUrl);
                 const client2 = utility.createSSLConfiguredHttpClient(userAgent, targetUrl);
@@ -652,17 +652,22 @@ describe("Utilities", () => {
                 const userAgent = 'TestAgent';
                 const targetUrl = 'https://api.example.com';
                 const proxyUrl = new URL('http://proxy.example.com:8080');
+                const proxyConfiguration = {
+                    proxyUrl: proxyUrl.href,
+                    proxyUsername: undefined,
+                    proxyPassword: undefined,
+                    proxyBypassHosts: []
+                };
 
                 utility.clearHttpClientCache();
                 getSSLConfigHashStub.returns(configHash);
                 getSSLConfigStub.returns({ trustAllCerts: false, customCA: false });
-                getProxyConfigStub.returns({ useProxy: true, proxyUrl: proxyUrl });
+                createProxyConfigForHttpClientStub.withArgs(targetUrl).returns(proxyConfiguration);
 
                 const result = utility.createSSLConfiguredHttpClient(userAgent, targetUrl);
 
                 expect(result).to.not.be.undefined;
-                expect(getProxyConfigStub.calledWith(targetUrl)).to.be.true;
-                expect(taskLibDebugStub.calledWith(`Explicit proxy configured for HttpClient: ${proxyUrl.origin}`)).to.be.true;
+                expect(createProxyConfigForHttpClientStub.calledWith(targetUrl)).to.be.true;
             });
 
             it('should skip proxy configuration when targetUrl is provided but no proxy needed', () => {
@@ -673,13 +678,12 @@ describe("Utilities", () => {
                 utility.clearHttpClientCache();
                 getSSLConfigHashStub.returns(configHash);
                 getSSLConfigStub.returns({ trustAllCerts: false, customCA: false });
-                getProxyConfigStub.returns({ useProxy: false });
+                createProxyConfigForHttpClientStub.withArgs(targetUrl).returns(undefined);
 
                 const result = utility.createSSLConfiguredHttpClient(userAgent, targetUrl);
 
                 expect(result).to.not.be.undefined;
-                expect(getProxyConfigStub.calledWith(targetUrl)).to.be.true;
-                expect(taskLibDebugStub.calledWith(`No proxy needed for target URL: ${targetUrl} (either no proxy configured or bypassed via NO_PROXY)`)).to.be.true;
+                expect(createProxyConfigForHttpClientStub.calledWith(targetUrl)).to.be.true;
             });
 
             it('should use automatic proxy detection when no targetUrl is provided', () => {
@@ -693,7 +697,7 @@ describe("Utilities", () => {
                 const result = utility.createSSLConfiguredHttpClient(userAgent);
 
                 expect(result).to.not.be.undefined;
-                expect(getProxyConfigStub.called).to.be.false; // Should NOT call getProxyConfig
+                expect(createProxyConfigForHttpClientStub.called).to.be.false; // Should NOT call createProxyConfigForHttpClient
                 expect(taskLibDebugStub.calledWith('No target URL provided - typed-rest-client will auto-detect proxy from environment variables')).to.be.true;
             });
 
@@ -702,17 +706,22 @@ describe("Utilities", () => {
                 const userAgent = 'TestAgent';
                 const targetUrl = 'https://api.example.com';
                 const proxyUrl = new URL('http://user:pass@proxy.example.com:8080');
+                const proxyConfiguration = {
+                    proxyUrl: proxyUrl.href,
+                    proxyUsername: 'user',
+                    proxyPassword: 'pass',
+                    proxyBypassHosts: []
+                };
 
                 utility.clearHttpClientCache();
                 getSSLConfigHashStub.returns(configHash);
                 getSSLConfigStub.returns({ trustAllCerts: false, customCA: false });
-                getProxyConfigStub.returns({ useProxy: true, proxyUrl: proxyUrl });
+                createProxyConfigForHttpClientStub.withArgs(targetUrl).returns(proxyConfiguration);
 
                 const result = utility.createSSLConfiguredHttpClient(userAgent, targetUrl);
 
                 expect(result).to.not.be.undefined;
-                expect(getProxyConfigStub.calledWith(targetUrl)).to.be.true;
-                expect(taskLibDebugStub.calledWith(`Explicit proxy configured for HttpClient: ${proxyUrl.origin}`)).to.be.true;
+                expect(createProxyConfigForHttpClientStub.calledWith(targetUrl)).to.be.true;
             });
         });
     });

@@ -356,7 +356,7 @@ describe('Proxy Utils Unit Tests', () => {
             delete process.env.http_proxy;
 
             const sslConfig = { trustAllCerts: false };
-            const result = proxyUtils.createProxyAgent('https://example.com/api', sslConfig);
+            const result = proxyUtils.createProxyAgent('https://example.com/api');
 
             expect(result).to.be.undefined;
         });
@@ -365,7 +365,7 @@ describe('Proxy Utils Unit Tests', () => {
             process.env.NO_PROXY = 'example.com';
 
             const sslConfig = { trustAllCerts: false };
-            const result = proxyUtils.createProxyAgent('https://example.com/api', sslConfig);
+            const result = proxyUtils.createProxyAgent('https://example.com/api');
 
             expect(result).to.be.undefined;
         });
@@ -374,7 +374,7 @@ describe('Proxy Utils Unit Tests', () => {
             process.env.HTTPS_PROXY = 'http://proxy.example.com:8080';
 
             const sslConfig = { trustAllCerts: false };
-            const result = proxyUtils.createProxyAgent('https://example.com/api', sslConfig);
+            const result = proxyUtils.createProxyAgent('https://example.com/api');
 
             expect(result).to.not.be.undefined;
             // Result is an HttpsProxyAgent (handles HTTPS through HTTP proxy)
@@ -384,7 +384,7 @@ describe('Proxy Utils Unit Tests', () => {
             process.env.HTTPS_PROXY = 'https://secure-proxy.example.com:8443';
 
             const sslConfig = { trustAllCerts: false };
-            const result = proxyUtils.createProxyAgent('https://example.com/api', sslConfig);
+            const result = proxyUtils.createProxyAgent('https://example.com/api');
 
             expect(result).to.not.be.undefined;
             // Result is an HttpsProxyAgent
@@ -392,7 +392,7 @@ describe('Proxy Utils Unit Tests', () => {
 
         it('should create agent with SSL options when trustAllCerts is true', () => {
             const sslConfig = { trustAllCerts: true };
-            const result = proxyUtils.createProxyAgent('https://example.com/api', sslConfig);
+            const result = proxyUtils.createProxyAgent('https://example.com/api');
 
             expect(result).to.not.be.undefined;
             // Agent created with rejectUnauthorized: false
@@ -403,7 +403,7 @@ describe('Proxy Utils Unit Tests', () => {
                 trustAllCerts: false,
                 combinedCAs: ['ca1', 'ca2', 'ca3']
             };
-            const result = proxyUtils.createProxyAgent('https://example.com/api', sslConfig);
+            const result = proxyUtils.createProxyAgent('https://example.com/api');
 
             expect(result).to.not.be.undefined;
             // Agent created with ca: combinedCAs
@@ -411,7 +411,7 @@ describe('Proxy Utils Unit Tests', () => {
 
         it('should create proxy agent successfully', () => {
             const sslConfig = { trustAllCerts: false };
-            const result = proxyUtils.createProxyAgent('https://example.com/api', sslConfig);
+            const result = proxyUtils.createProxyAgent('https://example.com/api');
 
             expect(result).to.not.be.undefined;
         });
@@ -420,7 +420,7 @@ describe('Proxy Utils Unit Tests', () => {
             process.env.HTTPS_PROXY = 'http://proxy.example.com:8080'; // HTTP proxy URL (not https://)
 
             const sslConfig = { trustAllCerts: false };
-            const result = proxyUtils.createProxyAgent('https://example.com/api', sslConfig);
+            const result = proxyUtils.createProxyAgent('https://example.com/api');
 
             expect(result).to.not.be.undefined;
             // Result should be HttpsProxyAgent (for HTTPS target through HTTP proxy)
@@ -431,7 +431,7 @@ describe('Proxy Utils Unit Tests', () => {
             process.env.HTTPS_PROXY = 'http://proxy.example.com'; // No port specified
 
             const sslConfig = { trustAllCerts: false };
-            const result = proxyUtils.createProxyAgent('https://example.com/api', sslConfig);
+            const result = proxyUtils.createProxyAgent('https://example.com/api');
 
             expect(result).to.not.be.undefined;
             // Should use default port 80 for HTTP proxy
@@ -441,7 +441,7 @@ describe('Proxy Utils Unit Tests', () => {
             process.env.HTTPS_PROXY = 'https://secure-proxy.example.com'; // No port specified
 
             const sslConfig = { trustAllCerts: false };
-            const result = proxyUtils.createProxyAgent('https://example.com/api', sslConfig);
+            const result = proxyUtils.createProxyAgent('https://example.com/api');
 
             expect(result).to.not.be.undefined;
             // Should use default port 443 for HTTPS proxy
@@ -452,7 +452,7 @@ describe('Proxy Utils Unit Tests', () => {
 
             const sslConfig = { trustAllCerts: false };
             // Using HTTP target URL (not HTTPS) to trigger HttpProxyAgent path
-            const result = proxyUtils.createProxyAgent('http://example.com/api', sslConfig);
+            const result = proxyUtils.createProxyAgent('http://example.com/api');
 
             expect(result).to.not.be.undefined;
             // Result should be HttpProxyAgent (for HTTP target)
@@ -464,7 +464,7 @@ describe('Proxy Utils Unit Tests', () => {
 
             const sslConfig = { trustAllCerts: false };
             // Using HTTP target URL to trigger HttpProxyAgent path with default port
-            const result = proxyUtils.createProxyAgent('http://insecure.example.com/api', sslConfig);
+            const result = proxyUtils.createProxyAgent('http://insecure.example.com/api');
 
             expect(result).to.not.be.undefined;
             // Should use default port 80 for HTTP proxy
