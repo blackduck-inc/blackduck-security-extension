@@ -11,6 +11,7 @@ import { ErrorCode } from "./enum/ErrorCodes";
 import * as inputs from "./input";
 import { parseToBoolean, createSSLConfiguredHttpClient } from "./utility";
 import { getSSLConfig, createHTTPSRequestOptions } from "./ssl-utils";
+import { createProxyAgent } from "./proxy-utils";
 
 const userAgent = "BlackDuckSecurityScan";
 
@@ -131,6 +132,13 @@ export async function downloadWithCustomSSL(
         sslConfig,
         additionalHeaders
       );
+
+      // Add proxy agent if proxy is configured
+      const proxyAgent = createProxyAgent(downloadUrl, sslConfig);
+      if (proxyAgent) {
+        requestOptions.agent = proxyAgent;
+        tl.debug("Using proxy for direct HTTPS download");
+      }
 
       tl.debug(`Starting direct HTTPS download from: ${downloadUrl}`);
       tl.debug(`Destination: ${destPath}`);

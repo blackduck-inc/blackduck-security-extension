@@ -20,6 +20,7 @@ import { DownloadFileResponse } from "./model/download-file-response";
 import DomParser from "dom-parser";
 import * as https from "https";
 import { getSSLConfig, createHTTPSRequestOptions } from "./ssl-utils";
+import { createProxyAgent } from "./proxy-utils";
 import {
   ENABLE_NETWORK_AIRGAP,
   SCAN_TYPE,
@@ -495,6 +496,13 @@ export class BridgeCli {
             sslConfig,
             headers
           );
+
+          // Add proxy agent if proxy is configured
+          const proxyAgent = createProxyAgent(fetchUrl, sslConfig);
+          if (proxyAgent) {
+            requestOptions.agent = proxyAgent;
+            taskLib.debug("Using proxy for Bridge CLI metadata fetch");
+          }
 
           const request = https.request(requestOptions, (response) => {
             const statusCode = response.statusCode || 0;
