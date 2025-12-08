@@ -163,7 +163,10 @@ export const COVERITY_LOCAL_KEY_CLASSIC_EDITOR = "coverityLocal";
 
 export const COVERITY_VERSION_KEY = "coverity_version";
 export const COVERITY_VERSION_KEY_CLASSIC_EDITOR = "coverityVersion";
-
+export const COVERITY_VERSION_KEY_CLASSIC_EDITOR_FOR_POLARIS =
+  "coverityVersionForPolaris";
+export const COVERITY_VERSION_KEY_CLASSIC_EDITOR_FOR_SRM =
+  "coverityVersionForSrm";
 export const COVERITY_BUILD_COMMAND_KEY = "coverity_build_command";
 export const COVERITY_BUILD_COMMAND_KEY_CLASSIC_EDITOR = "coverityBuildCommand";
 export const COVERITY_BUILD_COMMAND_KEY_CLASSIC_EDITOR_FOR_POLARIS =
