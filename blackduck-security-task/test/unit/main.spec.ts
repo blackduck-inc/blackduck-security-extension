@@ -362,10 +362,10 @@ describe("Main function test cases", () => {
         });
 
         function callLogic(bridgeVersion: string) {
-            // Simulate the logic under test
+            // Simulate the logic under test using semantic version comparison
             if (!util.IS_PR_EVENT) {
                 console.log(constants.BLACKDUCKSCA_SARIF_REPOST_ENABLED);
-                if (bridgeVersion < constants.VERSION) {
+                if (util.isVersionLess(bridgeVersion, constants.VERSION)) {
                     uploadSarifResultAsArtifact(
                         constants.DEFAULT_BLACKDUCK_SARIF_GENERATOR_DIRECTORY,
                         inputs.BLACKDUCKSCA_REPORTS_SARIF_FILE_PATH
@@ -396,6 +396,216 @@ describe("Main function test cases", () => {
                 uploadStub,
                 constants.INTEGRATIONS_DEFAULT_BLACKDUCKSCA_SARIF_GENERATOR_DIRECTORY,
                 "fake-path"
+            );
+        });
+    });
+
+    describe("Version Comparison Tests for SARIF Paths", () => {
+        let sandbox: sinon.SinonSandbox;
+        const fs = require('fs');
+
+        beforeEach(() => {
+            sandbox = sinon.createSandbox();
+            // Set up basic environment for main.run()
+            Object.defineProperty(inputs, 'BLACKDUCKSCA_URL', { value: 'blackduck_url', configurable: true });
+            Object.defineProperty(inputs, 'BLACKDUCKSCA_API_TOKEN', { value: 'api_token', configurable: true });
+            Object.defineProperty(inputs, 'BLACKDUCKSCA_REPORTS_SARIF_CREATE', { value: 'true', configurable: true });
+            Object.defineProperty(inputs, 'BLACKDUCKSCA_REPORTS_SARIF_FILE_PATH', { value: '', configurable: true });
+
+            sandbox.stub(util, "IS_PR_EVENT").value(false);
+            sandbox.stub(BridgeCli.prototype, 'prepareCommand').resolves("--input /tmp/bd_input.json");
+            sandbox.stub(BridgeCli.prototype, 'downloadAndExtractBridgeCli').resolves("/bridge/path");
+            sandbox.stub(BridgeCli.prototype, 'executeBridgeCliCommand').resolves(0);
+            sandbox.stub(util, 'extractInputJsonFilename').returns('/tmp/bd_input.json');
+            sandbox.stub(util, 'updateSarifFilePaths').returns(undefined);
+        });
+
+        afterEach(() => {
+            sandbox.restore();
+        });
+
+        it('should use old SARIF path when bridge version is less than 3.5.0', async () => {
+            // Mock bridge version to be 1.5.0 (< 3.5.0)
+            const readFileSyncStub = sandbox.stub(fs, 'readFileSync').returns('bridge-cli-bundle: 1.5.0');
+            const uploadStub = sandbox.stub(diagnostics, 'uploadSarifResultAsArtifact').returns(undefined);
+
+            await main.run();
+
+            // Verify uploadSarifResultAsArtifact was called with OLD path
+            sinon.assert.calledWith(
+                uploadStub,
+                constants.DEFAULT_BLACKDUCK_SARIF_GENERATOR_DIRECTORY,
+                inputs.BLACKDUCKSCA_REPORTS_SARIF_FILE_PATH
+            );
+        });
+
+        it('should use new SARIF path when bridge version is greater than or equal to 3.5.0', async () => {
+            // Mock bridge version to be 3.6.0 (>= 3.5.0)
+            const readFileSyncStub = sandbox.stub(fs, 'readFileSync').returns('bridge-cli-bundle: 3.6.0');
+            const uploadStub = sandbox.stub(diagnostics, 'uploadSarifResultAsArtifact').returns(undefined);
+
+            await main.run();
+
+            // Verify uploadSarifResultAsArtifact was called with NEW integrations path
+            sinon.assert.calledWith(
+                uploadStub,
+                constants.INTEGRATIONS_DEFAULT_BLACKDUCKSCA_SARIF_GENERATOR_DIRECTORY,
+                inputs.BLACKDUCKSCA_REPORTS_SARIF_FILE_PATH
+            );
+        });
+
+        it('should use new SARIF path when bridge version is exactly 3.5.0', async () => {
+            // Mock bridge version to be 3.5.0 (== 3.5.0)
+            const readFileSyncStub = sandbox.stub(fs, 'readFileSync').returns('bridge-cli-bundle: 3.5.0');
+            const uploadStub = sandbox.stub(diagnostics, 'uploadSarifResultAsArtifact').returns(undefined);
+
+            await main.run();
+
+            // Verify uploadSarifResultAsArtifact was called with NEW integrations path
+            sinon.assert.calledWith(
+                uploadStub,
+                constants.INTEGRATIONS_DEFAULT_BLACKDUCKSCA_SARIF_GENERATOR_DIRECTORY,
+                inputs.BLACKDUCKSCA_REPORTS_SARIF_FILE_PATH
+            );
+        });
+
+        it('should use new SARIF path for double-digit major version (10.0.0)', async () => {
+            // Mock bridge version to be 10.0.0 (double-digit major version)
+            // String comparison would fail: "10.0.0" < "3.5.0" = false (lexicographic, WRONG!)
+            // Semantic comparison works: isVersionLess("10.0.0", "3.5.0") = false (CORRECT!)
+            const readFileSyncStub = sandbox.stub(fs, 'readFileSync').returns('bridge-cli-bundle: 10.0.0');
+            const uploadStub = sandbox.stub(diagnostics, 'uploadSarifResultAsArtifact').returns(undefined);
+
+            await main.run();
+
+            // Verify uploadSarifResultAsArtifact was called with NEW integrations path
+            sinon.assert.calledWith(
+                uploadStub,
+                constants.INTEGRATIONS_DEFAULT_BLACKDUCKSCA_SARIF_GENERATOR_DIRECTORY,
+                inputs.BLACKDUCKSCA_REPORTS_SARIF_FILE_PATH
+            );
+        });
+
+        it('should use new SARIF path for double-digit minor version (3.15.0)', async () => {
+            // Mock bridge version to be 3.15.0 (double-digit minor version)
+            // String comparison would fail: "3.15.0" < "3.5.0" = true (lexicographic, WRONG!)
+            // Semantic comparison works: isVersionLess("3.15.0", "3.5.0") = false (CORRECT!)
+            const readFileSyncStub = sandbox.stub(fs, 'readFileSync').returns('bridge-cli-bundle: 3.15.0');
+            const uploadStub = sandbox.stub(diagnostics, 'uploadSarifResultAsArtifact').returns(undefined);
+
+            await main.run();
+
+            // Verify uploadSarifResultAsArtifact was called with NEW integrations path
+            sinon.assert.calledWith(
+                uploadStub,
+                constants.INTEGRATIONS_DEFAULT_BLACKDUCKSCA_SARIF_GENERATOR_DIRECTORY,
+                inputs.BLACKDUCKSCA_REPORTS_SARIF_FILE_PATH
+            );
+        });
+
+        it('should use new SARIF path for double-digit patch version (3.5.10)', async () => {
+            // Mock bridge version to be 3.5.10 (double-digit patch version)
+            // String comparison would fail: "3.5.10" < "3.5.0" = false (lexicographic, WRONG!)
+            // Semantic comparison works: isVersionLess("3.5.10", "3.5.0") = false (CORRECT!)
+            const readFileSyncStub = sandbox.stub(fs, 'readFileSync').returns('bridge-cli-bundle: 3.5.10');
+            const uploadStub = sandbox.stub(diagnostics, 'uploadSarifResultAsArtifact').returns(undefined);
+
+            await main.run();
+
+            // Verify uploadSarifResultAsArtifact was called with NEW integrations path
+            sinon.assert.calledWith(
+                uploadStub,
+                constants.INTEGRATIONS_DEFAULT_BLACKDUCKSCA_SARIF_GENERATOR_DIRECTORY,
+                inputs.BLACKDUCKSCA_REPORTS_SARIF_FILE_PATH
+            );
+        });
+
+        it('should handle pre-release version (3.5.0rc1) correctly', async () => {
+            // Mock bridge version to be 3.5.0rc1 (pre-release version)
+            // Note: semver's coerce() strips pre-release tags, so coerce('3.5.0rc1') → '3.5.0'
+            // Therefore it's treated as >= 3.5.0 and uses the NEW integrations path
+            const readFileSyncStub = sandbox.stub(fs, 'readFileSync').returns('bridge-cli-bundle: 3.5.0rc1');
+            const uploadStub = sandbox.stub(diagnostics, 'uploadSarifResultAsArtifact').returns(undefined);
+
+            await main.run();
+
+            // Verify uploadSarifResultAsArtifact was called with NEW integrations path
+            // (pre-release version is coerced to base version 3.5.0)
+            sinon.assert.calledWith(
+                uploadStub,
+                constants.INTEGRATIONS_DEFAULT_BLACKDUCKSCA_SARIF_GENERATOR_DIRECTORY,
+                inputs.BLACKDUCKSCA_REPORTS_SARIF_FILE_PATH
+            );
+        });
+    });
+
+    describe("Polaris SARIF Path Version Comparison Tests", () => {
+        let sandbox: sinon.SinonSandbox;
+        const fs = require('fs');
+
+        beforeEach(() => {
+            sandbox = sinon.createSandbox();
+            // Set up basic environment for Polaris scan
+            Object.defineProperty(inputs, 'POLARIS_SERVER_URL', { value: 'server_url', configurable: true });
+            Object.defineProperty(inputs, 'POLARIS_ACCESS_TOKEN', { value: 'access_token', configurable: true });
+            Object.defineProperty(inputs, 'POLARIS_ASSESSMENT_TYPES', { value: ['SCA'], configurable: true });
+            Object.defineProperty(inputs, 'POLARIS_REPORTS_SARIF_CREATE', { value: 'true', configurable: true });
+            Object.defineProperty(inputs, 'POLARIS_REPORTS_SARIF_FILE_PATH', { value: '', configurable: true });
+
+            sandbox.stub(util, "IS_PR_EVENT").value(false);
+            sandbox.stub(BridgeCli.prototype, 'prepareCommand').resolves("--input /tmp/polaris_input.json");
+            sandbox.stub(BridgeCli.prototype, 'downloadAndExtractBridgeCli').resolves("/bridge/path");
+            sandbox.stub(BridgeCli.prototype, 'executeBridgeCliCommand').resolves(0);
+            sandbox.stub(util, 'extractInputJsonFilename').returns('/tmp/polaris_input.json');
+            sandbox.stub(util, 'updateSarifFilePaths').returns(undefined);
+        });
+
+        afterEach(() => {
+            sandbox.restore();
+        });
+
+        it('should use old SARIF path for Polaris when bridge version is less than 3.5.0', async () => {
+            // Mock bridge version to be 2.0.0 (< 3.5.0)
+            const readFileSyncStub = sandbox.stub(fs, 'readFileSync').returns('bridge-cli-bundle: 2.0.0');
+            const uploadStub = sandbox.stub(diagnostics, 'uploadSarifResultAsArtifact').returns(undefined);
+
+            await main.run();
+
+            // Verify uploadSarifResultAsArtifact was called with OLD Polaris path
+            sinon.assert.calledWith(
+                uploadStub,
+                constants.DEFAULT_POLARIS_SARIF_GENERATOR_DIRECTORY,
+                inputs.POLARIS_REPORTS_SARIF_FILE_PATH
+            );
+        });
+
+        it('should use new SARIF path for Polaris when bridge version is greater than or equal to 3.5.0', async () => {
+            // Mock bridge version to be 3.8.0 (>= 3.5.0)
+            const readFileSyncStub = sandbox.stub(fs, 'readFileSync').returns('bridge-cli-bundle: 3.8.0');
+            const uploadStub = sandbox.stub(diagnostics, 'uploadSarifResultAsArtifact').returns(undefined);
+
+            await main.run();
+
+            // Verify uploadSarifResultAsArtifact was called with NEW Polaris integrations path
+            sinon.assert.calledWith(
+                uploadStub,
+                constants.INTEGRATIONS_DEFAULT_POLARIS_SARIF_GENERATOR_DIRECTORY,
+                inputs.POLARIS_REPORTS_SARIF_FILE_PATH
+            );
+        });
+
+        it('should use new SARIF path for Polaris with double-digit major version (10.0.0)', async () => {
+            // Test semantic version comparison with double-digit major version
+            const readFileSyncStub = sandbox.stub(fs, 'readFileSync').returns('bridge-cli-bundle: 10.0.0');
+            const uploadStub = sandbox.stub(diagnostics, 'uploadSarifResultAsArtifact').returns(undefined);
+
+            await main.run();
+
+            // Verify uploadSarifResultAsArtifact was called with NEW Polaris integrations path
+            sinon.assert.calledWith(
+                uploadStub,
+                constants.INTEGRATIONS_DEFAULT_POLARIS_SARIF_GENERATOR_DIRECTORY,
+                inputs.POLARIS_REPORTS_SARIF_FILE_PATH
             );
         });
     });

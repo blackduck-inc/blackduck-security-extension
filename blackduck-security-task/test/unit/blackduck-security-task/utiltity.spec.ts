@@ -1067,6 +1067,23 @@ describe("Utilities", () => {
 
         describe('BlackDuck input file scenarios', () => {
 
+            it('should handle bd_input.json with bridge version less than constants.VERSION and empty SARIF path', () => {
+                const fileName = 'bd_input.json';
+                const lowerBridgeVersion = '1.9.0';
+
+                isNullOrEmptyValueStub.returns(true);
+                pathJoinStub.returns('.bridge/blackduck-sarif/results.sarif');
+
+                updateSarifFilePaths(workSpaceDir, fileName, lowerBridgeVersion, productInputFilePath);
+
+                expect(isNullOrEmptyValueStub.calledWith(inputs.BLACKDUCKSCA_REPORTS_SARIF_FILE_PATH)).to.be.true;
+                expect(pathJoinStub.calledWith(
+                    constants.BRIDGE_CLI_LOCAL_DIRECTORY,
+                    constants.DEFAULT_BLACKDUCK_SARIF_GENERATOR_DIRECTORY,
+                    constants.SARIF_DEFAULT_FILE_NAME
+                )).to.be.true;
+            });
+
             it('should handle bd_input.json with bridge version less than constants.VERSION and custom SARIF path', () => {
                 const fileName = 'bd_input.json';
                 const lowerBridgeVersion = '1.9.0';
@@ -1082,7 +1099,7 @@ describe("Utilities", () => {
 
             it('should handle bd_input.json with bridge version greater than or equal to constants.VERSION and empty SARIF path', () => {
                 const fileName = 'bd_input.json';
-                const higherBridgeVersion = '2.1.0';
+                const higherBridgeVersion = '3.5.0';
 
                 isNullOrEmptyValueStub.returns(true);
                 pathJoinStub.returns('/workspace/blackduck/results.sarif');
@@ -1098,7 +1115,7 @@ describe("Utilities", () => {
 
             it('should handle bd_input.json with bridge version greater than or equal to constants.VERSION and custom SARIF path', () => {
                 const fileName = 'bd_input.json';
-                const higherBridgeVersion = '2.1.0';
+                const higherBridgeVersion = '3.5.0';
                 const customSarifPath = '/custom/blackduck/sarif.sarif';
 
                 isNullOrEmptyValueStub.returns(false);
@@ -1107,6 +1124,65 @@ describe("Utilities", () => {
                 updateSarifFilePaths(workSpaceDir, fileName, higherBridgeVersion, productInputFilePath);
 
                 expect(isNullOrEmptyValueStub.calledWith(inputs.BLACKDUCKSCA_REPORTS_SARIF_FILE_PATH)).to.be.true;
+            });
+
+        });
+
+        describe('BlackDuck input file - Edge Cases (Semantic Version Comparison)', () => {
+
+            it('should handle double-digit major version (10.0.0) correctly and use new integrations path', () => {
+                const fileName = 'bd_input.json';
+                const doubleDigitVersion = '10.0.0';  // Double-digit major version
+
+                isNullOrEmptyValueStub.returns(true);
+                pathJoinStub.returns('/workspace/blackduck/results.sarif');
+
+                updateSarifFilePaths(workSpaceDir, fileName, doubleDigitVersion, productInputFilePath);
+
+                // With string comparison: "10.0.0" < "3.5.0" = true (WRONG! '1' < '3' lexicographically)
+                // With semantic comparison: isVersionLess("10.0.0", "3.5.0") = false (CORRECT!)
+                // Should use NEW integrations path
+                expect(pathJoinStub.calledWith(
+                    workSpaceDir,
+                    constants.INTEGRATIONS_BLACKDUCKSCA_DEFAULT_SARIF_FILE_PATH
+                )).to.be.true;
+            });
+
+            it('should handle double-digit minor version (3.15.0) correctly and use new integrations path', () => {
+                const fileName = 'bd_input.json';
+                const doubleDigitMinorVersion = '3.15.0';
+
+                isNullOrEmptyValueStub.returns(true);
+                pathJoinStub.returns('/workspace/blackduck/results.sarif');
+
+                updateSarifFilePaths(workSpaceDir, fileName, doubleDigitMinorVersion, productInputFilePath);
+
+                // With string comparison: "3.15.0" < "3.5.0" = true (WRONG! '1' < '5' in position 2)
+                // With semantic comparison: isVersionLess("3.15.0", "3.5.0") = false (CORRECT!)
+                // Should use NEW integrations path
+                expect(pathJoinStub.calledWith(
+                    workSpaceDir,
+                    constants.INTEGRATIONS_BLACKDUCKSCA_DEFAULT_SARIF_FILE_PATH
+                )).to.be.true;
+            });
+
+            it('should handle double-digit patch version (3.5.10) correctly and use new integrations path', () => {
+                const fileName = 'bd_input.json';
+                const doubleDigitPatchVersion = '3.5.10';
+
+                isNullOrEmptyValueStub.returns(true);
+                pathJoinStub.returns('/workspace/blackduck/results.sarif');
+
+                updateSarifFilePaths(workSpaceDir, fileName, doubleDigitPatchVersion, productInputFilePath);
+
+                // String comparison: "3.5.10" < "3.5.0" = false ('1' > '0', accidentally correct)
+                // But string comparison FAILS for other cases: "3.5.10" < "3.5.2" = true (WRONG!)
+                // Semantic comparison: isVersionLess("3.5.10", "3.5.0") = false (CORRECT!)
+                // Should use NEW integrations path
+                expect(pathJoinStub.calledWith(
+                    workSpaceDir,
+                    constants.INTEGRATIONS_BLACKDUCKSCA_DEFAULT_SARIF_FILE_PATH
+                )).to.be.true;
             });
 
         });
@@ -1671,6 +1747,117 @@ describe("Utilities", () => {
                 impacts: ['HIGH', 'MEDIUM']
             });
             expect(updatedData.data.coverity.automation).to.be.undefined;
+        });
+    });
+
+    describe('Version Comparison Helper Functions', () => {
+        describe('isVersionLess', () => {
+            it('should return true when first version is less than second version (normal versions)', () => {
+                expect(utility.isVersionLess('3.8.0', '3.9.0')).to.be.true;
+                expect(utility.isVersionLess('2.9.0', '3.5.0')).to.be.true;
+                expect(utility.isVersionLess('1.0.0', '2.0.0')).to.be.true;
+            });
+
+            it('should return false when first version is equal to second version', () => {
+                expect(utility.isVersionLess('3.5.0', '3.5.0')).to.be.false;
+                expect(utility.isVersionLess('2.0.0', '2.0.0')).to.be.false;
+            });
+
+            it('should return false when first version is greater than second version', () => {
+                expect(utility.isVersionLess('3.9.0', '3.8.0')).to.be.false;
+                expect(utility.isVersionLess('3.5.0', '2.9.0')).to.be.false;
+                expect(utility.isVersionLess('2.0.0', '1.0.0')).to.be.false;
+            });
+
+            it('should handle double-digit major versions correctly', () => {
+                // This is the key test - string comparison would fail here
+                expect(utility.isVersionLess('10.0.0', '3.5.0')).to.be.false;
+                expect(utility.isVersionLess('10.0.0', '9.0.0')).to.be.false;
+                expect(utility.isVersionLess('3.5.0', '10.0.0')).to.be.true;
+            });
+
+            it('should handle double-digit minor versions correctly', () => {
+                // String comparison would fail: "3.15.0" < "3.5.0" = true (wrong!)
+                expect(utility.isVersionLess('3.15.0', '3.5.0')).to.be.false;
+                expect(utility.isVersionLess('3.10.0', '3.9.0')).to.be.false;
+                expect(utility.isVersionLess('3.5.0', '3.15.0')).to.be.true;
+            });
+
+            it('should handle double-digit patch versions correctly', () => {
+                // String comparison would fail: "3.5.10" < "3.5.2" = true (wrong!)
+                expect(utility.isVersionLess('3.5.10', '3.5.2')).to.be.false;
+                expect(utility.isVersionLess('3.5.10', '3.5.9')).to.be.false;
+                expect(utility.isVersionLess('3.5.2', '3.5.10')).to.be.true;
+            });
+
+            it('should handle pre-release versions correctly (coerce strips pre-release tags)', () => {
+                // Note: semver's coerce() strips pre-release tags, so:
+                // coerce('3.5.0-beta1') → '3.5.0', coerce('3.5.0') → '3.5.0'
+                // Therefore they're equal after coercion
+                expect(utility.isVersionLess('3.5.0-beta1', '3.5.0')).to.be.false;
+                expect(utility.isVersionLess('3.5.0rc1', '3.5.0')).to.be.false;
+                expect(utility.isVersionLess('3.5.0-SNAPSHOT', '3.5.0')).to.be.false;
+                // But pre-release of lower version is still less
+                expect(utility.isVersionLess('3.4.0-beta1', '3.5.0')).to.be.true;
+            });
+
+            it('should handle partial versions with coercion', () => {
+                expect(utility.isVersionLess('3.5', '3.6.0')).to.be.true;
+                expect(utility.isVersionLess('3', '4.0.0')).to.be.true;
+            });
+        });
+
+        describe('isVersionGreaterOrEqual', () => {
+            it('should return true when first version is greater than second version', () => {
+                expect(utility.isVersionGreaterOrEqual('3.9.0', '3.8.0')).to.be.true;
+                expect(utility.isVersionGreaterOrEqual('3.5.0', '2.9.0')).to.be.true;
+                expect(utility.isVersionGreaterOrEqual('2.0.0', '1.0.0')).to.be.true;
+            });
+
+            it('should return true when first version is equal to second version', () => {
+                expect(utility.isVersionGreaterOrEqual('3.5.0', '3.5.0')).to.be.true;
+                expect(utility.isVersionGreaterOrEqual('2.0.0', '2.0.0')).to.be.true;
+            });
+
+            it('should return false when first version is less than second version', () => {
+                expect(utility.isVersionGreaterOrEqual('3.8.0', '3.9.0')).to.be.false;
+                expect(utility.isVersionGreaterOrEqual('2.9.0', '3.5.0')).to.be.false;
+                expect(utility.isVersionGreaterOrEqual('1.0.0', '2.0.0')).to.be.false;
+            });
+
+            it('should handle double-digit major versions correctly', () => {
+                expect(utility.isVersionGreaterOrEqual('10.0.0', '3.5.0')).to.be.true;
+                expect(utility.isVersionGreaterOrEqual('10.0.0', '9.0.0')).to.be.true;
+                expect(utility.isVersionGreaterOrEqual('3.5.0', '10.0.0')).to.be.false;
+            });
+
+            it('should handle double-digit minor versions correctly', () => {
+                expect(utility.isVersionGreaterOrEqual('3.15.0', '3.5.0')).to.be.true;
+                expect(utility.isVersionGreaterOrEqual('3.10.0', '3.9.0')).to.be.true;
+                expect(utility.isVersionGreaterOrEqual('3.5.0', '3.15.0')).to.be.false;
+            });
+
+            it('should handle double-digit patch versions correctly', () => {
+                expect(utility.isVersionGreaterOrEqual('3.5.10', '3.5.2')).to.be.true;
+                expect(utility.isVersionGreaterOrEqual('3.5.10', '3.5.9')).to.be.true;
+                expect(utility.isVersionGreaterOrEqual('3.5.2', '3.5.10')).to.be.false;
+            });
+
+            it('should handle pre-release versions correctly (coerce strips pre-release tags)', () => {
+                // Note: semver's coerce() strips pre-release tags, so:
+                // coerce('3.5.0-beta1') → '3.5.0', coerce('3.5.0') → '3.5.0'
+                // Therefore they're equal after coercion
+                expect(utility.isVersionGreaterOrEqual('3.5.0', '3.5.0-beta1')).to.be.true;
+                expect(utility.isVersionGreaterOrEqual('3.5.0', '3.5.0rc1')).to.be.true;
+                expect(utility.isVersionGreaterOrEqual('3.5.0-beta1', '3.5.0')).to.be.true;
+                // Higher version pre-release is still greater
+                expect(utility.isVersionGreaterOrEqual('3.6.0-beta1', '3.5.0')).to.be.true;
+            });
+
+            it('should handle partial versions with coercion', () => {
+                expect(utility.isVersionGreaterOrEqual('3.6.0', '3.5')).to.be.true;
+                expect(utility.isVersionGreaterOrEqual('4.0.0', '3')).to.be.true;
+            });
         });
     });
 });

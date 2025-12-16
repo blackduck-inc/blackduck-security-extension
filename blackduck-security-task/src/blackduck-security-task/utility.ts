@@ -3,6 +3,7 @@
 import path from "path";
 import * as utility from "./utility";
 import * as constants from "./application-constant";
+import { lt, gte, coerce } from "semver";
 import {
   MARK_BUILD_STATUS_KEY,
   NON_RETRY_HTTP_CODES,
@@ -335,6 +336,21 @@ export function equalsIgnoreCase(a: string, b: string): boolean {
   return a.toLowerCase() === b.toLowerCase();
 }
 
+export function isVersionLess(version1: string, version2: string): boolean {
+  const v1 = coerce(version1);
+  const v2 = coerce(version2);
+  return v1 != null && v2 != null && lt(v1, v2);
+}
+
+export function isVersionGreaterOrEqual(
+  version1: string,
+  version2: string
+): boolean {
+  const v1 = coerce(version1);
+  const v2 = coerce(version2);
+  return v1 != null && v2 != null && gte(v1, v2);
+}
+
 export function getMappedTaskResult(
   buildStatus: string
 ): TaskResult | undefined {
@@ -560,7 +576,7 @@ export function updateSarifFilePaths(
   const fileName = productInputFileName.replace(/"$/, "");
   if (fileName === "polaris_input.json") {
     let sarifPath: string;
-    if (bridgeVersion < constants.VERSION) {
+    if (isVersionLess(bridgeVersion, constants.VERSION)) {
       if (isNullOrEmptyValue(inputs.POLARIS_REPORTS_SARIF_FILE_PATH)) {
         sarifPath = path.join(
           constants.BRIDGE_CLI_LOCAL_DIRECTORY,
@@ -585,7 +601,7 @@ export function updateSarifFilePaths(
 
   if (fileName === "bd_input.json") {
     let sarifPath: string;
-    if (bridgeVersion < constants.VERSION) {
+    if (isVersionLess(bridgeVersion, constants.VERSION)) {
       if (isNullOrEmptyValue(inputs.BLACKDUCKSCA_REPORTS_SARIF_FILE_PATH)) {
         sarifPath = path.join(
           constants.BRIDGE_CLI_LOCAL_DIRECTORY,
@@ -730,7 +746,10 @@ export function formatURLString(url: string, ...args: string[]): string {
 }
 export function validateSourceUploadValue(bridgeVersion: string): void {
   if (
-    bridgeVersion >= constants.ASSESSMENT_MODE_UNSUPPORTED_BRIDGE_VERSION &&
+    isVersionGreaterOrEqual(
+      bridgeVersion,
+      constants.ASSESSMENT_MODE_UNSUPPORTED_BRIDGE_VERSION
+    ) &&
     !isNullOrEmptyValue(inputs.POLARIS_ASSESSMENT_MODE)
   ) {
     console.info(
@@ -751,10 +770,13 @@ export function updateCoverityConfigForBridgeVersion(
       const inputFileContent = readFileSync(cleanFilePath, "utf-8");
       const covData = JSON.parse(inputFileContent);
 
-      // Use simple version comparison like updateSarifFilePaths
+      // Use semantic version comparison
       if (
         covData.data?.coverity?.prcomment &&
-        bridgeVersion < constants.COVERITY_PRCOMMENT_NEW_FORMAT_VERSION
+        isVersionLess(
+          bridgeVersion,
+          constants.COVERITY_PRCOMMENT_NEW_FORMAT_VERSION
+        )
       ) {
         // Convert new format to legacy format for Bridge CLI < 3.9.0
         console.debug(
