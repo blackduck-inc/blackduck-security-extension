@@ -6,6 +6,7 @@ import {
   getWorkSpaceDirectory,
   IS_PR_EVENT,
   parseToBoolean,
+  isVersionLess,
 } from "./blackduck-security-task/utility";
 import { BridgeCli } from "./blackduck-security-task/bridge-cli";
 import * as taskLib from "azure-pipelines-task-lib/task";
@@ -94,7 +95,7 @@ export async function run() {
     if (parseToBoolean(inputs.BLACKDUCKSCA_REPORTS_SARIF_CREATE)) {
       if (!IS_PR_EVENT) {
         console.log(BLACKDUCKSCA_SARIF_REPOST_ENABLED);
-        if (bridgeVersion < constants.VERSION) {
+        if (isVersionLess(bridgeVersion, constants.VERSION)) {
           uploadSarifResultAsArtifact(
             constants.DEFAULT_BLACKDUCK_SARIF_GENERATOR_DIRECTORY,
             inputs.BLACKDUCKSCA_REPORTS_SARIF_FILE_PATH
@@ -111,7 +112,7 @@ export async function run() {
     if (parseToBoolean(inputs.POLARIS_REPORTS_SARIF_CREATE)) {
       if (!IS_PR_EVENT) {
         console.log(POLARISSCA_SARIF_REPORT_ENABLED);
-        if (bridgeVersion < constants.VERSION) {
+        if (isVersionLess(bridgeVersion, constants.VERSION)) {
           uploadSarifResultAsArtifact(
             constants.DEFAULT_POLARIS_SARIF_GENERATOR_DIRECTORY,
             inputs.POLARIS_REPORTS_SARIF_FILE_PATH
@@ -179,7 +180,7 @@ function getBridgeVersion(bridgePath: string): string {
   try {
     const versionFilePath = join(bridgePath, "versions.txt");
     const content = readFileSync(versionFilePath, "utf-8");
-    const match = content.match(/bridge-cli-bundle:\s*([0-9.]+)/);
+    const match = content.match(/bridge-cli-bundle:\s*([0-9.]+[a-zA-Z0-9]*)/);
     if (match && match[1]) {
       return match[1];
     }
