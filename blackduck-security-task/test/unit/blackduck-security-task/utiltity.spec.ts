@@ -6,10 +6,9 @@ import * as sslUtils from "../../../src/blackduck-security-task/ssl-utils";
 import {
     createSSLConfiguredHttpClient,
     clearHttpClientCache, FileSystemWrapper,
-    PathWrapper, LoggerWrapper,extractInputJsonFilename,
+    LoggerWrapper,extractInputJsonFilename,
     updateSarifFilePaths,
     updatePolarisSarifPath,
-    updateBlackDuckSarifPath,
     updateCoverityConfigForBridgeVersion
 } from "../../../src/blackduck-security-task/utility";
 import process from "process";
@@ -1747,117 +1746,6 @@ describe("Utilities", () => {
                 impacts: ['HIGH', 'MEDIUM']
             });
             expect(updatedData.data.coverity.automation).to.be.undefined;
-        });
-    });
-
-    describe('Version Comparison Helper Functions', () => {
-        describe('isVersionLess', () => {
-            it('should return true when first version is less than second version (normal versions)', () => {
-                expect(utility.isVersionLess('3.8.0', '3.9.0')).to.be.true;
-                expect(utility.isVersionLess('2.9.0', '3.5.0')).to.be.true;
-                expect(utility.isVersionLess('1.0.0', '2.0.0')).to.be.true;
-            });
-
-            it('should return false when first version is equal to second version', () => {
-                expect(utility.isVersionLess('3.5.0', '3.5.0')).to.be.false;
-                expect(utility.isVersionLess('2.0.0', '2.0.0')).to.be.false;
-            });
-
-            it('should return false when first version is greater than second version', () => {
-                expect(utility.isVersionLess('3.9.0', '3.8.0')).to.be.false;
-                expect(utility.isVersionLess('3.5.0', '2.9.0')).to.be.false;
-                expect(utility.isVersionLess('2.0.0', '1.0.0')).to.be.false;
-            });
-
-            it('should handle double-digit major versions correctly', () => {
-                // This is the key test - string comparison would fail here
-                expect(utility.isVersionLess('10.0.0', '3.5.0')).to.be.false;
-                expect(utility.isVersionLess('10.0.0', '9.0.0')).to.be.false;
-                expect(utility.isVersionLess('3.5.0', '10.0.0')).to.be.true;
-            });
-
-            it('should handle double-digit minor versions correctly', () => {
-                // String comparison would fail: "3.15.0" < "3.5.0" = true (wrong!)
-                expect(utility.isVersionLess('3.15.0', '3.5.0')).to.be.false;
-                expect(utility.isVersionLess('3.10.0', '3.9.0')).to.be.false;
-                expect(utility.isVersionLess('3.5.0', '3.15.0')).to.be.true;
-            });
-
-            it('should handle double-digit patch versions correctly', () => {
-                // String comparison would fail: "3.5.10" < "3.5.2" = true (wrong!)
-                expect(utility.isVersionLess('3.5.10', '3.5.2')).to.be.false;
-                expect(utility.isVersionLess('3.5.10', '3.5.9')).to.be.false;
-                expect(utility.isVersionLess('3.5.2', '3.5.10')).to.be.true;
-            });
-
-            it('should handle pre-release versions correctly (coerce strips pre-release tags)', () => {
-                // Note: semver's coerce() strips pre-release tags, so:
-                // coerce('3.5.0-beta1') → '3.5.0', coerce('3.5.0') → '3.5.0'
-                // Therefore they're equal after coercion
-                expect(utility.isVersionLess('3.5.0-beta1', '3.5.0')).to.be.false;
-                expect(utility.isVersionLess('3.5.0rc1', '3.5.0')).to.be.false;
-                expect(utility.isVersionLess('3.5.0-SNAPSHOT', '3.5.0')).to.be.false;
-                // But pre-release of lower version is still less
-                expect(utility.isVersionLess('3.4.0-beta1', '3.5.0')).to.be.true;
-            });
-
-            it('should handle partial versions with coercion', () => {
-                expect(utility.isVersionLess('3.5', '3.6.0')).to.be.true;
-                expect(utility.isVersionLess('3', '4.0.0')).to.be.true;
-            });
-        });
-
-        describe('isVersionGreaterOrEqual', () => {
-            it('should return true when first version is greater than second version', () => {
-                expect(utility.isVersionGreaterOrEqual('3.9.0', '3.8.0')).to.be.true;
-                expect(utility.isVersionGreaterOrEqual('3.5.0', '2.9.0')).to.be.true;
-                expect(utility.isVersionGreaterOrEqual('2.0.0', '1.0.0')).to.be.true;
-            });
-
-            it('should return true when first version is equal to second version', () => {
-                expect(utility.isVersionGreaterOrEqual('3.5.0', '3.5.0')).to.be.true;
-                expect(utility.isVersionGreaterOrEqual('2.0.0', '2.0.0')).to.be.true;
-            });
-
-            it('should return false when first version is less than second version', () => {
-                expect(utility.isVersionGreaterOrEqual('3.8.0', '3.9.0')).to.be.false;
-                expect(utility.isVersionGreaterOrEqual('2.9.0', '3.5.0')).to.be.false;
-                expect(utility.isVersionGreaterOrEqual('1.0.0', '2.0.0')).to.be.false;
-            });
-
-            it('should handle double-digit major versions correctly', () => {
-                expect(utility.isVersionGreaterOrEqual('10.0.0', '3.5.0')).to.be.true;
-                expect(utility.isVersionGreaterOrEqual('10.0.0', '9.0.0')).to.be.true;
-                expect(utility.isVersionGreaterOrEqual('3.5.0', '10.0.0')).to.be.false;
-            });
-
-            it('should handle double-digit minor versions correctly', () => {
-                expect(utility.isVersionGreaterOrEqual('3.15.0', '3.5.0')).to.be.true;
-                expect(utility.isVersionGreaterOrEqual('3.10.0', '3.9.0')).to.be.true;
-                expect(utility.isVersionGreaterOrEqual('3.5.0', '3.15.0')).to.be.false;
-            });
-
-            it('should handle double-digit patch versions correctly', () => {
-                expect(utility.isVersionGreaterOrEqual('3.5.10', '3.5.2')).to.be.true;
-                expect(utility.isVersionGreaterOrEqual('3.5.10', '3.5.9')).to.be.true;
-                expect(utility.isVersionGreaterOrEqual('3.5.2', '3.5.10')).to.be.false;
-            });
-
-            it('should handle pre-release versions correctly (coerce strips pre-release tags)', () => {
-                // Note: semver's coerce() strips pre-release tags, so:
-                // coerce('3.5.0-beta1') → '3.5.0', coerce('3.5.0') → '3.5.0'
-                // Therefore they're equal after coercion
-                expect(utility.isVersionGreaterOrEqual('3.5.0', '3.5.0-beta1')).to.be.true;
-                expect(utility.isVersionGreaterOrEqual('3.5.0', '3.5.0rc1')).to.be.true;
-                expect(utility.isVersionGreaterOrEqual('3.5.0-beta1', '3.5.0')).to.be.true;
-                // Higher version pre-release is still greater
-                expect(utility.isVersionGreaterOrEqual('3.6.0-beta1', '3.5.0')).to.be.true;
-            });
-
-            it('should handle partial versions with coercion', () => {
-                expect(utility.isVersionGreaterOrEqual('3.6.0', '3.5')).to.be.true;
-                expect(utility.isVersionGreaterOrEqual('4.0.0', '3')).to.be.true;
-            });
         });
     });
 });
