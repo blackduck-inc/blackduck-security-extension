@@ -3,7 +3,7 @@
 import path from "path";
 import * as inputs from "./input";
 import { AZURE_TOKEN } from "./input";
-import { Polaris } from "./model/polaris";
+import { Polaris, PolarisFixPrData } from "./model/polaris";
 import { Coverity, CoverityArbitrary, CoverityConnect } from "./model/coverity";
 import { Srm } from "./model/srm";
 import { Network } from "./model/common";
@@ -231,12 +231,32 @@ export class BridgeCliToolsParameter {
       inputs.POLARIS_PR_COMMENT_ENABLED
     );
 
+    const isFixPrEnabled = parseToBoolean(inputs.POLARIS_FIXPR_ENABLED);
+
     const azurePrResponse = await this.updateAzurePrNumberForManualTriggerFlow(
       azureData,
-      isPrCommentEnabled
+      isPrCommentEnabled || isFixPrEnabled
     );
 
     const isPullRequest = isPullRequestEvent(azurePrResponse);
+
+    if (isFixPrEnabled) {
+      if (isPullRequest) {
+        console.info("Polaris Fix PR ignored for pull request scan");
+      } else {
+        console.log("Polaris Fix PR is enabled");
+        polData.data.polaris.fixpr = this.setPolarisFixPrInputs();
+        polData.data.azure = this.setAzureData(
+          "",
+          AZURE_TOKEN,
+          "",
+          "",
+          "",
+          "",
+          ""
+        );
+      }
+    }
 
     if (isPrCommentEnabled) {
       if (!isPullRequest) {
@@ -769,6 +789,65 @@ export class BridgeCliToolsParameter {
       blackDuckFixPrData.filter = { severities: fixPRFilterSeverities };
     }
     return blackDuckFixPrData;
+  }
+
+  private setPolarisFixPrInputs(): PolarisFixPrData | undefined {
+    if (
+      inputs.POLARIS_FIXPR_MAXCOUNT &&
+      isNaN(Number(inputs.POLARIS_FIXPR_MAXCOUNT))
+    ) {
+      throw new Error(
+        "Invalid value for "
+          .concat(constants.POLARIS_FIXPR_MAXCOUNT_KEY)
+          .concat(constants.SPACE)
+          .concat(ErrorCode.INVALID_POLARIS_FIXPR_MAXCOUNT.toString())
+      );
+    }
+    const createSinglePr = parseToBoolean(
+      inputs.POLARIS_FIXPR_CREATE_SINGLE_PR
+    );
+    if (createSinglePr && inputs.POLARIS_FIXPR_MAXCOUNT) {
+      throw new Error(
+        constants.POLARIS_FIXPR_MAXCOUNT_KEY.concat(
+          " is not applicable with "
+        )
+          .concat(constants.POLARIS_FIXPR_CREATE_SINGLE_PR_KEY)
+          .concat(constants.SPACE)
+          .concat(
+            ErrorCode.POLARIS_FIXPR_MAXCOUNT_NOT_APPLICABLE.toString()
+          )
+      );
+    }
+    const polarisFixPrData: PolarisFixPrData = {};
+    polarisFixPrData.enabled = true;
+    polarisFixPrData.createSinglePR = createSinglePr;
+    if (inputs.POLARIS_FIXPR_MAXCOUNT && !createSinglePr) {
+      polarisFixPrData.maxCount = Number(inputs.POLARIS_FIXPR_MAXCOUNT);
+    }
+    if (
+      inputs.POLARIS_FIXPR_UPGRADE_GUIDANCE &&
+      inputs.POLARIS_FIXPR_UPGRADE_GUIDANCE.length > 0
+    ) {
+      polarisFixPrData.useUpgradeGuidance =
+        inputs.POLARIS_FIXPR_UPGRADE_GUIDANCE;
+    }
+
+    const fixPRFilterSeverities: string[] = [];
+    if (
+      inputs.POLARIS_FIXPR_FILTER_SEVERITIES &&
+      inputs.POLARIS_FIXPR_FILTER_SEVERITIES != null &&
+      inputs.POLARIS_FIXPR_FILTER_SEVERITIES.length > 0
+    ) {
+      for (const fixPrSeverity of inputs.POLARIS_FIXPR_FILTER_SEVERITIES) {
+        if (fixPrSeverity != null && fixPrSeverity.trim() !== "") {
+          fixPRFilterSeverities.push(fixPrSeverity.trim());
+        }
+      }
+    }
+    if (fixPRFilterSeverities.length > 0) {
+      polarisFixPrData.filter = { severities: fixPRFilterSeverities };
+    }
+    return polarisFixPrData;
   }
 
   async getFormattedCommandForSrm(): Promise<string> {

@@ -27,6 +27,7 @@ export interface PolarisData extends AsyncMode {
   project: { name: string };
   assessment: { types: string[]; mode?: string };
   prcomment?: PRComment;
+  fixpr?: PolarisFixPrData;
   reports?: Reports;
   test?: Test;
 }
@@ -48,6 +49,18 @@ export interface Branch {
 export interface PRComment {
   enabled: boolean;
   severities: string[];
+}
+
+export interface PolarisFixPrData {
+  enabled?: boolean;
+  maxCount?: number;
+  createSinglePR?: boolean;
+  useUpgradeGuidance?: string[];
+  filter?: PolarisFixPrFilterData;
+}
+
+export interface PolarisFixPrFilterData {
+  severities?: string[];
 }
 
 export interface ProjectData {
