@@ -17,7 +17,7 @@ concurrency:
   group: ci-${{ github.ref }}
   cancel-in-progress: true
 
-jobs:
+jobs: 
   ci:
     name: CI Checks
     runs-on: ubuntu-latest
@@ -70,10 +70,9 @@ jobs:
       # Run unit tests
       - name: Run tests and collect results
         id: test-results
-        continue-on-error: true
         run: |
           cd blackduck-security-task
-          npx nyc --reporter=json-summary mocha --reporter json --require ts-node/register "test/unit/**/*.spec.ts" > test.json 2> mocha.log || true
+          npx nyc --reporter=json-summary mocha --reporter json --require ts-node/register "test/unit/**/*.spec.ts" > test.json 2> mocha.log
           for k in passes failures tests; do echo "$k=$(sed -n '/^{/,$p' test.json | jq -r ".stats.$k")" >> $GITHUB_OUTPUT; done
           echo "lines=$(jq -r '.total.lines.pct' coverage/coverage-summary.json)" >> $GITHUB_OUTPUT
 
