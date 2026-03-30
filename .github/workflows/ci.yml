@@ -67,20 +67,13 @@ jobs:
         if: steps.dist-check.outputs.dist_failed == 'true'
         run: exit 1
 
-      # Run unit tests
+      # Run unit tests - COPY MAIN BRANCH APPROACH
       - name: Run tests and collect results
         id: test-results
         run: |
           cd blackduck-security-task
-          echo "DEBUG: Starting test execution..."
-          echo "DEBUG: Current directory: $(pwd)"
-          echo "DEBUG: Test files found: $(find test/unit -name '*.spec.ts' | wc -l)"
-          npx nyc --reporter=json-summary mocha --reporter json --require ts-node/register "test/unit/**/*.spec.ts" > test.json 2> mocha.log
-          echo "DEBUG: Test execution completed"
-          echo "DEBUG: Test JSON exists: $(test -f test.json && echo 'YES' || echo 'NO')"
-          echo "DEBUG: Coverage file exists: $(test -f coverage/coverage-summary.json && echo 'YES' || echo 'NO')"
+          npx mocha --reporter json --require ts-node/register "test/unit/**/*.spec.ts" > test.json 2> mocha.log
           for k in passes failures tests; do echo "$k=$(sed -n '/^{/,$p' test.json | jq -r ".stats.$k")" >> $GITHUB_OUTPUT; done
-          echo "lines=$(jq -r '.total.lines.pct' coverage/coverage-summary.json)" >> $GITHUB_OUTPUT
 
       - name: Upload test results
         if: always()
