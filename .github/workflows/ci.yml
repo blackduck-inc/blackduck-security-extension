@@ -67,12 +67,12 @@ jobs:
         if: steps.dist-check.outputs.dist_failed == 'true'
         run: exit 1
 
-      # Run unit tests - COPY MAIN BRANCH APPROACH
+      # Run unit tests
       - name: Run tests and collect results
         id: test-results
         run: |
           cd blackduck-security-task
-          npx mocha --reporter json --require ts-node/register "test/unit/**/*.spec.ts" > test.json 2> mocha.log
+          npx nyc --reporter=json-summary mocha --reporter json --require ts-node/register "test/unit/**/*.spec.ts" > test.json 2> mocha.log
           for k in passes failures tests; do echo "$k=$(sed -n '/^{/,$p' test.json | jq -r ".stats.$k")" >> $GITHUB_OUTPUT; done
 
       - name: Upload test results
