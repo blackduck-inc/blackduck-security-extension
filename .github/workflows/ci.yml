@@ -17,7 +17,7 @@ concurrency:
   group: ci-${{ github.ref }}
   cancel-in-progress: true
 
-jobs: 
+jobs:
   ci:
     name: CI Checks
     runs-on: ubuntu-latest
@@ -105,7 +105,7 @@ jobs:
           } > coverage-table.md
           BODY="## Test & Coverage Results
 
-          ![ Tests ](https://img.shields.io/badge/tests-${{ steps.results.outputs.passes }}_passed_${{ steps.results.outputs.failures }}_failed-blue)
+          ![ Tests ](https://img.shields.io/badge/tests-${{ steps.test-results.outputs.passes }}_passed_${{ steps.test-results.outputs.failures }}_failed-blue)
           ![Coverage](https://img.shields.io/badge/coverage-${LINES}%25-brightgreen)
 
           <details>
@@ -124,7 +124,7 @@ jobs:
 
       # Verify coverage
       - name: Check coverage threshold
-        if: github.event_name == 'pull_request' && github.head_ref != 'SIGINT-4885'
+        if: github.event_name == 'pull_request'
         run: |
           coverageValue=$(jq -r '.total.lines.pct' blackduck-security-task/coverage/coverage-summary.json)
           echo "Line Coverage: $coverageValue%"
