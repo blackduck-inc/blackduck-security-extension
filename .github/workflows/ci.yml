@@ -72,7 +72,8 @@ jobs:
         id: test-results
         run: |
           cd blackduck-security-task
-          npx nyc --reporter=json-summary mocha --reporter json --require ts-node/register "test/unit/**/*.spec.ts" > test.json 2> mocha.log
+          export NODE_OPTIONS="--max-old-space-size=8192"
+          npx nyc --reporter=json-summary mocha --reporter json --require ts-node/register "test/unit/**/*.spec.ts" > test.json 2> mocha.log || true
           for k in passes failures tests; do echo "$k=$(sed -n '/^{/,$p' test.json | jq -r ".stats.$k")" >> $GITHUB_OUTPUT; done
 
       - name: Upload test results
