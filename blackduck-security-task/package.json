@@ -9,7 +9,7 @@
     "build": "tsc",
     "package": "ncc build --source-map",
     "lint": "eslint src/**/*.ts",
-    "test": "nyc --reporter=html --reporter=text mocha --require ts-node/register test/unit/**/*.spec.ts test/unit/*.spec.ts",
+    "test": "npx nyc --reporter=json-summary mocha --reporter json --require ts-node/register \"test/unit/**/*.spec.ts\" > test.json 2> mocha.log",
     "all": "npm run format && npm run lint && npm run build && npm run package && npm run test",
     "format": "prettier 'src/**/*.ts' --write",
     "integraionTestBuild": "tsc --project tsconfig-int-test.json",
