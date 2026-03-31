@@ -4,9 +4,9 @@ import * as https from "https";
 import * as taskLib from "azure-pipelines-task-lib/task";
 
 // Dynamic imports for proxy agents - will be installed separately
-// eslint-disable-next-line @typescript-eslint/no-var-requires
+// eslint-disable-next-line @typescript-eslint/no-require-imports
 const HttpProxyAgent = require("http-proxy-agent").HttpProxyAgent;
-// eslint-disable-next-line @typescript-eslint/no-var-requires
+// eslint-disable-next-line @typescript-eslint/no-require-imports
 const HttpsProxyAgent = require("https-proxy-agent").HttpsProxyAgent;
 
 export interface ProxyConfig {
