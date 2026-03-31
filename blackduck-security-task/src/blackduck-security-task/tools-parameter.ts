@@ -473,7 +473,6 @@ export class BridgeCliToolsParameter {
         blackduckData.data.azure = azureData;
         blackduckData.data.environment = this.setEnvironmentScanPullData();
         blackduckData.data.blackducksca.automation = { prcomment: true };
-        blackduckData.data;
       }
     }
 
