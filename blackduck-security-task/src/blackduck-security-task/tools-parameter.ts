@@ -808,14 +808,10 @@ export class BridgeCliToolsParameter {
     );
     if (createSinglePr && inputs.POLARIS_FIXPR_MAXCOUNT) {
       throw new Error(
-        constants.POLARIS_FIXPR_MAXCOUNT_KEY.concat(
-          " is not applicable with "
-        )
+        constants.POLARIS_FIXPR_MAXCOUNT_KEY.concat(" is not applicable with ")
           .concat(constants.POLARIS_FIXPR_CREATE_SINGLE_PR_KEY)
           .concat(constants.SPACE)
-          .concat(
-            ErrorCode.POLARIS_FIXPR_MAXCOUNT_NOT_APPLICABLE.toString()
-          )
+          .concat(ErrorCode.POLARIS_FIXPR_MAXCOUNT_NOT_APPLICABLE.toString())
       );
     }
     const polarisFixPrData: PolarisFixPrData = {};

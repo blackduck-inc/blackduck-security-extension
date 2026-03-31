@@ -64,7 +64,8 @@ export const POLARIS_FIXPR_ENABLED_KEY_CLASSIC_EDITOR = "polarisFixPrEnabled";
 export const POLARIS_FIXPR_MAXCOUNT_KEY = "polaris_fixpr_maxCount";
 export const POLARIS_FIXPR_MAXCOUNT_KEY_CLASSIC_EDITOR = "polarisFixPrMaxCount";
 
-export const POLARIS_FIXPR_CREATE_SINGLE_PR_KEY = "polaris_fixpr_createSinglePR";
+export const POLARIS_FIXPR_CREATE_SINGLE_PR_KEY =
+  "polaris_fixpr_createSinglePR";
 export const POLARIS_FIXPR_CREATE_SINGLE_PR_KEY_CLASSIC_EDITOR =
   "polarisFixPrCreateSinglePR";
 
