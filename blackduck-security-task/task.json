@@ -488,7 +488,7 @@
       "label": "Maximum number of Pull Requests to be created",
       "defaultValue": "",
       "required": false,
-      "helpMarkDown": "Maximum number of pull requests to be created that violate policies. PR is created for each vulnerable component. Default is 20.",
+      "helpMarkDown": "Maximum number of pull requests to be created that violate policies. PR is created for each vulnerable component. Default is 5.",
       "visibleRule": "polarisFixPrEnabled = true",
       "groupName": "polarisFixPR"
     },

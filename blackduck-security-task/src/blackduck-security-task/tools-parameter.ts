@@ -820,16 +820,15 @@ export class BridgeCliToolsParameter {
     }
     const polarisFixPrData: PolarisFixPrData = {};
     polarisFixPrData.enabled = true;
-    polarisFixPrData.createSinglePR = createSinglePr;
     if (inputs.POLARIS_FIXPR_MAXCOUNT && !createSinglePr) {
       polarisFixPrData.maxCount = Number(inputs.POLARIS_FIXPR_MAXCOUNT);
     }
     if (
-      inputs.POLARIS_FIXPR_UPGRADE_GUIDANCE &&
-      inputs.POLARIS_FIXPR_UPGRADE_GUIDANCE.length > 0
+      inputs.POLARIS_FIXPR_USEUPGRADEGUIDANCE &&
+      inputs.POLARIS_FIXPR_USEUPGRADEGUIDANCE.length > 0
     ) {
       polarisFixPrData.useUpgradeGuidance =
-        inputs.POLARIS_FIXPR_UPGRADE_GUIDANCE;
+        inputs.POLARIS_FIXPR_USEUPGRADEGUIDANCE;
     }
 
     const fixPRFilterSeverities: string[] = [];

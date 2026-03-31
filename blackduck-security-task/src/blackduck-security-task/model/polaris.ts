@@ -54,7 +54,6 @@ export interface PRComment {
 export interface PolarisFixPrData {
   enabled?: boolean;
   maxCount?: number;
-  createSinglePR?: boolean;
   useUpgradeGuidance?: string[];
   filter?: PolarisFixPrFilterData;
 }

@@ -50,7 +50,7 @@ describe("Bridge CLI Tools Parameter test", () => {
             Object.defineProperty(inputs, 'POLARIS_FIXPR_MAXCOUNT', {value: ''})
             Object.defineProperty(inputs, 'POLARIS_FIXPR_CREATE_SINGLE_PR', {value: ''})
             Object.defineProperty(inputs, 'POLARIS_FIXPR_FILTER_SEVERITIES', {value: []})
-            Object.defineProperty(inputs, 'POLARIS_FIXPR_UPGRADE_GUIDANCE', {value: []})
+            Object.defineProperty(inputs, 'POLARIS_FIXPR_USEUPGRADEGUIDANCE', {value: []})
             Object.defineProperty(inputs, 'AZURE_TOKEN', {value: ''})
             Object.defineProperty(inputs, 'COVERITY_BUILD_COMMAND', {value: ''})
             Object.defineProperty(inputs, 'COVERITY_CLEAN_COMMAND', {value: ''})
@@ -467,7 +467,7 @@ describe("Bridge CLI Tools Parameter test", () => {
             Object.defineProperty(inputs, 'POLARIS_FIXPR_MAXCOUNT', {value: 1})
             Object.defineProperty(inputs, 'POLARIS_FIXPR_CREATE_SINGLE_PR', {value: 'false'})
             Object.defineProperty(inputs, 'POLARIS_FIXPR_FILTER_SEVERITIES', {value: ['CRITICAL', 'HIGH']})
-            Object.defineProperty(inputs, 'POLARIS_FIXPR_UPGRADE_GUIDANCE', {value: ['LONG_TERM']})
+            Object.defineProperty(inputs, 'POLARIS_FIXPR_USEUPGRADEGUIDANCE', {value: ['LONG_TERM']})
             Object.defineProperty(inputs, 'AZURE_TOKEN', {value: 'token'})
 
             const getStubVariable = sandbox.stub(taskLib, "getVariable")
@@ -484,7 +484,6 @@ describe("Bridge CLI Tools Parameter test", () => {
             expect(jsonData.data.polaris.accesstoken).to.be.equals('token');
             expect(jsonData.data.polaris.fixpr.enabled).to.be.equals(true);
             expect(jsonData.data.polaris.fixpr.maxCount).to.be.equals(1);
-            expect(jsonData.data.polaris.fixpr.createSinglePR).to.be.equals(false);
             expect(jsonData.data.polaris.fixpr.useUpgradeGuidance).to.be.contains('LONG_TERM');
             expect(formattedCommand).contains('--stage polaris');
 

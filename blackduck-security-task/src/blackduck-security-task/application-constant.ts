@@ -73,11 +73,10 @@ export const POLARIS_FIXPR_FILTER_SEVERITIES_KEY =
 export const POLARIS_FIXPR_FILTER_SEVERITIES_KEY_CLASSIC_EDITOR =
   "polarisFixPrFilterSeverities";
 
-export const POLARIS_FIXPR_UPGRADE_GUIDANCE_KEY =
+export const POLARIS_FIXPR_USEUPGRADEGUIDANCE_KEY =
   "polaris_fixpr_useUpgradeGuidance";
-export const POLARIS_FIXPR_UPGRADE_GUIDANCE_KEY_CLASSIC_EDITOR =
+export const POLARIS_FIXPR_USEUPGRADEGUIDANCE_KEY_CLASSIC_EDITOR =
   "polarisFixPrUseUpgradeGuidance";
-
 export const POLARIS_REPORTS_SARIF_CREATE_KEY = "polaris_reports_sarif_create";
 export const POLARIS_REPORTS_SARIF_CREATE_KEY_CLASSIC_EDITOR =
   "polarisReportsSarifCreate";
