@@ -2219,9 +2219,9 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.createProxyConfigForHttpClient = exports.createProxyAgent = exports.shouldBypassProxy = exports.getProxyConfig = void 0;
 const taskLib = __importStar(__nccwpck_require__(347));
 // Dynamic imports for proxy agents - will be installed separately
-// eslint-disable-next-line @typescript-eslint/no-var-requires
+// eslint-disable-next-line @typescript-eslint/no-require-imports
 const HttpProxyAgent = (__nccwpck_require__(3764).HttpProxyAgent);
-// eslint-disable-next-line @typescript-eslint/no-var-requires
+// eslint-disable-next-line @typescript-eslint/no-require-imports
 const HttpsProxyAgent = (__nccwpck_require__(7219).HttpsProxyAgent);
 /**
  * Gets Proxy configuration from environment variables.
@@ -2841,7 +2841,6 @@ class BridgeCliToolsParameter {
                     blackduckData.data.azure = azureData;
                     blackduckData.data.environment = this.setEnvironmentScanPullData();
                     blackduckData.data.blackducksca.automation = { prcomment: true };
-                    blackduckData.data;
                 }
             }
             blackduckData.data.network = this.setNetworkObj();
