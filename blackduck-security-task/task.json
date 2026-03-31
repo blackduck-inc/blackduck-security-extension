@@ -32,16 +32,16 @@
       "visibleRule": "polarisWaitForScan = true"
     },
     {
-      "name": "polarisSarifReport",
-      "displayName": "SARIF Report Options",
-      "isExpanded": false,
-      "visibleRule": "polarisWaitForScan = true"
-    },
-    {
       "name": "polarisFixPR",
       "displayName": "Fix Pull Request Options",
       "isExpanded": false,
       "visibleRule": "scanType = polaris && polarisWaitForScan = true"
+    },
+    {
+      "name": "polarisSarifReport",
+      "displayName": "SARIF Report Options",
+      "isExpanded": false,
+      "visibleRule": "polarisWaitForScan = true"
     },
     {
       "name": "blackduckScaScanOptions",
@@ -488,7 +488,7 @@
       "label": "Maximum number of Pull Requests to be created",
       "defaultValue": "",
       "required": false,
-      "helpMarkDown": "Maximum number of pull requests to be created that violate policies. PR is created for each vulnerable component. Default is 5.",
+      "helpMarkDown": "Maximum number of pull requests to be created that violate policies. PR is created for each vulnerable component",
       "visibleRule": "polarisFixPrEnabled = true",
       "groupName": "polarisFixPR"
     },
@@ -498,7 +498,7 @@
       "label": "Configure Short Term or Long Term Guidance",
       "defaultValue": "",
       "required": false,
-      "helpMarkDown": "Polaris upgrade guidance preferences. Supported values: SHORT_TERM, LONG_TERM, or comma-separated combination. Default is \"SHORT_TERM,LONG_TERM\"",
+      "helpMarkDown": "Polaris upgrade guidance Values.Default is \"SHORT_TERM, LONG_TERM\"",
       "visibleRule": "polarisFixPrEnabled = true",
       "groupName": "polarisFixPR"
     },
@@ -508,7 +508,7 @@
       "label": "List of SEVERITIES to be filtered",
       "defaultValue": "",
       "required": false,
-      "helpMarkDown": "Filter the vulnerabilities by given severities, Fix PR(s) will be created only for issues where the issue severity matches one of the values specified using this option. Supported values: CRITICAL,HIGH,MEDIUM,LOW. Default is \"CRITICAL,HIGH\".",
+      "helpMarkDown": "Filter the vulnerabilities by given severities, Fix PR(s) will be created only for issues where the issue severity matches one of the values specified using this option Values. Default is \"CRITICAL,  HIGH\".",
       "visibleRule": "polarisFixPrEnabled = true",
       "groupName": "polarisFixPR"
     },
