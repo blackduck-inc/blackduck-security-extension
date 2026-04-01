@@ -32,6 +32,12 @@
       "visibleRule": "polarisWaitForScan = true"
     },
     {
+      "name": "polarisFixPR",
+      "displayName": "Fix Pull Request Options",
+      "isExpanded": false,
+      "visibleRule": "scanType = polaris && polarisWaitForScan = true"
+    },
+    {
       "name": "polarisSarifReport",
       "displayName": "SARIF Report Options",
       "isExpanded": false,
@@ -466,6 +472,45 @@
       "helpMarkDown": "Comma separated list of issues types to include in SARIF report. Supported values: SAST,SCA.",
       "visibleRule": "polarisReportsSarifCreate = true",
       "groupName": "polarisSarifReport"
+    },
+    {
+      "name": "polarisFixPrEnabled",
+      "type": "boolean",
+      "label": "Create Fix Pull Requests",
+      "defaultValue": false,
+      "required": false,
+      "helpMarkDown": "Flag to enable/disable the automatic fix pull request creations for Polaris.\nDefault value is false",
+      "groupName": "polarisFixPR"
+    },
+    {
+      "name": "polarisFixPrMaxCount",
+      "type": "string",
+      "label": "Maximum number of Pull Requests to be created",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Maximum number of pull requests to be created that violate policies. PR is created for each vulnerable component",
+      "visibleRule": "polarisFixPrEnabled = true",
+      "groupName": "polarisFixPR"
+    },
+    {
+      "name": "polarisFixPrUseUpgradeGuidance",
+      "type": "string",
+      "label": "Configure Short Term or Long Term Guidance",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Polaris upgrade guidance Values.Default is \"SHORT_TERM, LONG_TERM\"",
+      "visibleRule": "polarisFixPrEnabled = true",
+      "groupName": "polarisFixPR"
+    },
+    {
+      "name": "polarisFixPrFilterSeverities",
+      "type": "string",
+      "label": "List of SEVERITIES to be filtered",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Filter the vulnerabilities by given severities, Fix PR(s) will be created only for issues where the issue severity matches one of the values specified using this option Values. Default is \"CRITICAL,  HIGH\".",
+      "visibleRule": "polarisFixPrEnabled = true",
+      "groupName": "polarisFixPR"
     },
     {
       "name": "coverityUrl",
