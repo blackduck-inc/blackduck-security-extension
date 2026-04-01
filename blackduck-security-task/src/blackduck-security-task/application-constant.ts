@@ -64,11 +64,6 @@ export const POLARIS_FIXPR_ENABLED_KEY_CLASSIC_EDITOR = "polarisFixPrEnabled";
 export const POLARIS_FIXPR_MAXCOUNT_KEY = "polaris_fixpr_maxCount";
 export const POLARIS_FIXPR_MAXCOUNT_KEY_CLASSIC_EDITOR = "polarisFixPrMaxCount";
 
-export const POLARIS_FIXPR_CREATE_SINGLE_PR_KEY =
-  "polaris_fixpr_createSinglePR";
-export const POLARIS_FIXPR_CREATE_SINGLE_PR_KEY_CLASSIC_EDITOR =
-  "polarisFixPrCreateSinglePR";
-
 export const POLARIS_FIXPR_FILTER_SEVERITIES_KEY =
   "polaris_fixpr_filter_severities";
 export const POLARIS_FIXPR_FILTER_SEVERITIES_KEY_CLASSIC_EDITOR =
@@ -641,10 +636,6 @@ export const EXIT_CODE_MAP = new Map<string, string>([
   [
     ErrorCode.INVALID_BLACKDUCKSCA_FIXPR_MAXCOUNT.toString(),
     "Invalid value for blackducksca_fixpr_maxCount",
-  ],
-  [
-    ErrorCode.POLARIS_FIXPR_MAXCOUNT_NOT_APPLICABLE.toString(),
-    "polaris_fixpr_maxCount is not applicable with polaris_fixpr_createSinglePR",
   ],
   [
     ErrorCode.INVALID_POLARIS_FIXPR_MAXCOUNT.toString(),
