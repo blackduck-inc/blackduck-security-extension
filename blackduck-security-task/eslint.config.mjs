@@ -5,6 +5,9 @@ import globals from "globals";
 
 export default [
   js.configs.recommended,
+  // flat/recommended is the ESLint 9 flat config API for @typescript-eslint v8
+  // Avoids spreading rules inline which triggers structuredClone (requires Node 17+)
+  ...tseslint.configs["flat/recommended"],
   {
     files: ["src/**/*.ts"],
     languageOptions: {
@@ -23,7 +26,6 @@ export default [
       "@typescript-eslint": tseslint,
     },
     rules: {
-      ...tseslint.configs.recommended.rules,
       "no-async-promise-executor": "off",
       // TypeScript handles undefined references better than ESLint's no-undef
       "no-undef": "off",
