@@ -48,7 +48,6 @@ describe("Bridge CLI Tools Parameter test", () => {
             Object.defineProperty(inputs, 'POLARIS_PR_COMMENT_SEVERITIES', {value: []})
             Object.defineProperty(inputs, 'POLARIS_FIXPR_ENABLED', {value: ''})
             Object.defineProperty(inputs, 'POLARIS_FIXPR_MAXCOUNT', {value: ''})
-            Object.defineProperty(inputs, 'POLARIS_FIXPR_CREATE_SINGLE_PR', {value: ''})
             Object.defineProperty(inputs, 'POLARIS_FIXPR_FILTER_SEVERITIES', {value: []})
             Object.defineProperty(inputs, 'POLARIS_FIXPR_USEUPGRADEGUIDANCE', {value: []})
             Object.defineProperty(inputs, 'AZURE_TOKEN', {value: ''})
@@ -460,59 +459,12 @@ describe("Bridge CLI Tools Parameter test", () => {
             expect(formattedCommand).contains('--input '.concat(polarisStateFile));
         });
 
-        it('should success for polaris command formation with fix pr true and fix pr optional params', async function () {
-            Object.defineProperty(inputs, 'POLARIS_SERVER_URL', {value: 'https://test.com'})
-            Object.defineProperty(inputs, 'POLARIS_ACCESS_TOKEN', {value: 'token'})
-            Object.defineProperty(inputs, 'POLARIS_FIXPR_ENABLED', {value: true})
-            Object.defineProperty(inputs, 'POLARIS_FIXPR_MAXCOUNT', {value: 1})
-            Object.defineProperty(inputs, 'POLARIS_FIXPR_CREATE_SINGLE_PR', {value: 'false'})
-            Object.defineProperty(inputs, 'POLARIS_FIXPR_FILTER_SEVERITIES', {value: ['CRITICAL', 'HIGH']})
-            Object.defineProperty(inputs, 'POLARIS_FIXPR_USEUPGRADEGUIDANCE', {value: ['LONG_TERM']})
-            Object.defineProperty(inputs, 'AZURE_TOKEN', {value: 'token'})
-
-            const getStubVariable = sandbox.stub(taskLib, "getVariable")
-
-            getStubVariable.withArgs("System.TeamFoundationCollectionUri").returns("https://dev.azure.com/test-org/")
-            getStubVariable.withArgs("System.TeamProject").returns("test-project")
-            getStubVariable.withArgs("Build.Repository.Name").returns("test-repo")
-            getStubVariable.withArgs("Build.SourceBranch").returns("test-branch")
-
-            const formattedCommand = await bridgeToolsParameter.getFormattedCommandForPolaris();
-            const jsonString = fs.readFileSync(polarisStateFile, 'utf-8');
-            const jsonData = JSON.parse(jsonString);
-            expect(jsonData.data.polaris.serverUrl).to.be.equals('https://test.com');
-            expect(jsonData.data.polaris.accesstoken).to.be.equals('token');
-            expect(jsonData.data.polaris.fixpr.enabled).to.be.equals(true);
-            expect(jsonData.data.polaris.fixpr.maxCount).to.be.equals(1);
-            expect(jsonData.data.polaris.fixpr.useUpgradeGuidance).to.be.contains('LONG_TERM');
-            expect(formattedCommand).contains('--stage polaris');
-
-            polarisStateFile = '"'.concat(polarisStateFile).concat('"');
-            expect(formattedCommand).contains('--input '.concat(polarisStateFile));
-        });
-
-        it('should fail for polaris fix pr true,max count and create single pr true', async function () {
+        it('should fail for polaris fix pr true and invalid max count', async function () {
             Object.defineProperty(inputs, 'POLARIS_SERVER_URL', {value: 'https://test.com'})
             Object.defineProperty(inputs, 'POLARIS_ACCESS_TOKEN', {value: 'token'})
             Object.defineProperty(inputs, 'POLARIS_FIXPR_ENABLED', {value: 'true'})
-            Object.defineProperty(inputs, 'POLARIS_FIXPR_MAXCOUNT', {value: 1})
-            Object.defineProperty(inputs, 'POLARIS_FIXPR_CREATE_SINGLE_PR', {value: 'true'})
+            Object.defineProperty(inputs, 'POLARIS_FIXPR_MAXCOUNT', {value: 'invalid'})
             Object.defineProperty(inputs, 'AZURE_TOKEN', {value: 'token'})
-
-            try {
-                const formattedCommand = await bridgeToolsParameter.getFormattedCommandForPolaris();
-            } catch (e) {
-                const errorObj = e as Error;
-                expect(errorObj.message).contains(constants.POLARIS_FIXPR_MAXCOUNT_KEY
-                    .concat(' is not applicable with ').concat(constants.POLARIS_FIXPR_CREATE_SINGLE_PR_KEY));
-                expect(errorObj.message).contains(ErrorCode.POLARIS_FIXPR_MAXCOUNT_NOT_APPLICABLE.toString());
-            }
-        });
-
-        it('should fail for invalid value of polaris fix pr max count', async function () {
-            Object.defineProperty(inputs, 'POLARIS_SERVER_URL', {value: 'https://test.com'})
-            Object.defineProperty(inputs, 'POLARIS_ACCESS_TOKEN', {value: 'token'})
-            Object.defineProperty(inputs, 'POLARIS_FIXPR_ENABLED', {value: 'true'})
             Object.defineProperty(inputs, 'POLARIS_FIXPR_MAXCOUNT', {value: 'invalid-value'})
             Object.defineProperty(inputs, 'AZURE_TOKEN', {value: 'token'})
 

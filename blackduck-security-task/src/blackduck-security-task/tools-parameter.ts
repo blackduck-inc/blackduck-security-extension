@@ -802,20 +802,9 @@ export class BridgeCliToolsParameter {
           .concat(ErrorCode.INVALID_POLARIS_FIXPR_MAXCOUNT.toString())
       );
     }
-    const createSinglePr = parseToBoolean(
-      inputs.POLARIS_FIXPR_CREATE_SINGLE_PR
-    );
-    if (createSinglePr && inputs.POLARIS_FIXPR_MAXCOUNT) {
-      throw new Error(
-        constants.POLARIS_FIXPR_MAXCOUNT_KEY.concat(" is not applicable with ")
-          .concat(constants.POLARIS_FIXPR_CREATE_SINGLE_PR_KEY)
-          .concat(constants.SPACE)
-          .concat(ErrorCode.POLARIS_FIXPR_MAXCOUNT_NOT_APPLICABLE.toString())
-      );
-    }
     const polarisFixPrData: PolarisFixPrData = {};
     polarisFixPrData.enabled = true;
-    if (inputs.POLARIS_FIXPR_MAXCOUNT && !createSinglePr) {
+    if (inputs.POLARIS_FIXPR_MAXCOUNT) {
       polarisFixPrData.maxCount = Number(inputs.POLARIS_FIXPR_MAXCOUNT);
     }
     if (
