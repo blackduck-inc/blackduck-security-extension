@@ -74,10 +74,12 @@ describe('SSL Utils Unit Tests', () => {
     describe('getSSLConfig', () => {
         it('should return minimal config in test environment', () => {
             // npm_lifecycle_event is automatically set to "test" by npm test
+            process.env.npm_lifecycle_event = 'test';
             const result = sslUtils.getSSLConfig();
 
             expect(result).to.deep.equal({ trustAllCerts: false });
             expect(taskLibDebugStub.calledWith('Running in test environment - using minimal SSL config to preserve mocks')).to.be.true;
+            delete process.env.npm_lifecycle_event;
         });
 
         describe('production environment tests', () => {
