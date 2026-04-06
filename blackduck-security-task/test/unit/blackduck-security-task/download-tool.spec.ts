@@ -355,7 +355,7 @@ describe("Download Tool Tests", () => {
                 const error = "String error message";
                 const fsStub = {
                     existsSync: sandbox.stub().returns(true),
-                    rmSync: sandbox.stub().throws(error)
+                    rmSync: sandbox.stub().callsFake(() => { throw error; })
                 };
 
                 const tlStub = {
@@ -1038,7 +1038,7 @@ describe("Download Tool Tests", () => {
                 const error = "String error message";
 
                 fsExistsSyncStub.returns(true);
-                fsRmSyncStub.throws(error);
+                fsRmSyncStub.callsFake(() => { throw error; });
 
                 _deleteFile(filePath);
 
@@ -1467,7 +1467,7 @@ describe("Download Tool Tests", () => {
                 const error = "String error message";
 
                 parseToBooleanStub.returns(false);
-                fsReadFileSyncStub.throws(error);
+                fsReadFileSyncStub.callsFake(() => { throw error; });
 
                 const result = getRequestOptions();
 
