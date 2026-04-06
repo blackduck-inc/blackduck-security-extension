@@ -81,6 +81,8 @@ pop_blackduck:
   image: us-docker.pkg.dev/cloudops-artifacts-prd/polaris/ember_cli:3.28.5-node_16
   extends:
     - .new_pop_blackduck
+  variables:
+    DETECT_NPM_DEPENDENCY_TYPES_EXCLUDED: "DEV"
   before_script:
     - |
       echo "deb http://archive.debian.org/debian buster main" > /etc/apt/sources.list
