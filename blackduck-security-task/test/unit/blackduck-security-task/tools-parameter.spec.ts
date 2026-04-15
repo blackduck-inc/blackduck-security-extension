@@ -348,6 +348,51 @@ describe("Bridge CLI Tools Parameter test", () => {
             expect(formattedCommand).contains('--input '.concat(polarisStateFile))
         });
 
+        it('should success for polaris command formation with polaris artifactToUpload param', async function () {
+            Object.defineProperty(inputs, 'POLARIS_SERVER_URL', {value: 'server_url'})
+            Object.defineProperty(inputs, 'POLARIS_ACCESS_TOKEN', {value: 'access_token'})
+            Object.defineProperty(inputs, 'POLARIS_ASSESSMENT_TYPES', {value: ['SCA','sast']})
+            Object.defineProperty(inputs, 'POLARIS_APPLICATION_NAME', {value: 'POLARIS_APPLICATION_NAME'})
+            Object.defineProperty(inputs, 'POLARIS_PROJECT_NAME', {value: 'POLARIS_PROJECT_NAME'})
+            Object.defineProperty(inputs, 'POLARIS_BRANCH_NAME', {value: 'feature1'})
+            Object.defineProperty(inputs, 'POLARIS_ARTIFACTTOUPLOAD', {value: '/path/to/artifact.zip'})
+
+            const formattedCommand = await bridgeToolsParameter.getFormattedCommandForPolaris();
+
+            const jsonString = fs.readFileSync(polarisStateFile, 'utf-8');
+            const jsonData = JSON.parse(jsonString);
+            expect(jsonData.data.polaris.serverUrl).to.be.contains('server_url');
+            expect(jsonData.data.polaris.accesstoken).to.be.contains('access_token');
+            expect(jsonData.data.polaris.assessment.types).to.be.contains('SCA','sast');
+            expect(jsonData.data.polaris.application.name).to.be.contains('POLARIS_APPLICATION_NAME');
+            expect(jsonData.data.polaris.project.name).to.be.contains('POLARIS_PROJECT_NAME');
+            expect(jsonData.data.polaris.branch.name).to.be.contains('feature1');
+            expect(jsonData.data.polaris.artifactToUpload).to.be.equals('/path/to/artifact.zip');
+
+            expect(formattedCommand).contains('--stage polaris');
+
+            polarisStateFile = '"'.concat(polarisStateFile).concat('"');
+            expect(formattedCommand).contains('--input '.concat(polarisStateFile))
+        });
+
+        it('should not set polaris artifactToUpload when value is empty', async function () {
+            Object.defineProperty(inputs, 'POLARIS_SERVER_URL', {value: 'server_url'})
+            Object.defineProperty(inputs, 'POLARIS_ACCESS_TOKEN', {value: 'access_token'})
+            Object.defineProperty(inputs, 'POLARIS_ASSESSMENT_TYPES', {value: ['SCA']})
+            Object.defineProperty(inputs, 'POLARIS_APPLICATION_NAME', {value: 'POLARIS_APPLICATION_NAME'})
+            Object.defineProperty(inputs, 'POLARIS_PROJECT_NAME', {value: 'POLARIS_PROJECT_NAME'})
+            Object.defineProperty(inputs, 'POLARIS_BRANCH_NAME', {value: 'feature1'})
+            Object.defineProperty(inputs, 'POLARIS_ARTIFACTTOUPLOAD', {value: ''})
+
+            const formattedCommand = await bridgeToolsParameter.getFormattedCommandForPolaris();
+
+            const jsonString = fs.readFileSync(polarisStateFile, 'utf-8');
+            const jsonData = JSON.parse(jsonString);
+            expect(jsonData.data.polaris.artifactToUpload).to.be.undefined;
+
+            expect(formattedCommand).contains('--stage polaris');
+        });
+
         it('should success for polaris command formation with polaris test sca and sast type', async function () {
             Object.defineProperty(inputs, 'POLARIS_SERVER_URL', {value: 'server_url'})
             Object.defineProperty(inputs, 'POLARIS_ACCESS_TOKEN', {value: 'access_token'})

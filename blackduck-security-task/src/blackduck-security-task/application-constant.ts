@@ -118,6 +118,10 @@ export const PROJECT_DIRECTORY_KEY = "project_directory";
 export const POLARIS_PROJECT_DIRECTORY_KEY_CLASSIC_EDITOR =
   "polarisProjectDirectory";
 
+export const POLARIS_ARTIFACTTOUPLOAD_KEY = "polaris_artifactToUpload";
+export const POLARIS_ARTIFACTTOUPLOAD_KEY_CLASSIC_EDITOR =
+  "polarisArtifactToUpload";
+
 export const POLARIS_WAITFORSCAN_KEY = "polaris_waitForScan";
 export const POLARIS_WAITFORSCAN_KEY_CLASSIC_EDITOR = "polarisWaitForScan";
 

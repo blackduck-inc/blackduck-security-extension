@@ -3,6 +3,10 @@
 import * as taskLib from "azure-pipelines-task-lib/task";
 import * as constants from "./application-constant";
 import { POLARIS_ASSESSMENT_MODES } from "./model/polaris";
+import {
+  POLARIS_ARTIFACTTOUPLOAD_KEY,
+  POLARIS_ARTIFACTTOUPLOAD_KEY_CLASSIC_EDITOR,
+} from "./application-constant";
 
 const deprecatedInputs: string[] = [];
 
@@ -312,6 +316,12 @@ export const POLARIS_WAITFORSCAN = getInput(
   null
 );
 export const POLARIS_ASSESSMENT_MODE = getInputForPolarisAssessmentMode();
+
+export const POLARIS_ARTIFACTTOUPLOAD = getInput(
+  constants.POLARIS_ARTIFACTTOUPLOAD_KEY,
+  constants.POLARIS_ARTIFACTTOUPLOAD_KEY_CLASSIC_EDITOR,
+  null
+);
 
 export const POLARIS_PROJECT_DIRECTORY = getInput(
   constants.PROJECT_DIRECTORY_KEY,
