@@ -5,7 +5,7 @@ include:
     file: pop_analysis.yaml
   - project: releng/common-gitlab-ci
     ref: master
-    file: sbom-generate.yml
+    file: report-generator.yml
   - project: altair/altair-build-common
     ref: master
     file: gitlab/ci/altair_versioning.yml
@@ -55,10 +55,11 @@ unit_test_and_coverage_job:
     - export SBOM_ART_TOKEN_VAULT_PATH=sbom/integrations/blackduck-security-extension
     - export PRODUCT=Integrations
     - export GENERATE_CONFIGURATION_FILE=1
-    - export PRODUCT_ADDON_SBOM_OPTIONS="--output-zipfile blackduck-security-extension-$EXT_VERSION.zip --debug"
+    - export PRODUCT_ADDON_SBOM_OPTIONS="--output-zipfile blackduck-security-extension-$EXT_VERSION-{report_type}.zip -artifactory-repo integrations-sbom/blackduck-security-extension --debug"
     - export GENERATION_OPTIONS="--entry integrations/mirrored-repos/blackduck-security-extension:blackduck-security-extension-$EXT_VERSION"
 
 generate_sbom:
+  image: releng/base-gitlab-runner:jdk17-python3.11-git-docker
   extends:
     - .export_sbom_variables
     - .run_sbom_generation
