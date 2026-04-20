@@ -25,8 +25,7 @@ jobs:
       polaris_assessment_types: "SCA,SAST"
       polaris_prComment_enabled: true
       polaris_prComment_severities: "Critical,High,Medium,Low,Informational"
-      polaris_application_name: "integrations-dev"
-   secrets:   
+      polaris_application_name: "integrations-dev"   
       bridgecli_download_url: ${{ vars.BRIDGECLI_DOWNLOAD_URL }}
       polaris_project_name: "blackduck-security-extension-dev"   
       polaris_branch_name: ${{ github.head_ref || github.ref_name }}
