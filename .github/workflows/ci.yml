@@ -154,7 +154,7 @@ jobs:
           polaris_access_token: ${{ secrets.POLARIS_ACCESS_TOKEN }}
           polaris_assessment_types: "SCA,SAST"
           polaris_prComment_severities: "Critical,High,Medium,Low"
-          polaris_application_name: "integrations-dev"
-          polaris_project_name: "blackduck-security-extension-dev"
+          polaris_application_name: "integrations"
+          polaris_project_name: "blackduck-security-extension"
           polaris_prComment_enabled: true
           github_token: ${{ secrets.GITHUB_TOKEN }}
