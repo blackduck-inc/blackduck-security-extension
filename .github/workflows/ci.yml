@@ -159,3 +159,4 @@ jobs:
           polaris_prComment_enabled: true
           github_token: ${{ secrets.GITHUB_TOKEN }}
           include_diagnostics: true
+          project_directory: 'blackduck-security-task'
