@@ -31,8 +31,6 @@ jobs:
         with:
           node-version: 20.x
           cache: 'npm'
-        env:
-          FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
 
       - name: Install dependencies
         run: cd blackduck-security-task && npm ci
@@ -154,8 +152,8 @@ jobs:
           polaris_access_token: ${{ secrets.POLARIS_ACCESS_TOKEN }}
           polaris_assessment_types: "SCA,SAST"
           polaris_prComment_severities: "Critical,High,Medium,Low"
-#          polaris_application_name: "integrations"
-#          polaris_project_name: "blackduck-security-extension"
+          polaris_application_name: "integrations"
+          polaris_project_name: "blackduck-security-extension"
           polaris_prComment_enabled: true
           github_token: ${{ secrets.GITHUB_TOKEN }}
           include_diagnostics: true
