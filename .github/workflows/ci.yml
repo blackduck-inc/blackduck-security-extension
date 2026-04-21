@@ -142,7 +142,7 @@ jobs:
 
   polaris:
     needs: ci
-    runs-on: [ ubuntu-latest ]
+    runs-on: ubuntu-latest
     steps:
       - name: Polaris Scan
         id: polaris-scan
@@ -154,7 +154,7 @@ jobs:
           polaris_prComment_severities: "Critical,High,Medium,Low"
           polaris_application_name: "integrations"
           polaris_project_name: "blackduck-security-extension"
-          polaris_branch_parent_name: ${{ github.base_ref || 'main' }}
           polaris_prComment_enabled: true
           github_token: ${{ secrets.GITHUB_TOKEN }}
           include_diagnostics: true
+          coverity_build_command: 'npm ci && npm run build'
