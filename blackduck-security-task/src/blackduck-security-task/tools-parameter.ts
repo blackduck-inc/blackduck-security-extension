@@ -2,7 +2,7 @@
 
 import path from "path";
 import * as inputs from "./input";
-import { AZURE_TOKEN } from "./input";
+import { AZURE_TOKEN, POLARIS_ARTIFACTTOUPLOAD } from "./input";
 import { Polaris, PolarisFixPrData } from "./model/polaris";
 import { Coverity, CoverityArbitrary, CoverityConnect } from "./model/coverity";
 import { Srm } from "./model/srm";
@@ -175,6 +175,10 @@ export class BridgeCliToolsParameter {
       polData.data.polaris.waitForScan = parseToBoolean(
         inputs.POLARIS_WAITFORSCAN
       );
+    }
+
+    if (inputs.POLARIS_ARTIFACTTOUPLOAD) {
+      polData.data.polaris.artifactToUpload = inputs.POLARIS_ARTIFACTTOUPLOAD;
     }
 
     if (

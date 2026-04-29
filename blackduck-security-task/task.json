@@ -239,8 +239,17 @@
       "label": "SCA Test Type",
       "defaultValue": "",
       "required": false,
-      "helpMarkDown": "Polaris test type to trigger signature scan or package manager scan. Default value: SCA-PACKAGE. Supported values: SCA-PACKAGE or SCA-SIGNATURE",
+      "helpMarkDown": "Polaris test type to trigger signature scan or package manager scan or binary scan. Default value: SCA-PACKAGE. Supported values: SCA-PACKAGE or SCA-SIGNATURE or SCA-BINARY or both SCA-PACKAGE, SCA-SIGNATURE.\nNOTE: SCA-BINARY can only be used stand-alone. It cannot be combined with SCA-PACKAGE or SCA-SIGNATURE.",
       "visibleRule": "scanType = polaris",
+      "groupName": "scanConfiguration"
+    },
+    {
+      "name": "polarisArtifactToUpload",
+      "type": "string",
+      "label": "Binary or Archive File Path",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Path to a binary or archive file to analyze. This is required when using SCA-BINARY as the SCA Test Type.",
       "groupName": "scanConfiguration"
     },
     {

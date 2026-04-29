@@ -30,6 +30,7 @@ export interface PolarisData extends AsyncMode {
   fixpr?: PolarisFixPrData;
   reports?: Reports;
   test?: Test;
+  artifactToUpload?: string;
 }
 export interface TestTypeLocation {
   type?: string | string[];
