@@ -74,6 +74,9 @@ polaris_bridge:
   stage: analysis
   before_script:
     - |
+      # Remove broken PPAs before updating
+      rm -f /etc/apt/sources.list.d/deadsnakes-ubuntu-ppa-focal.list
+      rm -f /etc/apt/sources.list.d/openjdk-r-ubuntu-ppa-focal.list
       apt-get update -y
       apt-get install -y make
       export DETECT_ACCURACY_REQUIRED=NONE
