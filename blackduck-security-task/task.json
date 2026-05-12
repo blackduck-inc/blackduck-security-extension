@@ -249,6 +249,7 @@
       "label": "Binary or Archive File Path",
       "defaultValue": "",
       "required": false,
+      "visibleRule": "scanType = polaris",
       "helpMarkDown": "Path to a binary or archive file to analyze. This is required when using SCA-BINARY as the SCA Test Type.",
       "groupName": "scanConfiguration"
     },
