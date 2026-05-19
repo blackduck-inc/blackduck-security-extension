@@ -159,3 +159,27 @@ When `ENABLE_NETWORK_AIRGAP` is true:
 - Unit tests use Mocha/Chai/Sinon with ts-node
 - Coverage reporting via nyc
 - Integration tests require separate tsconfig (`tsconfig-int-test.json`)
+
+## Security Considerations
+
+When modifying code, be aware of these security-sensitive areas:
+
+### Command Execution
+- Bridge CLI commands are executed via `taskLib.exec()` with proper parameter separation
+- PowerShell commands for ZIP extraction on Windows use string escaping - ensure proper sanitization
+- User-provided build/clean commands for Coverity are passed to Bridge CLI - validate carefully
+
+### Input Validation
+- File paths (install directories, SSL cert files) require validation to prevent path traversal
+- URL inputs need protocol and hostname validation to prevent SSRF
+- Directory paths should be checked against workspace boundaries
+
+### Secret Handling
+- Tokens and API keys must never be logged
+- Debug statements should mask sensitive information
+- Error messages should not expose credentials or file paths
+
+### SSL/TLS Configuration
+- `NETWORK_SSL_TRUST_ALL` disables certificate validation - use with extreme caution
+- Custom CA certificates are properly combined with system CAs in `ssl-utils.ts`
+- HTTP client singleton ensures SSL configuration is applied consistently
