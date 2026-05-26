@@ -141,7 +141,7 @@ describe("Validator test", () => {
             const coverityValidationErrors = validator.validateCoverityInputs();
             expect(coverityValidationErrors.length).greaterThan(0);
             expect(coverityValidationErrors[0]).contains("["
-                .concat(constants.COVERITY_PASSPHRASE_KEY)
+                .concat(constants.COVERITY_PASSWORD_KEY)
                 .concat("] - required parameters for coverity is missing"))
         });
 
