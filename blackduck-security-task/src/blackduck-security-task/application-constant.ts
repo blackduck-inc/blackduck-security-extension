@@ -144,8 +144,12 @@ export const COVERITY_URL_KEY_CLASSIC_EDITOR = "coverityUrl";
 export const COVERITY_USER_KEY = "coverity_user";
 export const COVERITY_USER_KEY_CLASSIC_EDITOR = "coverityUser";
 
+/**
+ * @deprecated Use coverity_password instead. This can be removed in future release.
+ */
 export const COVERITY_PASSPHRASE_KEY = "coverity_passphrase";
-export const COVERITY_PASSPHRASE_KEY_CLASSIC_EDITOR = "coverityUserPassword";
+export const COVERITY_PASSWORD_KEY = "coverity_password";
+export const COVERITY_PASSWORD_KEY_CLASSIC_EDITOR = "coverityUserPassword";
 
 export const COVERITY_PROJECT_NAME_KEY = "coverity_project_name";
 export const COVERITY_PROJECT_NAME_KEY_CLASSIC_EDITOR = "coverityProjectName";

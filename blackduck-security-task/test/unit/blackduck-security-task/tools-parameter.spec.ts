@@ -1032,7 +1032,7 @@ describe("Bridge CLI Tools Parameter test", () => {
         it('should pass coverity arbitrary fields to bridge', async () => {
             Object.defineProperty(inputs, 'COVERITY_URL', {value: 'COVERITY_URL'})
             Object.defineProperty(inputs, 'COVERITY_USER', {value: 'COVERITY_USER'})
-            Object.defineProperty(inputs, 'COVERITY_PASSPHRASE', {value: 'COVERITY_PASSPHRASE'})
+            Object.defineProperty(inputs, 'COVERITY_USER_PASSWORD', {value: 'COVERITY_USER_PASSWORD'})
             Object.defineProperty(inputs, 'COVERITY_BUILD_COMMAND', {value: 'COVERITY_BUILD_COMMAND'})
             Object.defineProperty(inputs, 'COVERITY_CLEAN_COMMAND', {value: 'COVERITY_CLEAN_COMMAND'})
             Object.defineProperty(inputs, 'COVERITY_CONFIG_PATH', {value: 'COVERITY_CONFIG_PATH'})

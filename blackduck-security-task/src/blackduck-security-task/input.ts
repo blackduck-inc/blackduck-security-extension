@@ -393,9 +393,9 @@ export const COVERITY_USER = getInput(
   null
 );
 export const COVERITY_USER_PASSWORD = getInput(
-  constants.COVERITY_PASSPHRASE_KEY,
-  constants.COVERITY_PASSPHRASE_KEY_CLASSIC_EDITOR,
-  null
+  constants.COVERITY_PASSWORD_KEY,
+  constants.COVERITY_PASSWORD_KEY_CLASSIC_EDITOR,
+  constants.COVERITY_PASSPHRASE_KEY
 );
 export const COVERITY_PROJECT_NAME = getInput(
   constants.COVERITY_PROJECT_NAME_KEY,

@@ -83,7 +83,7 @@ export function validateCoverityInputs(): string[] {
     const paramsMap = new Map();
     paramsMap.set(constants.COVERITY_USER_KEY, inputs.COVERITY_USER);
     paramsMap.set(
-      constants.COVERITY_PASSPHRASE_KEY,
+      constants.COVERITY_PASSWORD_KEY,
       inputs.COVERITY_USER_PASSWORD
     );
     paramsMap.set(constants.COVERITY_URL_KEY, inputs.COVERITY_URL);
