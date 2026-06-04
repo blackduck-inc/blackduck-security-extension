@@ -709,7 +709,9 @@ describe("Bridge CLI Tools Parameter test", () => {
             Object.defineProperty(inputs, 'COVERITY_PRCOMMENT_ENABLED', {value: 'true'})
             Object.defineProperty(inputs, 'AZURE_TOKEN', {value: 'token'})
             sandbox.stub(validator, "validateCoverityInstallDirectoryParam").returns(true);
-            sandbox.stub(taskLib, "getVariable").returns(AZURE_BUILD_REASON.PULL_REQUEST);
+
+            const getStubVariable = sandbox.stub(taskLib, "getVariable");
+            getStubVariable.withArgs(AZURE_ENVIRONMENT_VARIABLES.AZURE_BUILD_REASON).returns(AZURE_BUILD_REASON.PULL_REQUEST);
 
             const formattedCommand = await bridgeToolsParameter.getFormattedCommandForCoverity();
             const jsonString = fs.readFileSync(coverityStateFile, 'utf-8');
@@ -1102,7 +1104,9 @@ describe("Bridge CLI Tools Parameter test", () => {
             Object.defineProperty(inputs, 'BLACKDUCKSCA_API_TOKEN', {value: 'token'})
              Object.defineProperty(inputs, 'BLACKDUCKSCA_PRCOMMENT_ENABLED', {value: 'true'})
              Object.defineProperty(inputs, 'AZURE_TOKEN', {value: 'token'})
-             sandbox.stub(taskLib, "getVariable").returns(AZURE_BUILD_REASON.PULL_REQUEST);
+
+             const getStubVariable = sandbox.stub(taskLib, "getVariable");
+             getStubVariable.withArgs(AZURE_ENVIRONMENT_VARIABLES.AZURE_BUILD_REASON).returns(AZURE_BUILD_REASON.PULL_REQUEST);
 
              sandbox.stub(validator, "validateBlackduckFailureSeverities").returns(true);
              const formattedCommand = await bridgeToolsParameter.getFormattedCommandForBlackduck();
@@ -1620,7 +1624,9 @@ describe("Bridge CLI Tools Parameter test", () => {
             Object.defineProperty(inputs, 'BLACKDUCKSCA_REPORTS_SARIF_CREATE', {value: true})
 
             sandbox.stub(validator, "validateBlackduckFailureSeverities").returns(true);
-            sandbox.stub(taskLib, "getVariable").returns(AZURE_BUILD_REASON.PULL_REQUEST);
+
+            const getStubVariable = sandbox.stub(taskLib, "getVariable");
+            getStubVariable.withArgs(AZURE_ENVIRONMENT_VARIABLES.AZURE_BUILD_REASON).returns(AZURE_BUILD_REASON.PULL_REQUEST);
 
             const formattedCommand = await bridgeToolsParameter.getFormattedCommandForBlackduck();
             const jsonString = fs.readFileSync(blackduckStateFile, 'utf-8');
