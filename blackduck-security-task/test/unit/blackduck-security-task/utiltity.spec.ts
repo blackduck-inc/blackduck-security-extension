@@ -11,7 +11,6 @@ import {
     updatePolarisSarifPath,
     updateCoverityConfigForBridgeVersion
 } from "../../../src/blackduck-security-task/utility";
-import process from "process";
 import * as toolLibLocal from "../../../src/blackduck-security-task/download-tool";
 import {DownloadFileResponse} from "../../../src/blackduck-security-task/model/download-file-response";
 import {AZURE_BUILD_REASON, AZURE_ENVIRONMENT_VARIABLES} from "../../../src/blackduck-security-task/model/azure";
@@ -27,6 +26,8 @@ import * as constants from "../../../src/blackduck-security-task/application-con
 import * as validator from "../../../src/blackduck-security-task/validator";
 import * as inputs from "../../../src/blackduck-security-task/input";
 import { describe, it, beforeEach, afterEach } from 'mocha';
+import * as path from 'path';
+import * as os from 'os';
 
 describe("Utilities", () => {
 
@@ -1700,7 +1701,7 @@ describe("Utilities", () => {
         });
 
         it('should convert new format to legacy for Bridge CLI < 3.9.0', function () {
-            tempFile = '/tmp/test_coverity_input.json';
+            tempFile = path.join(os.tmpdir(), 'test_coverity_input.json');
             const testData = {
                 data: {
                     coverity: {
@@ -1723,7 +1724,7 @@ describe("Utilities", () => {
         });
 
         it('should preserve new format for Bridge CLI >= 3.9.0', function () {
-            tempFile = '/tmp/test_coverity_input2.json';
+            tempFile = path.join(os.tmpdir(), 'test_coverity_input2.json');
             const testData = {
                 data: {
                     coverity: {

@@ -1215,6 +1215,9 @@
     },
     "Node20_1": {
       "target": "dist/index.js"
+    },
+    "Node24": {
+      "target": "dist/index.js"
     }
   }
 }
