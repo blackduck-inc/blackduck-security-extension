@@ -2,160 +2,112 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
-## Project Overview
+## Overview
 
-Black Duck Security Scan Extension for Azure DevOps - an Azure Pipeline task extension that enables security scanning for multiple Black Duck products (Polaris, Black Duck SCA, Coverity, SRM) via Bridge CLI integration.
+Black Duck Security Scan Extension for Azure DevOps - an Azure Pipeline task extension that integrates SAST/SCA into CI/CD pipelines via Bridge CLI. Supports four products:
+- **Polaris** - SAST/SCA analysis
+- **Black Duck SCA** - Software Composition Analysis
+- **Coverity** - Static analysis
+- **SRM** - Security Risk Management
 
-The extension acts as a wrapper that downloads Bridge CLI, configures product-specific parameters, executes scans, and processes results including SARIF report generation and Azure DevOps integration.
+## Build Commands
 
-## Build and Development Commands
+All commands run from `blackduck-security-task/`:
 
-### Main Development Tasks
 ```bash
-# Navigate to task directory first
-cd blackduck-security-task
+npm install          # Install dependencies
+npm run build        # Compile TypeScript → lib/
+npm run package      # Bundle with ncc → dist/
+npm run lint         # ESLint on src/**/*.ts
+npm run format       # Prettier on src/**/*.ts
+npm test             # Mocha unit tests with nyc coverage (html + text)
+npm run all          # format + lint + build + package + test
+npm run integrationTest  # Integration tests (requires separate tsconfig-int-test.json)
 
-# Install dependencies
-npm install
-
-# Build TypeScript
-npm run build
-
-# Run linting
-npm run lint
-
-# Format code
-npm run format
-
-# Package for distribution (creates dist bundle)
-npm run package
-
-# Run unit tests with coverage
-npm test
-
-# Run all checks (format, lint, build, package, test)
-npm run all
-```
-
-### Testing
-```bash
-# Unit tests (with coverage reports in html and text)
-npm test
-
-# Integration tests
-npm run integrationTest
-```
-
-### Single Test Execution
-```bash
-# Run a specific test file
-npx mocha --require ts-node/register test/unit/blackduck-security-task/<test-file>.spec.ts
+# Single test file
+npx mocha --require ts-node/register test/unit/blackduck-security-task/<file>.spec.ts
 ```
 
 ## Architecture
 
-### Core Flow
-1. **Entry Point** (`src/main.ts`): Orchestrates the scan workflow
-   - Validates inputs and shows deprecation warnings
-   - Downloads or locates Bridge CLI based on network mode (airgap or connected)
-   - Determines Bridge CLI version from `versions.txt` file
-   - Prepares product-specific command with input JSON files
-   - Executes Bridge CLI command
-   - Handles SARIF report upload and diagnostics
-   - Manages build status based on scan results
+### Core Flow (`src/main.ts`)
+1. Reads inputs — validates, logs deprecation warnings
+2. Downloads or locates Bridge CLI (standard vs airgap mode)
+3. Resolves Bridge CLI version from `versions.txt`
+4. Builds product-specific JSON input files via `tools-parameter.ts`
+5. Executes Bridge CLI, captures exit code
+6. Uploads SARIF reports and diagnostics
+7. Sets Azure DevOps build status
 
-2. **Bridge CLI Management** (`bridge-cli.ts`):
-   - Downloads Bridge CLI from Black Duck artifactory based on platform (Windows/Mac/Linux)
-   - Supports versioned and latest downloads with retry logic
-   - Extracts to install directory
-   - Handles airgap mode (skips download, uses pre-installed CLI)
-   - Validates Bridge CLI executables and versions
-   - Uses `createSSLConfiguredHttpClient()` from `utility.ts` for API operations with SSL/proxy support
+### Key Source Files (`src/blackduck-security-task/`)
+- **`bridge-cli.ts`** — Downloads/validates Bridge CLI; platform-specific paths; retry logic; uses `createSSLConfiguredHttpClient()` from `utility.ts`
+- **`tools-parameter.ts`** — Builds Bridge CLI commands; generates `polaris_input.json`, `bd_input.json`, `coverity_input.json`, `srm_input.json`; handles PR comments and Fix PR
+- **`input.ts`** — Reads YAML pipeline and Classic Editor inputs; maps deprecated param names with migration warnings
+- **`validator.ts`** — Required-field checks per product; validates severities, URLs, paths
+- **`azure-service-client.ts`** — ADO API calls for PR comments and Fix PRs
+- **`utility.ts`** — Singleton HTTP client (`createSSLConfiguredHttpClient()`); version comparison helpers
+- **`proxy-utils.ts`** / **`ssl-utils.ts`** — Proxy from env vars (`HTTPS_PROXY`, `HTTP_PROXY`, `NO_PROXY`); custom CA cert support
+- **`application-constant.ts`** — All string constants and param name keys (no magic strings elsewhere)
+- **`enum/ErrorCodes.ts`** / **`enum/BuildStatus.ts`** — Exit code and build result enums
+- **`model/`** — TypeScript interfaces per product: `polaris.ts`, `blackduckSCA.ts`, `coverity.ts`, `srm.ts`, `azure.ts`, `reports.ts`
 
-3. **Input Processing** (`input.ts`):
-   - Handles dual input modes: YAML pipeline and Classic Editor
-   - Supports deprecated parameter names with migration warnings
-   - Provides fallback logic for missing application/project names
-
-4. **Tools Parameter Builder** (`tools-parameter.ts`):
-   - Creates product-specific JSON input files (`polaris_input.json`, `bd_input.json`, `coverity_input.json`, `srm_input.json`)
-   - Populates Azure-specific context (repository, branch, PR info)
-   - Handles PR comment and Fix PR features for Black Duck SCA
-   - Configures network settings, proxy, and SSL options
-   - Manages report generation settings (SARIF, JSON)
-
-5. **Validation** (`validator.ts`):
-   - Validates required parameters per scan type
-   - Verifies Bridge CLI URL matches OS platform
-   - Validates Coverity install directory paths
-   - Checks Black Duck failure severity configurations
-
-6. **Azure Integration** (`azure-service-client.ts`):
-   - Posts PR comments with security findings
-   - Creates Fix PRs for Black Duck SCA vulnerabilities
-   - Manages Azure DevOps authentication and API calls
-
-7. **Proxy and SSL Configuration** (`proxy-utils.ts`, `ssl-utils.ts`):
-   - `proxy-utils.ts`: Handles HTTP/HTTPS proxy configuration from environment variables, supports NO_PROXY
-   - `ssl-utils.ts`: Manages SSL certificate configuration including custom CA certificates
-   - Both utilities integrate to provide secure proxy connections with custom SSL certificates
-   - `utility.ts` provides singleton HTTP clients via `createSSLConfiguredHttpClient()` for API operations
-
-### Product Support Models
-Located in `src/blackduck-security-task/model/`:
-- **polaris.ts**: Polaris SAST/SCA configuration (application, project, assessment types/modes, branch, test coverage)
-- **blackduckSCA.ts**: Black Duck SCA with Detect configuration, failure severities, Fix PR data
-- **coverity.ts**: Coverity Connect configuration (user, stream, project, policy, install directory)
-- **srm.ts**: Software Risk Manager configuration
-- **reports.ts**: SARIF and JSON report settings
-- **azure.ts**: Azure DevOps context data (build reason, PR info, repository details)
-
-### Key Architectural Patterns
-- **Version-based Path Resolution**: Bridge CLI 2.0+ uses different directory structures (`integrations/` prefix) - handled in `utility.ts` with version comparisons
-- **Backward Compatibility**: Coverity configuration adapts based on Bridge CLI version (pre-2.0 vs 2.0+, pre-3.9.0 vs 3.9.0+ for PR comments)
-- **Error Code System**: Exit codes mapped in `ErrorCodes.ts` enum for standardized error handling
-- **Network Modes**:
-  - Standard: Downloads Bridge CLI from artifactory
-  - Airgap: Uses pre-installed Bridge CLI at specified directory
-- **Build Status Control**: `MARK_BUILD_STATUS` parameter determines task result (Succeeded/SucceededWithIssues/Failed) independent of scan findings
-- **Dual Input Mode**: Supports both YAML pipelines and Classic Editor with parameter name mapping and deprecation warnings
-- **Singleton HTTP Clients**: `createSSLConfiguredHttpClient()` in `utility.ts` uses singleton pattern with cache invalidation based on SSL configuration hash
+### Key Patterns
+- **Dual Input Mode** — YAML pipeline keys (snake_case) and Classic Editor keys (camelCase) both supported; deprecated names trigger `showLogForDeprecatedInputs()` warnings
+- **Version-based Behavior** — Bridge CLI 2.0+ uses `integrations/` prefix for SARIF paths; 3.9.0+ changed Coverity PR comment format; handled in `utility.ts` via semver comparisons
+- **Airgap Mode** — `ENABLE_NETWORK_AIRGAP=true` skips CLI download; `BRIDGECLI_INSTALL_DIRECTORY` must point to pre-installed CLI
+- **Build Status Control** — `MARK_BUILD_STATUS` maps to ADO task result (Succeeded/SucceededWithIssues/Failed) independently of scan findings
+- **Singleton HTTP Client** — `createSSLConfiguredHttpClient()` caches client per SSL config hash; invalidated on config change
+- **SARIF Upload** — Only for non-PR events; path varies by Bridge CLI version
 
 ### Extension Metadata
-- **vss-extension.json**: Defines Azure DevOps extension manifest (version, publisher, task contributions)
-- **task.json**: Defines task inputs/outputs, execution handler, categories visible in Azure Pipeline UI
+- **`vss-extension.json`** — ADO extension manifest (version, publisher, contributions)
+- **`task.json`** — Task inputs/outputs, execution handler for Azure Pipeline UI
+- **`tsconfig.json`** — ES6 target, CommonJS modules, output to `lib/`
 
-## Important Notes
+## Adding a New Input Parameter
+1. Add constant in `application-constant.ts`
+2. Read in `input.ts`
+3. Update model interface in `model/`
+4. Build into command in `tools-parameter.ts`
+5. Validate in `validator.ts`
+6. Add unit tests in `test/unit/blackduck-security-task/`
 
-### Bridge CLI Version Handling
-- Version 2.0+ introduced breaking changes in directory structure
-- Version 3.9.0+ introduced new Coverity PR comment format
-- Version detection from `versions.txt` file is critical for correct path resolution
-- SARIF file paths, Coverity config, and Detect source upload behavior all vary by version
-- Assessment mode deprecation warning shown for Bridge CLI 2.5.0+
+## Supporting a New Security Product
+1. Create model interface in `src/blackduck-security-task/model/{product}.ts`
+2. Add product key constant in `application-constant.ts`
+3. Add validator function in `validator.ts`
+4. Implement command builder in `tools-parameter.ts`
+5. Update `bridge-cli.ts` to include product in command building
+6. Add inputs to `task.json` and `vss-extension.json`
+7. Add unit tests in `test/unit/blackduck-security-task/`
 
-### Input Parameter Migration
-The extension supports both new and deprecated parameter names. When deprecated parameters are used, migration warnings are logged via `showLogForDeprecatedInputs()`.
+## Configuration Files
 
-### Network Airgap Mode
-When `ENABLE_NETWORK_AIRGAP` is true:
-- Bridge CLI download is skipped
-- `BRIDGECLI_INSTALL_DIRECTORY` must point to pre-installed Bridge CLI
-- Version validation still occurs from the install directory
+- `tsconfig.json` — TypeScript compiler: ES6 target, CommonJS, output to `lib/`
+- `tsconfig-int-test.json` — Separate config for integration test compilation
+- `eslint.config.mjs` — ESLint flat config for `src/**/*.ts`
+- `package.json` — Scripts, dependencies (azure-pipelines-task-lib, node-fetch, etc.)
+- `task.json` — ADO task manifest: inputs, outputs, execution handler for Pipeline UI
+- `vss-extension.json` — ADO extension manifest: version, publisher, task contributions
 
-### SARIF Report Generation
-- Only uploaded as artifacts for non-PR events
-- Path varies based on Bridge CLI version (pre-2.0 vs 2.0+)
-- Controlled by product-specific flags: `BLACKDUCKSCA_REPORTS_SARIF_CREATE`, `POLARIS_REPORTS_SARIF_CREATE`
+## Azure DevOps Environment Variables
 
-### Proxy and SSL Support
-- Proxy configuration read from standard environment variables: `HTTPS_PROXY`, `HTTP_PROXY`, `NO_PROXY`
-- Custom CA certificates supported via `NETWORK_SSL_CERT_FILE` task parameter
-- Custom CAs are combined with system CAs for proper certificate chain validation
-- SSL verification can be disabled via `NETWORK_SSL_TRUST_ALL` (not recommended for production)
-- HTTP client singleton pattern with cache invalidation ensures configuration changes are applied
+Consumed via `tl.getVariable()` (azure-pipelines-task-lib), defined in `AZURE_ENVIRONMENT_VARIABLES` in `model/azure.ts`:
 
-### Testing Approach
-- Unit tests use Mocha/Chai/Sinon with ts-node
-- Coverage reporting via nyc
-- Integration tests require separate tsconfig (`tsconfig-int-test.json`)
+| Variable | ADO System Variable |
+|---|---|
+| Collection URI | `System.CollectionUri` |
+| Project | `System.TeamProject` |
+| Repository | `Build.Repository.Name` |
+| Build reason | `Build.Reason` |
+| PR number | `System.PullRequest.PullRequestId` |
+| PR source branch | `System.PullRequest.SourceBranch` |
+| PR target branch | `System.PullRequest.TargetBranch` |
+| Temp directory | `Agent.TempDirectory` |
+
+Proxy env vars (`HTTPS_PROXY`, `HTTP_PROXY`, `NO_PROXY`, and lowercase variants) read directly from `process.env` in `proxy-utils.ts`.
+
+## Testing
+- Framework: Mocha + Chai + Sinon, transpiled via ts-node
+- Coverage: nyc (html + text reporters)
+- Integration tests use `tsconfig-int-test.json` and require `npm run integraionTestBuild` first
