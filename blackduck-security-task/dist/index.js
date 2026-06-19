@@ -21518,17 +21518,14 @@ exports.debug = debug; // for test
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
         function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
         function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.HttpClient = exports.HttpClientResponse = exports.HttpCodes = void 0;
-exports.isHttps = isHttps;
 const url = __nccwpck_require__(7310);
 const http = __nccwpck_require__(3685);
 const https = __nccwpck_require__(5687);
@@ -21564,10 +21561,10 @@ var HttpCodes;
     HttpCodes[HttpCodes["BadGateway"] = 502] = "BadGateway";
     HttpCodes[HttpCodes["ServiceUnavailable"] = 503] = "ServiceUnavailable";
     HttpCodes[HttpCodes["GatewayTimeout"] = 504] = "GatewayTimeout";
-})(HttpCodes || (exports.HttpCodes = HttpCodes = {}));
+})(HttpCodes = exports.HttpCodes || (exports.HttpCodes = {}));
 const HttpRedirectCodes = [HttpCodes.MovedPermanently, HttpCodes.ResourceMoved, HttpCodes.SeeOther, HttpCodes.TemporaryRedirect, HttpCodes.PermanentRedirect];
 const HttpResponseRetryCodes = [HttpCodes.BadGateway, HttpCodes.ServiceUnavailable, HttpCodes.GatewayTimeout];
-const NetworkRetryErrors = ['ECONNRESET', 'ENOTFOUND', 'ESOCKETTIMEDOUT', 'ETIMEDOUT', 'ECONNREFUSED', 'EHOSTUNREACH'];
+const NetworkRetryErrors = ['ECONNRESET', 'ENOTFOUND', 'ESOCKETTIMEDOUT', 'ETIMEDOUT', 'ECONNREFUSED'];
 const RetryableHttpVerbs = ['OPTIONS', 'GET', 'DELETE', 'HEAD'];
 const ExponentialBackoffCeiling = 10;
 const ExponentialBackoffTimeSlice = 5;
@@ -21608,6 +21605,7 @@ function isHttps(requestUrl) {
     let parsedUrl = url.parse(requestUrl);
     return parsedUrl.protocol === 'https:';
 }
+exports.isHttps = isHttps;
 var EnvironmentVariables;
 (function (EnvironmentVariables) {
     EnvironmentVariables["HTTP_PROXY"] = "HTTP_PROXY";
@@ -21624,10 +21622,6 @@ class HttpClient {
         this._maxRetries = 1;
         this._keepAlive = false;
         this._disposed = false;
-        this._httpGlobalAgentOptions = {
-            keepAlive: false,
-            timeout: 30000
-        };
         this.userAgent = userAgent;
         this.handlers = handlers || [];
         let no_proxy = process.env[EnvironmentVariables.NO_PROXY];
@@ -21649,9 +21643,6 @@ class HttpClient {
                 requestOptions.proxy.proxyBypassHosts.forEach(bypass => {
                     this._httpProxyBypassHosts.push(new RegExp(bypass, 'i'));
                 });
-            }
-            if (requestOptions.globalAgentOptions) {
-                this._httpGlobalAgentOptions = requestOptions.globalAgentOptions;
             }
             this._certConfig = requestOptions.cert;
             if (this._certConfig) {
@@ -21963,11 +21954,7 @@ class HttpClient {
         }
         // if not using private agent and tunnel agent isn't setup then use global agent
         if (!agent) {
-            const globalAgentOptions = {
-                keepAlive: this._httpGlobalAgentOptions.keepAlive,
-                timeout: this._httpGlobalAgentOptions.timeout
-            };
-            agent = usingSsl ? new https.Agent(globalAgentOptions) : new http.Agent(globalAgentOptions);
+            agent = usingSsl ? https.globalAgent : http.globalAgent;
         }
         if (usingSsl && this._ignoreSslError) {
             // we don't want to set NODE_TLS_REJECT_UNAUTHORIZED=0 since that will affect request for entire process
@@ -22041,19 +22028,14 @@ exports.HttpClient = HttpClient;
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
         function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
         function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.getUrl = getUrl;
-exports.decompressGzippedContent = decompressGzippedContent;
-exports.buildProxyBypassRegexFromEnv = buildProxyBypassRegexFromEnv;
-exports.obtainContentCharset = obtainContentCharset;
 const qs = __nccwpck_require__(2760);
 const url = __nccwpck_require__(7310);
 const path = __nccwpck_require__(1017);
@@ -22091,6 +22073,7 @@ function getUrl(resource, baseUrl, queryParams) {
         getUrlWithParsedQueryParams(requestUrl, queryParams) :
         requestUrl;
 }
+exports.getUrl = getUrl;
 /**
  *
  * @param {string} requestUrl
@@ -22140,6 +22123,7 @@ function decompressGzippedContent(buffer, charset) {
         }));
     });
 }
+exports.decompressGzippedContent = decompressGzippedContent;
 /**
  * Builds a RegExp to test urls against for deciding
  * wether to bypass proxy from an entry of the
@@ -22161,6 +22145,7 @@ function buildProxyBypassRegexFromEnv(bypass) {
         throw err;
     }
 }
+exports.buildProxyBypassRegexFromEnv = buildProxyBypassRegexFromEnv;
 /**
  * Obtain Response's Content Charset.
  * Through inspecting `content-type` response header.
@@ -22179,11 +22164,9 @@ function obtainContentCharset(response) {
     const nodeSupportedEncodings = ['ascii', 'utf8', 'utf16le', 'ucs2', 'base64', 'binary', 'hex'];
     const contentType = response.message.headers['content-type'] || '';
     const matches = contentType.match(/charset=([^;,\r\n]+)/i);
-    if (matches && matches[1] && nodeSupportedEncodings.indexOf(matches[1]) != -1) {
-        return matches[1];
-    }
-    return 'utf-8';
+    return (matches && matches[1] && nodeSupportedEncodings.indexOf(matches[1]) != -1) ? matches[1] : 'utf-8';
 }
+exports.obtainContentCharset = obtainContentCharset;
 
 
 /***/ }),
