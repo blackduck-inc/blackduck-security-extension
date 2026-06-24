@@ -44,6 +44,7 @@ describe("Bridge CLI Tools Parameter test", () => {
             Object.defineProperty(inputs, 'POLARIS_TEST_SAST_TYPE', {value: ''})
             Object.defineProperty(inputs, 'POLARIS_TEST_SCA_LOCATION', {value: ''})
             Object.defineProperty(inputs, 'POLARIS_TEST_SAST_LOCATION', {value: ''})
+            Object.defineProperty(inputs, 'POLARIS_CONTAINER_NAME', {value: ''})
             Object.defineProperty(inputs, 'POLARIS_PR_COMMENT_ENABLED', {value: ''})
             Object.defineProperty(inputs, 'POLARIS_PR_COMMENT_SEVERITIES', {value: []})
             Object.defineProperty(inputs, 'POLARIS_FIXPR_ENABLED', {value: ''})
@@ -390,6 +391,42 @@ describe("Bridge CLI Tools Parameter test", () => {
             const jsonData = JSON.parse(jsonString);
             expect(jsonData.data.polaris.artifactToUpload).to.be.undefined;
 
+            expect(formattedCommand).contains('--stage polaris');
+        });
+
+        it('should success for polaris command formation with polaris container name param', async function () {
+            Object.defineProperty(inputs, 'POLARIS_SERVER_URL', {value: 'server_url'})
+            Object.defineProperty(inputs, 'POLARIS_ACCESS_TOKEN', {value: 'access_token'})
+            Object.defineProperty(inputs, 'POLARIS_ASSESSMENT_TYPES', {value: ['SCA']})
+            Object.defineProperty(inputs, 'POLARIS_APPLICATION_NAME', {value: 'POLARIS_APPLICATION_NAME'})
+            Object.defineProperty(inputs, 'POLARIS_PROJECT_NAME', {value: 'POLARIS_PROJECT_NAME'})
+            Object.defineProperty(inputs, 'POLARIS_BRANCH_NAME', {value: 'feature1'})
+            Object.defineProperty(inputs, 'POLARIS_TEST_SCA_TYPE', {value: 'SCA-CONTAINER'})
+            Object.defineProperty(inputs, 'POLARIS_CONTAINER_NAME', {value: 'my-image:latest'})
+
+            const formattedCommand = await bridgeToolsParameter.getFormattedCommandForPolaris();
+
+            const jsonString = fs.readFileSync(polarisStateFile, 'utf-8');
+            const jsonData = JSON.parse(jsonString);
+            expect(jsonData.data.polaris.test.sca.type).to.be.equals('SCA-CONTAINER');
+            expect(jsonData.data.polaris.container.name).to.be.equals('my-image:latest');
+            expect(formattedCommand).contains('--stage polaris');
+        });
+
+        it('should not set polaris container when container name is empty', async function () {
+            Object.defineProperty(inputs, 'POLARIS_SERVER_URL', {value: 'server_url'})
+            Object.defineProperty(inputs, 'POLARIS_ACCESS_TOKEN', {value: 'access_token'})
+            Object.defineProperty(inputs, 'POLARIS_ASSESSMENT_TYPES', {value: ['SCA']})
+            Object.defineProperty(inputs, 'POLARIS_APPLICATION_NAME', {value: 'POLARIS_APPLICATION_NAME'})
+            Object.defineProperty(inputs, 'POLARIS_PROJECT_NAME', {value: 'POLARIS_PROJECT_NAME'})
+            Object.defineProperty(inputs, 'POLARIS_BRANCH_NAME', {value: 'feature1'})
+            Object.defineProperty(inputs, 'POLARIS_CONTAINER_NAME', {value: ''})
+
+            const formattedCommand = await bridgeToolsParameter.getFormattedCommandForPolaris();
+
+            const jsonString = fs.readFileSync(polarisStateFile, 'utf-8');
+            const jsonData = JSON.parse(jsonString);
+            expect(jsonData.data.polaris.container).to.be.undefined;
             expect(formattedCommand).contains('--stage polaris');
         });
 
