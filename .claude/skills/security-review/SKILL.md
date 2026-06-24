@@ -1,5 +1,5 @@
 ---
-name: extension-security-review
+name: security-review
 description: Use when doing a security review of the Black Duck Security Scan ADO extension. Covers SAST-level checks specific to this codebase — secret/credential logging, command injection, path traversal, TLS bypass, insecure HTTP clients, token leakage in files, proxy credential exposure, input injection into JSON payloads, and ADO pipeline variable security. Produces findings with file:line citations and remediation steps.
 ---
 

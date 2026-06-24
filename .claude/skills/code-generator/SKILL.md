@@ -1,5 +1,5 @@
 ---
-name: extension-code-generator
+name: code-generator
 description: Use when implementing any new task in the Black Duck Security Scan ADO extension — adding a product, adding/deprecating a parameter, adding Classic UI support, writing unit tests, upgrading dependencies, upgrading Node.js version, or any other extension feature work. Produces complete, file-accurate implementation steps grounded in existing patterns.
 ---
 

@@ -1,5 +1,5 @@
 ---
-name: extension-code-explainer
+name: code-explainer
 description: Use when asked to explain how any part of the Black Duck Security Scan ADO extension works — entry flow, product scan setup, Bridge CLI integration, input handling, PR comments, Fix PRs, SARIF upload, airgap mode, proxy/SSL, or version compatibility. Produces a precise, file-linked explanation grounded in the actual source.
 ---
 

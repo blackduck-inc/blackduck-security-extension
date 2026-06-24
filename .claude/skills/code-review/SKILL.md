@@ -1,5 +1,5 @@
 ---
-name: extension-code-review
+name: code-review
 description: Use when reviewing changes to the Black Duck Security Scan ADO extension. Checks coding standards, established patterns, and backward compatibility — covering input handling, version-gated behavior, Classic Editor parity, error construction, HTTP client usage, task.json integrity, and test coverage. Flags deviations with file:line citations and prescribes the correct pattern.
 ---
 
