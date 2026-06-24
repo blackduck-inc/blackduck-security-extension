@@ -1,5 +1,5 @@
 ---
-name: task-analyzer
+name: extension-task-analyzer
 description: Use when asked to analyze what changes are needed to implement a new feature in the Black Duck Security Scan ADO extension. Reads the codebase, maps every file that must change, identifies breakage risks, and writes a structured changes.md file with a prioritized change plan and risk table. Trigger on "analyze this feature", "what needs to change for X", "plan this implementation", "impact analysis for X".
 ---
 
