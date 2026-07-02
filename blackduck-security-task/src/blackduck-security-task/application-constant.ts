@@ -492,7 +492,7 @@ export const MIN_SUPPORTED_BRIDGE_CLI_MAC_ARM_VERSION = "2.1.0";
 export const MIN_SUPPORTED_BRIDGE_CLI_LINUX_ARM_VERSION = "3.5.1";
 export const DEFAULT_AZURE_API_URL = "https://dev.azure.com";
 export const BLACKDUCKSCA_SECURITY_SCAN_AZURE_DEVOPS_DOCS_URL =
-  "https://documentation.blackduck.com/bundle/bridge/page/documentation/c_additional-azure-parameters.html";
+  "https://docs.blackduck.com/r/bridge/latest/bridge-cli-guide/additional-azure-devops-configuration.html";
 export const NETWORK_SSL_CERT_FILE_KEY = "network_ssl_cert_file";
 export const NETWORK_SSL_CERT_FILE_KEY_CLASSIC_EDITOR = "networkSslCertFile";
 export const NETWORK_SSL_TRUST_ALL_KEY = "network_ssl_trustAll";
