@@ -15,4 +15,4 @@ To use Black Duck Security Scan, please follow the steps below:
 3. For additional configuration options, visit the [Additional Azure Configuration](https://docs.blackduck.com/r/bridge/latest/bridge-cli-guide/additional-azure-devops-configuration.html) page.
 
 As an alternative to Black Duck Security Scan, you also have the option to use Bridge CLI. <br/>
-Detailed documentation for Bridge CLI can be found [here](https://docs.blackduck.com/r/bridge/latest/bridge-cli-guide/bridge-product-overview.html).
+Detailed documentation for Bridge CLI can be found [here](https://docs.blackduck.com/r/bridge/latest/bridge-cli-guide/azure-devops-black-duck-security-scan-extension-for-azure-devops.html).
