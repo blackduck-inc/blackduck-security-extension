@@ -7,12 +7,12 @@ Black Duck Security Scan leverages Bridge CLI, allowing you to run tests for sev
 
 To use Black Duck Security Scan, please follow the steps below:
 
-1. Configure Azure DevOps as described in the [Azure Prerequisites](https://documentation.blackduck.com/bundle/bridge/page/documentation/c_azure-prerequisites.html) page.
+1. Configure Azure DevOps as described in the [Azure Prerequisites](https://docs.blackduck.com/r/bridge/latest/bridge-cli-guide/setting-up-black-duck-security-scan-extension.html) page.
 2. Install and configure Black Duck Security Scan for the Black Duck product you are using. <br/>
-[Polaris](https://documentation.blackduck.com/bundle/bridge/page/documentation/c_azure-with-polaris.html) <br/>
-[Black Duck SCA](https://documentation.blackduck.com/bundle/bridge/page/documentation/c_azure-with-blackduck.html)  <br/>
-[Coverity](https://documentation.blackduck.com/bundle/bridge/page/documentation/c_azure-with-coverity.html) <br/>
-3. For additional configuration options, visit the [Additional Azure Configuration](https://documentation.blackduck.com/bundle/bridge/page/documentation/c_additional-azure-parameters.html) page.
+[Polaris](https://docs.blackduck.com/r/bridge/latest/bridge-cli-guide/using-the-black-duck-security-scan-extension-with-polaris.html) <br/>
+[Black Duck SCA](https://docs.blackduck.com/r/bridge/latest/bridge-cli-guide/using-the-black-duck-security-scan-extension-with-black-duck-sca.html)  <br/>
+[Coverity](https://docs.blackduck.com/r/bridge/latest/bridge-cli-guide/using-the-black-duck-security-scan-extension-with-coverity.html) <br/>
+3. For additional configuration options, visit the [Additional Azure Configuration](https://docs.blackduck.com/r/bridge/latest/bridge-cli-guide/additional-azure-devops-configuration.html) page.
 
 As an alternative to Black Duck Security Scan, you also have the option to use Bridge CLI. <br/>
-Detailed documentation for Bridge CLI can be found [here](https://documentation.blackduck.com/bundle/bridge/page/documentation/c_overview.html).
+Detailed documentation for Bridge CLI can be found [here](https://docs.blackduck.com/r/bridge/latest/bridge-cli-guide/bridge-product-overview.html).
