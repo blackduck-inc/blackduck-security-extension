@@ -122,6 +122,9 @@ export const POLARIS_ARTIFACTTOUPLOAD_KEY = "polaris_artifactToUpload";
 export const POLARIS_ARTIFACTTOUPLOAD_KEY_CLASSIC_EDITOR =
   "polarisArtifactToUpload";
 
+export const POLARIS_CONTAINER_NAME_KEY = "polaris_container_name";
+export const POLARIS_CONTAINER_NAME_KEY_CLASSIC_EDITOR = "polarisContainerName";
+
 export const POLARIS_WAITFORSCAN_KEY = "polaris_waitForScan";
 export const POLARIS_WAITFORSCAN_KEY_CLASSIC_EDITOR = "polarisWaitForScan";
 

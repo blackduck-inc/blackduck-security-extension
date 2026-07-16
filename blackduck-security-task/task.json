@@ -254,6 +254,16 @@
       "groupName": "scanConfiguration"
     },
     {
+      "name": "polarisContainerName",
+      "type": "string",
+      "label": "Container Name",
+      "defaultValue": "",
+      "required": false,
+      "visibleRule": "scanType = polaris",
+      "helpMarkDown": "Container name to use as scan target for Polaris SCA Container scan. This is required when using SCA-CONTAINER as the SCA Test Type.",
+      "groupName": "scanConfiguration"
+    },
+    {
       "name": "polarisTestSastType",
       "type": "string",
       "label": "SAST Test Type",

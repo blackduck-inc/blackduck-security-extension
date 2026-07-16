@@ -31,6 +31,11 @@ export interface PolarisData extends AsyncMode {
   reports?: Reports;
   test?: Test;
   artifactToUpload?: string;
+  container?: Container;
+}
+
+export interface Container {
+  name?: string;
 }
 export interface TestTypeLocation {
   type?: string | string[];
