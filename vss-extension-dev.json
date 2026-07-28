@@ -3,7 +3,7 @@
   "id": "blackduck-security-scan",
   "name": "Black Duck Security Scan",
   "version": "2.9.0",
-  "publisher": "QATPublisherBlackduck",
+  "publisher": "bd-e2e-publisher",
   "targets": [
     {
       "id": "Microsoft.VisualStudio.Services",
