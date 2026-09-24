@@ -2838,17 +2838,7 @@ class BridgeCliToolsParameter {
                         polData.data.polaris.prcomment.severities =
                             inputs.POLARIS_PR_COMMENT_SEVERITIES.filter((severity) => severity).map((severity) => severity.trim());
                     }
-                    const prCommentFilterIssueTypes = [];
-                    if (inputs.POLARIS_PR_COMMENT_FILTER_ISSUETYPES &&
-                        inputs.POLARIS_PR_COMMENT_FILTER_ISSUETYPES != null &&
-                        inputs.POLARIS_PR_COMMENT_FILTER_ISSUETYPES.length > 0) {
-                        for (const prCommentIssueType of inputs.POLARIS_PR_COMMENT_FILTER_ISSUETYPES) {
-                            if (prCommentIssueType != null &&
-                                prCommentIssueType.trim() !== "") {
-                                prCommentFilterIssueTypes.push(prCommentIssueType.trim());
-                            }
-                        }
-                    }
+                    const prCommentFilterIssueTypes = this.parseCommaSeparatedList(inputs.POLARIS_PR_COMMENT_FILTER_ISSUETYPES);
                     if (prCommentFilterIssueTypes.length > 0) {
                         polData.data.polaris.prcomment.filter = {
                             issueTypes: prCommentFilterIssueTypes,
@@ -3240,26 +3230,8 @@ class BridgeCliToolsParameter {
                 }
             }
         }
-        const fixPRFilterIssueTypes = [];
-        if (inputs.POLARIS_FIXPR_FILTER_ISSUETYPES &&
-            inputs.POLARIS_FIXPR_FILTER_ISSUETYPES != null &&
-            inputs.POLARIS_FIXPR_FILTER_ISSUETYPES.length > 0) {
-            for (const fixPrIssueType of inputs.POLARIS_FIXPR_FILTER_ISSUETYPES) {
-                if (fixPrIssueType != null && fixPrIssueType.trim() !== "") {
-                    fixPRFilterIssueTypes.push(fixPrIssueType.trim());
-                }
-            }
-        }
-        const fixPRFilterConfidence = [];
-        if (inputs.POLARIS_FIXPR_FILTER_CONFIDENCE &&
-            inputs.POLARIS_FIXPR_FILTER_CONFIDENCE != null &&
-            inputs.POLARIS_FIXPR_FILTER_CONFIDENCE.length > 0) {
-            for (const fixPrConfidence of inputs.POLARIS_FIXPR_FILTER_CONFIDENCE) {
-                if (fixPrConfidence != null && fixPrConfidence.trim() !== "") {
-                    fixPRFilterConfidence.push(fixPrConfidence.trim());
-                }
-            }
-        }
+        const fixPRFilterIssueTypes = this.parseCommaSeparatedList(inputs.POLARIS_FIXPR_FILTER_ISSUETYPES);
+        const fixPRFilterConfidence = this.parseCommaSeparatedList(inputs.POLARIS_FIXPR_FILTER_CONFIDENCE);
         if (fixPRFilterSeverities.length > 0 ||
             fixPRFilterIssueTypes.length > 0 ||
             fixPRFilterConfidence.length > 0) {
@@ -3679,6 +3651,17 @@ class BridgeCliToolsParameter {
             network.ssl.trustAll = (0, utility_1.parseToBoolean)(inputs.NETWORK_SSL_TRUST_ALL);
         }
         return network;
+    }
+    parseCommaSeparatedList(input) {
+        const result = [];
+        if (input && input.length > 0) {
+            for (const item of input) {
+                if (item != null && item.trim() !== "") {
+                    result.push(item.trim());
+                }
+            }
+        }
+        return result;
     }
 }
 exports.BridgeCliToolsParameter = BridgeCliToolsParameter;
