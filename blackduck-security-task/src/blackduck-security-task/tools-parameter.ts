@@ -297,21 +297,9 @@ export class BridgeCliToolsParameter {
             ).map((severity) => severity.trim());
         }
 
-        const prCommentFilterIssueTypes: string[] = [];
-        if (
-          inputs.POLARIS_PR_COMMENT_FILTER_ISSUETYPES &&
-          inputs.POLARIS_PR_COMMENT_FILTER_ISSUETYPES != null &&
-          inputs.POLARIS_PR_COMMENT_FILTER_ISSUETYPES.length > 0
-        ) {
-          for (const prCommentIssueType of inputs.POLARIS_PR_COMMENT_FILTER_ISSUETYPES) {
-            if (
-              prCommentIssueType != null &&
-              prCommentIssueType.trim() !== ""
-            ) {
-              prCommentFilterIssueTypes.push(prCommentIssueType.trim());
-            }
-          }
-        }
+        const prCommentFilterIssueTypes = this.parseCommaSeparatedList(
+          inputs.POLARIS_PR_COMMENT_FILTER_ISSUETYPES
+        );
 
         if (prCommentFilterIssueTypes.length > 0) {
           polData.data.polaris.prcomment.filter = {
@@ -860,31 +848,13 @@ export class BridgeCliToolsParameter {
       }
     }
 
-    const fixPRFilterIssueTypes: string[] = [];
-    if (
-      inputs.POLARIS_FIXPR_FILTER_ISSUETYPES &&
-      inputs.POLARIS_FIXPR_FILTER_ISSUETYPES != null &&
-      inputs.POLARIS_FIXPR_FILTER_ISSUETYPES.length > 0
-    ) {
-      for (const fixPrIssueType of inputs.POLARIS_FIXPR_FILTER_ISSUETYPES) {
-        if (fixPrIssueType != null && fixPrIssueType.trim() !== "") {
-          fixPRFilterIssueTypes.push(fixPrIssueType.trim());
-        }
-      }
-    }
+    const fixPRFilterIssueTypes = this.parseCommaSeparatedList(
+      inputs.POLARIS_FIXPR_FILTER_ISSUETYPES
+    );
 
-    const fixPRFilterConfidence: string[] = [];
-    if (
-      inputs.POLARIS_FIXPR_FILTER_CONFIDENCE &&
-      inputs.POLARIS_FIXPR_FILTER_CONFIDENCE != null &&
-      inputs.POLARIS_FIXPR_FILTER_CONFIDENCE.length > 0
-    ) {
-      for (const fixPrConfidence of inputs.POLARIS_FIXPR_FILTER_CONFIDENCE) {
-        if (fixPrConfidence != null && fixPrConfidence.trim() !== "") {
-          fixPRFilterConfidence.push(fixPrConfidence.trim());
-        }
-      }
-    }
+    const fixPRFilterConfidence = this.parseCommaSeparatedList(
+      inputs.POLARIS_FIXPR_FILTER_CONFIDENCE
+    );
 
     if (
       fixPRFilterSeverities.length > 0 ||
@@ -1455,5 +1425,17 @@ export class BridgeCliToolsParameter {
       network.ssl.trustAll = parseToBoolean(inputs.NETWORK_SSL_TRUST_ALL);
     }
     return network;
+  }
+
+  private parseCommaSeparatedList(input: string[] | undefined): string[] {
+    const result: string[] = [];
+    if (input && input.length > 0) {
+      for (const item of input) {
+        if (item != null && item.trim() !== "") {
+          result.push(item.trim());
+        }
+      }
+    }
+    return result;
   }
 }
