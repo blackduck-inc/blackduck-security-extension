@@ -296,6 +296,28 @@ export class BridgeCliToolsParameter {
               (severity) => severity
             ).map((severity) => severity.trim());
         }
+
+        const prCommentFilterIssueTypes: string[] = [];
+        if (
+          inputs.POLARIS_PR_COMMENT_FILTER_ISSUETYPES &&
+          inputs.POLARIS_PR_COMMENT_FILTER_ISSUETYPES != null &&
+          inputs.POLARIS_PR_COMMENT_FILTER_ISSUETYPES.length > 0
+        ) {
+          for (const prCommentIssueType of inputs.POLARIS_PR_COMMENT_FILTER_ISSUETYPES) {
+            if (
+              prCommentIssueType != null &&
+              prCommentIssueType.trim() !== ""
+            ) {
+              prCommentFilterIssueTypes.push(prCommentIssueType.trim());
+            }
+          }
+        }
+
+        if (prCommentFilterIssueTypes.length > 0) {
+          polData.data.polaris.prcomment.filter = {
+            issueTypes: prCommentFilterIssueTypes,
+          };
+        }
       }
     }
 
@@ -837,8 +859,50 @@ export class BridgeCliToolsParameter {
         }
       }
     }
-    if (fixPRFilterSeverities.length > 0) {
-      polarisFixPrData.filter = { severities: fixPRFilterSeverities };
+
+    const fixPRFilterIssueTypes: string[] = [];
+    if (
+      inputs.POLARIS_FIXPR_FILTER_ISSUETYPES &&
+      inputs.POLARIS_FIXPR_FILTER_ISSUETYPES != null &&
+      inputs.POLARIS_FIXPR_FILTER_ISSUETYPES.length > 0
+    ) {
+      for (const fixPrIssueType of inputs.POLARIS_FIXPR_FILTER_ISSUETYPES) {
+        if (fixPrIssueType != null && fixPrIssueType.trim() !== "") {
+          fixPRFilterIssueTypes.push(fixPrIssueType.trim());
+        }
+      }
+    }
+
+    const fixPRFilterConfidence: string[] = [];
+    if (
+      inputs.POLARIS_FIXPR_FILTER_CONFIDENCE &&
+      inputs.POLARIS_FIXPR_FILTER_CONFIDENCE != null &&
+      inputs.POLARIS_FIXPR_FILTER_CONFIDENCE.length > 0
+    ) {
+      for (const fixPrConfidence of inputs.POLARIS_FIXPR_FILTER_CONFIDENCE) {
+        if (fixPrConfidence != null && fixPrConfidence.trim() !== "") {
+          fixPRFilterConfidence.push(fixPrConfidence.trim());
+        }
+      }
+    }
+
+    if (
+      fixPRFilterSeverities.length > 0 ||
+      fixPRFilterIssueTypes.length > 0 ||
+      fixPRFilterConfidence.length > 0
+    ) {
+      if (!polarisFixPrData.filter) {
+        polarisFixPrData.filter = {};
+      }
+      if (fixPRFilterSeverities.length > 0) {
+        polarisFixPrData.filter.severities = fixPRFilterSeverities;
+      }
+      if (fixPRFilterIssueTypes.length > 0) {
+        polarisFixPrData.filter.issueTypes = fixPRFilterIssueTypes;
+      }
+      if (fixPRFilterConfidence.length > 0) {
+        polarisFixPrData.filter.confidence = fixPRFilterConfidence;
+      }
     }
     return polarisFixPrData;
   }

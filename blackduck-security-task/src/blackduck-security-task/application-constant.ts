@@ -73,6 +73,22 @@ export const POLARIS_FIXPR_USEUPGRADEGUIDANCE_KEY =
   "polaris_fixpr_useUpgradeGuidance";
 export const POLARIS_FIXPR_USEUPGRADEGUIDANCE_KEY_CLASSIC_EDITOR =
   "polarisFixPrUseUpgradeGuidance";
+
+export const POLARIS_FIXPR_FILTER_ISSUETYPES_KEY =
+  "polaris_fixpr_filter_issueTypes";
+export const POLARIS_FIXPR_FILTER_ISSUETYPES_KEY_CLASSIC_EDITOR =
+  "polarisFixPrFilterIssueTypes";
+
+export const POLARIS_FIXPR_FILTER_CONFIDENCE_KEY =
+  "polaris_fixpr_filter_confidence";
+export const POLARIS_FIXPR_FILTER_CONFIDENCE_KEY_CLASSIC_EDITOR =
+  "polarisFixPrFilterConfidence";
+
+export const POLARIS_PR_COMMENT_FILTER_ISSUETYPES_KEY =
+  "polaris_prComment_filter_issueTypes";
+export const POLARIS_PR_COMMENT_FILTER_ISSUETYPES_KEY_CLASSIC_EDITOR =
+  "polarisPrCommentFilterIssueTypes";
+
 export const POLARIS_REPORTS_SARIF_CREATE_KEY = "polaris_reports_sarif_create";
 export const POLARIS_REPORTS_SARIF_CREATE_KEY_CLASSIC_EDITOR =
   "polarisReportsSarifCreate";
