@@ -296,6 +296,16 @@ export class BridgeCliToolsParameter {
               (severity) => severity
             ).map((severity) => severity.trim());
         }
+
+        const prCommentFilterIssueTypes = this.parseCommaSeparatedList(
+          inputs.POLARIS_PR_COMMENT_FILTER_ISSUETYPES
+        );
+
+        if (prCommentFilterIssueTypes.length > 0) {
+          polData.data.polaris.prcomment.filter = {
+            issueTypes: prCommentFilterIssueTypes,
+          };
+        }
       }
     }
 
@@ -837,8 +847,32 @@ export class BridgeCliToolsParameter {
         }
       }
     }
-    if (fixPRFilterSeverities.length > 0) {
-      polarisFixPrData.filter = { severities: fixPRFilterSeverities };
+
+    const fixPRFilterIssueTypes = this.parseCommaSeparatedList(
+      inputs.POLARIS_FIXPR_FILTER_ISSUETYPES
+    );
+
+    const fixPRFilterConfidence = this.parseCommaSeparatedList(
+      inputs.POLARIS_FIXPR_FILTER_CONFIDENCE
+    );
+
+    if (
+      fixPRFilterSeverities.length > 0 ||
+      fixPRFilterIssueTypes.length > 0 ||
+      fixPRFilterConfidence.length > 0
+    ) {
+      if (!polarisFixPrData.filter) {
+        polarisFixPrData.filter = {};
+      }
+      if (fixPRFilterSeverities.length > 0) {
+        polarisFixPrData.filter.severities = fixPRFilterSeverities;
+      }
+      if (fixPRFilterIssueTypes.length > 0) {
+        polarisFixPrData.filter.issueTypes = fixPRFilterIssueTypes;
+      }
+      if (fixPRFilterConfidence.length > 0) {
+        polarisFixPrData.filter.confidence = fixPRFilterConfidence;
+      }
     }
     return polarisFixPrData;
   }
@@ -1391,5 +1425,17 @@ export class BridgeCliToolsParameter {
       network.ssl.trustAll = parseToBoolean(inputs.NETWORK_SSL_TRUST_ALL);
     }
     return network;
+  }
+
+  private parseCommaSeparatedList(input: string[] | undefined): string[] {
+    const result: string[] = [];
+    if (input && input.length > 0) {
+      for (const item of input) {
+        if (item != null && item.trim() !== "") {
+          result.push(item.trim());
+        }
+      }
+    }
+    return result;
   }
 }

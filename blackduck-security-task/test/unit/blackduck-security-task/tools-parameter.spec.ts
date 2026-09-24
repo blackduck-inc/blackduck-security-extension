@@ -47,9 +47,12 @@ describe("Bridge CLI Tools Parameter test", () => {
             Object.defineProperty(inputs, 'POLARIS_CONTAINER_NAME', {value: ''})
             Object.defineProperty(inputs, 'POLARIS_PR_COMMENT_ENABLED', {value: ''})
             Object.defineProperty(inputs, 'POLARIS_PR_COMMENT_SEVERITIES', {value: []})
+            Object.defineProperty(inputs, 'POLARIS_PR_COMMENT_FILTER_ISSUETYPES', {value: []})
             Object.defineProperty(inputs, 'POLARIS_FIXPR_ENABLED', {value: ''})
             Object.defineProperty(inputs, 'POLARIS_FIXPR_MAXCOUNT', {value: ''})
             Object.defineProperty(inputs, 'POLARIS_FIXPR_FILTER_SEVERITIES', {value: []})
+            Object.defineProperty(inputs, 'POLARIS_FIXPR_FILTER_ISSUETYPES', {value: []})
+            Object.defineProperty(inputs, 'POLARIS_FIXPR_FILTER_CONFIDENCE', {value: []})
             Object.defineProperty(inputs, 'POLARIS_FIXPR_USEUPGRADEGUIDANCE', {value: []})
             Object.defineProperty(inputs, 'AZURE_TOKEN', {value: ''})
             Object.defineProperty(inputs, 'COVERITY_BUILD_COMMAND', {value: ''})
@@ -589,6 +592,75 @@ describe("Bridge CLI Tools Parameter test", () => {
 
             polarisStateFile = '"'.concat(polarisStateFile).concat('"');
             expect(formattedCommand).contains('--input '.concat(polarisStateFile));
+        });
+
+        it('should success for polaris fix pr with filter issue types and confidence', async function () {
+            Object.defineProperty(inputs, 'POLARIS_SERVER_URL', {value: 'https://test.com'})
+            Object.defineProperty(inputs, 'POLARIS_ACCESS_TOKEN', {value: 'token'})
+            Object.defineProperty(inputs, 'POLARIS_FIXPR_ENABLED', {value: 'true'})
+            Object.defineProperty(inputs, 'POLARIS_FIXPR_FILTER_ISSUETYPES', {value: ['SCA', 'SAST']})
+            Object.defineProperty(inputs, 'POLARIS_FIXPR_FILTER_CONFIDENCE', {value: ['High', 'Medium']})
+            Object.defineProperty(inputs, 'AZURE_TOKEN', {value: 'token'})
+
+            const getStubVariable = sandbox.stub(taskLib, "getVariable")
+
+            getStubVariable.withArgs("System.TeamFoundationCollectionUri").returns("https://dev.azure.com/test-org/")
+            getStubVariable.withArgs("System.TeamProject").returns("test-project")
+            getStubVariable.withArgs("Build.Repository.Name").returns("test-repo")
+            getStubVariable.withArgs("Build.SourceBranch").returns("test-branch")
+
+            const formattedCommand = await bridgeToolsParameter.getFormattedCommandForPolaris();
+            const jsonString = fs.readFileSync(polarisStateFile, 'utf-8');
+            const jsonData = JSON.parse(jsonString);
+            expect(jsonData.data.polaris.fixpr.enabled).to.be.equals(true);
+            expect(jsonData.data.polaris.fixpr.filter.issueTypes).to.be.contains('SCA');
+            expect(jsonData.data.polaris.fixpr.filter.issueTypes).to.be.contains('SAST');
+            expect(jsonData.data.polaris.fixpr.filter.confidence).to.be.contains('High');
+            expect(jsonData.data.polaris.fixpr.filter.confidence).to.be.contains('Medium');
+            expect(formattedCommand).contains('--stage polaris');
+        });
+
+        it('should success for polaris pr comment with filter issue types', async function () {
+            Object.defineProperty(inputs, 'POLARIS_SERVER_URL', {value: 'https://test.com'})
+            Object.defineProperty(inputs, 'POLARIS_ACCESS_TOKEN', {value: 'token'})
+            Object.defineProperty(inputs, 'POLARIS_PR_COMMENT_ENABLED', {value: 'true'})
+            Object.defineProperty(inputs, 'POLARIS_PR_COMMENT_FILTER_ISSUETYPES', {value: ['SAST']})
+            Object.defineProperty(inputs, 'POLARIS_BRANCH_NAME', {value: 'feature1'})
+            Object.defineProperty(inputs, 'AZURE_TOKEN', {value: 'token'})
+
+            sandbox.stub(utility, 'isPullRequestEvent').returns(true);
+
+            const formattedCommand = await bridgeToolsParameter.getFormattedCommandForPolaris();
+            const jsonString = fs.readFileSync(polarisStateFile, 'utf-8');
+            const jsonData = JSON.parse(jsonString);
+            expect(jsonData.data.polaris.prcomment.enabled).to.be.true;
+            expect(jsonData.data.polaris.prcomment.filter.issueTypes).to.be.contains('SAST');
+            expect(formattedCommand).contains('--stage polaris');
+        });
+
+        it('should success for polaris fix pr with filter severities and issue types', async function () {
+            Object.defineProperty(inputs, 'POLARIS_SERVER_URL', {value: 'https://test.com'})
+            Object.defineProperty(inputs, 'POLARIS_ACCESS_TOKEN', {value: 'token'})
+            Object.defineProperty(inputs, 'POLARIS_FIXPR_ENABLED', {value: 'true'})
+            Object.defineProperty(inputs, 'POLARIS_FIXPR_FILTER_SEVERITIES', {value: ['CRITICAL', 'HIGH']})
+            Object.defineProperty(inputs, 'POLARIS_FIXPR_FILTER_ISSUETYPES', {value: ['SCA']})
+            Object.defineProperty(inputs, 'AZURE_TOKEN', {value: 'token'})
+
+            const getStubVariable = sandbox.stub(taskLib, "getVariable")
+
+            getStubVariable.withArgs("System.TeamFoundationCollectionUri").returns("https://dev.azure.com/test-org/")
+            getStubVariable.withArgs("System.TeamProject").returns("test-project")
+            getStubVariable.withArgs("Build.Repository.Name").returns("test-repo")
+            getStubVariable.withArgs("Build.SourceBranch").returns("test-branch")
+
+            const formattedCommand = await bridgeToolsParameter.getFormattedCommandForPolaris();
+            const jsonString = fs.readFileSync(polarisStateFile, 'utf-8');
+            const jsonData = JSON.parse(jsonString);
+            expect(jsonData.data.polaris.fixpr.enabled).to.be.equals(true);
+            expect(jsonData.data.polaris.fixpr.filter.severities).to.be.contains('CRITICAL');
+            expect(jsonData.data.polaris.fixpr.filter.severities).to.be.contains('HIGH');
+            expect(jsonData.data.polaris.fixpr.filter.issueTypes).to.be.contains('SCA');
+            expect(formattedCommand).contains('--stage polaris');
         });
     });
 

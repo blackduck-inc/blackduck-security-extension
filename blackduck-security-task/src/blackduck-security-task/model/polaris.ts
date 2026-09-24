@@ -55,6 +55,11 @@ export interface Branch {
 export interface PRComment {
   enabled: boolean;
   severities: string[];
+  filter?: PRCommentFilterData;
+}
+
+export interface PRCommentFilterData {
+  issueTypes?: string[];
 }
 
 export interface PolarisFixPrData {
@@ -66,6 +71,8 @@ export interface PolarisFixPrData {
 
 export interface PolarisFixPrFilterData {
   severities?: string[];
+  issueTypes?: string[];
+  confidence?: string[];
 }
 
 export interface ProjectData {

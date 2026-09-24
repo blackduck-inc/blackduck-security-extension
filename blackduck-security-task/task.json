@@ -533,6 +533,36 @@
       "groupName": "polarisFixPR"
     },
     {
+      "name": "polarisFixPrFilterIssueTypes",
+      "type": "string",
+      "label": "List of ISSUE TYPES to be filtered",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Comma-separated list of Polaris assessment types (SCA, SAST) to scope Fix PR creation to. Falls back to polaris_assessment_types when unset.",
+      "visibleRule": "polarisFixPrEnabled = true",
+      "groupName": "polarisFixPR"
+    },
+    {
+      "name": "polarisFixPrFilterConfidence",
+      "type": "string",
+      "label": "Confidence level(s) for SAST Fix PR",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Comma-separated list of confidence levels (High, Medium, Low) accepted for AI-generated SAST Fix PR fixes. SAST-only; ignored for SCA fixes. Default is \"High\".",
+      "visibleRule": "polarisFixPrEnabled = true",
+      "groupName": "polarisFixPR"
+    },
+    {
+      "name": "polarisPrCommentFilterIssueTypes",
+      "type": "string",
+      "label": "List of ISSUE TYPES to be filtered",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Comma-separated list of Polaris assessment types (SCA, SAST) to scope PR Comment creation to. Falls back to polaris_assessment_types when unset.",
+      "visibleRule": "polarisPrCommentEnabled = true",
+      "groupName": "polarisPREnable"
+    },
+    {
       "name": "coverityUrl",
       "type": "string",
       "label": "URL",
