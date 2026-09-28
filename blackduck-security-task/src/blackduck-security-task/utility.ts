@@ -56,15 +56,15 @@ export function getTempDir(): string {
 
 export async function extractZipped(
   file: string,
-  destinationPath: string
+  destinationPath: string,
 ): Promise<boolean> {
   if (file == null || file.length === 0) {
     return Promise.reject(
       new Error(
         BRIDGE_CLI_ZIP_NOT_FOUND_FOR_EXTRACT.concat(constants.SPACE).concat(
-          ErrorCode.FILE_DOES_NOT_EXIST.toString()
-        )
-      )
+          ErrorCode.FILE_DOES_NOT_EXIST.toString(),
+        ),
+      ),
     );
   }
 
@@ -73,9 +73,9 @@ export async function extractZipped(
     return Promise.reject(
       new Error(
         BRIDGE_CLI_EXTRACT_DIRECTORY_NOT_FOUND.concat(constants.SPACE).concat(
-          ErrorCode.NO_DESTINATION_DIRECTORY.toString()
-        )
-      )
+          ErrorCode.NO_DESTINATION_DIRECTORY.toString(),
+        ),
+      ),
     );
   }
 
@@ -91,7 +91,7 @@ export async function extractZipped(
 
 export async function extractZipWithQuiet(
   file: string,
-  destination?: string
+  destination?: string,
 ): Promise<string> {
   if (!file) {
     throw new Error("parameter 'file' is required");
@@ -105,13 +105,13 @@ export async function extractZipWithQuiet(
     const chcpPath = path.join(
       process.env.windir ?? "",
       "system32",
-      "chcp.com"
+      "chcp.com",
     );
     await taskLib.exec(chcpPath, "65001");
     const powershell: trm.ToolRunner = taskLib
       .tool("powershell")
       .line(
-        "-NoLogo -Sta -NoProfile -NonInteractive -ExecutionPolicy Unrestricted -Command"
+        "-NoLogo -Sta -NoProfile -NonInteractive -ExecutionPolicy Unrestricted -Command",
       )
       .arg(command);
     await powershell.exec();
@@ -145,15 +145,15 @@ export function _getAgentTemp(): string {
 
 export async function getRemoteFile(
   destFilePath: string,
-  url: string
+  url: string,
 ): Promise<DownloadFileResponse> {
   if (url == null || url.length === 0) {
     return Promise.reject(
       new Error(
         EMPTY_BRIDGE_CLI_URL.concat(constants.SPACE).concat(
-          ErrorCode.BRIDGE_CLI_URL_CANNOT_BE_EMPTY.toString()
-        )
-      )
+          ErrorCode.BRIDGE_CLI_URL_CANNOT_BE_EMPTY.toString(),
+        ),
+      ),
     );
   }
 
@@ -162,7 +162,7 @@ export async function getRemoteFile(
     fileNameFromUrl = url.substring(url.lastIndexOf("/") + 1);
     destFilePath = path.join(
       destFilePath,
-      fileNameFromUrl || BRIDGE_CLI_ZIP_FILE_NAME
+      fileNameFromUrl || BRIDGE_CLI_ZIP_FILE_NAME,
     );
   }
 
@@ -189,7 +189,7 @@ export async function getRemoteFile(
           BRIDGE_CLI_DOWNLOAD_FAILED_RETRY.concat(String(retryCountLocal))
             .concat(", Waiting: ")
             .concat(String(retryDelay / 1000))
-            .concat(" Seconds")
+            .concat(" Seconds"),
         );
         await sleep(retryDelay);
         retryDelay = retryDelay * 2;
@@ -201,8 +201,8 @@ export async function getRemoteFile(
   } while (retryCountLocal >= 0);
   return Promise.reject(
     BRIDGE_CLI_DOWNLOAD_FAILED.concat(constants.SPACE).concat(
-      ErrorCode.BRIDGE_CLI_DOWNLOAD_FAILED.toString()
-    )
+      ErrorCode.BRIDGE_CLI_DOWNLOAD_FAILED.toString(),
+    ),
   );
 }
 
@@ -241,8 +241,8 @@ export function getWorkSpaceDirectory(): string {
   } else {
     throw new Error(
       WORKSPACE_DIR_NOT_FOUND.concat(constants.SPACE).concat(
-        ErrorCode.WORKSPACE_DIRECTORY_NOT_FOUND.toString()
-      )
+        ErrorCode.WORKSPACE_DIRECTORY_NOT_FOUND.toString(),
+      ),
     );
   }
 }
@@ -255,7 +255,7 @@ export function sleep(duration: number) {
 
 export function getDefaultSarifReportPath(
   sarifReportDirectory: string,
-  appendFilePath: boolean
+  appendFilePath: boolean,
 ): string {
   const pwd = getWorkSpaceDirectory();
   return !appendFilePath
@@ -264,26 +264,26 @@ export function getDefaultSarifReportPath(
         pwd,
         constants.BRIDGE_CLI_LOCAL_DIRECTORY,
         sarifReportDirectory,
-        constants.SARIF_DEFAULT_FILE_NAME
+        constants.SARIF_DEFAULT_FILE_NAME,
       );
 }
 // Get Integration Default Sarif Report Path
 export function getIntegrationDefaultSarifReportPath(
   sarifReportDirectory: string,
-  appendFilePath: boolean
+  appendFilePath: boolean,
 ): string {
   const pwd = getWorkSpaceDirectory();
   return !appendFilePath
     ? path.join(
         pwd,
         constants.INTEGRATIONS_CLI_LOCAL_DIRECTORY,
-        sarifReportDirectory
+        sarifReportDirectory,
       )
     : path.join(
         pwd,
         constants.INTEGRATIONS_CLI_LOCAL_DIRECTORY,
         sarifReportDirectory,
-        constants.SARIF_DEFAULT_FILE_NAME
+        constants.SARIF_DEFAULT_FILE_NAME,
       );
 }
 
@@ -295,7 +295,7 @@ export function filterEmptyData(data: object) {
     value.length === 0 ||
     (typeof value === "object" && Object.keys(value).length === 0)
       ? undefined
-      : value
+      : value,
   );
 }
 
@@ -303,7 +303,7 @@ export function filterEmptyData(data: object) {
 export let IS_PR_EVENT = false;
 
 export function isPullRequestEvent(
-  azurePrResponse: AzurePrResponse | undefined
+  azurePrResponse: AzurePrResponse | undefined,
 ): boolean {
   const buildReason =
     taskLib.getVariable(AZURE_ENVIRONMENT_VARIABLES.AZURE_BUILD_REASON) || "";
@@ -344,7 +344,7 @@ export function isVersionLess(version1: string, version2: string): boolean {
 
 export function isVersionGreaterOrEqual(
   version1: string,
-  version2: string
+  version2: string,
 ): boolean {
   const v1 = coerce(version1);
   const v2 = coerce(version2);
@@ -352,7 +352,7 @@ export function isVersionGreaterOrEqual(
 }
 
 export function getMappedTaskResult(
-  buildStatus: string
+  buildStatus: string,
 ): TaskResult | undefined {
   if (equalsIgnoreCase(buildStatus, BuildStatus.Succeeded)) {
     return TaskResult.Succeeded;
@@ -363,7 +363,7 @@ export function getMappedTaskResult(
   } else {
     if (buildStatus) {
       console.log(
-        `Unsupported value for ${MARK_BUILD_STATUS_KEY}: ${buildStatus}`
+        `Unsupported value for ${MARK_BUILD_STATUS_KEY}: ${buildStatus}`,
       );
     }
     return undefined;
@@ -418,7 +418,7 @@ export function createSSLConfiguredHttpsAgent(): https.Agent {
  */
 export function createSSLConfiguredHttpClient(
   userAgent = "BlackDuckSecurityTask",
-  targetUrl?: string
+  targetUrl?: string,
 ): HttpClient {
   const currentConfigHash = getSSLConfigHash();
 
@@ -430,7 +430,7 @@ export function createSSLConfiguredHttpClient(
     !targetUrl
   ) {
     taskLib.debug(
-      `Reusing existing HttpClient instance with user agent: ${userAgent}`
+      `Reusing existing HttpClient instance with user agent: ${userAgent}`,
     );
     return _httpClientCache;
   }
@@ -448,12 +448,12 @@ export function createSSLConfiguredHttpClient(
   // Configure SSL options
   if (sslConfig.trustAllCerts) {
     taskLib.debug(
-      "SSL certificate verification disabled for HttpClient (NETWORK_SSL_TRUST_ALL=true)"
+      "SSL certificate verification disabled for HttpClient (NETWORK_SSL_TRUST_ALL=true)",
     );
     requestOptions.ignoreSslError = true;
   } else if (sslConfig.customCA) {
     taskLib.debug(
-      `Using custom CA certificate for HttpClient: ${inputs.NETWORK_SSL_CERT_FILE}`
+      `Using custom CA certificate for HttpClient: ${inputs.NETWORK_SSL_CERT_FILE}`,
     );
     try {
       // Note: typed-rest-client has limitations with combining system CAs + custom CAs
@@ -463,11 +463,11 @@ export function createSSLConfiguredHttpClient(
         caFile: inputs.NETWORK_SSL_CERT_FILE,
       };
       taskLib.debug(
-        "HttpClient configured with custom CA certificate (Note: typed-rest-client limitation - system CAs not combined)"
+        "HttpClient configured with custom CA certificate (Note: typed-rest-client limitation - system CAs not combined)",
       );
     } catch (err) {
       taskLib.warning(
-        `Failed to configure custom CA certificate, using default SSL settings: ${err}`
+        `Failed to configure custom CA certificate, using default SSL settings: ${err}`,
       );
     }
   } else {
@@ -483,7 +483,7 @@ export function createSSLConfiguredHttpClient(
   } else {
     // Fallback to environment variable detection (typed-rest-client's automatic behavior)
     taskLib.debug(
-      "No target URL provided - typed-rest-client will auto-detect proxy from environment variables"
+      "No target URL provided - typed-rest-client will auto-detect proxy from environment variables",
     );
   }
 
@@ -495,11 +495,11 @@ export function createSSLConfiguredHttpClient(
     _httpClientCache = httpClient;
     _httpClientConfigHash = currentConfigHash;
     taskLib.debug(
-      `Created and cached new HttpClient instance with user agent: ${userAgent}`
+      `Created and cached new HttpClient instance with user agent: ${userAgent}`,
     );
   } else {
     taskLib.debug(
-      `Created new URL-specific HttpClient instance (not cached) for: ${targetUrl}`
+      `Created new URL-specific HttpClient instance (not cached) for: ${targetUrl}`,
     );
   }
 
@@ -571,7 +571,7 @@ export function updateSarifFilePaths(
   workSpaceDir: string,
   productInputFileName: string,
   bridgeVersion: string,
-  productInputFilPath: string
+  productInputFilPath: string,
 ): void {
   const fileName = productInputFileName.replace(/"$/, "");
   if (fileName === "polaris_input.json") {
@@ -581,7 +581,7 @@ export function updateSarifFilePaths(
         sarifPath = path.join(
           constants.BRIDGE_CLI_LOCAL_DIRECTORY,
           constants.DEFAULT_POLARIS_SARIF_GENERATOR_DIRECTORY,
-          constants.SARIF_DEFAULT_FILE_NAME
+          constants.SARIF_DEFAULT_FILE_NAME,
         );
       } else {
         sarifPath = inputs.POLARIS_REPORTS_SARIF_FILE_PATH.trim();
@@ -590,7 +590,7 @@ export function updateSarifFilePaths(
       if (isNullOrEmptyValue(inputs.POLARIS_REPORTS_SARIF_FILE_PATH)) {
         sarifPath = path.join(
           workSpaceDir,
-          constants.INTEGRATIONS_POLARIS_DEFAULT_SARIF_FILE_PATH
+          constants.INTEGRATIONS_POLARIS_DEFAULT_SARIF_FILE_PATH,
         );
       } else {
         sarifPath = inputs.POLARIS_REPORTS_SARIF_FILE_PATH.trim();
@@ -606,7 +606,7 @@ export function updateSarifFilePaths(
         sarifPath = path.join(
           constants.BRIDGE_CLI_LOCAL_DIRECTORY,
           constants.DEFAULT_BLACKDUCK_SARIF_GENERATOR_DIRECTORY,
-          constants.SARIF_DEFAULT_FILE_NAME
+          constants.SARIF_DEFAULT_FILE_NAME,
         );
       } else {
         sarifPath = inputs.BLACKDUCKSCA_REPORTS_SARIF_FILE_PATH.trim();
@@ -615,7 +615,7 @@ export function updateSarifFilePaths(
       if (isNullOrEmptyValue(inputs.BLACKDUCKSCA_REPORTS_SARIF_FILE_PATH)) {
         sarifPath = path.join(
           workSpaceDir,
-          constants.INTEGRATIONS_BLACKDUCKSCA_DEFAULT_SARIF_FILE_PATH
+          constants.INTEGRATIONS_BLACKDUCKSCA_DEFAULT_SARIF_FILE_PATH,
         );
       } else {
         sarifPath = inputs.BLACKDUCKSCA_REPORTS_SARIF_FILE_PATH.trim();
@@ -630,7 +630,7 @@ export function updatePolarisSarifPath(
   productInputFilePath: string,
   sarifPath: string,
   fsWrapper: FileSystemWrapper = new FileSystemWrapper(),
-  logger: LoggerWrapper = new LoggerWrapper()
+  logger: LoggerWrapper = new LoggerWrapper(),
 ): void {
   try {
     // Read and parse the JSON file
@@ -671,7 +671,7 @@ export function updatePolarisSarifPath(
     // Now safely update the path
     config.data.polaris.reports.sarif.file.path = sarifPath;
     logger.debug(
-      `Updated SARIF file path to: ${config.data.polaris.reports.sarif.file.path}`
+      `Updated SARIF file path to: ${config.data.polaris.reports.sarif.file.path}`,
     );
 
     // Write back the updated JSON with proper formatting
@@ -687,7 +687,7 @@ export function updateBlackDuckSarifPath(
   productInputFilePath: string,
   sarifPath: string,
   fsWrapper: FileSystemWrapper = new FileSystemWrapper(),
-  logger: LoggerWrapper = new LoggerWrapper()
+  logger: LoggerWrapper = new LoggerWrapper(),
 ): void {
   try {
     // Read and parse the JSON file
@@ -728,7 +728,7 @@ export function updateBlackDuckSarifPath(
     // Now safely update the path
     config.data.blackducksca.reports.sarif.file.path = sarifPath;
     logger.debug(
-      `Updated SARIF file path to: ${config.data.blackducksca.reports.sarif.file.path}`
+      `Updated SARIF file path to: ${config.data.blackducksca.reports.sarif.file.path}`,
     );
 
     // Write back the updated JSON with proper formatting
@@ -741,26 +741,26 @@ export function updateBlackDuckSarifPath(
 export function formatURLString(url: string, ...args: string[]): string {
   return url.replace(
     /{(\d+)}/g,
-    (match, index) => encodeURIComponent(args[index]) || ""
+    (match, index) => encodeURIComponent(args[index]) || "",
   );
 }
 export function validateSourceUploadValue(bridgeVersion: string): void {
   if (
     isVersionGreaterOrEqual(
       bridgeVersion,
-      constants.ASSESSMENT_MODE_UNSUPPORTED_BRIDGE_VERSION
+      constants.ASSESSMENT_MODE_UNSUPPORTED_BRIDGE_VERSION,
     ) &&
     !isNullOrEmptyValue(inputs.POLARIS_ASSESSMENT_MODE)
   ) {
     console.info(
-      "INFO: polaris_assessment_mode is deprecated. Use polaris_test_sast_location=remote and/or polaris_test_sca_location=remote for source upload scans instead."
+      "INFO: polaris_assessment_mode is deprecated. Use polaris_test_sast_location=remote and/or polaris_test_sca_location=remote for source upload scans instead.",
     );
   }
 }
 export function updateCoverityConfigForBridgeVersion(
   productInputFileName: string,
   bridgeVersion: string,
-  productInputFilePath: string
+  productInputFilePath: string,
 ): void {
   const inputFileName = productInputFileName.replace(/"/g, "");
   if (inputFileName === "coverity_input.json") {
@@ -775,12 +775,12 @@ export function updateCoverityConfigForBridgeVersion(
         covData.data?.coverity?.prcomment &&
         isVersionLess(
           bridgeVersion,
-          constants.COVERITY_PRCOMMENT_NEW_FORMAT_VERSION
+          constants.COVERITY_PRCOMMENT_NEW_FORMAT_VERSION,
         )
       ) {
         // Convert new format to legacy format for Bridge CLI < 3.9.0
         console.debug(
-          `Bridge CLI version ${bridgeVersion} < 3.9.0, converting to legacy automation format`
+          `Bridge CLI version ${bridgeVersion} < 3.9.0, converting to legacy automation format`,
         );
 
         // Move prcomment to automation and remove prcomment
@@ -790,12 +790,12 @@ export function updateCoverityConfigForBridgeVersion(
         // Write the updated content back to the file
         writeFileSync(cleanFilePath, JSON.stringify(covData, null, 2));
         console.info(
-          "Converted Coverity PR comment configuration to legacy format for compatibility with Bridge CLI < 3.9.0"
+          "Converted Coverity PR comment configuration to legacy format for compatibility with Bridge CLI < 3.9.0",
         );
       }
     } catch (error) {
       console.debug(
-        `Failed to update Coverity configuration for bridge version compatibility: ${error}`
+        `Failed to update Coverity configuration for bridge version compatibility: ${error}`,
       );
     }
   }
