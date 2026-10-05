@@ -91,7 +91,7 @@ export class BridgeCliToolsParameter {
             "Invalid value for "
               .concat(constants.POLARIS_ASSESSMENT_TYPES_KEY)
               .concat(constants.SPACE)
-              .concat(ErrorCode.INVALID_POLARIS_ASSESSMENT_TYPES.toString())
+              .concat(ErrorCode.INVALID_POLARIS_ASSESSMENT_TYPES.toString()),
           );
         }
       }
@@ -161,7 +161,7 @@ export class BridgeCliToolsParameter {
         polData.data.polaris.test.sast = {
           ...(inputs.POLARIS_TEST_SAST_TYPE && {
             type: inputs.POLARIS_TEST_SAST_TYPE.split(",").map(
-              (polarisTestSastType) => polarisTestSastType.trim()
+              (polarisTestSastType) => polarisTestSastType.trim(),
             ),
           }),
           ...(inputs.POLARIS_TEST_SAST_LOCATION && {
@@ -173,7 +173,7 @@ export class BridgeCliToolsParameter {
 
     if (isBoolean(inputs.POLARIS_WAITFORSCAN)) {
       polData.data.polaris.waitForScan = parseToBoolean(
-        inputs.POLARIS_WAITFORSCAN
+        inputs.POLARIS_WAITFORSCAN,
       );
     }
 
@@ -216,7 +216,7 @@ export class BridgeCliToolsParameter {
 
         if (inputs.PROJECT_SOURCE_EXCLUDES) {
           const sourceExcludes = inputs.PROJECT_SOURCE_EXCLUDES.filter(
-            (sourceExclude) => sourceExclude && sourceExclude.trim() !== ""
+            (sourceExclude) => sourceExclude && sourceExclude.trim() !== "",
           ).map((sourceExclude) => sourceExclude.trim());
           if (sourceExcludes.length > 0) {
             polData.data.project.source.excludes = sourceExcludes;
@@ -238,14 +238,14 @@ export class BridgeCliToolsParameter {
     const azureRestAPIVersion = azureData?.restAPIVersion;
 
     const isPrCommentEnabled = parseToBoolean(
-      inputs.POLARIS_PR_COMMENT_ENABLED
+      inputs.POLARIS_PR_COMMENT_ENABLED,
     );
 
     const isFixPrEnabled = parseToBoolean(inputs.POLARIS_FIXPR_ENABLED);
 
     const azurePrResponse = await this.updateAzurePrNumberForManualTriggerFlow(
       azureData,
-      isPrCommentEnabled || isFixPrEnabled
+      isPrCommentEnabled || isFixPrEnabled,
     );
 
     const isPullRequest = isPullRequestEvent(azurePrResponse);
@@ -263,7 +263,7 @@ export class BridgeCliToolsParameter {
           "",
           "",
           "",
-          ""
+          "",
         );
       }
     }
@@ -285,7 +285,7 @@ export class BridgeCliToolsParameter {
           "",
           "",
           "",
-          ""
+          "",
         );
 
         polData.data.polaris.prcomment = { severities: [], enabled: true };
@@ -293,7 +293,7 @@ export class BridgeCliToolsParameter {
         if (inputs.POLARIS_PR_COMMENT_SEVERITIES) {
           polData.data.polaris.prcomment.severities =
             inputs.POLARIS_PR_COMMENT_SEVERITIES.filter(
-              (severity) => severity
+              (severity) => severity,
             ).map((severity) => severity.trim());
         }
       }
@@ -304,7 +304,7 @@ export class BridgeCliToolsParameter {
         polData.data.polaris.reports = this.setSarifReportsInputsForPolaris();
       } else {
         console.info(
-          "Polaris SARIF report create/upload is ignored for pull request scan"
+          "Polaris SARIF report create/upload is ignored for pull request scan",
         );
       }
     }
@@ -319,7 +319,7 @@ export class BridgeCliToolsParameter {
 
     let stateFilePath = path.join(
       this.tempDir,
-      BridgeCliToolsParameter.POLARIS_STATE_FILE_NAME
+      BridgeCliToolsParameter.POLARIS_STATE_FILE_NAME,
     );
     taskLib.writeFile(stateFilePath, inputJson);
 
@@ -331,13 +331,13 @@ export class BridgeCliToolsParameter {
     // Generate out file path
     let outFilePath = path.join(
       this.tempDir,
-      BridgeCliToolsParameter.POLARIS_OUT_FILE_NAME
+      BridgeCliToolsParameter.POLARIS_OUT_FILE_NAME,
     );
     outFilePath = '"'.concat(outFilePath).concat('"');
     taskLib.debug("Generated out json file at - ".concat(outFilePath));
 
     command = BridgeCliToolsParameter.STAGE_OPTION.concat(
-      BridgeCliToolsParameter.SPACE
+      BridgeCliToolsParameter.SPACE,
     )
       .concat(BridgeCliToolsParameter.POLARIS_STAGE)
       .concat(BridgeCliToolsParameter.SPACE)
@@ -376,7 +376,7 @@ export class BridgeCliToolsParameter {
 
     if (isBoolean(inputs.BLACKDUCKSCA_WAITFORSCAN)) {
       blackduckData.data.blackducksca.waitForScan = parseToBoolean(
-        inputs.BLACKDUCKSCA_WAITFORSCAN
+        inputs.BLACKDUCKSCA_WAITFORSCAN,
       );
     }
 
@@ -397,7 +397,7 @@ export class BridgeCliToolsParameter {
         throw new Error(
           MISSING_BOOL_VALUE.concat(constants.BLACKDUCKSCA_SCAN_FULL_KEY)
             .concat(constants.SPACE)
-            .concat(ErrorCode.MISSING_BOOLEAN_VALUE.toString())
+            .concat(ErrorCode.MISSING_BOOLEAN_VALUE.toString()),
         );
       }
     }
@@ -424,14 +424,14 @@ export class BridgeCliToolsParameter {
               .concat(constants.BLACKDUCKSCA_SCAN_FAILURE_SEVERITIES_KEY)
               .concat(constants.SPACE)
               .concat(
-                ErrorCode.INVALID_BLACKDUCKSCA_FAILURE_SEVERITIES.toString()
-              )
+                ErrorCode.INVALID_BLACKDUCKSCA_FAILURE_SEVERITIES.toString(),
+              ),
           );
         } else {
           failureSeverityEnums.push(
             BLACKDUCKSCA_SCAN_FAILURE_SEVERITIES[
               failureSeverity as keyof typeof BLACKDUCKSCA_SCAN_FAILURE_SEVERITIES
-            ]
+            ],
           );
         }
       }
@@ -451,13 +451,13 @@ export class BridgeCliToolsParameter {
     const azureRestAPIVersion = azureData?.restAPIVersion;
 
     const isPrCommentEnabled = parseToBoolean(
-      inputs.BLACKDUCKSCA_PRCOMMENT_ENABLED
+      inputs.BLACKDUCKSCA_PRCOMMENT_ENABLED,
     );
     const isFixPrEnabled = parseToBoolean(inputs.BLACKDUCKSCA_FIXPR_ENABLED);
 
     const azurePrResponse = await this.updateAzurePrNumberForManualTriggerFlow(
       azureData,
-      isPrCommentEnabled || isFixPrEnabled
+      isPrCommentEnabled || isFixPrEnabled,
     );
 
     const isPullRequest = isPullRequestEvent(azurePrResponse);
@@ -476,7 +476,7 @@ export class BridgeCliToolsParameter {
     if (isPrCommentEnabled) {
       if (!isPullRequest) {
         console.info(
-          "Black Duck SCA PR comment is ignored for non pull request scan"
+          "Black Duck SCA PR comment is ignored for non pull request scan",
         );
       } else {
         console.info("Black Duck SCA PR comment is enabled");
@@ -494,7 +494,7 @@ export class BridgeCliToolsParameter {
           this.setSarifReportsInputsForBlackduck();
       } else {
         console.info(
-          "Black Duck SCA SARIF report create/upload is ignored for pull request scan"
+          "Black Duck SCA SARIF report create/upload is ignored for pull request scan",
         );
       }
     }
@@ -509,7 +509,7 @@ export class BridgeCliToolsParameter {
 
     let stateFilePath = path.join(
       this.tempDir,
-      BridgeCliToolsParameter.BD_STATE_FILE_NAME
+      BridgeCliToolsParameter.BD_STATE_FILE_NAME,
     );
     taskLib.writeFile(stateFilePath, inputJson);
 
@@ -521,13 +521,13 @@ export class BridgeCliToolsParameter {
     // Generate out file path
     let outFilePath = path.join(
       this.tempDir,
-      BridgeCliToolsParameter.BD_OUT_FILE_NAME
+      BridgeCliToolsParameter.BD_OUT_FILE_NAME,
     );
     outFilePath = '"'.concat(outFilePath).concat('"');
     taskLib.debug("Generated out json file at - ".concat(outFilePath));
 
     command = BridgeCliToolsParameter.STAGE_OPTION.concat(
-      BridgeCliToolsParameter.SPACE
+      BridgeCliToolsParameter.SPACE,
     )
       .concat(BridgeCliToolsParameter.BLACKDUCKSCA_STAGE)
       .concat(BridgeCliToolsParameter.SPACE)
@@ -561,12 +561,12 @@ export class BridgeCliToolsParameter {
     const azureRestAPIVersion = azureData?.restAPIVersion;
 
     const isPrCommentEnabled = parseToBoolean(
-      inputs.COVERITY_PRCOMMENT_ENABLED
+      inputs.COVERITY_PRCOMMENT_ENABLED,
     );
 
     const azurePrResponse = await this.updateAzurePrNumberForManualTriggerFlow(
       azureData,
-      isPrCommentEnabled
+      isPrCommentEnabled,
     );
 
     const isPullRequest = isPullRequestEvent(azurePrResponse);
@@ -576,7 +576,7 @@ export class BridgeCliToolsParameter {
       if (isPullRequest) {
         const pullRequestTargetBranchName =
           taskLib.getVariable(
-            AZURE_ENVIRONMENT_VARIABLES.AZURE_PULL_REQUEST_TARGET_BRANCH
+            AZURE_ENVIRONMENT_VARIABLES.AZURE_PULL_REQUEST_TARGET_BRANCH,
           ) ||
           azurePrResponse?.targetRefName ||
           "";
@@ -595,14 +595,14 @@ export class BridgeCliToolsParameter {
             "COVERITY_STREAM_NAME is mandatory for azure manual trigger"
               .concat(constants.SPACE)
               .concat(
-                ErrorCode.REQUIRED_COVERITY_STREAM_NAME_FOR_MANUAL_TRIGGER.toString()
-              )
+                ErrorCode.REQUIRED_COVERITY_STREAM_NAME_FOR_MANUAL_TRIGGER.toString(),
+              ),
           );
         }
 
         const sourceBranchName =
           taskLib.getVariable(
-            AZURE_ENVIRONMENT_VARIABLES.AZURE_SOURCE_BRANCH
+            AZURE_ENVIRONMENT_VARIABLES.AZURE_SOURCE_BRANCH,
           ) || "";
         coverityStreamName =
           azureRepositoryName && sourceBranchName
@@ -657,7 +657,7 @@ export class BridgeCliToolsParameter {
 
     if (isBoolean(inputs.COVERITY_WAITFORSCAN)) {
       covData.data.coverity.waitForScan = parseToBoolean(
-        inputs.COVERITY_WAITFORSCAN
+        inputs.COVERITY_WAITFORSCAN,
       );
     }
 
@@ -670,7 +670,7 @@ export class BridgeCliToolsParameter {
     if (isPrCommentEnabled) {
       if (!isPullRequest) {
         console.info(
-          "Coverity PR comment is ignored for non pull request scan"
+          "Coverity PR comment is ignored for non pull request scan",
         );
       } else {
         console.info("Coverity PR comment is enabled");
@@ -707,7 +707,7 @@ export class BridgeCliToolsParameter {
     covData.data.coverity = Object.assign(
       {},
       this.setCoverityArbitraryArgs() as CoverityConnect,
-      covData.data.coverity
+      covData.data.coverity,
     );
 
     // Remove empty data from json object
@@ -720,7 +720,7 @@ export class BridgeCliToolsParameter {
 
     let stateFilePath = path.join(
       this.tempDir,
-      BridgeCliToolsParameter.COVERITY_STATE_FILE_NAME
+      BridgeCliToolsParameter.COVERITY_STATE_FILE_NAME,
     );
     taskLib.writeFile(stateFilePath, inputJson);
 
@@ -730,7 +730,7 @@ export class BridgeCliToolsParameter {
     taskLib.debug("Generated state json file at - ".concat(stateFilePath));
 
     command = BridgeCliToolsParameter.STAGE_OPTION.concat(
-      BridgeCliToolsParameter.SPACE
+      BridgeCliToolsParameter.SPACE,
     )
       .concat(BridgeCliToolsParameter.COVERITY_STAGE)
       .concat(BridgeCliToolsParameter.SPACE)
@@ -750,22 +750,22 @@ export class BridgeCliToolsParameter {
         "Invalid value for "
           .concat(constants.BLACKDUCKSCA_FIXPR_MAXCOUNT_KEY)
           .concat(constants.SPACE)
-          .concat(ErrorCode.INVALID_BLACKDUCKSCA_FIXPR_MAXCOUNT.toString())
+          .concat(ErrorCode.INVALID_BLACKDUCKSCA_FIXPR_MAXCOUNT.toString()),
       );
     }
     const createSinglePr = parseToBoolean(
-      inputs.BLACKDUCKSCA_FIXPR_CREATE_SINGLE_PR
+      inputs.BLACKDUCKSCA_FIXPR_CREATE_SINGLE_PR,
     );
     if (createSinglePr && inputs.BLACKDUCKSCA_FIXPR_MAXCOUNT) {
       throw new Error(
         constants.BLACKDUCKSCA_FIXPR_MAXCOUNT_KEY.concat(
-          " is not applicable with "
+          " is not applicable with ",
         )
           .concat(constants.BLACKDUCKSCA_FIXPR_CREATE_SINGLE_PR_KEY)
           .concat(constants.SPACE)
           .concat(
-            ErrorCode.BLACKDUCKSCA_FIXPR_MAXCOUNT_NOT_APPLICABLE.toString()
-          )
+            ErrorCode.BLACKDUCKSCA_FIXPR_MAXCOUNT_NOT_APPLICABLE.toString(),
+          ),
       );
     }
     const blackDuckFixPrData: BlackDuckSCAFixPrData = {};
@@ -809,7 +809,7 @@ export class BridgeCliToolsParameter {
         "Invalid value for "
           .concat(constants.POLARIS_FIXPR_MAXCOUNT_KEY)
           .concat(constants.SPACE)
-          .concat(ErrorCode.INVALID_POLARIS_FIXPR_MAXCOUNT.toString())
+          .concat(ErrorCode.INVALID_POLARIS_FIXPR_MAXCOUNT.toString()),
       );
     }
     const polarisFixPrData: PolarisFixPrData = {};
@@ -863,7 +863,7 @@ export class BridgeCliToolsParameter {
           throw new Error(
             INVALID_VALUE_ERROR.concat(constants.SRM_ASSESSMENT_TYPES_KEY)
               .concat(constants.SPACE)
-              .concat(ErrorCode.INVALID_SRM_ASSESSMENT_TYPES.toString())
+              .concat(ErrorCode.INVALID_SRM_ASSESSMENT_TYPES.toString()),
           );
         }
       }
@@ -946,7 +946,7 @@ export class BridgeCliToolsParameter {
 
     let stateFilePath = path.join(
       this.tempDir,
-      BridgeCliToolsParameter.SRM_STATE_FILE_NAME
+      BridgeCliToolsParameter.SRM_STATE_FILE_NAME,
     );
     taskLib.writeFile(stateFilePath, inputJson);
 
@@ -955,7 +955,7 @@ export class BridgeCliToolsParameter {
     taskLib.debug("Generated state json file at - ".concat(stateFilePath));
 
     command = BridgeCliToolsParameter.STAGE_OPTION.concat(
-      BridgeCliToolsParameter.SPACE
+      BridgeCliToolsParameter.SPACE,
     )
       .concat(BridgeCliToolsParameter.SRM_STAGE)
       .concat(BridgeCliToolsParameter.SPACE)
@@ -974,11 +974,11 @@ export class BridgeCliToolsParameter {
     const collectionUri =
       taskLib.getVariable(AZURE_ENVIRONMENT_VARIABLES.AZURE_COLLECTION_URI) ||
       taskLib.getVariable(
-        AZURE_ENVIRONMENT_VARIABLES.AZURE_TEAM_FOUNDATION_URI
+        AZURE_ENVIRONMENT_VARIABLES.AZURE_TEAM_FOUNDATION_URI,
       ) ||
       "";
     taskLib.debug(
-      `Azure API URL, obtained from the environment variable is: ${collectionUri}`
+      `Azure API URL, obtained from the environment variable is: ${collectionUri}`,
     );
     if (collectionUri != "") {
       const parsedUrl = url.parse(collectionUri);
@@ -1000,12 +1000,12 @@ export class BridgeCliToolsParameter {
     const azureProject =
       taskLib.getVariable(AZURE_ENVIRONMENT_VARIABLES.AZURE_PROJECT) || "";
     taskLib.debug(
-      `Azure project, obtained from the environment variable ${AZURE_ENVIRONMENT_VARIABLES.AZURE_PROJECT}, is: ${azureProject}`
+      `Azure project, obtained from the environment variable ${AZURE_ENVIRONMENT_VARIABLES.AZURE_PROJECT}, is: ${azureProject}`,
     );
     const azureRepo =
       taskLib.getVariable(AZURE_ENVIRONMENT_VARIABLES.AZURE_REPOSITORY) || "";
     taskLib.debug(
-      `Azure repo, obtained from the environment variable ${AZURE_ENVIRONMENT_VARIABLES.AZURE_REPOSITORY}, is: ${azureProject}`
+      `Azure repo, obtained from the environment variable ${AZURE_ENVIRONMENT_VARIABLES.AZURE_REPOSITORY}, is: ${azureProject}`,
     );
     const buildReason =
       taskLib.getVariable(AZURE_ENVIRONMENT_VARIABLES.AZURE_BUILD_REASON) || "";
@@ -1013,19 +1013,19 @@ export class BridgeCliToolsParameter {
     const azureRepoBranchName =
       buildReason == AZURE_BUILD_REASON.PULL_REQUEST
         ? taskLib.getVariable(
-            AZURE_ENVIRONMENT_VARIABLES.AZURE_PULL_REQUEST_SOURCE_BRANCH
+            AZURE_ENVIRONMENT_VARIABLES.AZURE_PULL_REQUEST_SOURCE_BRANCH,
           ) || ""
         : taskLib.getVariable(
-            AZURE_ENVIRONMENT_VARIABLES.AZURE_SOURCE_BRANCH
+            AZURE_ENVIRONMENT_VARIABLES.AZURE_SOURCE_BRANCH,
           ) || "";
     taskLib.debug(`Azure repo branch name: ${azureProject}`);
 
     const azurePullRequestNumber =
       taskLib.getVariable(
-        AZURE_ENVIRONMENT_VARIABLES.AZURE_PULL_REQUEST_NUMBER
+        AZURE_ENVIRONMENT_VARIABLES.AZURE_PULL_REQUEST_NUMBER,
       ) || "";
     taskLib.debug(
-      `Azure pull request number, obtained from the environment variable ${AZURE_ENVIRONMENT_VARIABLES.AZURE_PULL_REQUEST_NUMBER}, is: ${azurePullRequestNumber}`
+      `Azure pull request number, obtained from the environment variable ${AZURE_ENVIRONMENT_VARIABLES.AZURE_PULL_REQUEST_NUMBER}, is: ${azurePullRequestNumber}`,
     );
 
     taskLib.debug(`Azure Instance Url: ${azureInstanceUrl}`);
@@ -1042,7 +1042,7 @@ export class BridgeCliToolsParameter {
       azureProject,
       azureRepo,
       azureRepoBranchName,
-      azurePullRequestNumber
+      azurePullRequestNumber,
     );
 
     if (
@@ -1065,7 +1065,7 @@ export class BridgeCliToolsParameter {
             azureOrganization,
             azureProject,
             azureRepo,
-            azureToken
+            azureToken,
           );
           azureData.restAPIVersion = await apiVersion;
           taskLib.debug(`Azure REST API Version: ${azureData.restAPIVersion}`);
@@ -1079,7 +1079,7 @@ export class BridgeCliToolsParameter {
 
   private async updateAzurePrNumberForManualTriggerFlow(
     azureData: AzureData | undefined,
-    isPrCommentOrFixPrEnabled: boolean
+    isPrCommentOrFixPrEnabled: boolean,
   ): Promise<AzurePrResponse | undefined> {
     let azurePrResponse;
 
@@ -1087,8 +1087,8 @@ export class BridgeCliToolsParameter {
       if (azureData?.user.token == undefined || azureData.user.token == "") {
         throw new Error(
           MISSING_AZURE_TOKEN_FOR_FIX_PR_AND_PR_COMMENT.concat(
-            constants.SPACE
-          ).concat(ErrorCode.MISSING_AZURE_TOKEN.toString())
+            constants.SPACE,
+          ).concat(ErrorCode.MISSING_AZURE_TOKEN.toString()),
         );
       }
 
@@ -1098,7 +1098,7 @@ export class BridgeCliToolsParameter {
           await azureService.getAzurePrResponseForManualTriggerFlow(azureData);
         azureData.repository.pull.number = azurePrResponse?.pullRequestId;
         taskLib.debug(
-          `Azure pull request number for manual trigger flow: ${azureData.repository.pull.number}`
+          `Azure pull request number for manual trigger flow: ${azureData.repository.pull.number}`,
         );
       }
     }
@@ -1113,7 +1113,7 @@ export class BridgeCliToolsParameter {
     azureProject: string,
     azureRepo: string,
     azureRepoBranchName: string,
-    azurePullRequestNumber: string
+    azurePullRequestNumber: string,
   ): AzureData {
     const azureData: AzureData = {
       api: {
@@ -1146,7 +1146,7 @@ export class BridgeCliToolsParameter {
   private setEnvironmentScanPullData(): Environment {
     const azurePullRequestNumber =
       taskLib.getVariable(
-        AZURE_ENVIRONMENT_VARIABLES.AZURE_PULL_REQUEST_NUMBER
+        AZURE_ENVIRONMENT_VARIABLES.AZURE_PULL_REQUEST_NUMBER,
       ) || "";
     taskLib.debug(`Azure Pull Request Number: ${azurePullRequestNumber}`);
     if (azurePullRequestNumber == "") {
@@ -1185,7 +1185,7 @@ export class BridgeCliToolsParameter {
     ) {
       const sarifSeverities =
         inputs.BLACKDUCKSCA_REPORTS_SARIF_SEVERITIES.filter(
-          (severity) => severity && severity.trim() !== ""
+          (severity) => severity && severity.trim() !== "",
         ).map((severity) => severity.trim());
       sarifReportFilterSeverities.push(...sarifSeverities);
     }
@@ -1223,7 +1223,7 @@ export class BridgeCliToolsParameter {
       inputs.POLARIS_REPORTS_SARIF_SEVERITIES.length > 0
     ) {
       const severities = inputs.POLARIS_REPORTS_SARIF_SEVERITIES.filter(
-        (severity) => severity && severity.trim() !== ""
+        (severity) => severity && severity.trim() !== "",
       ).map((severity) => severity.trim());
       sarifReportFilterSeverities.push(...severities);
     }
@@ -1245,7 +1245,7 @@ export class BridgeCliToolsParameter {
       inputs.POLARIS_REPORTS_SARIF_ISSUE_TYPES.length > 0
     ) {
       const issueTypes = inputs.POLARIS_REPORTS_SARIF_ISSUE_TYPES.filter(
-        (issueType) => issueType && issueType.trim() !== ""
+        (issueType) => issueType && issueType.trim() !== "",
       ).map((issueType) => issueType.trim());
       sarifReportIssueTypes.push(...issueTypes);
     }
@@ -1350,7 +1350,7 @@ export class BridgeCliToolsParameter {
     const collectionUri =
       taskLib.getVariable(AZURE_ENVIRONMENT_VARIABLES.AZURE_COLLECTION_URI) ||
       taskLib.getVariable(
-        AZURE_ENVIRONMENT_VARIABLES.AZURE_TEAM_FOUNDATION_URI
+        AZURE_ENVIRONMENT_VARIABLES.AZURE_TEAM_FOUNDATION_URI,
       ) ||
       "";
 

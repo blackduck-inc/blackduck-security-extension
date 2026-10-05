@@ -9,7 +9,7 @@ const deprecatedInputs: string[] = [];
 export function getInput(
   newKey: string,
   classicEditorKey: string,
-  deprecatedKey: string | null
+  deprecatedKey: string | null,
 ) {
   const key = getInputForYMLAndDeprecatedKey(newKey, deprecatedKey);
   if (key) {
@@ -29,7 +29,7 @@ export function getInputForMultipleClassicEditor(
   blackduckSCAClassicEditorKey: string,
   coverityClassicEditorKey: string,
   srmClassicEditorKey: string | null,
-  deprecatedKey: string | null
+  deprecatedKey: string | null,
 ) {
   const key = getInputForYMLAndDeprecatedKey(newKey, deprecatedKey);
   if (key) {
@@ -69,7 +69,7 @@ export function getArbitraryInputs(
   classicEditorKey: string,
   classicEditorKeyForPolaris: string,
   classicEditorKeyForSrm: string,
-  deprecatedKey: string | null
+  deprecatedKey: string | null,
 ) {
   const scanType = taskLib.getInput(constants.SCAN_TYPE_KEY);
   if (
@@ -93,7 +93,7 @@ export function getArbitraryInputs(
 }
 export function getInputForYMLAndDeprecatedKey(
   newKey: string,
-  deprecatedKey: string | null
+  deprecatedKey: string | null,
 ) {
   const newInput = taskLib.getInput(newKey);
   if (newInput) {
@@ -114,7 +114,7 @@ export function getInputForYMLAndDeprecatedKey(
 export function getBoolInput(
   newKey: string,
   classicEditorKey: string,
-  deprecatedKey: string | null
+  deprecatedKey: string | null,
 ) {
   let deprecatedInput;
   if (deprecatedKey) {
@@ -134,7 +134,7 @@ export function getBoolInput(
 export function getPathInput(
   newKey: string,
   classicEditorKey: string,
-  deprecatedKey: string | null
+  deprecatedKey: string | null,
 ) {
   let deprecatedInput;
   if (deprecatedKey) {
@@ -155,7 +155,7 @@ export function getPathInput(
 export function getDelimitedInput(
   newKey: string,
   classicEditorKey: string,
-  deprecatedKey: string | null
+  deprecatedKey: string | null,
 ) {
   const newKeyInput = taskLib.getDelimitedInput(newKey, ",");
   const classicEditorInput = taskLib.getDelimitedInput(classicEditorKey, ",");
@@ -179,10 +179,10 @@ export function showLogForDeprecatedInputs() {
   if (deprecatedInputs.length > 0) {
     console.log(
       `[${deprecatedInputs.join(
-        ","
+        ",",
       )}] is/are deprecated for YAML. Check documentation for new parameters: ${
         constants.BLACKDUCKSCA_SECURITY_SCAN_AZURE_DEVOPS_DOCS_URL
-      }`
+      }`,
     );
   }
 }
@@ -195,10 +195,10 @@ function getInputForPolarisAssessmentMode() {
       ?.trim() === POLARIS_ASSESSMENT_MODES.CI
       ? POLARIS_ASSESSMENT_MODES.CI
       : taskLib
-          .getInput(constants.POLARIS_ASSESSMENT_MODE_KEY_CLASSIC_EDITOR)
-          ?.trim() === POLARIS_ASSESSMENT_MODES.SOURCEUPLOAD
-      ? POLARIS_ASSESSMENT_MODES.SOURCE_UPLOAD
-      : "")
+            .getInput(constants.POLARIS_ASSESSMENT_MODE_KEY_CLASSIC_EDITOR)
+            ?.trim() === POLARIS_ASSESSMENT_MODES.SOURCEUPLOAD
+        ? POLARIS_ASSESSMENT_MODES.SOURCE_UPLOAD
+        : "")
   );
 }
 
@@ -206,25 +206,25 @@ function getInputForPolarisAssessmentMode() {
 export const BRIDGECLI_DOWNLOAD_URL = getInput(
   constants.BRIDGECLI_DOWNLOAD_URL_KEY,
   constants.BRIDGECLI_DOWNLOAD_URL_KEY_CLASSIC_EDITOR,
-  constants.SYNOPSYS_BRIDGE_DOWNLOAD_URL_KEY
+  constants.SYNOPSYS_BRIDGE_DOWNLOAD_URL_KEY,
 );
 
 export const ENABLE_NETWORK_AIRGAP = getBoolInput(
   constants.NETWORK_AIRGAP_KEY,
   constants.NETWORK_AIRGAP_KEY_CLASSIC_EDITOR,
-  constants.BRIDGE_NETWORK_AIRGAP_KEY
+  constants.BRIDGE_NETWORK_AIRGAP_KEY,
 );
 
 export const BRIDGECLI_INSTALL_DIRECTORY_KEY = getPathInput(
   constants.BRIDGECLI_INSTALL_DIRECTORY_KEY,
   constants.BRIDGECLI_INSTALL_DIRECTORY_KEY_CLASSIC_EDITOR,
-  constants.SYNOPSYS_BRIDGE_INSTALL_DIRECTORY_KEY
+  constants.SYNOPSYS_BRIDGE_INSTALL_DIRECTORY_KEY,
 );
 
 export const BRIDGECLI_DOWNLOAD_VERSION = getInput(
   constants.BRIDGECLI_DOWNLOAD_VERSION_KEY,
   constants.BRIDGECLI_DOWNLOAD_VERSION_KEY_CLASSIC_EDITOR,
-  constants.SYNOPSYS_BRIDGE_DOWNLOAD_VERSION_KEY
+  constants.SYNOPSYS_BRIDGE_DOWNLOAD_VERSION_KEY,
 );
 
 export const INCLUDE_DIAGNOSTICS = getInputForMultipleClassicEditor(
@@ -233,7 +233,7 @@ export const INCLUDE_DIAGNOSTICS = getInputForMultipleClassicEditor(
   constants.BLACKDUCKSCA_INCLUDE_DIAGNOSTICS_KEY_CLASSIC_EDITOR,
   constants.COVERITY_INCLUDE_DIAGNOSTICS_KEY_CLASSIC_EDITOR,
   constants.SRM_INCLUDE_DIAGNOSTICS_KEY_CLASSIC_EDITOR,
-  null
+  null,
 );
 
 export const AZURE_TOKEN = getInputForMultipleClassicEditor(
@@ -242,7 +242,7 @@ export const AZURE_TOKEN = getInputForMultipleClassicEditor(
   constants.BLACKDUCKSCA_AZURE_TOKEN_KEY_CLASSIC_EDITOR,
   constants.COVERITY_AZURE_TOKEN_KEY_CLASSIC_EDITOR,
   null,
-  null
+  null,
 );
 
 export const SCAN_TYPE =
@@ -252,211 +252,211 @@ export const SCAN_TYPE =
 export const POLARIS_SERVER_URL = getInput(
   constants.POLARIS_SERVER_URL_KEY,
   constants.POLARIS_SERVER_URL_KEY_CLASSIC_EDITOR,
-  null
+  null,
 );
 export const POLARIS_ACCESS_TOKEN = getInput(
   constants.POLARIS_ACCESS_TOKEN_KEY,
   constants.POLARIS_ACCESS_TOKEN_KEY_CLASSIC_EDITOR,
-  null
+  null,
 );
 export const POLARIS_APPLICATION_NAME = getInput(
   constants.POLARIS_APPLICATION_NAME_KEY,
   constants.POLARIS_APPLICATION_NAME_KEY_CLASSIC_EDITOR,
-  null
+  null,
 );
 export const POLARIS_PROJECT_NAME = getInput(
   constants.POLARIS_PROJECT_NAME_KEY,
   constants.POLARIS_PROJECT_NAME_KEY_CLASSIC_EDITOR,
-  null
+  null,
 );
 export const POLARIS_ASSESSMENT_TYPES = getDelimitedInput(
   constants.POLARIS_ASSESSMENT_TYPES_KEY,
   constants.POLARIS_ASSESSMENT_TYPES_KEY_CLASSIC_EDITOR,
-  null
+  null,
 );
 export const POLARIS_BRANCH_NAME = getInput(
   constants.POLARIS_BRANCH_NAME_KEY,
   constants.POLARIS_BRANCH_NAME_KEY_CLASSIC_EDITOR,
-  null
+  null,
 );
 export const POLARIS_BRANCH_PARENT_NAME = getInput(
   constants.POLARIS_BRANCH_PARENT_NAME_KEY,
   constants.POLARIS_BRANCH_PARENT_NAME_KEY_CLASSIC_EDITOR,
-  null
+  null,
 );
 export const POLARIS_TEST_SCA_TYPE = getInput(
   constants.POLARIS_TEST_SCA_TYPE_KEY,
   constants.POLARIS_TEST_SCA_TYPE_KEY_CLASSIC_EDITOR,
-  null
+  null,
 );
 export const POLARIS_TEST_SAST_TYPE = getInput(
   constants.POLARIS_TEST_SAST_TYPE_KEY,
   constants.POLARIS_TEST_SAST_TYPE_KEY_CLASSIC_EDITOR,
-  null
+  null,
 );
 
 export const POLARIS_TEST_SCA_LOCATION = getInput(
   constants.POLARIS_TEST_SCA_LOCATION_KEY,
   constants.POLARIS_TEST_SCA_LOCATION_KEY_CLASSIC_EDITOR,
-  null
+  null,
 );
 export const POLARIS_TEST_SAST_LOCATION = getInput(
   constants.POLARIS_TEST_SAST_LOCATION_KEY,
   constants.POLARIS_TEST_SAST_LOCATION_KEY_CLASSIC_EDITOR,
-  null
+  null,
 );
 
 export const POLARIS_WAITFORSCAN = getInput(
   constants.POLARIS_WAITFORSCAN_KEY,
   constants.POLARIS_WAITFORSCAN_KEY_CLASSIC_EDITOR,
-  null
+  null,
 );
 export const POLARIS_ASSESSMENT_MODE = getInputForPolarisAssessmentMode();
 
 export const POLARIS_ARTIFACTTOUPLOAD = getInput(
   constants.POLARIS_ARTIFACTTOUPLOAD_KEY,
   constants.POLARIS_ARTIFACTTOUPLOAD_KEY_CLASSIC_EDITOR,
-  null
+  null,
 );
 
 export const POLARIS_CONTAINER_NAME = getInput(
   constants.POLARIS_CONTAINER_NAME_KEY,
   constants.POLARIS_CONTAINER_NAME_KEY_CLASSIC_EDITOR,
-  null
+  null,
 );
 
 export const POLARIS_PROJECT_DIRECTORY = getInput(
   constants.PROJECT_DIRECTORY_KEY,
   constants.POLARIS_PROJECT_DIRECTORY_KEY_CLASSIC_EDITOR,
-  null
+  null,
 );
 export const PROJECT_SOURCE_ARCHIVE = getInput(
   constants.PROJECT_SOURCE_ARCHIVE_KEY,
   constants.PROJECT_SOURCE_ARCHIVE_KEY_CLASSIC_EDITOR,
-  null
+  null,
 );
 export const PROJECT_SOURCE_PRESERVE_SYM_LINKS = getInput(
   constants.PROJECT_SOURCE_PRESERVE_SYM_LINKS_KEY,
   constants.PROJECT_SOURCE_PRESERVE_SYM_LINKS_KEY_CLASSIC_EDITOR,
-  null
+  null,
 );
 export const PROJECT_SOURCE_EXCLUDES = getDelimitedInput(
   constants.PROJECT_SOURCE_EXCLUDES_KEY,
   constants.PROJECT_SOURCE_EXCLUDES_KEY_CLASSIC_EDITOR,
-  null
+  null,
 );
 
 export const POLARIS_PR_COMMENT_ENABLED = getInput(
   constants.POLARIS_PR_COMMENT_ENABLED_KEY,
   constants.POLARIS_PR_COMMENT_ENABLED_KEY_CLASSIC_EDITOR,
-  null
+  null,
 );
 export const POLARIS_PR_COMMENT_SEVERITIES = getDelimitedInput(
   constants.POLARIS_PR_COMMENT_SEVERITIES_KEY,
   constants.POLARIS_PR_COMMENT_SEVERITIES_KEY_CLASSIC_EDITOR,
-  null
+  null,
 );
 
 export const POLARIS_REPORTS_SARIF_CREATE = getInput(
   constants.POLARIS_REPORTS_SARIF_CREATE_KEY,
   constants.POLARIS_REPORTS_SARIF_CREATE_KEY_CLASSIC_EDITOR,
-  null
+  null,
 );
 export const POLARIS_REPORTS_SARIF_FILE_PATH = getInput(
   constants.POLARIS_REPORTS_SARIF_FILE_PATH_KEY,
   constants.POLARIS_REPORTS_SARIF_FILE_PATH_KEY_CLASSIC_EDITOR,
-  null
+  null,
 );
 export const POLARIS_REPORTS_SARIF_SEVERITIES = getDelimitedInput(
   constants.POLARIS_REPORTS_SARIF_SEVERITIES_KEY,
   constants.POLARIS_REPORTS_SARIF_SEVERITIES_KEY_CLASSIC_EDITOR,
-  null
+  null,
 );
 export const POLARIS_REPORTS_SARIF_GROUP_SCA_ISSUES = getInput(
   constants.POLARIS_REPORTS_SARIF_GROUP_SCA_ISSUES_KEY,
   constants.POLARIS_REPORTS_SARIF_GROUP_SCA_ISSUES_KEY_CLASSIC_EDITOR,
-  null
+  null,
 );
 export const POLARIS_REPORTS_SARIF_ISSUE_TYPES = getDelimitedInput(
   constants.POLARIS_REPORTS_SARIF_ISSUE_TYPES_KEY,
   constants.POLARIS_REPORTS_SARIF_ISSUE_TYPES_KEY_CLASSIC_EDITOR,
-  null
+  null,
 );
 
 // Coverity related inputs
 export const COVERITY_URL = getInput(
   constants.COVERITY_URL_KEY,
   constants.COVERITY_URL_KEY_CLASSIC_EDITOR,
-  null
+  null,
 );
 export const COVERITY_USER = getInput(
   constants.COVERITY_USER_KEY,
   constants.COVERITY_USER_KEY_CLASSIC_EDITOR,
-  null
+  null,
 );
 export const COVERITY_USER_PASSWORD = getInput(
   constants.COVERITY_PASSWORD_KEY,
   constants.COVERITY_PASSWORD_KEY_CLASSIC_EDITOR,
-  constants.COVERITY_PASSPHRASE_KEY
+  constants.COVERITY_PASSPHRASE_KEY,
 );
 export const COVERITY_PROJECT_NAME = getInput(
   constants.COVERITY_PROJECT_NAME_KEY,
   constants.COVERITY_PROJECT_NAME_KEY_CLASSIC_EDITOR,
-  null
+  null,
 );
 export const COVERITY_STREAM_NAME = getInput(
   constants.COVERITY_STREAM_NAME_KEY,
   constants.COVERITY_STREAM_NAME_KEY_CLASSIC_EDITOR,
-  null
+  null,
 );
 export const COVERITY_INSTALL_DIRECTORY = getPathInput(
   constants.COVERITY_INSTALL_DIRECTORY_KEY,
   constants.COVERITY_INSTALL_DIRECTORY_KEY_CLASSIC_EDITOR,
-  null
+  null,
 );
 export const COVERITY_EXECUTION_PATH = getPathInput(
   constants.COVERITY_EXECUTION_PATH_KEY,
   constants.COVERITY_EXECUTION_PATH_KEY_CLASSIC_EDITOR,
-  null
+  null,
 );
 export const COVERITY_POLICY_VIEW = getInput(
   constants.COVERITY_POLICY_VIEW_KEY,
   constants.COVERITY_POLICY_VIEW_KEY_CLASSIC_EDITOR,
-  null
+  null,
 );
 export const COVERITY_LOCAL = getInput(
   constants.COVERITY_LOCAL_KEY,
   constants.COVERITY_LOCAL_KEY_CLASSIC_EDITOR,
-  null
+  null,
 );
 
 export const COVERITY_PRCOMMENT_ENABLED = getBoolInput(
   constants.COVERITY_PRCOMMENT_ENABLED_KEY,
   constants.COVERITY_PRCOMMENT_ENABLED_KEY_CLASSIC_EDITOR,
-  null
+  null,
 );
 
 export const COVERITY_PRCOMMENT_IMPACTS = getInput(
   constants.COVERITY_PRCOMMENT_IMPACTS_KEY,
   constants.COVERITY_PRCOMMENT_IMPACTS_KEY_CLASSIC_EDITOR,
-  null
+  null,
 );
 export const COVERITY_VERSION = getArbitraryInputs(
   constants.COVERITY_VERSION_KEY,
   constants.COVERITY_VERSION_KEY_CLASSIC_EDITOR,
   constants.COVERITY_VERSION_KEY_CLASSIC_EDITOR_FOR_POLARIS,
   constants.COVERITY_VERSION_KEY_CLASSIC_EDITOR_FOR_SRM,
-  null
+  null,
 );
 export const COVERITY_WAITFORSCAN = getInput(
   constants.COVERITY_WAITFORSCAN_KEY,
   constants.COVERITY_WAITFORSCAN_KEY_CLASSIC_EDITOR,
-  null
+  null,
 );
 export const COVERITY_PROJECT_DIRECTORY = getInput(
   constants.PROJECT_DIRECTORY_KEY,
   constants.COVERITY_PROJECT_DIRECTORY_KEY_CLASSIC_EDITOR,
-  null
+  null,
 );
 
 export const COVERITY_BUILD_COMMAND = getArbitraryInputs(
@@ -464,146 +464,146 @@ export const COVERITY_BUILD_COMMAND = getArbitraryInputs(
   constants.COVERITY_BUILD_COMMAND_KEY_CLASSIC_EDITOR,
   constants.COVERITY_BUILD_COMMAND_KEY_CLASSIC_EDITOR_FOR_POLARIS,
   constants.COVERITY_BUILD_COMMAND_KEY_CLASSIC_EDITOR_FOR_SRM,
-  null
+  null,
 );
 export const COVERITY_CLEAN_COMMAND = getArbitraryInputs(
   constants.COVERITY_CLEAN_COMMAND_KEY,
   constants.COVERITY_CLEAN_COMMAND_KEY_CLASSIC_EDITOR,
   constants.COVERITY_CLEAN_COMMAND_KEY_CLASSIC_EDITOR_FOR_POLARIS,
   constants.COVERITY_CLEAN_COMMAND_KEY_CLASSIC_EDITOR_FOR_SRM,
-  null
+  null,
 );
 export const COVERITY_CONFIG_PATH = getArbitraryInputs(
   constants.COVERITY_CONFIG_PATH_KEY,
   constants.COVERITY_CONFIG_PATH_KEY_CLASSIC_EDITOR,
   constants.COVERITY_CONFIG_PATH_KEY_CLASSIC_EDITOR_FOR_POLARIS,
   constants.COVERITY_CONFIG_PATH_KEY_CLASSIC_EDITOR_FOR_SRM,
-  null
+  null,
 );
 export const COVERITY_ARGS = getArbitraryInputs(
   constants.COVERITY_ARGS_KEY,
   constants.COVERITY_ARGS_KEY_CLASSIC_EDITOR,
   constants.COVERITY_ARGS_KEY_CLASSIC_EDITOR_FOR_POLARIS,
   constants.COVERITY_ARGS_KEY_CLASSIC_EDITOR_FOR_SRM,
-  null
+  null,
 );
 
 // Blackduck related inputs
 export const BLACKDUCKSCA_URL = getInput(
   constants.BLACKDUCKSCA_URL_KEY,
   constants.BLACKDUCKSCA_URL_KEY_CLASSIC_EDITOR,
-  constants.BLACKDUCK_URL_KEY
+  constants.BLACKDUCK_URL_KEY,
 );
 export const BLACKDUCKSCA_API_TOKEN = getInput(
   constants.BLACKDUCKSCA_TOKEN_KEY,
   constants.BLACKDUCKSCA_TOKEN_KEY_CLASSIC_EDITOR,
-  constants.BLACKDUCK_TOKEN_KEY
+  constants.BLACKDUCK_TOKEN_KEY,
 );
 export const DETECT_INSTALL_DIRECTORY = getPathInput(
   constants.DETECT_INSTALL_DIRECTORY_KEY,
   constants.DETECT_INSTALL_DIRECTORY_KEY_CLASSIC_EDITOR,
-  constants.BLACKDUCK_INSTALL_DIRECTORY_KEY
+  constants.BLACKDUCK_INSTALL_DIRECTORY_KEY,
 );
 export const DETECT_EXECUTION_PATH = getPathInput(
   constants.DETECT_EXECUTION_PATH_KEY,
   constants.DETECT_EXECUTION_PATH_KEY_CLASSIC_EDITOR,
-  constants.BLACKDUCK_EXECUTION_PATH_KEY
+  constants.BLACKDUCK_EXECUTION_PATH_KEY,
 );
 export const BLACKDUCKSCA_SCAN_FULL = getInput(
   constants.BLACKDUCKSCA_SCAN_FULL_KEY,
   constants.BLACKDUCKSCA_SCAN_FULL_KEY_CLASSIC_EDITOR,
-  constants.BLACKDUCK_SCAN_FULL_KEY
+  constants.BLACKDUCK_SCAN_FULL_KEY,
 );
 export const BLACKDUCKSCA_SCAN_FAILURE_SEVERITIES = getDelimitedInput(
   constants.BLACKDUCKSCA_SCAN_FAILURE_SEVERITIES_KEY,
   constants.BLACKDUCKSCA_SCAN_FAILURE_SEVERITIES_KEY_CLASSIC_EDITOR,
-  constants.BLACKDUCK_SCAN_FAILURE_SEVERITIES_KEY
+  constants.BLACKDUCK_SCAN_FAILURE_SEVERITIES_KEY,
 );
 
 export const BLACKDUCKSCA_FIXPR_ENABLED = getBoolInput(
   constants.BLACKDUCKSCA_FIXPR_ENABLED_KEY,
   constants.BLACKDUCKSCA_FIXPR_ENABLED_KEY_CLASSIC_EDITOR,
-  constants.BLACKDUCK_FIXPR_ENABLED_KEY
+  constants.BLACKDUCK_FIXPR_ENABLED_KEY,
 );
 export const BLACKDUCKSCA_PRCOMMENT_ENABLED = getBoolInput(
   constants.BLACKDUCKSCA_PRCOMMENT_ENABLED_KEY,
   constants.BLACKDUCKSCA_PRCOMMENT_ENABLED_KEY_CLASSIC_EDITOR,
-  constants.BLACKDUCK_PRCOMMENT_ENABLED_KEY
+  constants.BLACKDUCK_PRCOMMENT_ENABLED_KEY,
 );
 export const BLACKDUCKSCA_FIXPR_MAXCOUNT = getInput(
   constants.BLACKDUCKSCA_FIXPR_MAXCOUNT_KEY,
   constants.BLACKDUCKSCA_FIXPR_MAXCOUNT_KEY_CLASSIC_EDITOR,
-  constants.BLACKDUCK_FIXPR_MAXCOUNT_KEY
+  constants.BLACKDUCK_FIXPR_MAXCOUNT_KEY,
 );
 export const BLACKDUCKSCA_FIXPR_CREATE_SINGLE_PR = getInput(
   constants.BLACKDUCKSCA_FIXPR_CREATE_SINGLE_PR_KEY,
   constants.BLACKDUCKSCA_FIXPR_CREATE_SINGLE_PR_KEY_CLASSIC_EDITOR,
-  constants.BLACKDUCK_FIXPR_CREATE_SINGLE_PR_KEY
+  constants.BLACKDUCK_FIXPR_CREATE_SINGLE_PR_KEY,
 );
 export const BLACKDUCKSCA_FIXPR_FILTER_SEVERITIES = getDelimitedInput(
   constants.BLACKDUCKSCA_FIXPR_FILTER_SEVERITIES_KEY,
   constants.BLACKDUCKSCA_FIXPR_FILTER_SEVERITIES_KEY_CLASSIC_EDITOR,
-  constants.BLACKDUCK_FIXPR_FILTER_SEVERITIES_KEY
+  constants.BLACKDUCK_FIXPR_FILTER_SEVERITIES_KEY,
 );
 export const BLACKDUCKSCA_FIXPR_UPGRADE_GUIDANCE = getDelimitedInput(
   constants.BLACKDUCKSCA_FIXPR_UPGRADE_GUIDANCE_KEY,
   constants.BLACKDUCKSCA_FIXPR_UPGRADE_GUIDANCE_KEY_CLASSIC_EDITOR,
-  constants.BLACKDUCK_FIXPR_UPGRADE_GUIDANCE_KEY
+  constants.BLACKDUCK_FIXPR_UPGRADE_GUIDANCE_KEY,
 );
 
 // Polaris Fix PR inputs
 export const POLARIS_FIXPR_ENABLED = getBoolInput(
   constants.POLARIS_FIXPR_ENABLED_KEY,
   constants.POLARIS_FIXPR_ENABLED_KEY_CLASSIC_EDITOR,
-  null
+  null,
 );
 export const POLARIS_FIXPR_MAXCOUNT = getInput(
   constants.POLARIS_FIXPR_MAXCOUNT_KEY,
   constants.POLARIS_FIXPR_MAXCOUNT_KEY_CLASSIC_EDITOR,
-  null
+  null,
 );
 export const POLARIS_FIXPR_FILTER_SEVERITIES = getDelimitedInput(
   constants.POLARIS_FIXPR_FILTER_SEVERITIES_KEY,
   constants.POLARIS_FIXPR_FILTER_SEVERITIES_KEY_CLASSIC_EDITOR,
-  null
+  null,
 );
 export const POLARIS_FIXPR_USEUPGRADEGUIDANCE = getDelimitedInput(
   constants.POLARIS_FIXPR_USEUPGRADEGUIDANCE_KEY,
   constants.POLARIS_FIXPR_USEUPGRADEGUIDANCE_KEY_CLASSIC_EDITOR,
-  null
+  null,
 );
 
 export const BLACKDUCKSCA_REPORTS_SARIF_CREATE = getInput(
   constants.BLACKDUCKSCA_REPORTS_SARIF_CREATE_KEY,
   constants.BLACKDUCKSCA_REPORTS_SARIF_CREATE_KEY_CLASSIC_EDITOR,
-  constants.BLACKDUCK_REPORTS_SARIF_CREATE_KEY
+  constants.BLACKDUCK_REPORTS_SARIF_CREATE_KEY,
 );
 export const BLACKDUCKSCA_REPORTS_SARIF_FILE_PATH = getInput(
   constants.BLACKDUCKSCA_REPORTS_SARIF_FILE_PATH_KEY,
   constants.BLACKDUCKSCA_REPORTS_SARIF_FILE_PATH_KEY_CLASSIC_EDITOR,
-  constants.BLACKDUCK_REPORTS_SARIF_FILE_PATH_KEY
+  constants.BLACKDUCK_REPORTS_SARIF_FILE_PATH_KEY,
 );
 export const BLACKDUCKSCA_PROJECT_DIRECTORY = getInput(
   constants.PROJECT_DIRECTORY_KEY,
   constants.BLACKDUCKSCA_PROJECT_DIRECTORY_KEY_CLASSIC_EDITOR,
-  null
+  null,
 );
 export const BLACKDUCKSCA_WAITFORSCAN = getInput(
   constants.BLACKDUCKSCA_WAITFORSCAN_KEY,
   constants.BLACKDUCKSCA_WAITFORSCAN_KEY_CLASSIC_EDITOR,
-  constants.BLACKDUCK_WAITFORSCAN_KEY
+  constants.BLACKDUCK_WAITFORSCAN_KEY,
 );
 
 export const BLACKDUCKSCA_REPORTS_SARIF_SEVERITIES = getDelimitedInput(
   constants.BLACKDUCKSCA_REPORTS_SARIF_SEVERITIES_KEY,
   constants.BLACKDUCKSCA_REPORTS_SARIF_SEVERITIES_KEY_CLASSIC_EDITOR,
-  constants.BLACKDUCK_REPORTS_SARIF_SEVERITIES_KEY
+  constants.BLACKDUCK_REPORTS_SARIF_SEVERITIES_KEY,
 );
 
 export const BLACKDUCKSCA_REPORTS_SARIF_GROUP_SCA_ISSUES = getInput(
   constants.BLACKDUCKSCA_REPORTS_SARIF_GROUP_SCA_ISSUES_KEY,
   constants.BLACKDUCKSCA_REPORTS_SARIF_GROUP_SCA_ISSUES_KEY_CLASSIC_EDITOR,
-  constants.BLACKDUCK_REPORTS_SARIF_GROUP_SCA_ISSUES_KEY
+  constants.BLACKDUCK_REPORTS_SARIF_GROUP_SCA_ISSUES_KEY,
 );
 
 export const DETECT_SEARCH_DEPTH = getArbitraryInputs(
@@ -611,68 +611,68 @@ export const DETECT_SEARCH_DEPTH = getArbitraryInputs(
   constants.DETECT_DEPTH_KEY_CLASSIC_EDITOR,
   constants.DETECT_DEPTH_KEY_CLASSIC_EDITOR_FOR_POLARIS,
   constants.DETECT_DEPTH_KEY_CLASSIC_EDITOR_FOR_SRM,
-  constants.BLACKDUCK_SEARCH_DEPTH_KEY
+  constants.BLACKDUCK_SEARCH_DEPTH_KEY,
 );
 export const DETECT_CONFIG_PATH = getArbitraryInputs(
   constants.DETECT_CONFIG_PATH_KEY,
   constants.DETECT_CONFIG_PATH_KEY_CLASSIC_EDITOR,
   constants.DETECT_CONFIG_PATH_KEY_CLASSIC_EDITOR_FOR_POLARIS,
   constants.DETECT_CONFIG_PATH_KEY_CLASSIC_EDITOR_FOR_SRM,
-  constants.BLACKDUCK_CONFIG_PATH_KEY
+  constants.BLACKDUCK_CONFIG_PATH_KEY,
 );
 export const DETECT_ARGS = getArbitraryInputs(
   constants.DETECT_ARGS_KEY,
   constants.DETECT_ARGS_KEY_CLASSIC_EDITOR,
   constants.DETECT_ARGS_KEY_CLASSIC_EDITOR_FOR_POLARIS,
   constants.DETECT_ARGS_KEY_CLASSIC_EDITOR_FOR_SRM,
-  constants.BLACKDUCK_ARGS_KEY
+  constants.BLACKDUCK_ARGS_KEY,
 );
 
 //SRM inputs
 export const SRM_URL = getInput(
   constants.SRM_URL_KEY,
   constants.SRM_URL_KEY_CLASSIC_EDITOR,
-  null
+  null,
 );
 export const SRM_APIKEY = getInput(
   constants.SRM_APIKEY_KEY,
   constants.SRM_APIKEY_KEY_CLASSIC_EDITOR,
-  null
+  null,
 );
 export const SRM_ASSESSMENT_TYPES = getDelimitedInput(
   constants.SRM_ASSESSMENT_TYPES_KEY,
   constants.SRM_ASSESSMENT_TYPES_KEY_CLASSIC_EDITOR,
-  null
+  null,
 );
 export const SRM_PROJECT_NAME = getInput(
   constants.SRM_PROJECT_NAME_KEY,
   constants.SRM_PROJECT_NAME_KEY_CLASSIC_EDITOR,
-  null
+  null,
 );
 export const SRM_PROJECT_ID = getInput(
   constants.SRM_PROJECT_ID_KEY,
   constants.SRM_PROJECT_ID_KEY_CLASSIC_EDITOR,
-  null
+  null,
 );
 export const SRM_BRANCH_NAME = getInput(
   constants.SRM_BRANCH_NAME_KEY,
   constants.SRM_BRANCH_NAME_KEY_CLASSIC_EDITOR,
-  null
+  null,
 );
 export const SRM_BRANCH_PARENT = getInput(
   constants.SRM_BRANCH_PARENT_KEY,
   constants.SRM_BRANCH_PARENT_KEY_CLASSIC_EDITOR,
-  null
+  null,
 );
 export const SRM_WAITFORSCAN = getInput(
   constants.SRM_WAITFORSCAN_KEY,
   constants.SRM_WAITFORSCAN_KEY_CLASSIC_EDITOR,
-  null
+  null,
 );
 export const SRM_PROJECT_DIRECTORY = getInput(
   constants.PROJECT_DIRECTORY_KEY,
   constants.SRM_PROJECT_DIRECTORY_KEY_CLASSIC_EDITOR,
-  null
+  null,
 );
 
 export const RETURN_STATUS =
@@ -684,17 +684,17 @@ export const MARK_BUILD_STATUS = getInputForMultipleClassicEditor(
   constants.BLACKDUCKSCA_MARK_BUILD_STATUS_KEY_CLASSIC_EDITOR,
   constants.COVERITY_MARK_BUILD_STATUS_KEY_CLASSIC_EDITOR,
   constants.SRM_MARK_BUILD_STATUS_KEY_CLASSIC_EDITOR,
-  null
+  null,
 );
 
 export const NETWORK_SSL_CERT_FILE = getInput(
   constants.NETWORK_SSL_CERT_FILE_KEY,
   constants.NETWORK_SSL_CERT_FILE_KEY_CLASSIC_EDITOR,
-  null
+  null,
 );
 
 export const NETWORK_SSL_TRUST_ALL = getBoolInput(
   constants.NETWORK_SSL_TRUST_ALL_KEY,
   constants.NETWORK_SSL_TRUST_ALL_KEY_CLASSIC_EDITOR,
-  null
+  null,
 );

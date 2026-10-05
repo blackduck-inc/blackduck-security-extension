@@ -742,25 +742,25 @@ export const INTEGRATIONS_POLARIS_DEFAULT_SARIF_FILE_PATH = path.join(
   "integrations",
   "polaris",
   "sarif",
-  "report.sarif.json"
+  "report.sarif.json",
 );
 export const INTEGRATIONS_BLACKDUCKSCA_DEFAULT_SARIF_FILE_PATH = path.join(
   ".blackduck",
   "integrations",
   "blackducksca",
   "sarif",
-  "report.sarif.json"
+  "report.sarif.json",
 );
 export const INTEGRATIONS_DEFAULT_BLACKDUCKSCA_SARIF_GENERATOR_DIRECTORY =
   path.join("blackducksca", "sarif");
 export const INTEGRATIONS_DEFAULT_POLARIS_SARIF_GENERATOR_DIRECTORY = path.join(
   "polaris",
-  "sarif"
+  "sarif",
 );
 
 export const INTEGRATIONS_CLI_LOCAL_DIRECTORY = path.join(
   ".blackduck",
-  "integrations"
+  "integrations",
 );
 
 export const ADO_SERVICES_URL = "https://dev.azure.com";
