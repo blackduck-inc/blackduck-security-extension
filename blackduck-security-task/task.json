@@ -543,16 +543,6 @@
       "groupName": "polarisFixPR"
     },
     {
-      "name": "polarisFixPrFilterConfidence",
-      "type": "string",
-      "label": "Confidence level(s) for SAST Fix PR",
-      "defaultValue": "",
-      "required": false,
-      "helpMarkDown": "Comma-separated list of confidence levels (High, Medium, Low) accepted for AI-generated SAST Fix PR fixes. SAST-only; ignored for SCA fixes. Default is \"High\".",
-      "visibleRule": "polarisFixPrEnabled = true",
-      "groupName": "polarisFixPR"
-    },
-    {
       "name": "polarisPrCommentFilterIssueTypes",
       "type": "string",
       "label": "List of ISSUE TYPES to be filtered",

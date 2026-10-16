@@ -852,15 +852,7 @@ export class BridgeCliToolsParameter {
       inputs.POLARIS_FIXPR_FILTER_ISSUETYPES
     );
 
-    const fixPRFilterConfidence = this.parseCommaSeparatedList(
-      inputs.POLARIS_FIXPR_FILTER_CONFIDENCE
-    );
-
-    if (
-      fixPRFilterSeverities.length > 0 ||
-      fixPRFilterIssueTypes.length > 0 ||
-      fixPRFilterConfidence.length > 0
-    ) {
+    if (fixPRFilterSeverities.length > 0 || fixPRFilterIssueTypes.length > 0) {
       if (!polarisFixPrData.filter) {
         polarisFixPrData.filter = {};
       }
@@ -869,9 +861,6 @@ export class BridgeCliToolsParameter {
       }
       if (fixPRFilterIssueTypes.length > 0) {
         polarisFixPrData.filter.issueTypes = fixPRFilterIssueTypes;
-      }
-      if (fixPRFilterConfidence.length > 0) {
-        polarisFixPrData.filter.confidence = fixPRFilterConfidence;
       }
     }
     return polarisFixPrData;
