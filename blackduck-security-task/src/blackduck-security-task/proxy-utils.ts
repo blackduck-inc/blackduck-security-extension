@@ -25,7 +25,7 @@ export function getProxyConfig(targetUrl: string): ProxyConfig {
   const noProxy = process.env.NO_PROXY || process.env.no_proxy;
   if (noProxy && shouldBypassProxy(targetUrl, noProxy)) {
     taskLib.debug(
-      `Bypassing proxy for ${targetUrl} due to NO_PROXY configuration`
+      `Bypassing proxy for ${targetUrl} due to NO_PROXY configuration`,
     );
     return { useProxy: false };
   }
@@ -36,7 +36,7 @@ export function getProxyConfig(targetUrl: string): ProxyConfig {
   const proxyUrl = httpsProxy || httpProxy;
   if (!proxyUrl) {
     taskLib.debug(
-      "No proxy configured (HTTPS_PROXY/HTTP_PROXY environment variables not set)"
+      "No proxy configured (HTTPS_PROXY/HTTP_PROXY environment variables not set)",
     );
     return { useProxy: false };
   }
@@ -44,7 +44,7 @@ export function getProxyConfig(targetUrl: string): ProxyConfig {
   try {
     const parsedProxyUrl = new URL(proxyUrl);
     taskLib.debug(
-      `Using proxy: ${parsedProxyUrl.origin} for target URL: ${targetUrl}`
+      `Using proxy: ${parsedProxyUrl.origin} for target URL: ${targetUrl}`,
     );
     return {
       useProxy: true,
@@ -52,7 +52,7 @@ export function getProxyConfig(targetUrl: string): ProxyConfig {
     };
   } catch (error) {
     taskLib.debug(
-      `Invalid proxy URL format: ${proxyUrl}. Error: ${error}. Proxy will not be used.`
+      `Invalid proxy URL format: ${proxyUrl}. Error: ${error}. Proxy will not be used.`,
     );
     return { useProxy: false };
   }
@@ -129,7 +129,7 @@ export function createProxyAgent(url: string): https.Agent | undefined {
     taskLib.debug(
       `Creating ${isHttps ? "HTTPS" : "HTTP"} proxy agent for: ${
         proxyConfig.proxyUrl.origin
-      }`
+      }`,
     );
 
     // Create appropriate proxy agent by passing the proxy URL directly
@@ -151,15 +151,14 @@ export function createProxyAgent(url: string): https.Agent | undefined {
  * This is used with typed-rest-client's IRequestOptions interface.
  * Returns undefined if no proxy should be used for the target URL.
  */
-export function createProxyConfigForHttpClient(
-  targetUrl: string
-): // eslint-disable-next-line @typescript-eslint/no-explicit-any
-any | undefined {
+export function createProxyConfigForHttpClient(targetUrl: string):
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  any | undefined {
   const proxyConfig = getProxyConfig(targetUrl);
 
   if (!proxyConfig.useProxy || !proxyConfig.proxyUrl) {
     taskLib.debug(
-      `No proxy needed for target URL: ${targetUrl} (either no proxy configured or bypassed via NO_PROXY)`
+      `No proxy needed for target URL: ${targetUrl} (either no proxy configured or bypassed via NO_PROXY)`,
     );
     return undefined;
   }
@@ -174,7 +173,7 @@ any | undefined {
   };
 
   taskLib.debug(
-    `Explicit proxy configured for HttpClient: ${proxyConfig.proxyUrl.origin}`
+    `Explicit proxy configured for HttpClient: ${proxyConfig.proxyUrl.origin}`,
   );
 
   return proxyConfiguration;

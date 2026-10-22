@@ -22,7 +22,7 @@ const userAgent = "BlackDuckSecurityScan";
  */
 export function validateDownloadedFile(
   destPath: string,
-  expectedContentLength?: number
+  expectedContentLength?: number,
 ): Promise<string> {
   return new Promise((resolve, reject) => {
     let fileSizeInBytes: number;
@@ -32,7 +32,7 @@ export function validateDownloadedFile(
       const error = err as Error;
       fileSizeInBytes = NaN;
       tl.warning(
-        `Unable to check file size of ${destPath} due to error: ${error.message}`
+        `Unable to check file size of ${destPath} due to error: ${error.message}`,
       );
     }
 
@@ -52,9 +52,9 @@ export function validateDownloadedFile(
       reject(
         new Error(
           "Downloaded file did not match downloaded file size".concat(
-            ErrorCode.CONTENT_LENGTH_MISMATCH.toString()
-          )
-        )
+            ErrorCode.CONTENT_LENGTH_MISMATCH.toString(),
+          ),
+        ),
       );
       return;
     }
@@ -76,7 +76,7 @@ export function getRequestOptions(): ifm.IRequestOptions {
   const trustAllCerts = parseToBoolean(inputs.NETWORK_SSL_TRUST_ALL);
   if (trustAllCerts) {
     tl.debug(
-      "SSL certificate verification disabled for download tool (NETWORK_SSL_TRUST_ALL=true)"
+      "SSL certificate verification disabled for download tool (NETWORK_SSL_TRUST_ALL=true)",
     );
     options.ignoreSslError = true;
   } else if (
@@ -84,17 +84,17 @@ export function getRequestOptions(): ifm.IRequestOptions {
     inputs.NETWORK_SSL_CERT_FILE.trim()
   ) {
     tl.debug(
-      `Custom CA certificate specified for download tool: ${inputs.NETWORK_SSL_CERT_FILE}`
+      `Custom CA certificate specified for download tool: ${inputs.NETWORK_SSL_CERT_FILE}`,
     );
     try {
       fs.readFileSync(inputs.NETWORK_SSL_CERT_FILE, "utf8");
       tl.warning(
-        "typed-rest-client does not support custom CA certificates, disabling SSL verification"
+        "typed-rest-client does not support custom CA certificates, disabling SSL verification",
       );
       options.ignoreSslError = true;
     } catch (err) {
       tl.warning(
-        `Failed to read custom CA certificate file, using default SSL settings: ${err}`
+        `Failed to read custom CA certificate file, using default SSL settings: ${err}`,
       );
     }
   } else {
@@ -120,7 +120,7 @@ export function debug(message: string): void {
 export async function downloadWithCustomSSL(
   downloadUrl: string,
   destPath: string,
-  additionalHeaders?: ifm.IHeaders
+  additionalHeaders?: ifm.IHeaders,
 ): Promise<string> {
   return new Promise<string>((resolve, reject) => {
     try {
@@ -129,7 +129,7 @@ export async function downloadWithCustomSSL(
       const requestOptions = createHTTPSRequestOptions(
         parsedUrl,
         sslConfig,
-        additionalHeaders
+        additionalHeaders,
       );
 
       tl.debug(`Starting direct HTTPS download from: ${downloadUrl}`);
@@ -149,7 +149,7 @@ export async function downloadWithCustomSSL(
 
         if (statusCode < 200 || statusCode >= 400) {
           tl.debug(
-            `Failed to download file from "${downloadUrl}". Code(${statusCode}) Message(${response.statusMessage})`
+            `Failed to download file from "${downloadUrl}". Code(${statusCode}) Message(${response.statusMessage})`,
           );
           reject(
             new Error(
@@ -157,9 +157,9 @@ export async function downloadWithCustomSSL(
                 .concat(String(statusCode))
                 .concat(constants.SPACE)
                 .concat(
-                  ErrorCode.DOWNLOAD_FAILED_WITH_HTTP_STATUS_CODE.toString()
-                )
-            )
+                  ErrorCode.DOWNLOAD_FAILED_WITH_HTTP_STATUS_CODE.toString(),
+                ),
+            ),
           );
           return;
         }
@@ -193,7 +193,7 @@ export async function downloadWithCustomSSL(
           try {
             const result = await validateDownloadedFile(
               destPath,
-              contentLength
+              contentLength,
             );
             tl.debug("Direct HTTPS download completed successfully");
             resolve(result);
@@ -239,7 +239,7 @@ export async function downloadTool(
   url: string,
   fileName: string,
   handlers?: ifm.IRequestHandler[],
-  additionalHeaders?: ifm.IHeaders
+  additionalHeaders?: ifm.IHeaders,
 ): Promise<string> {
   // Check if it's an absolute path already
   let destPath: string;
@@ -264,7 +264,7 @@ export async function downloadTool(
       return await downloadWithCustomSSL(url, destPath, additionalHeaders);
     } catch (error) {
       tl.debug(
-        `Direct HTTPS download failed, falling back to typed-rest-client: ${error}`
+        `Direct HTTPS download failed, falling back to typed-rest-client: ${error}`,
       );
       // Fall through to typed-rest-client approach
     }
@@ -301,7 +301,7 @@ export async function downloadTool(
 
       const response: httm.HttpClientResponse = await http.get(
         url,
-        additionalHeaders
+        additionalHeaders,
       );
 
       if (
@@ -310,7 +310,7 @@ export async function downloadTool(
           response.message.statusCode >= 400)
       ) {
         tl.debug(
-          `Failed to download from "${url}". Code(${response.message.statusCode}) Message(${response.message.statusMessage})`
+          `Failed to download from "${url}". Code(${response.message.statusCode}) Message(${response.message.statusMessage})`,
         );
         reject(
           new Error(
@@ -318,9 +318,9 @@ export async function downloadTool(
               .concat(String(response.message.statusCode))
               .concat(constants.SPACE)
               .concat(
-                ErrorCode.DOWNLOAD_FAILED_WITH_HTTP_STATUS_CODE.toString()
-              )
-          )
+                ErrorCode.DOWNLOAD_FAILED_WITH_HTTP_STATUS_CODE.toString(),
+              ),
+          ),
         );
         return;
       }
@@ -329,7 +329,7 @@ export async function downloadTool(
         _getContentLengthOfDownloadedFile(response);
       if (!isNaN(downloadedContentLength)) {
         tl.debug(
-          `Content-Length of downloaded file: ${downloadedContentLength}`
+          `Content-Length of downloaded file: ${downloadedContentLength}`,
         );
       } else {
         tl.debug(`Content-Length header missing`);
@@ -358,7 +358,7 @@ export async function downloadTool(
           try {
             const result = await validateDownloadedFile(
               destPath,
-              downloadedContentLength
+              downloadedContentLength,
             );
             tl.debug("typed-rest-client download completed successfully");
             resolve(result);
@@ -380,7 +380,7 @@ export async function downloadTool(
  * @returns number if the 'content-length' is not empty, otherwise NaN
  */
 export function _getContentLengthOfDownloadedFile(
-  response: httm.HttpClientResponse
+  response: httm.HttpClientResponse,
 ): number {
   const contentLengthHeader = response.message.headers["content-length"];
   return parseInt(<string>contentLengthHeader);
@@ -403,7 +403,7 @@ export function _getAgentTemp(): string {
     throw new Error(
       "Agent.TempDirectory is not set"
         .concat(constants.SPACE)
-        .concat(ErrorCode.AGENT_TEMP_DIRECTORY_NOT_SET.toString())
+        .concat(ErrorCode.AGENT_TEMP_DIRECTORY_NOT_SET.toString()),
     );
   }
   return tempDirectory;

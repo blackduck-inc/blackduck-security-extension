@@ -21,12 +21,12 @@ export function validatePolarisInputs(): string[] {
     const paramsMap = new Map();
     paramsMap.set(
       constants.POLARIS_ACCESS_TOKEN_KEY,
-      inputs.POLARIS_ACCESS_TOKEN
+      inputs.POLARIS_ACCESS_TOKEN,
     );
     paramsMap.set(constants.POLARIS_SERVER_URL_KEY, inputs.POLARIS_SERVER_URL);
     paramsMap.set(
       constants.POLARIS_ASSESSMENT_TYPES_KEY,
-      inputs.POLARIS_ASSESSMENT_TYPES
+      inputs.POLARIS_ASSESSMENT_TYPES,
     );
     errors = validateParameters(paramsMap, constants.POLARIS_KEY);
   }
@@ -35,7 +35,7 @@ export function validatePolarisInputs(): string[] {
 
 export function validateParameters(
   params: Map<string, string>,
-  toolName: string
+  toolName: string,
 ): string[] {
   const invalidParams: string[] = isNullOrEmpty(params);
   const errors: string[] = [];
@@ -43,7 +43,7 @@ export function validateParameters(
     errors.push(
       `[${invalidParams.join()}] - required parameters for ${toolName} is missing`
         .concat(constants.SPACE)
-        .concat(ErrorCode.MISSING_REQUIRED_PARAMETERS.toString())
+        .concat(ErrorCode.MISSING_REQUIRED_PARAMETERS.toString()),
     );
   }
   return errors;
@@ -84,7 +84,7 @@ export function validateCoverityInputs(): string[] {
     paramsMap.set(constants.COVERITY_USER_KEY, inputs.COVERITY_USER);
     paramsMap.set(
       constants.COVERITY_PASSWORD_KEY,
-      inputs.COVERITY_USER_PASSWORD
+      inputs.COVERITY_USER_PASSWORD,
     );
     paramsMap.set(constants.COVERITY_URL_KEY, inputs.COVERITY_URL);
     errors = validateParameters(paramsMap, constants.COVERITY_KEY);
@@ -93,7 +93,7 @@ export function validateCoverityInputs(): string[] {
 }
 
 export function validateCoverityInstallDirectoryParam(
-  installDir: string
+  installDir: string,
 ): boolean {
   if (
     installDir != null &&
@@ -103,7 +103,7 @@ export function validateCoverityInstallDirectoryParam(
     taskLib.error(
       `[${constants.COVERITY_INSTALL_DIRECTORY_KEY}] parameter for Coverity is invalid`
         .concat(constants.SPACE)
-        .concat(ErrorCode.INVALID_COVERITY_INSTALL_DIRECTORY.toString())
+        .concat(ErrorCode.INVALID_COVERITY_INSTALL_DIRECTORY.toString()),
     );
     return false;
   }
@@ -111,13 +111,13 @@ export function validateCoverityInstallDirectoryParam(
 }
 
 export function validateBlackduckFailureSeverities(
-  severities: string[]
+  severities: string[],
 ): boolean {
   if (severities == null || severities.length === 0) {
     taskLib.error(
       INVALID_BLACKDUCKSCA_SCAN_FAILURE_SEVERITIES.concat(
-        constants.SPACE
-      ).concat(ErrorCode.INVALID_BLACKDUCKSCA_FAILURE_SEVERITIES.toString())
+        constants.SPACE,
+      ).concat(ErrorCode.INVALID_BLACKDUCKSCA_FAILURE_SEVERITIES.toString()),
     );
     return false;
   }
@@ -131,7 +131,7 @@ export function validateBlackDuckSCAInputs(): string[] {
     paramsMap.set(constants.BLACKDUCKSCA_URL_KEY, inputs.BLACKDUCKSCA_URL);
     paramsMap.set(
       constants.BLACKDUCKSCA_TOKEN_KEY,
-      inputs.BLACKDUCKSCA_API_TOKEN
+      inputs.BLACKDUCKSCA_API_TOKEN,
     );
     errors = validateParameters(paramsMap, constants.BLACKDUCKSCA_KEY);
   }
@@ -145,7 +145,7 @@ export function validateSrmInputs(): string[] {
     paramsMap.set(constants.SRM_APIKEY_KEY, inputs.SRM_APIKEY);
     paramsMap.set(
       constants.SRM_ASSESSMENT_TYPES_KEY,
-      inputs.SRM_ASSESSMENT_TYPES
+      inputs.SRM_ASSESSMENT_TYPES,
     );
     errors = validateParameters(paramsMap, constants.SRM_KEY);
   }

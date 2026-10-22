@@ -22,7 +22,7 @@ export class AzureService {
   }
 
   async getAzurePrResponseForManualTriggerFlow(
-    azureData: AzureData | undefined
+    azureData: AzureData | undefined,
   ): Promise<AzurePrResponse | undefined> {
     if (
       azureData &&
@@ -32,7 +32,7 @@ export class AzureService {
       const StringFormat = (url: string, ...args: string[]) =>
         url.replace(
           /{(\d+)}/g,
-          (match, index) => encodeURIComponent(args[index]) || ""
+          (match, index) => encodeURIComponent(args[index]) || "",
         );
 
       const endpoint = StringFormat(
@@ -41,12 +41,12 @@ export class AzureService {
         azureData.project.name,
         azureData.repository.name,
         azureData.repository.branch.name,
-        azureData.restAPIVersion || this.apiVersion
+        azureData.restAPIVersion || this.apiVersion,
       );
       taskLib.debug(`Azure check pull request API: ${endpoint}`);
       const token: string = ":".concat(azureData.user.token);
       const encodedToken: string = Buffer.from(token, "utf8").toString(
-        "base64"
+        "base64",
       );
 
       const httpClient = getSharedHttpClient(endpoint);
@@ -64,19 +64,19 @@ export class AzureService {
         } else {
           console.info(
             UNABLE_TO_FIND_PULL_REQUEST_INFO.concat(
-              azureData.repository.branch.name
-            )
+              azureData.repository.branch.name,
+            ),
           );
         }
       } else {
         throw new Error(
           FAILED_TO_GET_PULL_REQUEST_INFO.concat(
-            azureData.repository.branch.name
+            azureData.repository.branch.name,
           )
             .concat(constants.SPACE)
             .concat(
-              ErrorCode.FAILED_TO_GET_PULL_REQUEST_INFO_FROM_SOURCE_BRANCH.toString()
-            )
+              ErrorCode.FAILED_TO_GET_PULL_REQUEST_INFO_FROM_SOURCE_BRANCH.toString(),
+            ),
         );
       }
     }
@@ -88,16 +88,16 @@ export class AzureService {
     orgName: string,
     projectName: string,
     repoName: string,
-    userToken: string
+    userToken: string,
   ): Promise<string> {
     const repoEndpoint = formatURLString(
       url + this.azureGetRepositoryAPI,
       orgName,
       projectName,
-      repoName
+      repoName,
     );
     const encodedToken = Buffer.from(`:${userToken}`, "utf8").toString(
-      "base64"
+      "base64",
     );
     const response = await getSharedHttpClient(repoEndpoint).get(repoEndpoint, {
       Authorization: `Basic ${encodedToken}`,
@@ -108,12 +108,12 @@ export class AzureService {
       response.message.headers["Content-Type"];
     const version =
       typeof header === "string"
-        ? header.match(/api-version=([\d.]+)/)?.[1] ?? ""
+        ? (header.match(/api-version=([\d.]+)/)?.[1] ?? "")
         : "";
     taskLib.debug(`Fetched Azure server API version: ${version}`);
     if (!version)
       throw new Error(
-        `Unable to fetch API version for Azure server at ${repoEndpoint}`
+        `Unable to fetch API version for Azure server at ${repoEndpoint}`,
       );
     return version;
   }

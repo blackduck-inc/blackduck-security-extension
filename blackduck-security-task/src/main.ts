@@ -68,25 +68,25 @@ export async function run() {
       workSpaceDir,
       productInputFileName,
       bridgeVersion,
-      productInputFilPath
+      productInputFilPath,
     );
     // Based on bridge version update Coverity configuration for backward compatibility
     util.updateCoverityConfigForBridgeVersion(
       productInputFileName,
       bridgeVersion,
-      productInputFilPath
+      productInputFilPath,
     );
     // Execute prepared commands
     const result: number = await bridge.executeBridgeCliCommand(
       bridgePath,
       getWorkSpaceDirectory(),
-      command
+      command,
     );
     // The statement set the exit code in the 'status' variable which can be used in the YAML file
     if (parseToBoolean(inputs.RETURN_STATUS)) {
       // Do not move to application constants
       console.log(
-        `##vso[task.setvariable variable=status;isoutput=true]${result}`
+        `##vso[task.setvariable variable=status;isoutput=true]${result}`,
       );
     }
   } catch (error: any) {
@@ -98,12 +98,12 @@ export async function run() {
         if (isVersionLess(bridgeVersion, constants.VERSION)) {
           uploadSarifResultAsArtifact(
             constants.DEFAULT_BLACKDUCK_SARIF_GENERATOR_DIRECTORY,
-            inputs.BLACKDUCKSCA_REPORTS_SARIF_FILE_PATH
+            inputs.BLACKDUCKSCA_REPORTS_SARIF_FILE_PATH,
           );
         } else {
           uploadSarifResultAsArtifact(
             constants.INTEGRATIONS_DEFAULT_BLACKDUCKSCA_SARIF_GENERATOR_DIRECTORY,
-            inputs.BLACKDUCKSCA_REPORTS_SARIF_FILE_PATH
+            inputs.BLACKDUCKSCA_REPORTS_SARIF_FILE_PATH,
           );
         }
       }
@@ -115,12 +115,12 @@ export async function run() {
         if (isVersionLess(bridgeVersion, constants.VERSION)) {
           uploadSarifResultAsArtifact(
             constants.DEFAULT_POLARIS_SARIF_GENERATOR_DIRECTORY,
-            inputs.POLARIS_REPORTS_SARIF_FILE_PATH
+            inputs.POLARIS_REPORTS_SARIF_FILE_PATH,
           );
         } else {
           uploadSarifResultAsArtifact(
             constants.INTEGRATIONS_DEFAULT_POLARIS_SARIF_GENERATOR_DIRECTORY,
-            inputs.POLARIS_REPORTS_SARIF_FILE_PATH
+            inputs.POLARIS_REPORTS_SARIF_FILE_PATH,
           );
         }
       }
@@ -151,7 +151,7 @@ export function getStatusFromError(errorObject: Error): string {
 function markBuildStatusIfIssuesArePresent(
   status: string,
   taskResult: TaskResult,
-  errorMessage: string
+  errorMessage: string,
 ) {
   const exitMessage = getExitMessage(errorMessage, status);
 
@@ -161,17 +161,17 @@ function markBuildStatusIfIssuesArePresent(
       console.log(exitMessage);
     }
     console.log(
-      `Marking the build ${TaskResult[taskResult]} as configured in the task`
+      `Marking the build ${TaskResult[taskResult]} as configured in the task`,
     );
     taskLib.setResult(taskResult, exitMessage);
   } else {
     taskLib.error(errorMessage);
     console.log(
-      `Marking build status ${TaskResult[taskResult]} is ignored since exit code is: ${status}`
+      `Marking build status ${TaskResult[taskResult]} is ignored since exit code is: ${status}`,
     );
     taskLib.setResult(
       taskLib.TaskResult.Failed,
-      WORKFLOW_FAILED.concat(exitMessage)
+      WORKFLOW_FAILED.concat(exitMessage),
     );
   }
 }
@@ -198,12 +198,12 @@ run().catch((error) => {
     // The statement set the exit code in the 'status' variable which can be used in the YAML file
     if (isReturnStatusEnabled) {
       console.log(
-        `##vso[task.setvariable variable=status;isoutput=true]${status}`
+        `##vso[task.setvariable variable=status;isoutput=true]${status}`,
       );
     }
 
     const taskResult: TaskResult | undefined = getMappedTaskResult(
-      inputs.MARK_BUILD_STATUS
+      inputs.MARK_BUILD_STATUS,
     );
 
     if (taskResult !== undefined && taskResult !== TaskResult.Failed) {
@@ -212,7 +212,7 @@ run().catch((error) => {
       taskLib.error(error.message);
       taskLib.setResult(
         taskLib.TaskResult.Failed,
-        WORKFLOW_FAILED.concat(getExitMessage(error.message, status))
+        WORKFLOW_FAILED.concat(getExitMessage(error.message, status)),
       );
     }
   }

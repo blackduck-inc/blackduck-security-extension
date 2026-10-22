@@ -37,7 +37,7 @@ export function getSSLConfig(): SSLConfig {
     process.env.SSL_CONFIG_TEST_MODE !== "production"
   ) {
     taskLib.debug(
-      "Running in test environment - using minimal SSL config to preserve mocks"
+      "Running in test environment - using minimal SSL config to preserve mocks",
     );
     return { trustAllCerts: false };
   }
@@ -47,7 +47,7 @@ export function getSSLConfig(): SSLConfig {
 
   if (trustAllCerts) {
     taskLib.debug(
-      "SSL certificate verification disabled (NETWORK_SSL_TRUST_ALL=true)"
+      "SSL certificate verification disabled (NETWORK_SSL_TRUST_ALL=true)",
     );
     return { trustAllCerts: true };
   }
@@ -61,7 +61,7 @@ export function getSSLConfig(): SSLConfig {
       const systemCAs = tls.rootCertificates || [];
       const combinedCAs = [customCA, ...systemCAs];
       taskLib.debug(
-        `Using custom CA certificate with ${systemCAs.length} system CAs for SSL verification`
+        `Using custom CA certificate with ${systemCAs.length} system CAs for SSL verification`,
       );
 
       return {
@@ -106,7 +106,7 @@ export function createHTTPSAgent(sslConfig: SSLConfig): https.Agent {
 export function createHTTPSRequestOptions(
   parsedUrl: URL,
   sslConfig: SSLConfig,
-  headers?: Record<string, string>
+  headers?: Record<string, string>,
 ): https.RequestOptions {
   const requestOptions: https.RequestOptions = {
     hostname: parsedUrl.hostname,

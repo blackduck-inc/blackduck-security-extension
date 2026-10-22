@@ -11,11 +11,11 @@ import {
 export function uploadDiagnostics(workspaceDir: string) {
   const uploadArtifactPath = path.join(
     workspaceDir,
-    constants.BRIDGE_CLI_LOCAL_DIRECTORY
+    constants.BRIDGE_CLI_LOCAL_DIRECTORY,
   );
   const uploadIntegrationDefaultArtifactPath = path.join(
     workspaceDir,
-    constants.INTEGRATIONS_CLI_LOCAL_DIRECTORY
+    constants.INTEGRATIONS_CLI_LOCAL_DIRECTORY,
   );
   let isBridgeDirectoryExists = false;
   isBridgeDirectoryExists = taskLib.exist(uploadArtifactPath);
@@ -23,20 +23,20 @@ export function uploadDiagnostics(workspaceDir: string) {
     taskLib.uploadArtifact(
       constants.UPLOAD_FOLDER_ARTIFACT_NAME,
       uploadArtifactPath,
-      constants.UPLOAD_FOLDER_ARTIFACT_NAME
+      constants.UPLOAD_FOLDER_ARTIFACT_NAME,
     );
   } else {
     taskLib.uploadArtifact(
       constants.UPLOAD_FOLDER_ARTIFACT_NAME,
       uploadIntegrationDefaultArtifactPath,
-      constants.UPLOAD_FOLDER_ARTIFACT_NAME
+      constants.UPLOAD_FOLDER_ARTIFACT_NAME,
     );
   }
 }
 
 export function uploadSarifResultAsArtifact(
   defaultSarifReportDirectory: string,
-  userSarifFilePath: string
+  userSarifFilePath: string,
 ) {
   if (
     defaultSarifReportDirectory ===
@@ -55,12 +55,12 @@ export function uploadSarifResultAsArtifact(
       taskLib.uploadArtifact(
         constants.SARIF_UPLOAD_FOLDER_ARTIFACT_NAME,
         sarifFilePath,
-        constants.SARIF_UPLOAD_FOLDER_ARTIFACT_NAME
+        constants.SARIF_UPLOAD_FOLDER_ARTIFACT_NAME,
       );
       console.log("Upload SARIF report successfully in the artifact");
     } else {
       console.log(
-        `Uploading SARIF report as artifact failed as file path not found at: ${sarifFilePath}`
+        `Uploading SARIF report as artifact failed as file path not found at: ${sarifFilePath}`,
       );
     }
   } else {
@@ -75,12 +75,12 @@ export function uploadSarifResultAsArtifact(
       taskLib.uploadArtifact(
         constants.SARIF_UPLOAD_FOLDER_ARTIFACT_NAME,
         sarifFilePath,
-        constants.SARIF_UPLOAD_FOLDER_ARTIFACT_NAME
+        constants.SARIF_UPLOAD_FOLDER_ARTIFACT_NAME,
       );
       console.log("Upload SARIF report successfully in the artifact");
     } else {
       console.log(
-        `Uploading SARIF report as artifact failed as file path not found at: ${sarifFilePath}`
+        `Uploading SARIF report as artifact failed as file path not found at: ${sarifFilePath}`,
       );
     }
   }
