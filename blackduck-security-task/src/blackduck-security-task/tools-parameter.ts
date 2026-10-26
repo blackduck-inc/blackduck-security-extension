@@ -32,6 +32,7 @@ import {
   filterEmptyData,
   isBoolean,
   isPullRequestEvent,
+  parseCommaSeparatedList,
   parseToBoolean,
 } from "./utility";
 
@@ -295,6 +296,16 @@ export class BridgeCliToolsParameter {
             inputs.POLARIS_PR_COMMENT_SEVERITIES.filter(
               (severity) => severity,
             ).map((severity) => severity.trim());
+        }
+
+        const prCommentFilterIssueTypes = parseCommaSeparatedList(
+          inputs.POLARIS_PR_COMMENT_FILTER_ISSUETYPES,
+        );
+
+        if (prCommentFilterIssueTypes.length > 0) {
+          polData.data.polaris.prcomment.filter = {
+            issueTypes: prCommentFilterIssueTypes,
+          };
         }
       }
     }
@@ -837,8 +848,21 @@ export class BridgeCliToolsParameter {
         }
       }
     }
-    if (fixPRFilterSeverities.length > 0) {
-      polarisFixPrData.filter = { severities: fixPRFilterSeverities };
+
+    const fixPRFilterIssueTypes = parseCommaSeparatedList(
+      inputs.POLARIS_FIXPR_FILTER_ISSUETYPES,
+    );
+
+    if (fixPRFilterSeverities.length > 0 || fixPRFilterIssueTypes.length > 0) {
+      if (!polarisFixPrData.filter) {
+        polarisFixPrData.filter = {};
+      }
+      if (fixPRFilterSeverities.length > 0) {
+        polarisFixPrData.filter.severities = fixPRFilterSeverities;
+      }
+      if (fixPRFilterIssueTypes.length > 0) {
+        polarisFixPrData.filter.issueTypes = fixPRFilterIssueTypes;
+      }
     }
     return polarisFixPrData;
   }
