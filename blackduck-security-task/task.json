@@ -543,6 +543,16 @@
       "groupName": "polarisFixPR"
     },
     {
+      "name": "polarisFixPrFilterConfidence",
+      "type": "string",
+      "label": "List of CONFIDENCE LEVELS to be filtered",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Comma-separated list of confidence levels to scope Fix PR creation to. Accepted values are based on Bridge CLI defaults. Default behavior filters by Bridge CLI defaults when unset.",
+      "visibleRule": "polarisFixPrEnabled = true",
+      "groupName": "polarisFixPR"
+    },
+    {
       "name": "polarisPrCommentFilterIssueTypes",
       "type": "string",
       "label": "List of ISSUE TYPES to be filtered",
