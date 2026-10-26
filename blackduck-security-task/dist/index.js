@@ -2170,8 +2170,8 @@ exports.POLARIS_FIXPR_ENABLED = getBoolInput(constants.POLARIS_FIXPR_ENABLED_KEY
 exports.POLARIS_FIXPR_MAXCOUNT = getInput(constants.POLARIS_FIXPR_MAXCOUNT_KEY, constants.POLARIS_FIXPR_MAXCOUNT_KEY_CLASSIC_EDITOR, null);
 exports.POLARIS_FIXPR_FILTER_SEVERITIES = getDelimitedInput(constants.POLARIS_FIXPR_FILTER_SEVERITIES_KEY, constants.POLARIS_FIXPR_FILTER_SEVERITIES_KEY_CLASSIC_EDITOR, null);
 exports.POLARIS_FIXPR_USEUPGRADEGUIDANCE = getDelimitedInput(constants.POLARIS_FIXPR_USEUPGRADEGUIDANCE_KEY, constants.POLARIS_FIXPR_USEUPGRADEGUIDANCE_KEY_CLASSIC_EDITOR, null);
-exports.POLARIS_FIXPR_FILTER_ISSUETYPES = getDelimitedInput(constants.POLARIS_FIXPR_FILTER_ISSUETYPES_KEY, constants.POLARIS_FIXPR_FILTER_ISSUETYPES_KEY_CLASSIC_EDITOR, null);
-exports.POLARIS_PR_COMMENT_FILTER_ISSUETYPES = getDelimitedInput(constants.POLARIS_PR_COMMENT_FILTER_ISSUETYPES_KEY, constants.POLARIS_PR_COMMENT_FILTER_ISSUETYPES_KEY_CLASSIC_EDITOR, null);
+exports.POLARIS_FIXPR_FILTER_ISSUETYPES = getInput(constants.POLARIS_FIXPR_FILTER_ISSUETYPES_KEY, constants.POLARIS_FIXPR_FILTER_ISSUETYPES_KEY_CLASSIC_EDITOR, null);
+exports.POLARIS_PR_COMMENT_FILTER_ISSUETYPES = getInput(constants.POLARIS_PR_COMMENT_FILTER_ISSUETYPES_KEY, constants.POLARIS_PR_COMMENT_FILTER_ISSUETYPES_KEY_CLASSIC_EDITOR, null);
 exports.BLACKDUCKSCA_REPORTS_SARIF_CREATE = getInput(constants.BLACKDUCKSCA_REPORTS_SARIF_CREATE_KEY, constants.BLACKDUCKSCA_REPORTS_SARIF_CREATE_KEY_CLASSIC_EDITOR, constants.BLACKDUCK_REPORTS_SARIF_CREATE_KEY);
 exports.BLACKDUCKSCA_REPORTS_SARIF_FILE_PATH = getInput(constants.BLACKDUCKSCA_REPORTS_SARIF_FILE_PATH_KEY, constants.BLACKDUCKSCA_REPORTS_SARIF_FILE_PATH_KEY_CLASSIC_EDITOR, constants.BLACKDUCK_REPORTS_SARIF_FILE_PATH_KEY);
 exports.BLACKDUCKSCA_PROJECT_DIRECTORY = getInput(constants.PROJECT_DIRECTORY_KEY, constants.BLACKDUCKSCA_PROJECT_DIRECTORY_KEY_CLASSIC_EDITOR, null);
@@ -2835,7 +2835,7 @@ class BridgeCliToolsParameter {
                         polData.data.polaris.prcomment.severities =
                             inputs.POLARIS_PR_COMMENT_SEVERITIES.filter((severity) => severity).map((severity) => severity.trim());
                     }
-                    const prCommentFilterIssueTypes = this.parseCommaSeparatedList(inputs.POLARIS_PR_COMMENT_FILTER_ISSUETYPES);
+                    const prCommentFilterIssueTypes = (0, utility_1.parseCommaSeparatedList)(inputs.POLARIS_PR_COMMENT_FILTER_ISSUETYPES);
                     if (prCommentFilterIssueTypes.length > 0) {
                         polData.data.polaris.prcomment.filter = {
                             issueTypes: prCommentFilterIssueTypes,
@@ -3227,7 +3227,7 @@ class BridgeCliToolsParameter {
                 }
             }
         }
-        const fixPRFilterIssueTypes = this.parseCommaSeparatedList(inputs.POLARIS_FIXPR_FILTER_ISSUETYPES);
+        const fixPRFilterIssueTypes = (0, utility_1.parseCommaSeparatedList)(inputs.POLARIS_FIXPR_FILTER_ISSUETYPES);
         if (fixPRFilterSeverities.length > 0 || fixPRFilterIssueTypes.length > 0) {
             if (!polarisFixPrData.filter) {
                 polarisFixPrData.filter = {};
@@ -3643,17 +3643,6 @@ class BridgeCliToolsParameter {
         }
         return network;
     }
-    parseCommaSeparatedList(input) {
-        const result = [];
-        if (input && input.length > 0) {
-            for (const item of input) {
-                if (item != null && item.trim() !== "") {
-                    result.push(item.trim());
-                }
-            }
-        }
-        return result;
-    }
 }
 exports.BridgeCliToolsParameter = BridgeCliToolsParameter;
 BridgeCliToolsParameter.STAGE_OPTION = "--stage";
@@ -3729,6 +3718,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.LoggerWrapper = exports.PathWrapper = exports.FileSystemWrapper = exports.IS_PR_EVENT = void 0;
 exports.cleanUrl = cleanUrl;
+exports.parseCommaSeparatedList = parseCommaSeparatedList;
 exports.getTempDir = getTempDir;
 exports.extractZipped = extractZipped;
 exports.extractZipWithQuiet = extractZipWithQuiet;
@@ -3784,6 +3774,14 @@ function cleanUrl(url) {
         return url.slice(0, url.length - 1);
     }
     return url;
+}
+function parseCommaSeparatedList(value) {
+    return value
+        ? value
+            .split(",")
+            .map((item) => item.trim())
+            .filter((item) => item !== "")
+        : [];
 }
 function getTempDir() {
     return process.env["AGENT_TEMPDIRECTORY"] || "";

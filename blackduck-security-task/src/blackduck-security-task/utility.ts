@@ -50,6 +50,15 @@ export function cleanUrl(url: string): string {
   return url;
 }
 
+export function parseCommaSeparatedList(value: string | undefined): string[] {
+  return value
+    ? value
+        .split(",")
+        .map((item) => item.trim())
+        .filter((item) => item !== "")
+    : [];
+}
+
 export function getTempDir(): string {
   return process.env["AGENT_TEMPDIRECTORY"] || "";
 }

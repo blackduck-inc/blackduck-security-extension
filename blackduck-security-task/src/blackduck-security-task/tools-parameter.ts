@@ -32,6 +32,7 @@ import {
   filterEmptyData,
   isBoolean,
   isPullRequestEvent,
+  parseCommaSeparatedList,
   parseToBoolean,
 } from "./utility";
 
@@ -297,7 +298,7 @@ export class BridgeCliToolsParameter {
             ).map((severity) => severity.trim());
         }
 
-        const prCommentFilterIssueTypes = this.parseCommaSeparatedList(
+        const prCommentFilterIssueTypes = parseCommaSeparatedList(
           inputs.POLARIS_PR_COMMENT_FILTER_ISSUETYPES,
         );
 
@@ -848,7 +849,7 @@ export class BridgeCliToolsParameter {
       }
     }
 
-    const fixPRFilterIssueTypes = this.parseCommaSeparatedList(
+    const fixPRFilterIssueTypes = parseCommaSeparatedList(
       inputs.POLARIS_FIXPR_FILTER_ISSUETYPES,
     );
 
@@ -1414,17 +1415,5 @@ export class BridgeCliToolsParameter {
       network.ssl.trustAll = parseToBoolean(inputs.NETWORK_SSL_TRUST_ALL);
     }
     return network;
-  }
-
-  private parseCommaSeparatedList(input: string[] | undefined): string[] {
-    const result: string[] = [];
-    if (input && input.length > 0) {
-      for (const item of input) {
-        if (item != null && item.trim() !== "") {
-          result.push(item.trim());
-        }
-      }
-    }
-    return result;
   }
 }
