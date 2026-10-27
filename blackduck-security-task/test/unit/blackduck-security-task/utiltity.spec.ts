@@ -334,6 +334,47 @@ describe("Utilities", () => {
         });
     });
 
+    context('parseCommaSeparatedList', () => {
+
+        it('should return empty array for undefined', () => {
+            expect(utility.parseCommaSeparatedList(undefined)).to.deep.equal([]);
+        });
+
+        it('should return empty array for empty string', () => {
+            expect(utility.parseCommaSeparatedList("")).to.deep.equal([]);
+        });
+
+        it('should return empty array for whitespace and comma only input', () => {
+            expect(utility.parseCommaSeparatedList("  ")).to.deep.equal([]);
+            expect(utility.parseCommaSeparatedList(",")).to.deep.equal([]);
+            expect(utility.parseCommaSeparatedList(" , , ")).to.deep.equal([]);
+        });
+
+        it('should return single item when no comma is present', () => {
+            expect(utility.parseCommaSeparatedList("HIGH")).to.deep.equal(["HIGH"]);
+        });
+
+        it('should split multiple comma separated values', () => {
+            expect(utility.parseCommaSeparatedList("HIGH,MEDIUM,LOW")).to.deep.equal(["HIGH", "MEDIUM", "LOW"]);
+        });
+
+        it('should trim whitespace around each item', () => {
+            expect(utility.parseCommaSeparatedList("  HIGH , MEDIUM  ,   LOW ")).to.deep.equal(["HIGH", "MEDIUM", "LOW"]);
+        });
+
+        it('should drop empty items from leading, trailing and consecutive commas', () => {
+            expect(utility.parseCommaSeparatedList(",HIGH,,MEDIUM,")).to.deep.equal(["HIGH", "MEDIUM"]);
+        });
+
+        it('should preserve case and inner whitespace of items', () => {
+            expect(utility.parseCommaSeparatedList("Cross Site Scripting, sql-injection")).to.deep.equal(["Cross Site Scripting", "sql-injection"]);
+        });
+
+        it('should keep duplicate items', () => {
+            expect(utility.parseCommaSeparatedList("a,a")).to.deep.equal(["a", "a"]);
+        });
+    });
+
     context('isPullRequestEvent', () => {
         it('should return true for PR automation flow', () => {
             const getStubVariable = sandbox.stub(taskLib, "getVariable");
