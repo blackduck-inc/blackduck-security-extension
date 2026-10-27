@@ -232,102 +232,46 @@ export const COVERITY_ARGS_KEY_CLASSIC_EDITOR_FOR_POLARIS =
 export const COVERITY_ARGS_KEY_CLASSIC_EDITOR_FOR_SRM = "coverityArgsForSrm";
 
 // Blackduck
-/**
- * @deprecated Use blackducksca_url instead. This can be removed in future release.
- */
-export const BLACKDUCK_URL_KEY = "blackduck_url"; // old key
 export const BLACKDUCKSCA_URL_KEY = "blackducksca_url"; // new key
 export const BLACKDUCKSCA_URL_KEY_CLASSIC_EDITOR = "blackduckScaUrl"; // classic editor key
 
-/**
- * @deprecated Use BLACKDUCKSCA_TOKEN_KEY instead. This can be removed in future release.
- */
-export const BLACKDUCK_TOKEN_KEY = "blackduck_token";
 export const BLACKDUCKSCA_TOKEN_KEY = "blackducksca_token";
 export const BLACKDUCKSCA_TOKEN_KEY_CLASSIC_EDITOR = "blackduckScaToken";
-/**
- * @deprecated Use detect_install_directory instead. This can be removed in future release.
- */
-export const BLACKDUCK_INSTALL_DIRECTORY_KEY = "blackduck_install_directory";
 export const DETECT_INSTALL_DIRECTORY_KEY = "detect_install_directory";
 export const DETECT_INSTALL_DIRECTORY_KEY_CLASSIC_EDITOR =
   "detectInstallDirectory";
 
-/**
- * @deprecated Use detect_execution_path instead. This can be removed in future release.
- */
-export const BLACKDUCK_EXECUTION_PATH_KEY = "blackduck_execution_path";
 export const DETECT_EXECUTION_PATH_KEY = "detect_execution_path";
 export const DETECT_EXECUTION_PATH_KEY_CLASSIC_EDITOR = "detectExecutionPath";
-/**
- * @deprecated Use detect_scan_full instead. This can be removed in future release.
- */
-export const BLACKDUCK_SCAN_FULL_KEY = "blackduck_scan_full";
 export const BLACKDUCKSCA_SCAN_FULL_KEY = "blackducksca_scan_full";
 export const BLACKDUCKSCA_SCAN_FULL_KEY_CLASSIC_EDITOR = "blackduckScaScanFull";
-/**
- * @deprecated Use blackducksca_scan_failure_severities instead. This can be removed in future release.
- */
-export const BLACKDUCK_SCAN_FAILURE_SEVERITIES_KEY =
-  "blackduck_scan_failure_severities";
 export const BLACKDUCKSCA_SCAN_FAILURE_SEVERITIES_KEY =
   "blackducksca_scan_failure_severities";
 export const BLACKDUCKSCA_SCAN_FAILURE_SEVERITIES_KEY_CLASSIC_EDITOR =
   "blackduckScaScanFailureSeverities";
-/**
- * @deprecated Use blackducksca_prComment_enabled instead. This can be removed in future release.
- */
-export const BLACKDUCK_PRCOMMENT_ENABLED_KEY = "blackduck_prComment_enabled";
 export const BLACKDUCKSCA_PRCOMMENT_ENABLED_KEY =
   "blackducksca_prComment_enabled";
 export const BLACKDUCKSCA_PRCOMMENT_ENABLED_KEY_CLASSIC_EDITOR =
   "blackduckScaPrCommentEnabled";
-/**
- * @deprecated Use blackducksca_fixpr_enabled instead. This can be removed in future release.
- */
-export const BLACKDUCK_FIXPR_ENABLED_KEY = "blackduck_fixpr_enabled";
 export const BLACKDUCKSCA_FIXPR_ENABLED_KEY = "blackducksca_fixpr_enabled";
 export const BLACKDUCKSCA_FIXPR_ENABLED_KEY_CLASSIC_EDITOR =
   "blackduckScaFixPrEnabled";
-/**
- * @deprecated Use blackducksca_fixpr_maxCount instead. This can be removed in future release.
- */
-export const BLACKDUCK_FIXPR_MAXCOUNT_KEY = "blackduck_fixpr_maxCount";
 export const BLACKDUCKSCA_FIXPR_MAXCOUNT_KEY = "blackducksca_fixpr_maxCount";
 export const BLACKDUCKSCA_FIXPR_MAXCOUNT_KEY_CLASSIC_EDITOR =
   "blackduckScaFixPrMaxCount";
-/**
- * @deprecated Use blackducksca_fixpr_createSinglePR instead. This can be removed in future release.
- */
-export const BLACKDUCK_FIXPR_CREATE_SINGLE_PR_KEY =
-  "blackduck_fixpr_createSinglePR";
 export const BLACKDUCKSCA_FIXPR_CREATE_SINGLE_PR_KEY =
   "blackducksca_fixpr_createSinglePR";
 export const BLACKDUCKSCA_FIXPR_CREATE_SINGLE_PR_KEY_CLASSIC_EDITOR =
   "blackduckScaFixPRCreateSinglePR";
-/**
- * @deprecated Use blackducksca_fixpr_filter_severities instead. This can be removed in future release.
- */
-export const BLACKDUCK_FIXPR_FILTER_SEVERITIES_KEY =
-  "blackduck_fixpr_filter_severities";
 export const BLACKDUCKSCA_FIXPR_FILTER_SEVERITIES_KEY =
   "blackducksca_fixpr_filter_severities";
 export const BLACKDUCKSCA_FIXPR_FILTER_SEVERITIES_KEY_CLASSIC_EDITOR =
   "blackduckScaFixPrFilterSeverities";
-/**
- * @deprecated Use blackducksca_fixpr_useUpgradeGuidance instead. This can be removed in future release.
- */
-export const BLACKDUCK_FIXPR_UPGRADE_GUIDANCE_KEY =
-  "blackduck_fixpr_useUpgradeGuidance";
 export const BLACKDUCKSCA_FIXPR_UPGRADE_GUIDANCE_KEY =
   "blackducksca_fixpr_useUpgradeGuidance";
 export const BLACKDUCKSCA_FIXPR_UPGRADE_GUIDANCE_KEY_CLASSIC_EDITOR =
   "blackduckScaFixPrUseUpgradeGuidance";
 
-/**
- * @deprecated Use blackducksca_waitForScan instead. This can be removed in future release.
- */
-export const BLACKDUCK_WAITFORSCAN_KEY = "blackduck_waitForScan";
 export const BLACKDUCKSCA_WAITFORSCAN_KEY = "blackducksca_waitForScan";
 export const BLACKDUCKSCA_WAITFORSCAN_KEY_CLASSIC_EDITOR =
   "blackduckScaWaitForScan";
@@ -335,47 +279,23 @@ export const BLACKDUCKSCA_WAITFORSCAN_KEY_CLASSIC_EDITOR =
 export const BLACKDUCKSCA_PROJECT_DIRECTORY_KEY_CLASSIC_EDITOR =
   "blackduckScaProjectDirectory";
 
-/**
- * @deprecated Use blackducksca_reports_sarif_create instead. This can be removed in future release.
- */
-export const BLACKDUCK_REPORTS_SARIF_CREATE_KEY =
-  "blackduck_reports_sarif_create";
 export const BLACKDUCKSCA_REPORTS_SARIF_CREATE_KEY =
   "blackducksca_reports_sarif_create";
 export const BLACKDUCKSCA_REPORTS_SARIF_CREATE_KEY_CLASSIC_EDITOR =
   "blackduckScaReportsSarifCreate";
-/**
- * @deprecated Use blackducksca_reports_sarif_file_path instead. This can be removed in future release.
- */
-export const BLACKDUCK_REPORTS_SARIF_FILE_PATH_KEY =
-  "blackduck_reports_sarif_file_path";
 export const BLACKDUCKSCA_REPORTS_SARIF_FILE_PATH_KEY =
   "blackducksca_reports_sarif_file_path";
 export const BLACKDUCKSCA_REPORTS_SARIF_FILE_PATH_KEY_CLASSIC_EDITOR =
   "blackduckScaReportsSarifFilePath";
-/**
- * @deprecated Use blackducksca_reports_sarif_severities instead. This can be removed in future release.
- */
-export const BLACKDUCK_REPORTS_SARIF_SEVERITIES_KEY =
-  "blackduck_reports_sarif_severities";
 export const BLACKDUCKSCA_REPORTS_SARIF_SEVERITIES_KEY =
   "blackducksca_reports_sarif_severities";
 export const BLACKDUCKSCA_REPORTS_SARIF_SEVERITIES_KEY_CLASSIC_EDITOR =
   "blackduckScaReportsSarifSeverities";
-/**
- * @deprecated Use blackducksca_reports_sarif_groupSCAIssues instead. This can be removed in future release.
- */
-export const BLACKDUCK_REPORTS_SARIF_GROUP_SCA_ISSUES_KEY =
-  "blackduck_reports_sarif_groupSCAIssues";
 export const BLACKDUCKSCA_REPORTS_SARIF_GROUP_SCA_ISSUES_KEY =
   "blackducksca_reports_sarif_groupSCAIssues";
 export const BLACKDUCKSCA_REPORTS_SARIF_GROUP_SCA_ISSUES_KEY_CLASSIC_EDITOR =
   "blackduckScaReportsSarifGroupSCAIssues";
 
-/**
- * @deprecated Use detect_search_depth instead. This can be removed in future release.
- */
-export const BLACKDUCK_SEARCH_DEPTH_KEY = "blackduck_search_depth";
 export const DETECT_SEARCH_DEPTH_KEY = "detect_search_depth";
 export const DETECT_DEPTH_KEY_CLASSIC_EDITOR = "detectSearchDepth";
 export const DETECT_DEPTH_KEY_CLASSIC_EDITOR_FOR_POLARIS =
@@ -383,10 +303,6 @@ export const DETECT_DEPTH_KEY_CLASSIC_EDITOR_FOR_POLARIS =
 export const DETECT_DEPTH_KEY_CLASSIC_EDITOR_FOR_SRM =
   "detectSearchDepthForSrm";
 
-/**
- * @deprecated Use detect_config_path instead. This can be removed in future release.
- */
-export const BLACKDUCK_CONFIG_PATH_KEY = "blackduck_config_path";
 export const DETECT_CONFIG_PATH_KEY = "detect_config_path";
 export const DETECT_CONFIG_PATH_KEY_CLASSIC_EDITOR = "detectConfigPath";
 export const DETECT_CONFIG_PATH_KEY_CLASSIC_EDITOR_FOR_POLARIS =
@@ -394,10 +310,6 @@ export const DETECT_CONFIG_PATH_KEY_CLASSIC_EDITOR_FOR_POLARIS =
 export const DETECT_CONFIG_PATH_KEY_CLASSIC_EDITOR_FOR_SRM =
   "detectConfigPathForSrm";
 
-/**
- * @deprecated Use detect_args instead. This can be removed in future release.
- */
-export const BLACKDUCK_ARGS_KEY = "blackduck_args";
 export const DETECT_ARGS_KEY = "detect_args";
 export const DETECT_ARGS_KEY_CLASSIC_EDITOR = "detectArgs";
 export const DETECT_ARGS_KEY_CLASSIC_EDITOR_FOR_POLARIS =
@@ -440,24 +352,11 @@ export const COVERITY_INCLUDE_DIAGNOSTICS_KEY_CLASSIC_EDITOR =
   "coverityIncludeDiagnostics";
 export const SRM_INCLUDE_DIAGNOSTICS_KEY_CLASSIC_EDITOR =
   "srmIncludeDiagnostics";
-/**
- * @deprecated Use network_airgap instead. This can be removed in future release.
- */
-export const BRIDGE_NETWORK_AIRGAP_KEY = "bridge_network_airgap";
 export const NETWORK_AIRGAP_KEY = "network_airgap";
 export const NETWORK_AIRGAP_KEY_CLASSIC_EDITOR = "networkAirgap";
 
-/**
- * @deprecated Use bridgecli_download_url instead. This can be removed in future release.
- */
-export const SYNOPSYS_BRIDGE_DOWNLOAD_URL_KEY = "synopsys_bridge_download_url";
 export const BRIDGECLI_DOWNLOAD_URL_KEY = "bridgecli_download_url";
 export const BRIDGECLI_DOWNLOAD_URL_KEY_CLASSIC_EDITOR = "bridgeCliDownloadUrl";
-/**
- * @deprecated Use bridgecli_download_version instead. This can be removed in future release.
- */
-export const SYNOPSYS_BRIDGE_DOWNLOAD_VERSION_KEY =
-  "synopsys_bridge_download_version";
 export const BRIDGECLI_DOWNLOAD_VERSION_KEY = "bridgecli_download_version";
 export const BRIDGECLI_DOWNLOAD_VERSION_KEY_CLASSIC_EDITOR =
   "bridgeCliDownloadVersion";
@@ -474,11 +373,6 @@ export const COVERITY_MARK_BUILD_STATUS_KEY_CLASSIC_EDITOR =
   "coverityMarkBuildStatus";
 export const SRM_MARK_BUILD_STATUS_KEY_CLASSIC_EDITOR = "srmMarkBuildStatus";
 
-/**
- * @deprecated Use bridgecli_install_directory instead. This can be removed in future release.
- */
-export const SYNOPSYS_BRIDGE_INSTALL_DIRECTORY_KEY =
-  "synopsys_bridge_install_directory";
 export const BRIDGECLI_INSTALL_DIRECTORY_KEY = "bridgecli_install_directory";
 export const BRIDGECLI_INSTALL_DIRECTORY_KEY_CLASSIC_EDITOR =
   "bridgeCliInstallDirectory";

@@ -66,37 +66,22 @@ export class BridgeCliToolsParameter {
   private static SRM_STAGE = "srm";
   private static SRM_STATE_FILE_NAME = "srm_input.json";
 
+  private static ASSESSMENT_TYPE_REGEX = /^[a-zA-Z]+$/;
+
   constructor(tempDir: string) {
     this.tempDir = tempDir;
   }
 
   async getFormattedCommandForPolaris(): Promise<string> {
-    let command = "";
     const customHeader =
       this.getInstanceUrl() === constants.ADO_SERVICES_URL
         ? constants.INTEGRATIONS_ADO_CLOUD
         : constants.INTEGRATIONS_ADO_EE;
-    const assessmentTypeArray: string[] = [];
-    const assessmentTypes = inputs.POLARIS_ASSESSMENT_TYPES;
-    if (assessmentTypes != null && assessmentTypes.length > 0) {
-      for (const assessmentType of assessmentTypes) {
-        console.log(assessmentType);
-        const regEx = new RegExp("^[a-zA-Z]+$");
-        if (
-          assessmentType.trim().length > 0 &&
-          regEx.test(assessmentType.trim())
-        ) {
-          assessmentTypeArray.push(assessmentType.trim());
-        } else {
-          throw new Error(
-            "Invalid value for "
-              .concat(constants.POLARIS_ASSESSMENT_TYPES_KEY)
-              .concat(constants.SPACE)
-              .concat(ErrorCode.INVALID_POLARIS_ASSESSMENT_TYPES.toString()),
-          );
-        }
-      }
-    }
+    const assessmentTypeArray = this.parseAssessmentTypes(
+      inputs.POLARIS_ASSESSMENT_TYPES,
+      constants.POLARIS_ASSESSMENT_TYPES_KEY,
+      ErrorCode.INVALID_POLARIS_ASSESSMENT_TYPES,
+    );
 
     const azureRepositoryName = this.getAzureRepositoryName();
 
@@ -161,9 +146,7 @@ export class BridgeCliToolsParameter {
       if (inputs.POLARIS_TEST_SAST_TYPE || inputs.POLARIS_TEST_SAST_LOCATION) {
         polData.data.polaris.test.sast = {
           ...(inputs.POLARIS_TEST_SAST_TYPE && {
-            type: inputs.POLARIS_TEST_SAST_TYPE.split(",").map(
-              (polarisTestSastType) => polarisTestSastType.trim(),
-            ),
+            type: parseCommaSeparatedList(inputs.POLARIS_TEST_SAST_TYPE),
           }),
           ...(inputs.POLARIS_TEST_SAST_LOCATION && {
             location: inputs.POLARIS_TEST_SAST_LOCATION,
@@ -216,9 +199,9 @@ export class BridgeCliToolsParameter {
         }
 
         if (inputs.PROJECT_SOURCE_EXCLUDES) {
-          const sourceExcludes = inputs.PROJECT_SOURCE_EXCLUDES.filter(
-            (sourceExclude) => sourceExclude && sourceExclude.trim() !== "",
-          ).map((sourceExclude) => sourceExclude.trim());
+          const sourceExcludes = parseCommaSeparatedList(
+            inputs.PROJECT_SOURCE_EXCLUDES.join(","),
+          );
           if (sourceExcludes.length > 0) {
             polData.data.project.source.excludes = sourceExcludes;
           }
@@ -292,10 +275,9 @@ export class BridgeCliToolsParameter {
         polData.data.polaris.prcomment = { severities: [], enabled: true };
 
         if (inputs.POLARIS_PR_COMMENT_SEVERITIES) {
-          polData.data.polaris.prcomment.severities =
-            inputs.POLARIS_PR_COMMENT_SEVERITIES.filter(
-              (severity) => severity,
-            ).map((severity) => severity.trim());
+          polData.data.polaris.prcomment.severities = parseCommaSeparatedList(
+            inputs.POLARIS_PR_COMMENT_SEVERITIES.join(","),
+          );
         }
 
         const prCommentFilterIssueTypes = parseCommaSeparatedList(
@@ -326,47 +308,18 @@ export class BridgeCliToolsParameter {
     if (azureRestAPIVersion && polData.data.azure) {
       polData.data.azure.restAPIVersion = azureRestAPIVersion;
     }
-    const inputJson = JSON.stringify(polData);
 
-    let stateFilePath = path.join(
-      this.tempDir,
+    return this.writeStateFileAndBuildCommand(
+      BridgeCliToolsParameter.POLARIS_STAGE,
       BridgeCliToolsParameter.POLARIS_STATE_FILE_NAME,
-    );
-    taskLib.writeFile(stateFilePath, inputJson);
-
-    // Wrap the file path with double quotes, to make it work with directory path with space as well
-    stateFilePath = '"'.concat(stateFilePath).concat('"');
-
-    taskLib.debug("Generated state json file at - ".concat(stateFilePath));
-
-    // Generate out file path
-    let outFilePath = path.join(
-      this.tempDir,
+      polData,
       BridgeCliToolsParameter.POLARIS_OUT_FILE_NAME,
     );
-    outFilePath = '"'.concat(outFilePath).concat('"');
-    taskLib.debug("Generated out json file at - ".concat(outFilePath));
-
-    command = BridgeCliToolsParameter.STAGE_OPTION.concat(
-      BridgeCliToolsParameter.SPACE,
-    )
-      .concat(BridgeCliToolsParameter.POLARIS_STAGE)
-      .concat(BridgeCliToolsParameter.SPACE)
-      .concat(BridgeCliToolsParameter.INPUT_OPTION)
-      .concat(BridgeCliToolsParameter.SPACE)
-      .concat(stateFilePath)
-      .concat(BridgeCliToolsParameter.SPACE)
-      .concat(BridgeCliToolsParameter.OUTPUT_OPTION)
-      .concat(BridgeCliToolsParameter.SPACE)
-      .concat(outFilePath)
-      .concat(BridgeCliToolsParameter.SPACE);
-    return command;
   }
 
   async getFormattedCommandForBlackduck(): Promise<string> {
     const failureSeverities: string[] =
       inputs.BLACKDUCKSCA_SCAN_FAILURE_SEVERITIES;
-    let command = "";
     const customHeader =
       this.getInstanceUrl() === constants.ADO_SERVICES_URL
         ? constants.INTEGRATIONS_ADO_CLOUD
@@ -516,46 +469,15 @@ export class BridgeCliToolsParameter {
     if (azureRestAPIVersion && blackduckData.data.azure) {
       blackduckData.data.azure.restAPIVersion = azureRestAPIVersion;
     }
-    const inputJson = JSON.stringify(blackduckData);
-
-    let stateFilePath = path.join(
-      this.tempDir,
+    return this.writeStateFileAndBuildCommand(
+      BridgeCliToolsParameter.BLACKDUCKSCA_STAGE,
       BridgeCliToolsParameter.BD_STATE_FILE_NAME,
-    );
-    taskLib.writeFile(stateFilePath, inputJson);
-
-    // Wrap the file path with double quotes, to make it work with directory path with space as well
-    stateFilePath = '"'.concat(stateFilePath).concat('"');
-
-    taskLib.debug("Generated state json file at - ".concat(stateFilePath));
-
-    // Generate out file path
-    let outFilePath = path.join(
-      this.tempDir,
+      blackduckData,
       BridgeCliToolsParameter.BD_OUT_FILE_NAME,
     );
-    outFilePath = '"'.concat(outFilePath).concat('"');
-    taskLib.debug("Generated out json file at - ".concat(outFilePath));
-
-    command = BridgeCliToolsParameter.STAGE_OPTION.concat(
-      BridgeCliToolsParameter.SPACE,
-    )
-      .concat(BridgeCliToolsParameter.BLACKDUCKSCA_STAGE)
-      .concat(BridgeCliToolsParameter.SPACE)
-      .concat(BridgeCliToolsParameter.INPUT_OPTION)
-      .concat(BridgeCliToolsParameter.SPACE)
-      .concat(stateFilePath)
-      .concat(BridgeCliToolsParameter.SPACE)
-      .concat(BridgeCliToolsParameter.OUTPUT_OPTION)
-      .concat(BridgeCliToolsParameter.SPACE)
-      .concat(outFilePath)
-      .concat(BridgeCliToolsParameter.SPACE);
-
-    return command;
   }
 
   async getFormattedCommandForCoverity(): Promise<string> {
-    let command = "";
     const customHeader =
       this.getInstanceUrl() === constants.ADO_SERVICES_URL
         ? constants.INTEGRATIONS_ADO_CLOUD
@@ -688,18 +610,9 @@ export class BridgeCliToolsParameter {
         covData.data.azure = azureData;
         covData.data.environment = this.setEnvironmentScanPullData();
         // Always use new format initially - version detection will convert if needed
-        const prCommentImpacts: string[] = [];
-        if (
-          inputs.COVERITY_PRCOMMENT_IMPACTS &&
-          inputs.COVERITY_PRCOMMENT_IMPACTS.length > 0
-        ) {
-          const impactValues = inputs.COVERITY_PRCOMMENT_IMPACTS.split(",");
-          for (const impact of impactValues) {
-            if (impact.trim()) {
-              prCommentImpacts.push(impact.trim().toUpperCase());
-            }
-          }
-        }
+        const prCommentImpacts = parseCommaSeparatedList(
+          inputs.COVERITY_PRCOMMENT_IMPACTS,
+        ).map((impact) => impact.toUpperCase());
 
         covData.data.coverity.prcomment = {
           enabled: true,
@@ -727,29 +640,11 @@ export class BridgeCliToolsParameter {
     if (azureRestAPIVersion && covData.data.azure) {
       covData.data.azure.restAPIVersion = azureRestAPIVersion;
     }
-    const inputJson = JSON.stringify(covData);
-
-    let stateFilePath = path.join(
-      this.tempDir,
+    return this.writeStateFileAndBuildCommand(
+      BridgeCliToolsParameter.COVERITY_STAGE,
       BridgeCliToolsParameter.COVERITY_STATE_FILE_NAME,
+      covData,
     );
-    taskLib.writeFile(stateFilePath, inputJson);
-
-    // Wrap the file path with double quotes, to make it work with directory path with space as well
-    stateFilePath = '"'.concat(stateFilePath).concat('"');
-
-    taskLib.debug("Generated state json file at - ".concat(stateFilePath));
-
-    command = BridgeCliToolsParameter.STAGE_OPTION.concat(
-      BridgeCliToolsParameter.SPACE,
-    )
-      .concat(BridgeCliToolsParameter.COVERITY_STAGE)
-      .concat(BridgeCliToolsParameter.SPACE)
-      .concat(BridgeCliToolsParameter.INPUT_OPTION)
-      .concat(BridgeCliToolsParameter.SPACE)
-      .concat(stateFilePath)
-      .concat(BridgeCliToolsParameter.SPACE);
-    return command;
   }
 
   private setBlackDuckFixPrInputs(): BlackDuckSCAFixPrData | undefined {
@@ -793,18 +688,9 @@ export class BridgeCliToolsParameter {
         inputs.BLACKDUCKSCA_FIXPR_UPGRADE_GUIDANCE;
     }
 
-    const fixPRFilterSeverities: string[] = [];
-    if (
-      inputs.BLACKDUCKSCA_FIXPR_FILTER_SEVERITIES &&
-      inputs.BLACKDUCKSCA_FIXPR_FILTER_SEVERITIES != null &&
-      inputs.BLACKDUCKSCA_FIXPR_FILTER_SEVERITIES.length > 0
-    ) {
-      for (const fixPrSeverity of inputs.BLACKDUCKSCA_FIXPR_FILTER_SEVERITIES) {
-        if (fixPrSeverity != null && fixPrSeverity.trim() !== "") {
-          fixPRFilterSeverities.push(fixPrSeverity.trim());
-        }
-      }
-    }
+    const fixPRFilterSeverities = parseCommaSeparatedList(
+      (inputs.BLACKDUCKSCA_FIXPR_FILTER_SEVERITIES || []).join(","),
+    );
     if (fixPRFilterSeverities.length > 0) {
       blackDuckFixPrData.filter = { severities: fixPRFilterSeverities };
     }
@@ -836,18 +722,9 @@ export class BridgeCliToolsParameter {
         inputs.POLARIS_FIXPR_USEUPGRADEGUIDANCE;
     }
 
-    const fixPRFilterSeverities: string[] = [];
-    if (
-      inputs.POLARIS_FIXPR_FILTER_SEVERITIES &&
-      inputs.POLARIS_FIXPR_FILTER_SEVERITIES != null &&
-      inputs.POLARIS_FIXPR_FILTER_SEVERITIES.length > 0
-    ) {
-      for (const fixPrSeverity of inputs.POLARIS_FIXPR_FILTER_SEVERITIES) {
-        if (fixPrSeverity != null && fixPrSeverity.trim() !== "") {
-          fixPRFilterSeverities.push(fixPrSeverity.trim());
-        }
-      }
-    }
+    const fixPRFilterSeverities = parseCommaSeparatedList(
+      (inputs.POLARIS_FIXPR_FILTER_SEVERITIES || []).join(","),
+    );
 
     const fixPRFilterIssueTypes = parseCommaSeparatedList(
       inputs.POLARIS_FIXPR_FILTER_ISSUETYPES,
@@ -868,30 +745,15 @@ export class BridgeCliToolsParameter {
   }
 
   async getFormattedCommandForSrm(): Promise<string> {
-    let command = "";
     const customHeader =
       this.getInstanceUrl() === constants.ADO_SERVICES_URL
         ? constants.INTEGRATIONS_ADO_CLOUD
         : constants.INTEGRATIONS_ADO_EE;
-    const assessmentTypeArray: string[] = [];
-    const assessmentTypes = inputs.SRM_ASSESSMENT_TYPES;
-    if (assessmentTypes != null && assessmentTypes.length > 0) {
-      for (const assessmentType of assessmentTypes) {
-        const regEx = new RegExp("^[a-zA-Z]+$");
-        if (
-          assessmentType.trim().length > 0 &&
-          regEx.test(assessmentType.trim())
-        ) {
-          assessmentTypeArray.push(assessmentType.trim());
-        } else {
-          throw new Error(
-            INVALID_VALUE_ERROR.concat(constants.SRM_ASSESSMENT_TYPES_KEY)
-              .concat(constants.SPACE)
-              .concat(ErrorCode.INVALID_SRM_ASSESSMENT_TYPES.toString()),
-          );
-        }
-      }
-    }
+    const assessmentTypeArray = this.parseAssessmentTypes(
+      inputs.SRM_ASSESSMENT_TYPES,
+      constants.SRM_ASSESSMENT_TYPES_KEY,
+      ErrorCode.INVALID_SRM_ASSESSMENT_TYPES,
+    );
 
     let srmData: InputData<Srm> = {
       data: {
@@ -966,28 +828,72 @@ export class BridgeCliToolsParameter {
     }
     // Remove empty data from json object
     srmData = filterEmptyData(srmData);
-    const inputJson = JSON.stringify(srmData);
-
-    let stateFilePath = path.join(
-      this.tempDir,
+    return this.writeStateFileAndBuildCommand(
+      BridgeCliToolsParameter.SRM_STAGE,
       BridgeCliToolsParameter.SRM_STATE_FILE_NAME,
+      srmData,
     );
-    taskLib.writeFile(stateFilePath, inputJson);
+  }
+
+  private parseAssessmentTypes(
+    types: string[] | null | undefined,
+    key: string,
+    errorCode: ErrorCode,
+  ): string[] {
+    const result: string[] = [];
+    for (const type of types ?? []) {
+      const trimmed = type.trim();
+      if (
+        trimmed.length > 0 &&
+        BridgeCliToolsParameter.ASSESSMENT_TYPE_REGEX.test(trimmed)
+      ) {
+        result.push(trimmed);
+      } else {
+        throw new Error(
+          INVALID_VALUE_ERROR.concat(key)
+            .concat(constants.SPACE)
+            .concat(errorCode.toString()),
+        );
+      }
+    }
+    return result;
+  }
+
+  private writeStateFileAndBuildCommand(
+    stage: string,
+    stateFileName: string,
+    data: object,
+    outFileName?: string,
+  ): string {
+    let stateFilePath = path.join(this.tempDir, stateFileName);
+    taskLib.writeFile(stateFilePath, JSON.stringify(data));
 
     // Wrap the file path with double quotes, to make it work with directory path with space as well
     stateFilePath = '"'.concat(stateFilePath).concat('"');
     taskLib.debug("Generated state json file at - ".concat(stateFilePath));
 
-    command = BridgeCliToolsParameter.STAGE_OPTION.concat(
+    let command = BridgeCliToolsParameter.STAGE_OPTION.concat(
       BridgeCliToolsParameter.SPACE,
     )
-      .concat(BridgeCliToolsParameter.SRM_STAGE)
+      .concat(stage)
       .concat(BridgeCliToolsParameter.SPACE)
       .concat(BridgeCliToolsParameter.INPUT_OPTION)
       .concat(BridgeCliToolsParameter.SPACE)
       .concat(stateFilePath)
       .concat(BridgeCliToolsParameter.SPACE);
 
+    if (outFileName) {
+      // Generate out file path
+      const outFilePath = '"'
+        .concat(path.join(this.tempDir, outFileName))
+        .concat('"');
+      taskLib.debug("Generated out json file at - ".concat(outFilePath));
+      command = command
+        .concat(BridgeCliToolsParameter.OUTPUT_OPTION)
+        .concat(BridgeCliToolsParameter.SPACE)
+        .concat(outFilePath)
+        .concat(BridgeCliToolsParameter.SPACE);
+    }
     return command;
   }
 
@@ -1201,18 +1107,11 @@ export class BridgeCliToolsParameter {
       };
     }
 
-    const sarifReportFilterSeverities: string[] = [];
-    if (
-      inputs.BLACKDUCKSCA_URL &&
-      inputs.BLACKDUCKSCA_REPORTS_SARIF_SEVERITIES &&
-      inputs.BLACKDUCKSCA_REPORTS_SARIF_SEVERITIES.length > 0
-    ) {
-      const sarifSeverities =
-        inputs.BLACKDUCKSCA_REPORTS_SARIF_SEVERITIES.filter(
-          (severity) => severity && severity.trim() !== "",
-        ).map((severity) => severity.trim());
-      sarifReportFilterSeverities.push(...sarifSeverities);
-    }
+    const sarifReportFilterSeverities = inputs.BLACKDUCKSCA_URL
+      ? parseCommaSeparatedList(
+          (inputs.BLACKDUCKSCA_REPORTS_SARIF_SEVERITIES || []).join(","),
+        )
+      : [];
     if (sarifReportFilterSeverities.length > 0) {
       reportData.sarif.severities = sarifReportFilterSeverities;
     }
@@ -1240,17 +1139,11 @@ export class BridgeCliToolsParameter {
       };
     }
 
-    const sarifReportFilterSeverities: string[] = [];
-    if (
-      inputs.POLARIS_SERVER_URL &&
-      inputs.POLARIS_REPORTS_SARIF_SEVERITIES &&
-      inputs.POLARIS_REPORTS_SARIF_SEVERITIES.length > 0
-    ) {
-      const severities = inputs.POLARIS_REPORTS_SARIF_SEVERITIES.filter(
-        (severity) => severity && severity.trim() !== "",
-      ).map((severity) => severity.trim());
-      sarifReportFilterSeverities.push(...severities);
-    }
+    const sarifReportFilterSeverities = inputs.POLARIS_SERVER_URL
+      ? parseCommaSeparatedList(
+          (inputs.POLARIS_REPORTS_SARIF_SEVERITIES || []).join(","),
+        )
+      : [];
     if (sarifReportFilterSeverities.length > 0) {
       reportData.sarif.severities = sarifReportFilterSeverities;
     }
@@ -1262,17 +1155,11 @@ export class BridgeCliToolsParameter {
       }
     }
 
-    const sarifReportIssueTypes: string[] = [];
-    if (
-      inputs.POLARIS_SERVER_URL &&
-      inputs.POLARIS_REPORTS_SARIF_ISSUE_TYPES &&
-      inputs.POLARIS_REPORTS_SARIF_ISSUE_TYPES.length > 0
-    ) {
-      const issueTypes = inputs.POLARIS_REPORTS_SARIF_ISSUE_TYPES.filter(
-        (issueType) => issueType && issueType.trim() !== "",
-      ).map((issueType) => issueType.trim());
-      sarifReportIssueTypes.push(...issueTypes);
-    }
+    const sarifReportIssueTypes = inputs.POLARIS_SERVER_URL
+      ? parseCommaSeparatedList(
+          (inputs.POLARIS_REPORTS_SARIF_ISSUE_TYPES || []).join(","),
+        )
+      : [];
     if (sarifReportIssueTypes.length > 0) {
       reportData.sarif.issue = { types: sarifReportIssueTypes };
     }
@@ -1313,59 +1200,35 @@ export class BridgeCliToolsParameter {
     return covData.data;
   }
 
+  // detect config for Black Duck SCA: shared detect args plus install directory
   private setBlackDuckDetectArgs(): BlackDuckDetect {
-    const blackDuckDetectInputData: InputData<BlackDuckDetect> = { data: {} };
-    if (inputs.DETECT_INSTALL_DIRECTORY) {
-      blackDuckDetectInputData.data.install = {
-        directory: inputs.DETECT_INSTALL_DIRECTORY,
-      };
-    }
-
-    if (
-      inputs.DETECT_SEARCH_DEPTH &&
-      Number.isInteger(parseInt(inputs.DETECT_SEARCH_DEPTH))
-    ) {
-      blackDuckDetectInputData.data.search = {
-        depth: parseInt(inputs.DETECT_SEARCH_DEPTH),
-      };
-    }
-
-    if (inputs.DETECT_CONFIG_PATH) {
-      blackDuckDetectInputData.data.config = {
-        path: inputs.DETECT_CONFIG_PATH,
-      };
-    }
-
-    if (inputs.DETECT_ARGS) {
-      blackDuckDetectInputData.data.args = inputs.DETECT_ARGS;
-    }
-
-    return blackDuckDetectInputData.data;
+    return {
+      ...(inputs.DETECT_INSTALL_DIRECTORY && {
+        install: { directory: inputs.DETECT_INSTALL_DIRECTORY },
+      }),
+      ...this.setDetectArgs(),
+    };
   }
 
-  // detect config tool for SRM and Polaris
+  // detect config shared by Black Duck SCA, SRM and Polaris
   private setDetectArgs(): BlackDuckDetect {
-    const blackDuckDetectInputData: InputData<BlackDuckDetect> = { data: {} };
+    const detect: BlackDuckDetect = {};
     if (
       inputs.DETECT_SEARCH_DEPTH &&
       Number.isInteger(parseInt(inputs.DETECT_SEARCH_DEPTH))
     ) {
-      blackDuckDetectInputData.data.search = {
-        depth: parseInt(inputs.DETECT_SEARCH_DEPTH),
-      };
+      detect.search = { depth: parseInt(inputs.DETECT_SEARCH_DEPTH) };
     }
 
     if (inputs.DETECT_CONFIG_PATH) {
-      blackDuckDetectInputData.data.config = {
-        path: inputs.DETECT_CONFIG_PATH,
-      };
+      detect.config = { path: inputs.DETECT_CONFIG_PATH };
     }
 
     if (inputs.DETECT_ARGS) {
-      blackDuckDetectInputData.data.args = inputs.DETECT_ARGS;
+      detect.args = inputs.DETECT_ARGS;
     }
 
-    return blackDuckDetectInputData.data;
+    return detect;
   }
 
   private getInstanceUrl(): string {
