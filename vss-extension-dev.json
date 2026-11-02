@@ -24,9 +24,6 @@
   "categories": [
     "Azure Pipelines"
   ],
-  "icons": {
-    "default": "images/icon.png"
-  },
   "files": [
     {
       "path": "blackduck-security-task"
